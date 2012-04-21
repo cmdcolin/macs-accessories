@@ -64,8 +64,15 @@ varianceall=estimate_variance_all(treat,control,scaling_factor)
 start=10
 end=length(treat$V2)-10
 Z=lapply(start:end, function(x){Zxi(treat,control,scaling_factor,x,varianceall)})
-plot(1:1000,Z[1:1000],type='l', ylab='Standard deviation', xlab='Genome position')
 
+
+plot(1:1000,Z[1:1000],type='l', ylab='Z-score', xlab='Genome position')
+plot(1000:2000,Z[1000:2000],type='l', ylab='Z-score', xlab='Genome position')
+plot(2000:3000,Z[2000:3000],type='l', ylab='Z-score', xlab='Genome position')
+plot(3000:4000,Z[3000:4000],type='l', ylab='Z-score', xlab='Genome position')
+plot(4000:5000,Z[4000:5000],type='l', ylab='Z-score', xlab='Genome position')
+#plot(1:length(Z),Z,type='l', ylab='Standard deviation', xlab='Genome position')
+for(i in 1:length(Z)) if(Z[i]>3) 
 # So we have Poisson A-B/c
 # Then E[A-B/c]=f
 # And Var[A-B/c]=f+g+g/c
