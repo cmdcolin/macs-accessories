@@ -71,6 +71,8 @@ end=length(treat$V2)-10
 Z=lapply(start:end, function(x){Zxi(treat,control,scaling_factor,x,varianceall)})
 
 
+
+
 plot(1:1000,Z[1:1000],type='l', ylab='Z-score', xlab='Genome position')
 plot(1000:2000,Z[1000:2000],type='l', ylab='Z-score', xlab='Genome position')
 plot(2000:3000,Z[2000:3000],type='l', ylab='Z-score', xlab='Genome position')
@@ -110,3 +112,10 @@ plot(2000:3000,Z[2000:3000],type='l', ylab='Z-score', xlab='Genome position')
 plot(3000:4000,Z[3000:4000],type='l', ylab='Z-score', xlab='Genome position')
 plot((4000:5000)*10,Z[4000:5000],type='l', ylab='Z-score', xlab='Genome position')
 plot(1:length(Z),Z,type='l', ylab='Z-score', xlab='Genome position')
+
+
+
+# names(pdfFonts())
+plot(control$V1,control$V2,type='l', xlab='Genome position', ylab='Enrichment', ylim=c(0,75))
+lines(treat$V1,treat$V2,col=rgb(255,0,0,100,maxColorValue=255))
+
