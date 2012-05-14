@@ -54,8 +54,9 @@ Zxi<-function(treat,control,scaling_factor,pos,varianceall) {
 }
 
 
-# Read data files
+#### Read data files
 setwd('C:/Documents and Settings/Colin Diesh/Desktop/Workspace/')
+
 treat=read.table('S96/S96_MACS_wiggle/treat/S96_treat_afterfiting_chr01.fsa.wig.gz', skip=2)
 control=read.table('S96/S96_MACS_wiggle/control/S96_control_afterfiting_chr01.fsa.wig.gz', skip=2)
 treat=treat[-length(treat$V2),]
@@ -72,16 +73,8 @@ Z=lapply(start:end, function(x){Zxi(treat,control,scaling_factor,x,varianceall)}
 
 
 
-
-plot(1:1000,Z[1:1000],type='l', ylab='Z-score', xlab='Genome position')
-plot(1000:2000,Z[1000:2000],type='l', ylab='Z-score', xlab='Genome position')
-plot(2000:3000,Z[2000:3000],type='l', ylab='Z-score', xlab='Genome position')
-plot(3000:4000,Z[3000:4000],type='l', ylab='Z-score', xlab='Genome position')
-plot((4000:5000)*10,Z[4000:5000],type='l', ylab='Z-score', xlab='Genome position')
-
-
-
-
+myvec=vector("list",8)
+myvec[[1]]=Z
 
 
 ######################
@@ -106,16 +99,25 @@ end=length(treat$V2)-10
 Z=lapply(start:end, function(x){Zxi(treat,control,scaling_factor,x,varianceall)})
 
 
+myvec[[2]]=Z
+
+
+##############
+# names(pdfFonts())
+#
+plot(control$V1,control$V2,type='l', xlab='Genome position', ylab='Enrichment', ylim=c(0,75))
+lines(treat$V1,treat$V2,col=rgb(255,0,0,100,maxColorValue=255))
+
+
+
+###############
+# Make Z plots
+
+
 plot(1:1000,Z[1:1000],type='l', ylab='Z-score', xlab='Genome position')
 plot(1000:2000,Z[1000:2000],type='l', ylab='Z-score', xlab='Genome position')
 plot(2000:3000,Z[2000:3000],type='l', ylab='Z-score', xlab='Genome position')
 plot(3000:4000,Z[3000:4000],type='l', ylab='Z-score', xlab='Genome position')
-plot((4000:5000)*10,Z[4000:5000],type='l', ylab='Z-score', xlab='Genome position')
-plot(1:length(Z),Z,type='l', ylab='Z-score', xlab='Genome position')
-
-
-
-# names(pdfFonts())
-plot(control$V1,control$V2,type='l', xlab='Genome position', ylab='Enrichment', ylim=c(0,75))
-lines(treat$V1,treat$V2,col=rgb(255,0,0,100,maxColorValue=255))
-
+plot((4000:4600)*10,Z[4000:4600],type='l', ylab='Z-score', xlab='Genome position')
+lines((4000:4600)*10,treat$V2[4000:4600])
+lines((4000:4600)*10,Zold[4000:4600])

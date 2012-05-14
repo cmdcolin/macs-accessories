@@ -11,8 +11,10 @@ list1=read.table('s96-hs959-intersect.txt')
 pattern='*.fsa'
 fasta=readFasta("S288c-genome/",pattern)
 
+
 ## Make fasta sequences from binding sites
 fasta2=c()
+idset=c()
 for(i in 1:length(list1$V1)) {
   chrnum=as.numeric(substr(list1$V1[i],4,5))
   start = list1$V2[i]
@@ -20,9 +22,12 @@ for(i in 1:length(list1$V1)) {
   
   # Get DNA subsequences
   fasta2=c(fasta2,toString(subseq(sread(fasta)[[chrnum]],start,end)));
+  # Get ID for binding site
+  idset=c(idset,toString(as.character(list1$V4[i])))
 }
 
 fastaout=DNAStringSet(fasta2)
-outputfasta=ShortRead(fastaout)
+ids=BStringSet(idset)
+outputfasta=ShortRead(fastaout, ids)
 writeFasta(outputfasta, 'fasta-out.fa')
 
