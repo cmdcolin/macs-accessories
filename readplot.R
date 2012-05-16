@@ -143,13 +143,32 @@ estimate_scaling_factor <- function(path1,path2) {
 }
 
 
+# Sqrt(Aw+Bw/c), w=all
+estimate_variance_all<-function(path1,path2,scaling_factor) {
+  files1=list.files(path=path1,pattern="*.fsa.wig.gz")
+  files2=list.files(path=path2,pattern="*.fsa.wig.gz")
+  ratio_data=array()
+  chip_signal=array()
+  control_signal=array()
+  for (i in 1:length(files1)) {
+    treat<-get(files1[i])
+    control<-get(files2[i])
+    chip_signal=c(chip_signal,as.array(t(treat$V2)))
+    control_signal=c(control_signal,as.array(t(control$V2)))
+  }
+  average_chip=mean(chip_signal,0,TRUE)
+  average_control=mean(control_signal,0,TRUE)
+  sqrt(average_chip+average_control/scaling_factor^2)
+}
+
+
+
+
 ################
 s96scale=estimate_scaling_factor('S96/S96_MACS_wiggle/treat/','S96/S96_MACS_wiggle/control')
 hs959scale=estimate_scaling_factor('HS959/HS959_MACS_wiggle/treat/','HS959/HS959_MACS_wiggle/control')
-
-
-
-
+s96var=estimate_variance_all('S96/S96_MACS_wiggle/treat/','S96/S96_MACS_wiggle/control',s96scale)
+hs959var=estimate_variance_all('HS959/HS959_MACS_wiggle/treat/','HS959/HS959_MACS_wiggle/control',hs959scale)
 
 
 
@@ -215,4 +234,42 @@ getAvgReads<-function(bedfile, totalreads)
   }
   newreads
 }
+
+
+
+
+
+
+
+
+
+S96NormDiff<-function(bedfile, scaling_factor, variance) {
+  
+  # Get total reads in S96 from bedfile
+  reads=array();
+  for(i in 1:length(bedfile$V1)) {
+    chr=bedfile$V1[i];
+    start=bedfile$V2[i];
+    end=bedfile$V3[i];
+    
+    # Reads from S96
+    wigfile1=paste('S96_treat_afterfiting_',chr,'.wig.gz',sep='');
+    wig1=get(wigfile1);
+    treat_peak=wig1[wig1$V1>start & wig1$V1<end,];
+    wigfile2=paste('S96_control_afterfiting_',chr,'.wig.gz',sep='');
+    wig2=get(wigfile2);
+    control_peak=wig2[wig2$V1>start & wig2$V1<end,];
+  
+    Z=array()
+    treat_peak=as.array(treat_peak)
+    control_peak=ar.array(control_peak)
+    for(j in 1:(end-start)) {
+      Z[j]= treat_peak[j]
+    }
+    reads[i]=apply(Z,1,sum);
+  }
+  reads
+}
+s96nd<-S96NormDiff(s96bed, s96scale, s96var)
+
 
