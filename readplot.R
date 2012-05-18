@@ -37,11 +37,10 @@ getReads<-function(bedfile,wigpath) {
     start=bedfile$V2[i];
     end=bedfile$V3[i];
     
-    #reads for HS959
     wigfile=paste(wigpath,chr,'.wig.gz',sep='')
     wig=get(wigfile);
     peak2=wig[wig$V1>start & wig$V1<end,];
-    totalreads2=apply(t(peak2$V2),1,sum);
+    totalreads2=sum(peak2$V2);
     reads[i]=totalreads2;
   }
   reads
@@ -62,6 +61,47 @@ getAvgReads<-function(bedfile, totalreads)
   }
   newreads
 }
+
+
+#############
+# Get max average reads over window size
+getMaxAvgReads<-function(bedfile, wigpath, wsize)
+{
+  newreads=array()
+  chrold=''
+  wig=NULL
+  for(i in 1:length(bedfile$V1)) {
+    chr=bedfile$V1[i];
+    start=bedfile$V2[i];
+    end=bedfile$V3[i];
+    if(as.character(chrold)!=as.character(chr)){
+      wigfile=paste(wigpath,chr,'.wig.gz',sep='')
+      wig=get(wigfile);
+      maxreads=array()
+      chrold=chr
+      print(wigfile)
+    }
+    #print(cat(start,' ',end))
+    bstart=start-wsize/10
+    bend=end+wsize/10
+    wigsub=wig[wig$V1>bstart & wig$V1<bend,];
+    
+    for(j in bstart:end) {
+      b=j
+      e=j+wsize/10
+      peak=wigsub[wigsub$V1>b & wigsub$V1<e,];
+      maxreads[j]=sum(peak$V2,na.rm=TRUE);
+    }
+    newreads[i]=max(maxreads,na.rm=TRUE);
+    #print(newreads[i])
+  }
+  newreads
+}
+
+
+
+
+
 
 
 ####
@@ -99,8 +139,6 @@ estimate_variance_all<-function(path1,path2,scaling_factor) {
 }
 
 
-
-
 # Sqrt(Aw+Bw/c), w=1
 estimate_variance_one<-function(treat,control,scaling_factor,pos) {
   chip_signal=as.array(t(treat$V2[(pos-1):(pos+1)]))
@@ -129,6 +167,10 @@ Zxi<-function(treat,control,scaling_factor,pos,varianceall) {
           varianceall)
 }
 
+
+
+############
+# Calculate Z scores over all wiggle files
 Z<-function(treat,control,scaling_fact,variance_all) {
 
   files1=list.files(path=treat,pattern="*.fsa.wig.gz")
@@ -147,11 +189,30 @@ Z<-function(treat,control,scaling_fact,variance_all) {
   Z
 }
 
+###########
+# Get average Z
+getAvgZ<-function(bedfile,Zscore) {
+  reads=array();
+  for(i in 1:length(bedfile$V1)) {
+    chr=bedfile$V1[i];
+    start=bedfile$V2[i];
+    end=bedfile$V3[i];
+    name=paste(ZScore[['name']],'treat','afterfiting',chr,'.wig.gz',sep='_')
+    name=paste('Z', name)
+    Zchr=Z[[name]]
+    peak=Zchr[Zchr$V1>start & Zchr$V1<end,];
+    reads[i]=mean(peak,na.rm=TRUE)
+  }
+  reads
+}
 
 
+
+
+############
+# Old get avg Z
 getAvgNormDiff<-function(bedfile, path1, path2, scaling_factor, variance) {
   
-  # Get total reads in S96 from bedfile
   reads=array();
   for(i in 1:length(bedfile$V1)) {
     chr=bedfile$V1[i];
@@ -166,17 +227,19 @@ getAvgNormDiff<-function(bedfile, path1, path2, scaling_factor, variance) {
     wig2=get(wigfile2);
     control_peak=wig2[wig2$V1>start & wig2$V1<end,];
   
-    Z=array()
     treat_peak=as.array(treat_peak$V2)
     control_peak=as.array(control_peak$V2)
+    Z=array()
     
     for(j in 1:(end-start)) {
-      Z[j]= Zxi(treat_peak,(treat_peak[j]-control_peak[j]/scaling_factor)/sqrt(variance)
+      Z[j]= (treat_peak[j]-control_peak[j]/scaling_factor)/sqrt(variance)
     }
     reads[i]=mean(Z,na.rm=TRUE);
   }
   reads
 }
+
+
 
 
 

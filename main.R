@@ -7,7 +7,10 @@ s96treat<-'S96/S96_MACS_wiggle/treat/'
 s96control<-'S96/S96_MACS_wiggle/control/'
 hs959treat<-'HS959/HS959_MACS_wiggle/treat/'
 hs959control<-'HS959/HS959_MACS_wiggle/control/'
-s96tafter<-'S96_treat_afterfiting_'
+s96t<-'S96_treat_afterfiting_'
+s96c<-'S96_control_afterfiting_'
+hs959t<-'HS959_treat_afterfiting_'
+hs959c<-'HS959_control_afterfiting_'
 
 loadWiggle(s96treat)
 loadWiggle(s96control)
@@ -82,21 +85,7 @@ title('Total reads HS959 peaks')
 
 
 #####
-
-avgread7=getAvgReads(hs959bed,read7)
-avgread8=getAvgReads(hs959bed,read8)
-avgread9=getAvgReads(HS959overlap,read9)
-avgread10=getAvgReads(HS959overlap,read10)
-avgread11=getAvgReads(hs959unique,read11)
-avgread12=getAvgReads(hs959unique,read12)
-plot(avgread7,avgread8,ylab='S96 reads',xlab='HS959 reads',pch='*')
-points(avgread9,avgread10,pch=1,col='blue')
-points(avgread11,avgread12,pch=1,col='green')
-title('Average reads HS959 peaks')
-
-
-
-
+# Use average reads over peaks
 avgread1=getAvgReads(s96bed,read1)
 avgread2=getAvgReads(s96bed,read2)
 avgread3=getAvgReads(s96overlap,read3)
@@ -108,6 +97,48 @@ points(avgread3,avgread4,pch=1,col='red')
 points(avgread5,avgread6,pch=1,col='green')
 title('Average reads S96 peaks')
 
+avgread7=getAvgReads(hs959bed,read7)
+avgread8=getAvgReads(hs959bed,read8)
+avgread9=getAvgReads(HS959overlap,read9)
+avgread10=getAvgReads(HS959overlap,read10)
+avgread11=getAvgReads(hs959unique,read11)
+avgread12=getAvgReads(hs959unique,read12)
+plot(avgread7,avgread8,ylab='Avg S96 reads',xlab='Avg HS959 reads',pch='*')
+points(avgread9,avgread10,pch=1,col='blue')
+points(avgread11,avgread12,pch=1,col='green')
+title('Average reads HS959 peaks')
+
+
+
+
+
+
+
+###########
+# Use Max avg reads over windows
+avgread1=getMaxAvgReads(s96bed,s96t,100)
+avgread2=getMaxAvgReads(s96bed,hs959t,100)
+avgread3=getMaxAvgReads(s96overlap,s96t,100)
+avgread4=getMaxAvgReads(s96overlap,hs959t,100)
+avgread5=getMaxAvgReads(s96unique,s96t,100)
+avgread6=getMaxAvgReads(s96unique,hs959t,100)
+plot(avgread1,avgread2,ylab='Max Avg HS959 reads',xlab='max Avg S96 reads',pch='*')
+points(avgread3,avgread4,pch=1,col='red')
+points(avgread5,avgread6,pch=1,col='green')
+title('Max Average reads over windows of S96 peaks')
+
+avgread7=getMaxAvgReads(hs959bed,hs959t,100)
+avgread8=getMaxAvgReads(hs959bed,s96t,100)
+avgread9=getMaxAvgReads(HS959overlap,hs959t,100)
+avgread10=getMaxAvgReads(HS959overlap,s96t,100)
+avgread11=getMaxAvgReads(hs959unique,hs959t,100)
+avgread12=getMaxAvgReads(hs959unique,s96t,100)
+plot(avgread7,avgread8,ylab='Max Avg S96 reads',xlab='Max Avg HS959 reads',pch='*')
+points(avgread9,avgread10,pch=1,col='blue')
+points(avgread11,avgread12,pch=1,col='green')
+title('Max Average reads over windows of HS959 peaks')
+
+
 
 
 
@@ -117,9 +148,10 @@ s96scale=estimate_scaling_factor(s96treat,s96control)
 hs959scale=estimate_scaling_factor(hs959treat,hs959control)
 s96var=estimate_variance_all(s96treat,s96control,s96scale)
 hs959var=estimate_variance_all(hs959treat,hs959control,hs959scale)
-
 Zs96=Z(s96treat,s96control,s96scale,s96var)
+Zs96[['name']]='S96'
 Zhs959=Z(hs959treat,hs959control,hs959scale,hs959var)
+Zhs959[['name']]='HS959'
 
 
 
