@@ -4,9 +4,8 @@ loadWiggle<-function(wigpath) {
   files=list.files(path=wigpath,pattern="*.fsa.wig.gz")
   for (i in files) {
     file<-paste(wigpath,i,sep='')
-    print(file)
-    y<-read.table(file, skip=2)
-    assign(i,y)
+    x<-read.table(file, skip=2)
+    assign(i,x,inherits=TRUE)
   }
 }
 loadWiggle('S96/S96_MACS_wiggle/treat/')
@@ -156,8 +155,8 @@ estimate_scaling_factor <- function(path1,path2) {
   files2=list.files(path=path2,pattern="*.fsa.wig.gz")
   ratio_data=array()
   for (i in 1:length(files1)) {
-    treat<-get(files1[i])
-    control<-get(files2[i])
+    treat=get(files1[i])
+    control=get(files2[i])
     ratio_est=as.array(t(control$V2/treat$V2))
     ratio_data=c(ratio_data,t(ratio_est))
   }
