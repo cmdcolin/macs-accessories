@@ -93,11 +93,59 @@ estimate_variance_all<-function(path1,path2,scaling_factor) {
     chip_signal=c(chip_signal,as.array(t(treat$V2)))
     control_signal=c(control_signal,as.array(t(control$V2)))
   }
-  average_chip=mean(chip_signal,0,TRUE)
-  average_control=mean(control_signal,0,TRUE)
+  average_chip=mean(chip_signal,na.rm=TRUE)
+  average_control=mean(control_signal,na.rm=TRUE)
   sqrt(average_chip+average_control/scaling_factor^2)
 }
 
+
+
+
+# Sqrt(Aw+Bw/c), w=1
+estimate_variance_one<-function(treat,control,scaling_factor,pos) {
+  chip_signal=as.array(t(treat$V2[(pos-1):(pos+1)]))
+  control_signal=as.array(t(control$V2[(pos-1):(pos+1)]))
+  average_chip=mean(chip_signal,na.rm=TRUE)
+  average_control=mean(control_signal,na.rm=TRUE)
+  sqrt(average_chip+average_control/scaling_factor^2)
+}
+
+# Sqrt(Aw+Bw/c), w=10
+estimate_variance_ten<-function(treat,control,scaling_factor,pos) {
+  chip_signal=as.array(t(treat$V2[(pos-10):(pos+10)]))
+  control_signal=as.array(t(control$V2[(pos-10):(pos+10)]))
+  average_chip=mean(chip_signal,na.rm=TRUE)
+  average_control=mean(control_signal,na.rm=TRUE)
+  sqrt(average_chip+average_control/scaling_factor^2)
+}
+
+
+
+
+Zxi<-function(treat,control,scaling_factor,pos,varianceall) {
+  (treat$V2[pos]-control$V2[pos]/scaling_factor)/
+      max(estimate_variance_one(treat,control,scaling_factor,pos),
+          estimate_variance_ten(treat,control,scaling_factor,pos),
+          varianceall)
+}
+
+Z<-function(treat,control,scaling_fact,variance_all) {
+
+  files1=list.files(path=treat,pattern="*.fsa.wig.gz")
+  files2=list.files(path=control,pattern="*.fsa.wig.gz")
+  Z=list()
+  for (i in 1:length(files1)) {
+    treat<-get(files1[i])
+    control<-get(files2[i])
+    start=10
+    end=length(treat$V2)-10
+    Zscore<-lapply(start:end, function(x){Zxi(treat,control,scaling_fact,x,variance_all)})
+    N<-paste('Z',files1[i])
+    print(N)
+    Z[[N]]=Zscore
+  }
+  Z
+}
 
 
 
@@ -123,7 +171,7 @@ getAvgNormDiff<-function(bedfile, path1, path2, scaling_factor, variance) {
     control_peak=as.array(control_peak$V2)
     
     for(j in 1:(end-start)) {
-      Z[j]= (treat_peak[j]-control_peak[j]/scaling_factor)/sqrt(variance)
+      Z[j]= Zxi(treat_peak,(treat_peak[j]-control_peak[j]/scaling_factor)/sqrt(variance)
     }
     reads[i]=mean(Z,na.rm=TRUE);
   }

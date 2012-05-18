@@ -118,6 +118,8 @@ hs959scale=estimate_scaling_factor(hs959treat,hs959control)
 s96var=estimate_variance_all(s96treat,s96control,s96scale)
 hs959var=estimate_variance_all(hs959treat,hs959control,hs959scale)
 
+Zs96=Z(s96treat,s96control,s96scale,s96var)
+Zhs959=Z(hs959treat,hs959control,hs959scale,hs959var)
 
 
 
@@ -137,7 +139,7 @@ hs959ndunique<-getAvgNormDiff(s96unique, 'HS959_treat_afterfiting_', 'HS959_cont
 
 ################
 # Plot s96 vs hs959 normdiff scores
-plot(hs959nd,s96nd,pch='*',xlab='HS959',ylab='S96')
+plot(hs959nd,s96ndpeak,pch='*',xlab='HS959',ylab='S96')
 points(hs959ndoverlap,s96ndoverlap,col='red')
 points(hs959ndunique,s96ndunique,col='green')
 title('S96 peaks vs HS959 syntenic NormDiff scores')
