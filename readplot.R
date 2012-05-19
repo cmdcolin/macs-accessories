@@ -70,7 +70,8 @@ getMaxAvgReads<-function(bedfile, wigpath, wsize)
   newreads=array()
   chrold=''
   wig=NULL
-  for(i in 1:length(bedfile$V1)) {
+  for(i in 1:length(bedfile$V1))
+  {
     chr=bedfile$V1[i];
     start=bedfile$V2[i];
     end=bedfile$V3[i];
@@ -88,17 +89,16 @@ getMaxAvgReads<-function(bedfile, wigpath, wsize)
     b=0
     e=0
     maxreads=array()
-    for(j in seq(bstart,end,by=10)) {
-      f=1
-      for(k in 1:length(wig$V1)) {
-        if(f & wig$V1[k]>j) { b=k; f=0}
-        else if(wig$V1[k]>(j+wsize)) {e=k; f=1; break; } 
-      }
-      peak=wig$V2[b:e];
+    wigpos=wig$V1
+    wigpeak=wig$V2
+    for(j in seq(bstart,end,by=100)) {
+      b=findInterval(j,wigpos)
+      e=findInterval(j+wsize,wigpos)
+      peak=wigpeak[b:e];
       maxreads[j]=mean(peak,na.rm=TRUE);
     }
     newreads[i]=max(maxreads,na.rm=TRUE);
-    print(cat('Found max reads ', newreads[i], ' at ', b, ' ', e,'. Used ', (end-bstart)/10, ' windows'))
+    print(cat('Found max reads ', newreads[i], ' at ', b, ' ', e,'. Used ', (end-bstart)/100, ' windows'))
   }
   newreads
 }
