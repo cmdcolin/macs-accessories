@@ -148,10 +148,7 @@ s96scale=estimate_scaling_factor(s96treat,s96control)
 hs959scale=estimate_scaling_factor(hs959treat,hs959control)
 s96var=estimate_variance_all(s96treat,s96control,s96scale)
 hs959var=estimate_variance_all(hs959treat,hs959control,hs959scale)
-Zs96=Z(s96treat,s96control,s96scale,s96var)
-Zs96[['name']]='S96'
-Zhs959=Z(hs959treat,hs959control,hs959scale,hs959var)
-Zhs959[['name']]='HS959'
+
 
 
 
@@ -165,16 +162,34 @@ s96ndunique<-getAvgNormDiff(s96unique, 'S96_treat_afterfiting_', 'S96_control_af
 hs959nd<-getAvgNormDiff(s96bed, 'HS959_treat_afterfiting_', 'HS959_control_afterfiting_', hs959scale, hs959var)
 hs959ndoverlap<-getAvgNormDiff(s96overlap, 'HS959_treat_afterfiting_', 'HS959_control_afterfiting_', hs959scale, hs959var)
 hs959ndunique<-getAvgNormDiff(s96unique, 'HS959_treat_afterfiting_', 'HS959_control_afterfiting_', hs959scale, hs959var)
-
-
-
-
 ################
 # Plot s96 vs hs959 normdiff scores
 plot(hs959nd,s96ndpeak,pch='*',xlab='HS959',ylab='S96')
 points(hs959ndoverlap,s96ndoverlap,col='red')
 points(hs959ndunique,s96ndunique,col='green')
 title('S96 peaks vs HS959 syntenic NormDiff scores')
+
+
+
+
+
+
+
+
+
+
+##########
+# Get Z scores
+Zs96=Z(s96treat,s96control,s96scale,s96var)
+Zs96[['name']]='S96'
+Zhs959=Z(hs959treat,hs959control,hs959scale,hs959var)
+Zhs959[['name']]='HS959'
+s96z<-getAvgZ(s96bed,Zs96)
+s96zoverlap<-getAvgZ(s96overlap,Zs96)
+s96unique<-getAvgZ(s96unique,Zs96)
+hs959z<-getAvgZ(hs959bed,Zhs959)
+hs959zoverlap<-getAvgZ(hs959overlap,Zhs959)
+hs959zunique<-getAvgZ(hs959unique,Zhs959)
 
 
 s96nd2<-getAvgNormDiff(hs959bed, 'S96_treat_afterfiting_', 'S96_control_afterfiting_', s96scale, s96var)

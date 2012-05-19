@@ -81,19 +81,24 @@ getMaxAvgReads<-function(bedfile, wigpath, wsize)
       chrold=chr
       print(wigfile)
     }
-    #print(cat(start,' ',end))
+    
+    
     bstart=start-wsize/10
     bend=end+wsize/10
-    wigsub=wig[wig$V1>bstart & wig$V1<bend,];
-    
-    for(j in bstart:end) {
-      b=j
-      e=j+wsize/10
-      peak=wigsub[wigsub$V1>b & wigsub$V1<e,];
-      maxreads[j]=sum(peak$V2,na.rm=TRUE);
+    b=0
+    e=0
+    maxreads=array()
+    for(j in seq(bstart,end,by=10)) {
+      f=1
+      for(k in 1:length(wig$V1)) {
+        if(f & wig$V1[k]>j) { b=k; f=0}
+        else if(wig$V1[k]>(j+wsize)) {e=k; f=1; break; } 
+      }
+      peak=wig$V2[b:e];
+      maxreads[j]=mean(peak,na.rm=TRUE);
     }
     newreads[i]=max(maxreads,na.rm=TRUE);
-    #print(newreads[i])
+    print(cat('Found max reads ', newreads[i], ' at ', b, ' ', e,'. Used ', (end-bstart)/10, ' windows'))
   }
   newreads
 }
@@ -181,10 +186,11 @@ Z<-function(treat,control,scaling_fact,variance_all) {
     control<-get(files2[i])
     start=10
     end=length(treat$V2)-10
-    Zscore<-lapply(start:end, function(x){Zxi(treat,control,scaling_fact,x,variance_all)})
+    Zn=function(x){Zxi(treat,control,scaling_fact,x,variance_all)}
+    Zscore<-sapply(start:end,Zn)
+    Ztable<-as.table(cbind(treat$V1,Zscore))
     N<-paste('Z',files1[i])
-    print(N)
-    Z[[N]]=Zscore
+    Z[[N]]=Ztable
   }
   Z
 }
@@ -197,9 +203,11 @@ getAvgZ<-function(bedfile,Zscore) {
     chr=bedfile$V1[i];
     start=bedfile$V2[i];
     end=bedfile$V3[i];
-    name=paste(ZScore[['name']],'treat','afterfiting',chr,'.wig.gz',sep='_')
+    name=paste(Zscore[['name']],'_treat_afterfiting_',chr,'.wig.gz',sep='')
     name=paste('Z', name)
-    Zchr=Z[[name]]
+    
+    Zchr=Zscore[[name]]
+    print(typeof(Zchr))
     peak=Zchr[Zchr$V1>start & Zchr$V1<end,];
     reads[i]=mean(peak,na.rm=TRUE)
   }
@@ -245,13 +253,12 @@ getAvgNormDiff<-function(bedfile, path1, path2, scaling_factor, variance) {
 
 
 ######
-# Get peak indexes from bedfile column
+# Get peak index from bed
 getPeakIndex<-function(bedfile)
 {
   index=array()
   for(i in 1:length(bedfile$V1)) {
-    index[i]=as.integer(substring(bedfile$V4[i],11,length(bedfile$V4[i])))
-    print(substring(bedfile$V4[i],11,length(bedfile$V4[i])))
+    index[i]=as.integer(unlist(strsplit(as.character(bedfile$V4[i]),'_'))[3])
   }
   index
 }
