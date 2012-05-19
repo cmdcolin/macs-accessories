@@ -118,27 +118,63 @@ title('Average reads HS959 peaks')
 # Use Max avg reads over windows
 avgread1=getMaxAvgReads(s96bed,s96t,100)
 avgread2=getMaxAvgReads(s96bed,hs959t,100)
-avgread3=getMaxAvgReads(s96overlap,s96t,100)
-avgread4=getMaxAvgReads(s96overlap,hs959t,100)
-avgread5=getMaxAvgReads(s96unique,s96t,100)
-avgread6=getMaxAvgReads(s96unique,hs959t,100)
-plot(avgread1,avgread2,ylab='Max Avg HS959 reads',xlab='max Avg S96 reads',pch='*')
-points(avgread3,avgread4,pch=1,col='red')
-points(avgread5,avgread6,pch=1,col='green')
-title('Max Average reads over windows of S96 peaks')
+id1<-getPeakIndex(s96overlap)
+id2<-getPeakIndex(s96unique)
+avgreadsmod3=avgread1[id1]
+avgreadsmod4=avgread2[id1]
+avgreadsmod5=avgread1[id2]
+avgreadsmod6=avgread2[id2]
+#avgread3=getMaxAvgReads(s96overlap,s96t,100)
+#avgread4=getMaxAvgReads(s96overlap,hs959t,100)
+#avgread5=getMaxAvgReads(s96unique,s96t,100)
+#avgread6=getMaxAvgReads(s96unique,hs959t,100)
+#########
+#plot(avgread1,avgread2,ylab='Max Avg HS959 reads',xlab='Max Avg S96 reads',pch='*')
+#points(avgread3,avgread4,pch=1,col='red')
+#points(avgread5,avgread6,pch=1,col='green')
+#title('Max Average reads over windows of S96 peaks')
+######################
+plot(avgread1,avgread2,ylab='Max Avg HS959 reads',xlab='Max Avg S96 reads',pch='*')
+points(avgreadsmod3,avgreadsmod4,pch=1,col='red')
+points(avgreadsmod5,avgreadsmod6,pch=1,col='green')
+title('Max Average reads S96 peaks  w=100')
+legend('bottomright', legend=c('shared', 'unique'), fill=c('red', 'green'))
+plot(avgread1,avgread2,ylab='Max Avg HS959 reads',xlab='Max Avg S96 reads',pch='*',xlim=c(70,400),ylim=c(0,200))
+points(avgreadsmod3,avgreadsmod4,pch=1,col='red')
+points(avgreadsmod5,avgreadsmod6,pch=1,col='green')
+title('Max Avg reads S96 peaks w=100 (Zoom)')
+legend('bottomright', legend=c('shared', 'unique'), fill=c('red', 'green'))
+
+
+
 
 avgread7=getMaxAvgReads(hs959bed,hs959t,100)
 avgread8=getMaxAvgReads(hs959bed,s96t,100)
-avgread9=getMaxAvgReads(HS959overlap,hs959t,100)
-avgread10=getMaxAvgReads(HS959overlap,s96t,100)
-avgread11=getMaxAvgReads(hs959unique,hs959t,100)
-avgread12=getMaxAvgReads(hs959unique,s96t,100)
+id1<-getPeakIndex(HS959overlap)
+id2<-getPeakIndex(hs959unique)
+avgread9=avgread7[id1]
+avgread10=avgread8[id1]
+avgread11=avgread7[id2]
+avgread12=avgread8[id2]
+#avgread9=getMaxAvgReads(HS959overlap,hs959t,100)
+#avgread10=getMaxAvgReads(HS959overlap,s96t,100)
+#avgread11=getMaxAvgReads(hs959unique,hs959t,100)
+#avgread12=getMaxAvgReads(hs959unique,s96t,100)
+
+
 plot(avgread7,avgread8,ylab='Max Avg S96 reads',xlab='Max Avg HS959 reads',pch='*')
 points(avgread9,avgread10,pch=1,col='blue')
-points(avgread11,avgread12,pch=1,col='green')
-title('Max Average reads over windows of HS959 peaks')
+points(avgread11,avgread12,pch=1,col='red')
+title('Max Average reads HS959 peaks w=100')
+legend('bottomright', legend=c('shared', 'unique'), fill=c('blue', 'red'))
 
-
+#
+#Zoom
+plot(avgread7,avgread8,ylab='Max Avg S96 reads',xlab='Max Avg HS959 reads',pch='*',xlim=c(35,200),ylim=c(25,400))
+points(avgread9,avgread10,pch=1,col='blue')
+points(avgread11,avgread12,pch=1,col='red')
+title('Max Average reads HS959 peaks w=100 (Zoom)')
+legend('bottomright', legend=c('shared', 'unique'), fill=c('blue', 'red'))
 
 
 
