@@ -178,6 +178,9 @@ legend('bottomright', legend=c('shared', 'unique'), fill=c('blue', 'red'))
 
 
 
+
+
+
 ################
 # Get NormDiff scaling factor, variance
 s96scale=estimate_scaling_factor(s96treat,s96control)
@@ -190,20 +193,20 @@ hs959var=estimate_variance_all(hs959treat,hs959control,hs959scale)
 
 ##########
 # Get S96 normdiff
-s96ndpeak<-getAvgNormDiff(s96bed, 'S96_treat_afterfiting_', 'S96_control_afterfiting_', s96scale, s96var)
-s96ndoverlap<-getAvgNormDiff(s96overlap, 'S96_treat_afterfiting_', 'S96_control_afterfiting_', s96scale, s96var)
-s96ndunique<-getAvgNormDiff(s96unique, 'S96_treat_afterfiting_', 'S96_control_afterfiting_', s96scale, s96var)
+#s96ndpeak<-getAvgNormDiff(s96bed, s96t,s96c, s96scale, s96var)
+#s96ndoverlap<-getAvgNormDiff(s96overlap, s96t, s96c, s96scale, s96var)
+#s96ndunique<-getAvgNormDiff(s96unique, s96t,s96c, s96scale, s96var)
 ######
 # Get HS959 normdiff
-hs959nd<-getAvgNormDiff(s96bed, 'HS959_treat_afterfiting_', 'HS959_control_afterfiting_', hs959scale, hs959var)
-hs959ndoverlap<-getAvgNormDiff(s96overlap, 'HS959_treat_afterfiting_', 'HS959_control_afterfiting_', hs959scale, hs959var)
-hs959ndunique<-getAvgNormDiff(s96unique, 'HS959_treat_afterfiting_', 'HS959_control_afterfiting_', hs959scale, hs959var)
+#hs959nd<-getAvgNormDiff(s96bed, hs959t, hs959c, hs959scale, hs959var)
+#hs959ndoverlap<-getAvgNormDiff(s96overlap, hs959t,hs959t, hs959scale, hs959var)
+#hs959ndunique<-getAvgNormDiff(s96unique, hs959t, hs959c, hs959scale, hs959var)
 ################
 # Plot s96 vs hs959 normdiff scores
-plot(hs959nd,s96ndpeak,pch='*',xlab='HS959',ylab='S96')
-points(hs959ndoverlap,s96ndoverlap,col='red')
-points(hs959ndunique,s96ndunique,col='green')
-title('S96 peaks vs HS959 syntenic NormDiff scores')
+#plot(s96ndpeak,hs959nd,pch='*',xlab='S96',ylab='HS959')
+#points(s96ndoverlap,hs959ndoverlap,col='red')
+#points(s96ndunique,hs959ndunique,col='green')
+#title('S96 peaks vs HS959 syntenic NormDiff scores')
 
 
 
@@ -216,38 +219,161 @@ title('S96 peaks vs HS959 syntenic NormDiff scores')
 
 ##########
 # Get Z scores
-Zs96=Z(s96treat,s96control,s96scale,s96var)
-Zs96[['name']]='S96'
-Zhs959=Z(hs959treat,hs959control,hs959scale,hs959var)
-Zhs959[['name']]='HS959'
+Zs96=Z(s96treat,s96control,s96scale,s96var,'S96')
+Zhs959=Z(hs959treat,hs959control,hs959scale,hs959var,'HS959')
 s96z<-getAvgZ(s96bed,Zs96)
 s96zoverlap<-getAvgZ(s96overlap,Zs96)
-s96unique<-getAvgZ(s96unique,Zs96)
+s96zunique<-getAvgZ(s96unique,Zs96)
+hs959z<-getAvgZ(s96bed,Zhs959)
+hs959zoverlap<-getAvgZ(s96overlap,Zhs959)
+hs959zunique<-getAvgZ(s96unique,Zhs959)
+
+plot(s96z,hs959z,pch='*',xlab='Avg S96 peak normdiff',ylab='hs959 syntenic')
+points(s96zoverlap,hs959zoverlap,col='yellow')
+points(s96zunique,hs959zunique,col='blue')
+title('S96 average peak NormDiff')
+
+
+
 hs959z<-getAvgZ(hs959bed,Zhs959)
-hs959zoverlap<-getAvgZ(hs959overlap,Zhs959)
+hs959zoverlap<-getAvgZ(HS959overlap,Zhs959)
 hs959zunique<-getAvgZ(hs959unique,Zhs959)
+s96z<-getAvgZ(s96bed,Zs96)
+s96zoverlap<-getAvgZ(s96overlap,Zs96)
+s96zunique<-getAvgZ(s96unique,Zs96)
+plot(hs959z,s96z,pch='*',xlab='Avg S96 peak normdiff',ylab='S96 syntenic')
+points(hs959zoverlap,s96zoverlap,col='yellow')
+points(hs959zunique,s96zunique,col='blue')
+title('S96 average peak NormDiff')
+
+#s96nd2<-getAvgNormDiff(hs959bed, 'S96_treat_afterfiting_', 'S96_control_afterfiting_', s96scale, s96var)
+#hs959nd2<-getAvgNormDiff(hs959bed, 'HS959_treat_afterfiting_', 'HS959_control_afterfiting_', hs959scale, hs959var)
+#s96ndoverlap2<-getAvgNormDiff(HS959overlap, 'S96_treat_afterfiting_', 'S96_control_afterfiting_', s96scale, s96var)
+#hs959ndoverlap2<-getAvgNormDiff(HS959overlap, 'HS959_treat_afterfiting_', 'HS959_control_afterfiting_', hs959scale, hs959var)
+#s96ndunique2<-getAvgNormDiff(hs959unique, 'S96_treat_afterfiting_', 'S96_control_afterfiting_', s96scale, s96var)
+#hs959ndunique2<-getAvgNormDiff(hs959unique, 'HS959_treat_afterfiting_', 'HS959_control_afterfiting_', hs959scale, hs959var)
+##########
+#plot(s96nd2,hs959nd2,pch='*',xlab='S96',ylab='HS959')
+#points(s96ndoverlap2,hs959ndoverlap2,col='yellow')
+#points(s96ndunique2,hs959ndunique2,col='blue')
+#title('HS959 peaks NormDiff')
 
 
-s96nd2<-getAvgNormDiff(hs959bed, 'S96_treat_afterfiting_', 'S96_control_afterfiting_', s96scale, s96var)
-hs959nd2<-getAvgNormDiff(hs959bed, 'HS959_treat_afterfiting_', 'HS959_control_afterfiting_', hs959scale, hs959var)
-s96ndoverlap2<-getAvgNormDiff(HS959overlap, 'S96_treat_afterfiting_', 'S96_control_afterfiting_', s96scale, s96var)
-hs959ndoverlap2<-getAvgNormDiff(HS959overlap, 'HS959_treat_afterfiting_', 'HS959_control_afterfiting_', hs959scale, hs959var)
-s96ndunique2<-getAvgNormDiff(hs959unique, 'S96_treat_afterfiting_', 'S96_control_afterfiting_', s96scale, s96var)
-hs959ndunique2<-getAvgNormDiff(hs959unique, 'HS959_treat_afterfiting_', 'HS959_control_afterfiting_', hs959scale, hs959var)
+
+hs959z<-getMaxAvgZ(hs959bed,Zhs959,100)
+hs959zoverlap<-getMaxAvgZ(HS959overlap,Zhs959,100)
+hs959zunique<-getMaxAvgZ(hs959unique,Zhs959,100)
+s96z<-getMaxAvgZ(hs959bed,Zs96,100)
+s96zoverlap<-getMaxAvgZ(HS959overlap,Zs96,100)
+s96zunique<-getMaxAvgZ(hs959unique,Zs96,100)
+plot(hs959z,s96z,pch='*',xlab='HS959 peak',ylab='S96 syntenic')
+points(hs959zoverlap,s96zoverlap,col='blue')
+points(hs959zunique,s96zunique,col='orange')
+title('Max Avg HS959 peak normdiff w=100')
+plot(hs959z,s96z,pch='*',xlab='HS959 peak',ylab='S96 syntenic',ylim=c(1,13),xlim=c(3.3,11))
+points(hs959zoverlap,s96zoverlap,col='blue')
+points(hs959zunique,s96zunique,col='orange')
+title('Max Avg HS959 peak normdiff w=100 (Zoom)')
 
 
 
 
-plot(s96nd2,hs959nd2,pch='*',xlab='S96',ylab='HS959')
-points(s96ndoverlap2,hs959ndoverlap2,col='yellow')
-points(s96ndunique2,hs959ndunique2,col='blue')
-title('HS959 peaks NormDiff')
+s96z2<-getMaxAvgZ(s96bed,Zs96,100)
+s96zoverlap2<-getMaxAvgZ(s96overlap,Zs96,100)
+s96zunique2<-getMaxAvgZ(s96unique,Zs96,100)
+hs959z2<-getMaxAvgZ(s96bed,Zhs959,100)
+hs959zoverlap2<-getMaxAvgZ(s96overlap,Zhs959,100)
+hs959zunique2<-getMaxAvgZ(s96unique,Zhs959,100)
+plot(s96z2,hs959z2,pch='*',xlab='S96 peak',ylab='HS959 syntenic')
+points(s96zoverlap2,hs959zoverlap2,col='green')
+points(s96zunique2,hs959zunique2,col='brown')
+title('Max Avg S96 peak normdiff w=100')
 
-
-
-
-
+plot(s96z2,hs959z2,pch='*',xlab='S96 peak',ylab='HS959 syntenic',ylim=c(0,10),xlim=c(3.3,13))
+points(s96zoverlap2,hs959zoverlap2,col='green')
+points(s96zunique2,hs959zunique2,col='brown')
+title('Max Avg S96 peak normdiff w=100 (Zoom)')
 ##########3
+
+################
+# Sort and rank
+# $ intersectBed -a S96/S96_peaks.bed -b HS959/HS959_peaks.bed -f 1.0 >> fullIntersect.bed
+
+fullintersect=read.table('fullIntersect3.bed')
+fullintersectZ<-getMaxAvgZ(fullintersect,Zs96,100)
+sorts96Z=sort(s96z2)
+plot(1:length(sorts96Z),sorts96Z,type='l',xlab='Rank', ylab='max avg NormDiff score')
+matchpos=match(fullintersectZ,sorts96Z)
+points(matchpos,fullintersectZ)
+title('Sorted Max Avg. NormDiff (S96 peaks) w=100')
+
+# $ intersectBed -a HS959/HS959_peaks.bed -b S96/S96_peaks.bed -f 1.0 >> fullIntersect2.bed
+fullintersect2=read.table('fullIntersect2.bed')
+fullintersectZ2<-getMaxAvgZ(fullintersect2,Zhs959,100)
+sorths959Z=sort(hs959z)
+plot(1:length(sorths959Z),sorths959Z,type='l',xlab='Rank', ylab='max avg NormDiff score')
+matchpos=match(fullintersectZ2,sorths959Z)
+points(matchpos,fullintersectZ2,pch='.',col='red')
+title('Sorted Max Avg. NormDiff (HS959 peaks) w=100')
+                   
+                   
+#####################
+# Whole genome
+Zs96genome=getAvgZ_WholeGenome(Zs96,100)
+Zhs959genome=getAvgZ_WholeGenome(Zhs959,100)
+Zs96genome=Zs96genome[-(length(Zs96genome):(length(Zhs959genome)+1))]
+plot(Zs96genome,Zhs959genome,pch='.',xlim=c(-4,6),ylim=c(-3.5,6))
+
+
+#########
+# MANORM
+
+M=log2(s96z2)-log2(hs959z2)
+A=1/2*(log2(s96z2)+log2(hs959z2))
+plot(A,M,ylim=c(-3,3),xlim=c(1,5.1),xlab='Normdiff Intensity', ylab='Normdiff ratio',pch='*')
+M=log2(s96zoverlap2)-log2(hs959zoverlap2)
+A=1/2*(log2(s96zoverlap2)+log2(hs959zoverlap2))
+points(A,M,col='blue')
+M=log2(s96zunique2)-log2(hs959zunique2)
+A=1/2*(log2(s96zunique2)+log2(hs959zunique2))
+points(A,M,col='red')
+title('MA plot HS959 peaks (max avg NormDiff w=100)')
+legend('bottomright', legend=c('shared', 'unique'), fill=c('blue', 'red'))
+
+
+
+M=log2(hs959z)-log2(s96z)
+A=1/2*(log2(s96z)+log2(hs959z))
+plot(A,M,ylim=c(-3,3),xlim=c(1,5.1),xlab='Log product S96,HS959', ylab='Log ratio S96,HS959',pch='*')
+M=log2(hs959zoverlap)-log2(s96zoverlap)
+A=1/2*(log2(s96zoverlap)+log2(hs959zoverlap))
+points(A,M,col='green')
+M=log2(hs959zunique)-log2(s96zunique)
+A=1/2*(log2(s96zunique)+log2(hs959zunique))
+points(A,M,col='red')
+title('MA plot S96 peaks (max avg NormDiff w=100)')
+legend('bottomright', legend=c('shared', 'unique'), fill=c('green', 'red'))
+
+
+########
+
+M=log2(s96z)-log2(hs959z)
+A=1/2*(log2(s96z)+log2(hs959z))
+plot(A,M,ylim=c(-3,3),xlim=c(1,5.1),xlab='Log product S96,HS959', ylab='Log ratio S96,HS959',pch='*')
+M=log2(s96zoverlap)-log2(hs959zoverlap)
+A=1/2*(log2(s96zoverlap)+log2(hs959zoverlap))
+points(A,M,col='blue')
+M=log2(s96zunique)-log2(hs959zunique)
+A=1/2*(log2(s96zunique)+log2(hs959zunique))
+points(A,M,col='green')
+
+M=log2(s96z)-log2(hs959z)
+A=1/2*(log2(s96z)+log2(hs959z))
+points(A,M,pch='*')
+title('MA plot (max avg NormDiff w=100)')
+legend('bottomright', legend=c('shared', 'S96', 'HS959'), fill=c('blue', 'red','green'))
+
+
 s96sort=sort(s96nd)
 plot(1:length(s96sort),s96sort,pch='*',xlab='Rank',ylab='Avg NormDiff')
 title('S96 Normdiff Sort')

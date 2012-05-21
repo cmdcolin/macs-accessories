@@ -270,7 +270,7 @@ getMaxAvgZ<-function(bedfile,Zscore,wsize) {
 
 ###########
 # Get average Z
-getAvgWholeGenomeZ<-function(Zscore,wsize) {
+getAvgZ_WholeGenome<-function(Zscore,wsize) {
   reads=array();
   for(i in Zscore) {
     if(is.null(dim(i))) {next;}
