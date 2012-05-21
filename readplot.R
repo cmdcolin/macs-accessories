@@ -75,6 +75,7 @@ getMaxAvgReads<-function(bedfile, wigpath, wsize)
     chr=bedfile$V1[i];
     start=bedfile$V2[i];
     end=bedfile$V3[i];
+    # Avoid reloading env variables
     if(as.character(chrold)!=as.character(chr)){
       wigfile=paste(wigpath,chr,'.wig.gz',sep='')
       wig=get(wigfile);
@@ -82,18 +83,17 @@ getMaxAvgReads<-function(bedfile, wigpath, wsize)
       chrold=chr
       print(wigfile)
     }
-    
-    
     bstart=start-wsize/10
     bend=end+wsize/10
-    b=0
-    e=0
     maxreads=array()
+    # Avoid extract$column in loop
     wigpos=wig$V1
     wigpeak=wig$V2
     for(j in seq(bstart,end,by=100)) {
+      # binary search
       b=findInterval(j,wigpos)
       e=findInterval(j+wsize,wigpos)
+      # Peak window
       peak=wigpeak[b:e];
       maxreads[j]=mean(peak,na.rm=TRUE);
     }
@@ -118,10 +118,11 @@ estimate_scaling_factor <- function(path1,path2) {
   for (i in 1:length(files1)) {
     treat=get(files1[i])
     control=get(files2[i])
-    ratio_est=as.array(t(control$V2/treat$V2))
-    ratio_data=c(ratio_data,t(ratio_est))
+    corr=match(control[,1],treat[,1])
+    ratios=sapply(corr,function(x){control[,2]/treatsig[x,2]})
+    ratio_data=c(ratio_data,ratios)
   }
-  median(ratio_data,TRUE)
+  median(ratio_data,na.rm=TRUE)
 }
 
 
@@ -135,8 +136,8 @@ estimate_variance_all<-function(path1,path2,scaling_factor) {
   for (i in 1:length(files1)) {
     treat<-get(files1[i])
     control<-get(files2[i])
-    chip_signal=c(chip_signal,as.array(t(treat$V2)))
-    control_signal=c(control_signal,as.array(t(control$V2)))
+    chip_signal=c(chip_signal,treat[,2])
+    control_signal=c(control_signal,control[,2])
   }
   average_chip=mean(chip_signal,na.rm=TRUE)
   average_control=mean(control_signal,na.rm=TRUE)
@@ -146,8 +147,8 @@ estimate_variance_all<-function(path1,path2,scaling_factor) {
 
 # Sqrt(Aw+Bw/c), w=1
 estimate_variance_one<-function(treat,control,scaling_factor,pos) {
-  chip_signal=as.array(t(treat$V2[(pos-1):(pos+1)]))
-  control_signal=as.array(t(control$V2[(pos-1):(pos+1)]))
+  chip_signal=as.array(t(treat[(pos-1):(pos+1)]))
+  control_signal=as.array(t(control[(pos-1):(pos+1)]))
   average_chip=mean(chip_signal,na.rm=TRUE)
   average_control=mean(control_signal,na.rm=TRUE)
   sqrt(average_chip+average_control/scaling_factor^2)
@@ -155,8 +156,8 @@ estimate_variance_one<-function(treat,control,scaling_factor,pos) {
 
 # Sqrt(Aw+Bw/c), w=10
 estimate_variance_ten<-function(treat,control,scaling_factor,pos) {
-  chip_signal=as.array(t(treat$V2[(pos-10):(pos+10)]))
-  control_signal=as.array(t(control$V2[(pos-10):(pos+10)]))
+  chip_signal=as.array(t(treat[(pos-10):(pos+10)]))
+  control_signal=as.array(t(control[(pos-10):(pos+10)]))
   average_chip=mean(chip_signal,na.rm=TRUE)
   average_control=mean(control_signal,na.rm=TRUE)
   sqrt(average_chip+average_control/scaling_factor^2)
@@ -166,7 +167,7 @@ estimate_variance_ten<-function(treat,control,scaling_factor,pos) {
 
 
 Zxi<-function(treat,control,scaling_factor,pos,varianceall) {
-  (treat$V2[pos]-control$V2[pos]/scaling_factor)/
+  (treat[pos]-control[pos]/scaling_factor)/
       max(estimate_variance_one(treat,control,scaling_factor,pos),
           estimate_variance_ten(treat,control,scaling_factor,pos),
           varianceall)
@@ -176,19 +177,24 @@ Zxi<-function(treat,control,scaling_factor,pos,varianceall) {
 
 ############
 # Calculate Z scores over all wiggle files
-Z<-function(treat,control,scaling_fact,variance_all) {
+Z<-function(treat,control,scaling_fact,variance_all,name) {
 
   files1=list.files(path=treat,pattern="*.fsa.wig.gz")
   files2=list.files(path=control,pattern="*.fsa.wig.gz")
   Z=list()
+  Z[['name']]=name
   for (i in 1:length(files1)) {
     treat<-get(files1[i])
     control<-get(files2[i])
+    print(files1[i])
     start=10
     end=length(treat$V2)-10
-    Zn=function(x){Zxi(treat,control,scaling_fact,x,variance_all)}
-    Zscore<-sapply(start:end,Zn)
-    Ztable<-as.table(cbind(treat$V1,Zscore))
+    treatdata=treat$V2
+    controldata=control$V2
+    Zn=function(x){Zxi(treatdata,controldata,scaling_fact,x,variance_all)}
+    V1<-treat$V1[start:end]
+    V2<-sapply(start:end,Zn)
+    Ztable<-as.table(cbind(V1,V2))
     N<-paste('Z',files1[i])
     Z[[N]]=Ztable
   }
@@ -207,9 +213,83 @@ getAvgZ<-function(bedfile,Zscore) {
     name=paste('Z', name)
     
     Zchr=Zscore[[name]]
-    print(typeof(Zchr))
-    peak=Zchr[Zchr$V1>start & Zchr$V1<end,];
+    Zchrpos=as.array(Zchr[,1])
+    Zchrpeak=as.array(Zchr[,2])
+    
+    peak=Zchrpeak[Zchrpos>start & Zchrpos<end];
     reads[i]=mean(peak,na.rm=TRUE)
+  }
+  reads
+}
+
+
+
+###########
+# Get average Z
+getMaxAvgZ<-function(bedfile,Zscore,wsize) {
+  reads=array();
+  chrold=''
+  Zchr=NULL
+  for(i in 1:length(bedfile$V1)) {
+    chr=bedfile$V1[i];
+    start=bedfile$V2[i];
+    end=bedfile$V3[i];
+    # Avoid reloading env variables
+    if(as.character(chrold)!=as.character(chr)){
+      name=paste(Zscore[['name']],'_treat_afterfiting_',chr,'.wig.gz',sep='')
+      name=paste('Z', name)
+      
+      Zchr=Zscore[[name]]
+      print(name)
+      chrold=chr
+    }    
+    
+    bstart=start-wsize/10
+    bend=end+wsize/10
+    maxreads=array()
+    # Avoid extract$column in loop
+    wigpos=Zchr[,1]
+    wigpeak=Zchr[,2]
+    
+    for(j in seq(bstart,end,by=100)) {
+      # binary search
+      b=findInterval(j,wigpos)
+      e=findInterval(j+wsize,wigpos)
+      # Peak window
+      peak=wigpeak[b:e];
+      maxreads[j]=mean(peak,na.rm=TRUE);
+    }
+    reads[i]=max(maxreads,na.rm=TRUE);
+    print(cat('Found max reads ', reads[i], ' at ', b, ' ', e,'. Used ', (end-bstart)/100, ' windows'))
+    
+  }
+  reads
+}
+
+
+
+###########
+# Get average Z
+getAvgWholeGenomeZ<-function(Zscore,wsize) {
+  reads=array();
+  for(i in Zscore) {
+    if(is.null(dim(i))) {next;}
+    wigpos=i[,1]
+    wigpeak=i[,2]
+    bstart=wsize
+    bend=length(wigpos)-wsize
+    maxreads=array()
+    for(j in seq.int(bstart,bend,by=wsize)) {
+      # binary search
+      b=findInterval(j,wigpos)
+      e=findInterval(j+wsize,wigpos)
+      
+      # Peak window
+      peak=wigpeak[b:e];
+      
+      maxreads[j/wsize]=mean(peak,na.rm=TRUE);
+    }
+    reads=c(reads,maxreads)
   }
   reads
 }
