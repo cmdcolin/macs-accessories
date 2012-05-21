@@ -7,7 +7,7 @@
 library(ShortRead)
 
 
-list1=read.table('s96-hs959-intersect.txt')
+list1=read.table('HS959_only_peaks.bed')
 pattern='*.fsa'
 fasta=readFasta("S288c-genome/",pattern)
 
@@ -29,5 +29,5 @@ for(i in 1:length(list1$V1)) {
 fastaout=DNAStringSet(fasta2)
 ids=BStringSet(idset)
 outputfasta=ShortRead(fastaout, ids)
-writeFasta(outputfasta, 'fasta-out.fa')
+writeFasta(outputfasta, 'fasta-out3.fa')
 

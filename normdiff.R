@@ -42,8 +42,8 @@ estimate_variance_ten<-function(treat,control,scaling_factor,pos) {
 
 
 max_estimate_variance<-function(treat,control,scaling_factor,pos,varianceall) {
-  max(estimate_variance_one(treat,control,scaling_factor,pos),
-      estimate_variance_ten(treat,control,scaling_factor,pos),
+  max(#estimate_variance_one(treat,control,scaling_factor,pos),
+      #estimate_variance_ten(treat,control,scaling_factor,pos),
       varianceall)
 }
 
@@ -70,7 +70,7 @@ varianceall=estimate_variance_all(treat,control,scaling_factor)
 start=10
 end=length(treat$V2)-10
 Z=lapply(start:end, function(x){Zxi(treat,control,scaling_factor,x,varianceall)})
-
+Zold=Z
 
 
 myvec=vector("list",8)
@@ -118,6 +118,7 @@ plot(1:1000,Z[1:1000],type='l', ylab='Z-score', xlab='Genome position')
 plot(1000:2000,Z[1000:2000],type='l', ylab='Z-score', xlab='Genome position')
 plot(2000:3000,Z[2000:3000],type='l', ylab='Z-score', xlab='Genome position')
 plot(3000:4000,Z[3000:4000],type='l', ylab='Z-score', xlab='Genome position')
-plot((4000:4600)*10,Z[4000:4600],type='l', ylab='Z-score', xlab='Genome position')
+plot((4000:4600)*10,Zold[4000:4600],type='l', ylab='Z-score', xlab='Genome position')
 lines((4000:4600)*10,treat$V2[4000:4600])
-lines((4000:4600)*10,Zold[4000:4600])
+lines((4000:4600)*10,Z[4000:4600],col='blue')
+plot((4000:4600)*10,Zold[4000:4600],type='l', ylab='Z-score', xlab='Genome position')
