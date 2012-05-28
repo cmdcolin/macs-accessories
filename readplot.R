@@ -25,81 +25,93 @@ WiggleClass<-function(name) {
     loadWiggle(nc$treatpath)
     loadWiggle(nc$controlpath)
   }
+  #######
+  # Get avg reads
   nc$getTotalReads = function(bedfile) {
-    ret=list()
-    ret[['treat']]=apply(bedfile,1,getTotalReads,filepath=nc$treatname)
-    ret[['control']]=apply(bedfile,1,getTotalReads,filepath=nc$controlname)
-    ret
+    gtr<-function(x,filepath){
+      chr=x[1]
+      start=x[2]
+      end=x[3]
+      wigfile=paste(filepath,chr,'.wig.gz',sep='')
+      wig=get(wigfile)
+      b=findInterval(start,wig$V1)
+      e=findInterval(end,wig$V1)
+      sum(wig$V2[b:e])
+    }
+    # Apply to chip
+    apply(bedfile,1,gtr,filepath=nc$treatname)
   } 
+  
+  # Get avg reads
   nc$getAvgReads = function(bedfile) {
-    ret=list()
-    ret[['treat']]=apply(bedfile,1,getAvgReads,filepath=nc$treatname)
-    ret[['control']]=apply(bedfile,1,getAvgReads,filepath=nc$controlname)
-    ret
+    gar<-function(x, filepath)
+    {  
+      chr=x[1]
+      start=x[2]
+      end=x[3]
+      wigfile=paste(filepath,chr,'.wig.gz',sep='')
+      wig=get(wigfile)
+      b=findInterval(start,wig$V1)
+      e=findInterval(end,wig$V1)
+      sum(wig$V2[b:e])/(e-b);
+    }
+    #Apply to treat data
+    apply(bedfile,1,gar,filepath=nc$treatname)
   }
   nc$getMaxAvgReads<-function(bedfile, wsize) {
-    ret=list()
-    ret[['treat']]=apply(bedfile,1,getMaxAvgReads,filepath=nc$treatname,wsize=100)
-    ret[['control']]=apply(bedfile,1,getMaxAvgReads,filepath=nc$controlname,wsize=100)
-    ret
+    # Get max average reads over window size
+    gamr<-function(x, filepath, wsize)
+    {
+      maxreads=array()
+      chr=x[1];
+      start=as.integer(x[2]);
+      end=as.integer(x[3]);
+      wigfile=paste(filepath,chr,'.wig.gz',sep='')
+      wig=get(wigfile);
+      bstart=start-wsize/10
+      bend=end+wsize/10
+      maxreads=array()
+      for(j in seq(bstart,end,by=wsize/10)) {
+        # binary search
+        b=findInterval(j,wig$V1)
+        e=findInterval(j+wsize,wig$V1)
+        # Peak window
+        maxreads[j]=sum(wig$V2[b:e],na.rm=TRUE)/(e-b)
+      }
+      ret=max(maxreads,na.rm=TRUE);
+      cat('Found max at ',ret, ' in ', chr, '\n')
+    }
+    # Apply to treated data
+    apply(bedfile,1,gamr,filepath=nc$treatname,wsize=wsize)
   }
+  #
+  #nc$overlapBed(b) {
+  #  s=paste('intersectBed -a ',nc$name,'/',nc$name,'_peaks.bed')
+  #  s=paste(s, '-b ', b$name, '/', b$name, '_peaks.bed -wa > ')
+  #  s=paste(nc$name, '/', nc$name,'_overlap.bed')
+  #  system(s)
+  #}
+  #nc$uniqueBed(b) {
+  #  s=paste('subtractBed -a ',nc$name,'/',nc$name,'_peaks.bed')
+  #  s=paste(s, '-b ', nc$name, '/', nc$name, '_overlap.bed > ')
+  #  s=paste(a$name, '/', a$name,'_unique.bed')
+  #  system(s)
+  #}
+  #plotnew(x1,x2,b1,b2,b3,name1,name2,func) {
+  #  id1=match(b2$V4,b1$V4)
+  #  id2=match(b3$V4,b1$V4)
+  #  r1=hs959$func(b1)
+  #  r2=s96$func(b1)
+  #  
+  #}
   nc<-list2env(nc)
   class(nc)<-"WiggleClass"
   return(nc)
 }
 
 
-#######
-# Get avg reads
-getTotalReads<-function(x,filepath){
-  chr=x[1]
-  start=x[2]
-  end=x[3]
-  wigfile=paste(filepath,chr,'.wig.gz',sep='')
-  wig=get(wigfile)
-  b=findInterval(start,wig$V1)
-  e=findInterval(end,wig$V1)
-  sum(wig$V2[b:e])
-}
-
-#######
-# Get avg reads
-getAvgReads<-function(x, filepath)
-{  
-  chr=x[1]
-  start=x[2]
-  end=x[3]
-  wigfile=paste(filepath,chr,'.wig.gz',sep='')
-  wig=get(wigfile)
-  b=findInterval(start,wig$V1)
-  e=findInterval(end,wig$V1)
-  sum(wig$V2[b:e])/(e-b);
-}
 
 
-#############
-# Get max average reads over window size
-getMaxAvgReads<-function(x, filepath, wsize)
-{
-  maxreads=array()
-  chr=x[1];
-  start=as.integer(x[2]);
-  end=as.integer(x[3]);
-  wigfile=paste(filepath,chr,'.wig.gz',sep='')
-  wig=get(wigfile);
-  bstart=start-wsize/10
-  bend=end+wsize/10
-  maxreads=array()
-  for(j in seq(bstart,end,by=wsize/10)) {
-    # binary search
-    b=findInterval(j,wig$V1)
-    e=findInterval(j+wsize,wig$V1)
-    # Peak window
-    maxreads[j]=sum(wig$V2[b:e],na.rm=TRUE)/(e-b)
-  }
-  ret=max(maxreads,na.rm=TRUE);
-  cat('Found max at ',ret, ' in ', chr)
-}
 
 
 
@@ -332,12 +344,14 @@ getAvgNormDiff<-function(bedfile, path1, path2, scaling_factor, variance) {
 
 ######
 # Get peak index from bed
-getPeakIndex<-function(bedfile)
-{
-  index=array()
-  for(i in 1:length(bedfile$V1)) {
-    index[i]=as.integer(unlist(strsplit(as.character(bedfile$V4[i]),'_'))[3])
-  }
-  index
-}
+#  (uneeded) match(bed1,bed2)
+###########
+#getPeakIndex<-function(bedfile)
+#{
+#  index=array()
+#  for(i in 1:length(bedfile$V1)) {
+#    index[i]=as.integer(unlist(strsplit(as.character(bedfile$V4[i]),'_'))[3])
+#  }
+#  index
+#}
 

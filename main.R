@@ -5,31 +5,30 @@ s96$loadWiggles()
 hs959$loadWiggles()
 
 #######
-# S96 peaks >macs14 --bw=25 --mfold=4,30 -g 1.2e7 -w -t chip -c control
-# intersectBed -a S96_peaks.bed -b HS959_peaks.bed -wa > S96/S96_overlap.bed
-# intersectBed -a HS959_peaks.bed -b S96_peaks.bed -wa > HS959/HS959_overlap.bed
-# subtractBed -a S96_peaks.bed -b S96_overlap.bed  > S96/S96_unique.bed
-# subtractBed -a HS959_peaks.bed -b HS959_overlap.bed > HS959/HS959_unique.bed
-
+# Read tables-see notes about command lines
 s96bed=read.table('S96/S96_peaks.bed')
 s96overlap=read.table('S96/S96_overlap.bed')
 s96unique=read.table('S96/S96_unique.bed')
-r1=s96$getTotalReads(s96bed)[['treat']]
-r2=hs959$getTotalReads(s96bed)[['treat']]
-r3=s96$getTotalReads(s96overlap)[['treat']]
-r4=hs959$getTotalReads(s96overlap)[['treat']]
-r5=s96$getTotalReads(s96unique)[['treat']]
-r6=hs959$getTotalReads(s96unique)[['treat']]
+########
+# Match unique and overlap indexes
+id1=match(s96overlap$V4,s96bed$V4)
+id2=match(s96unique$V4,s96bed$V4)
+
+######
+# Get total reads
+r1=s96$getTotalReads(s96bed)
+r2=hs959$getTotalReads(s96bed)
+
 
 ####
 # S96Total read plot
 plot(r1,r2,ylab='HS959 reads',xlab='S96 reads',pch='*')
-points(r3,r4,pch=1,col='pink')
-points(r5,r6,pch=1,col='green')
+points(r1[id1],r2[id1],pch=1,col='pink')
+points(r1[id2],r2[id2],pch=1,col='green')
 title('Total reads S96 peaks')
 plot(r1,r2,ylab='HS959 reads',xlab='S96 reads',pch='*',xlim=c(100,1100),ylim=c(0,600))
-points(r3,r4,pch=1,col='pink')
-points(r5,r6,pch=1,col='green')
+points(r1[id1],r2[id1],pch=1,col='pink')
+points(r1[id2],r2[id2],pch=1,col='green')
 title('Total reads S96 peaks (zoom)')
 
 
@@ -42,19 +41,22 @@ title('Total reads S96 peaks (zoom)')
 hs959bed=read.table('HS959/HS959_peaks.bed')
 HS959overlap=read.table('HS959/HS959_overlap.bed')
 hs959unique=read.table('HS959/HS959_unique.bed')
+# Match indexes
+id3=match(HS959overlap$V4,hs959bed$V4)
+id4=match(hs959unique$V4,hs959bed$V4)
 
 
-r7=hs959$getTotalReads(hs959bed)[['treat']]
-r8=s96$getTotalReads(hs959bed)[['treat']]
-r9=hs959$getTotalReads(HS959overlap)[['treat']]
-r10=s96$getTotalReads(HS959overlap)[['treat']]
-r11=hs959$getTotalReads(hs959unique)[['treat']]
-r12=s96$getTotalReads(hs959unique)[['treat']]
+r3=hs959$getTotalReads(hs959bed)
+r4=s96$getTotalReads(hs959bed)
+#r9=hs959$getTotalReads(HS959overlap)[['treat']]
+#r10=s96$getTotalReads(HS959overlap)[['treat']]
+#r11=hs959$getTotalReads(hs959unique)[['treat']]
+#r12=s96$getTotalReads(hs959unique)[['treat']]
 
 ###
-plot(r7,r8,ylab='S96 reads',xlab='HS959 reads',pch='*')
-points(r9,r10,pch=1,col='lightblue')
-points(r11,r12,pch=1,col='green')
+plot(r3,r4,ylab='S96 reads',xlab='HS959 reads',pch='*')
+points(r3[id3],r4[id3],pch=1,col='lightblue')
+points(r3[id4],r4[id4],pch=1,col='green')
 title('Total reads HS959 peaks')
 plot(r7,r8,ylab='S96 reads',xlab='HS959 reads',pch='*',xlim=c(50,1000),ylim=c(0,1400))
 points(r9,r10,pch=1,col='lightblue')
@@ -109,8 +111,8 @@ title('Average HS959 peak reads vs S96 synteny (zoom)')
 # Use Max avg reads over windows
 avgread1=s96$getMaxAvgReads(s96bed,100)
 avgread2=hs959$getMaxAvgReads(s96bed,100)
-id1<-getPeakIndex(s96overlap)
-id2<-getPeakIndex(s96unique)
+id1=match(s96overlap$V4,s96bed$V4)
+id2=match(s96unique$V4,s96bed$V4)
 avgreadsmod3=avgread1[id1]
 avgreadsmod4=avgread2[id1]
 avgreadsmod5=avgread1[id2]
