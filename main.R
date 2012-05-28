@@ -137,8 +137,8 @@ legend('bottomright', legend=c('shared', 'unique'), fill=c('blue', 'red'))
 # Get NormDiff scaling factor, variance
 s96scale=s96$estimateScalingFactor()
 hs959scale=hs959$estimateScalingFactor()
-s96var=estimate_variance_all(s96treat,s96control,s96scale)
-hs959var=estimate_variance_all(hs959treat,hs959control,hs959scale)
+s96var=s96$estimateVarianceAll()
+hs959var=hs959$estimateVarianceAll()
 
 
 

@@ -18,7 +18,8 @@ WiggleClass<-function(name) {
     controlpath=paste(name,'/',name,'_MACS_wiggle/control/',sep=''),
     treatpath=paste(name,'/',name,'_MACS_wiggle/treat/',sep=''),
     controlname=paste(name,'_control_afterfiting_',sep=''),
-    treatname=paste(name,'_treat_afterfiting_',sep='')
+    treatname=paste(name,'_treat_afterfiting_',sep=''),
+    scaling=1
     )
   
   nc$loadWiggles=function() {
@@ -111,7 +112,6 @@ WiggleClass<-function(name) {
     files1=list.files(nc$treatpath,pattern="*.fsa.wig.gz")
     files2=list.files(nc$controlpath,pattern="*.fsa.wig.gz")
     ratio_data=apply(cbind(files1,files2),1,function(x){
-      cat(x[1], ' ',x[2],'\n')
       treat=get(x[1])
       control=get(x[2])
       corr=match(treat[,1],control[,1])
@@ -120,10 +120,18 @@ WiggleClass<-function(name) {
       sapply(corr,function(p){ csig[p]/tsig[p]})
     })
     #Fix this crap
-    median(sapply(ratio_data,function(x){median(x,na.rm=TRUE)}))
+    nc$scaling=median(sapply(ratio_data,function(x){median(x,na.rm=TRUE)}))
+    nc$scaling
   }
   
-  
+  nc$estimateVarianceAll<-function() {
+    files1=list.files(nc$treatpath,pattern="*.fsa.wig.gz")
+    files2=list.files(nc$controlpath,pattern="*.fsa.wig.gz")
+    apply(cbind(files1,files2),1,function(x){x})
+    average_chip=mean(chip_signal,na.rm=TRUE)
+    average_control=mean(control_signal,na.rm=TRUE)
+    sqrt(average_chip+average_control/nc$scaling^2)
+  }
   nc<-list2env(nc)
   class(nc)<-"WiggleClass"
   return(nc)
@@ -132,28 +140,6 @@ WiggleClass<-function(name) {
 
 
 
-
-
-
-
-
-
-
-####
-# Use all chromosomes for scaling factor
-estimate_scaling_factor <- function(path1,path2) {
-  files1=list.files(treatpath,pattern="*.fsa.wig.gz")
-  files2=list.files(controlpath,pattern="*.fsa.wig.gz")
-  ratio_data=array()
-  for (i in 1:length(files1)) {
-    treat=get(files1[i])
-    control=get(files2[i])
-    corr=match(control[,1],treat[,1])
-    ratios=sapply(corr,function(x){control[,2]/treatsig[x,2]})
-    ratio_data=c(ratio_data,ratios)
-  }
-  median(ratio_data,na.rm=TRUE)
-}
 
 
 # Sqrt(Aw+Bw/c), w=all
