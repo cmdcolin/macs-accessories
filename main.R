@@ -67,28 +67,38 @@ title('Total reads HS959 peaks (Zoom)')
 
 #####
 # Use average reads over peaks
-avgread1=getAvgReads(s96bed,read1)
-avgread2=getAvgReads(s96bed,read2)
-avgread3=getAvgReads(s96overlap,read3)
-avgread4=getAvgReads(s96overlap,read4)
-avgread5=getAvgReads(s96unique,read5)
-avgread6=getAvgReads(s96unique,read6)
-plot(avgread1,avgread2,ylab='HS959 reads',xlab='S96 reads',pch='*')
-points(avgread3,avgread4,pch=1,col='red')
-points(avgread5,avgread6,pch=1,col='green')
-title('Average reads S96 peaks')
+ra1=s96$getAvgReads(s96bed)[['treat']]
+ra2=hs959$getAvgReads(s96bed)[['treat']]
+ra3=s96$getAvgReads(s96overlap)[['treat']]
+ra4=hs959$getAvgReads(s96overlap)[['treat']]
+ra5=s96$getAvgReads(s96unique)[['treat']]
+ra6=hs959$getAvgReads(s96unique)[['treat']]
+# S96 Avg read plot
+plot(ra1,ra2,ylab='HS959 reads',xlab='S96 reads',pch='*')
+points(ra3,ra4,pch=1,col='lightblue')
+points(ra5,ra6,pch=1,col='orange')
+title('Avg S96 peak reads vs HS959 synteny')
+plot(ra1,ra2,ylab='HS959 reads',xlab='S96 reads',pch='*',xlim=c(9,25),ylim=c(1,15))
+points(ra3,ra4,pch=1,col='lightblue')
+points(ra5,ra6,pch=1,col='orange')
+title('Avg S96 peak reads vs HS959 synteny (zoom)')
 
-avgread7=getAvgReads(hs959bed,read7)
-avgread8=getAvgReads(hs959bed,read8)
-avgread9=getAvgReads(HS959overlap,read9)
-avgread10=getAvgReads(HS959overlap,read10)
-avgread11=getAvgReads(hs959unique,read11)
-avgread12=getAvgReads(hs959unique,read12)
-plot(avgread7,avgread8,ylab='Avg S96 reads',xlab='Avg HS959 reads',pch='*')
-points(avgread9,avgread10,pch=1,col='blue')
-points(avgread11,avgread12,pch=1,col='green')
-title('Average reads HS959 peaks')
 
+ra7=hs959$getAvgReads(hs959bed)[['treat']]
+ra8=s96$getAvgReads(hs959bed)[['treat']]
+ra9=hs959$getAvgReads(HS959overlap)[['treat']]
+ra10=s96$getAvgReads(HS959overlap)[['treat']]
+ra11=hs959$getAvgReads(hs959unique)[['treat']]
+ra12=s96$getAvgReads(hs959unique)[['treat']]
+plot(ra7,ra8,ylab='S96 reads',xlab='HS959 reads',pch='*')
+points(ra9,ra10,pch=1,col='lightgreen')
+points(ra11,ra12,pch=1,col='orange')
+title('Average HS959 peak reads vs S96 synteny')
+
+plot(ra7,ra8,ylab='S96 reads',xlab='HS959 reads',pch='*',xlim=c(6,16),ylim=c(1,25))
+points(ra9,ra10,pch=1,col='lightgreen')
+points(ra11,ra12,pch=1,col='orange')
+title('Average HS959 peak reads vs S96 synteny (zoom)')
 
 
 
@@ -97,8 +107,8 @@ title('Average reads HS959 peaks')
 
 ###########
 # Use Max avg reads over windows
-avgread1=getMaxAvgReads(s96bed,s96t,100)
-avgread2=getMaxAvgReads(s96bed,hs959t,100)
+avgread1=s96$getMaxAvgReads(s96bed,100)
+avgread2=hs959$getMaxAvgReads(s96bed,100)
 id1<-getPeakIndex(s96overlap)
 id2<-getPeakIndex(s96unique)
 avgreadsmod3=avgread1[id1]

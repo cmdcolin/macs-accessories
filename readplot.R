@@ -27,14 +27,20 @@ WiggleClass<-function(name) {
   }
   nc$getTotalReads = function(bedfile) {
     ret=list()
-    ret[['treat']]=apply(bedfile,1,getTotalReadsX,filepath=nc$treatname)
-    ret[['control']]=apply(bedfile,1,getTotalReadsX,filepath=nc$controlname)
+    ret[['treat']]=apply(bedfile,1,getTotalReads,filepath=nc$treatname)
+    ret[['control']]=apply(bedfile,1,getTotalReads,filepath=nc$controlname)
     ret
   } 
   nc$getAvgReads = function(bedfile) {
     ret=list()
-    ret[['treat']]=apply(bedfile,1,getAvgReadsX,filepath=nc$treatname)
-    ret[['control']]=apply(bedfile,1,getAvgReadsX,filepath=nc$controlname)
+    ret[['treat']]=apply(bedfile,1,getAvgReads,filepath=nc$treatname)
+    ret[['control']]=apply(bedfile,1,getAvgReads,filepath=nc$controlname)
+    ret
+  }
+  nc$getMaxAvgReads<-function(bedfile, wsize) {
+    ret=list()
+    ret[['treat']]=apply(bedfile,1,getMaxAvgReads,filepath=nc$treatname,wsize=100)
+    ret[['control']]=apply(bedfile,1,getMaxAvgReads,filepath=nc$controlname,wsize=100)
     ret
   }
   nc<-list2env(nc)
@@ -45,7 +51,7 @@ WiggleClass<-function(name) {
 
 #######
 # Get avg reads
-getTotalReadsX<-function(x,filepath){
+getTotalReads<-function(x,filepath){
   chr=x[1]
   start=x[2]
   end=x[3]
@@ -58,7 +64,7 @@ getTotalReadsX<-function(x,filepath){
 
 #######
 # Get avg reads
-getAvgReadsX<-function(x, filepath)
+getAvgReads<-function(x, filepath)
 {  
   chr=x[1]
   start=x[2]
@@ -67,92 +73,32 @@ getAvgReadsX<-function(x, filepath)
   wig=get(wigfile)
   b=findInterval(start,wig$V1)
   e=findInterval(end,wig$V1)
-  sum(wig$V2[b:e])/(end-start);
-}
-   
-  newreads=array()
-  for(i in 1:length(bedfile$V1)) {
-    chr=bedfile$V1[i];
-    start=bedfile$V2[i];
-    end=bedfile$V3[i];
-    newreads[i]=totalreads[i]/(end-start);
-  }
-  newreads
-}
-
-############
-# Get total reads in peaks from bedfile
-getReads<-function(bedfile,wigpath) {
-  reads=array();
-  for(i in 1:length(bedfile$V1)) {
-    chr=bedfile$V1[i];
-    start=bedfile$V2[i];
-    end=bedfile$V3[i];
-    
-    wigfile=paste(wigpath,chr,'.wig.gz',sep='')
-    wig=get(wigfile);
-    peak2=wig[wig$V1>start & wig$V1<end,];
-    totalreads2=sum(peak2$V2);
-    reads[i]=totalreads2;
-  }
-  reads
-}
-
-
-
-#######
-# Get avg reads given bedfile and totalreads
-getAvgReads<-function(bedfile, totalreads)
-{
-  newreads=array()
-  for(i in 1:length(bedfile$V1)) {
-    chr=bedfile$V1[i];
-    start=bedfile$V2[i];
-    end=bedfile$V3[i];
-    newreads[i]=totalreads[i]/(end-start);
-  }
-  newreads
+  sum(wig$V2[b:e])/(e-b);
 }
 
 
 #############
 # Get max average reads over window size
-getMaxAvgReads<-function(bedfile, wigpath, wsize)
+getMaxAvgReads<-function(x, filepath, wsize)
 {
-  newreads=array()
-  chrold=''
-  wig=NULL
-  for(i in 1:length(bedfile$V1))
-  {
-    chr=bedfile$V1[i];
-    start=bedfile$V2[i];
-    end=bedfile$V3[i];
-    # Avoid reloading env variables
-    if(as.character(chrold)!=as.character(chr)){
-      wigfile=paste(wigpath,chr,'.wig.gz',sep='')
-      wig=get(wigfile);
-      maxreads=array()
-      chrold=chr
-      print(wigfile)
-    }
-    bstart=start-wsize/10
-    bend=end+wsize/10
-    maxreads=array()
-    # Avoid extract$column in loop
-    wigpos=wig$V1
-    wigpeak=wig$V2
-    for(j in seq(bstart,end,by=100)) {
-      # binary search
-      b=findInterval(j,wigpos)
-      e=findInterval(j+wsize,wigpos)
-      # Peak window
-      peak=wigpeak[b:e];
-      maxreads[j]=mean(peak,na.rm=TRUE);
-    }
-    newreads[i]=max(maxreads,na.rm=TRUE);
-    print(cat('Found max reads ', newreads[i], ' at ', b, ' ', e,'. Used ', (end-bstart)/100, ' windows'))
+  maxreads=array()
+  chr=x[1];
+  start=as.integer(x[2]);
+  end=as.integer(x[3]);
+  wigfile=paste(filepath,chr,'.wig.gz',sep='')
+  wig=get(wigfile);
+  bstart=start-wsize/10
+  bend=end+wsize/10
+  maxreads=array()
+  for(j in seq(bstart,end,by=wsize/10)) {
+    # binary search
+    b=findInterval(j,wig$V1)
+    e=findInterval(j+wsize,wig$V1)
+    # Peak window
+    maxreads[j]=sum(wig$V2[b:e],na.rm=TRUE)/(e-b)
   }
-  newreads
+  ret=max(maxreads,na.rm=TRUE);
+  cat('Found max at ',ret, ' in ', chr)
 }
 
 
