@@ -15,11 +15,12 @@ loadWiggle<-function(wigpath) {
 WiggleClass<-function(name) {
   nc=list(
     name=name,
+    scaling=1,
+    variance=1,
     controlpath=paste(name,'/',name,'_MACS_wiggle/control/',sep=''),
     treatpath=paste(name,'/',name,'_MACS_wiggle/treat/',sep=''),
     controlname=paste(name,'_control_afterfiting_',sep=''),
-    treatname=paste(name,'_treat_afterfiting_',sep=''),
-    scaling=1
+    treatname=paste(name,'_treat_afterfiting_',sep='')
     )
   
   nc$loadWiggles=function() {
@@ -61,7 +62,7 @@ WiggleClass<-function(name) {
   }
   nc$getMaxAvgReads<-function(bedfile, wsize) {
     # Get max average reads over window size
-    gamr<-function(x, filepath, wsize)
+    getMaxAvgReads<-function(x, filepath, wsize)
     {
       maxreads=array()
       chr=x[1];
@@ -81,28 +82,9 @@ WiggleClass<-function(name) {
       ret
     }
     # Apply to treated data
-    apply(bedfile,1,gamr,filepath=nc$treatname,wsize=wsize)
+    apply(bedfile,1,getMaxAvgReads,filepath=nc$treatname,wsize=wsize)
   }
-  #
-  #nc$overlapBed(b) {
-  #  s=paste('intersectBed -a ',nc$name,'/',nc$name,'_peaks.bed')
-  #  s=paste(s, '-b ', b$name, '/', b$name, '_peaks.bed -wa > ')
-  #  s=paste(nc$name, '/', nc$name,'_overlap.bed')
-  #  system(s)
-  #}
-  #nc$uniqueBed(b) {
-  #  s=paste('subtractBed -a ',nc$name,'/',nc$name,'_peaks.bed')
-  #  s=paste(s, '-b ', nc$name, '/', nc$name, '_overlap.bed > ')
-  #  s=paste(a$name, '/', a$name,'_unique.bed')
-  #  system(s)
-  #}
-  #plotnew(x1,x2,b1,b2,b3,name1,name2,func) {
-  #  id1=match(b2$V4,b1$V4)
-  #  id2=match(b3$V4,b1$V4)
-  #  r1=hs959$func(b1)
-  #  r2=s96$func(b1)
-  #  
-  #}
+
   
   
   
@@ -119,18 +101,64 @@ WiggleClass<-function(name) {
       csig=control[,2]
       sapply(corr,function(p){ csig[p]/tsig[p]})
     })
-    #Fix this crap
-    nc$scaling=median(sapply(ratio_data,function(x){median(x,na.rm=TRUE)}))
-    nc$scaling
+    nc$scaling=median(unlist(ratio_data),na.rm=TRUE)
   }
   
+  # Sqrt(Aw+Bw/c), w=all
   nc$estimateVarianceAll<-function() {
     files1=list.files(nc$treatpath,pattern="*.fsa.wig.gz")
     files2=list.files(nc$controlpath,pattern="*.fsa.wig.gz")
-    apply(cbind(files1,files2),1,function(x){x})
+    getSignal<-function(file){get(file)$V2}
+    chip_signal=unlist(lapply(files1,getSignal))
+    control_signal=unlist(lapply(files2,getSignal))
+    #Average signal
+    average_chip=mean(chip_signal)
+    average_control=mean(control_signal)
+    nc$variance=sqrt(average_chip+average_control/nc$scaling^2)
+  }
+  # Sqrt(Aw+Bw/c), w=1
+  nc$estimateVarianceWindow<-function(treat,control,pos,wsize) {
+    b=findInterval(pos-wsize,treat$V1)
+    e=findInterval(pos+wsize,treat$V1)
+    corr=match(treat$V1[b:e],control$V1)
+    chip_signal=treat$V2[b:e]
+    control_signal=control$V2[corr]
     average_chip=mean(chip_signal,na.rm=TRUE)
     average_control=mean(control_signal,na.rm=TRUE)
     sqrt(average_chip+average_control/nc$scaling^2)
+  }
+  
+  nc$Zxi<-function(treat,control,pos,wsize) {
+    (treat$V2[pos]-control$V2[pos]/nc$scaling)/
+      max(nc$estimateVarianceWindow(treat,control,pos,wsize[1]),
+          nc$estimateVarianceWindow(treat,control,pos,wsize[2]),
+          nc$variance)
+  }
+  
+  
+  
+  
+  ############
+  # Calculate Z scores over all wiggle files
+  nc$Z<-function(wsize=c(10,100)) {
+
+    files1=list.files(nc$treatpath,"*.fsa.wig.gz")
+    files2=list.files(nc$controlpath,"*.fsa.wig.gz")
+    
+    apply(cbind(files1,files2),1,function(x){
+      treat<-get(x[1])
+      control<-get(x[2])
+      cat(x[1],'\n')
+      
+      start=findInterval(head(treat$V1,1)+max(wsize),treat$V1)
+      end=findInterval(tail(treat$V1,1)-max(wsize),treat$V1)
+      V1<-treat$V1[start:end]
+      V2<-sapply(start:end,function(x){
+        nc$Zxi(treat,control,x,wsize)
+      })
+      cat(x[1],' finished\n')
+      as.table(cbind(V1,V2))
+    })
   }
   nc<-list2env(nc)
   class(nc)<-"WiggleClass"
@@ -140,82 +168,6 @@ WiggleClass<-function(name) {
 
 
 
-
-
-# Sqrt(Aw+Bw/c), w=all
-estimate_variance_all<-function(path1,path2,scaling_factor) {
-  files1=list.files(path=path1,pattern="*.fsa.wig.gz")
-  files2=list.files(path=path2,pattern="*.fsa.wig.gz")
-  ratio_data=array()
-  chip_signal=array()
-  control_signal=array()
-  for (i in 1:length(files1)) {
-    treat<-get(files1[i])
-    control<-get(files2[i])
-    chip_signal=c(chip_signal,treat[,2])
-    control_signal=c(control_signal,control[,2])
-  }
-  average_chip=mean(chip_signal,na.rm=TRUE)
-  average_control=mean(control_signal,na.rm=TRUE)
-  sqrt(average_chip+average_control/scaling_factor^2)
-}
-
-
-# Sqrt(Aw+Bw/c), w=1
-estimate_variance_one<-function(treat,control,scaling_factor,pos) {
-  chip_signal=as.array(t(treat[(pos-1):(pos+1)]))
-  control_signal=as.array(t(control[(pos-1):(pos+1)]))
-  average_chip=mean(chip_signal,na.rm=TRUE)
-  average_control=mean(control_signal,na.rm=TRUE)
-  sqrt(average_chip+average_control/scaling_factor^2)
-}
-
-# Sqrt(Aw+Bw/c), w=10
-estimate_variance_ten<-function(treat,control,scaling_factor,pos) {
-  chip_signal=as.array(t(treat[(pos-10):(pos+10)]))
-  control_signal=as.array(t(control[(pos-10):(pos+10)]))
-  average_chip=mean(chip_signal,na.rm=TRUE)
-  average_control=mean(control_signal,na.rm=TRUE)
-  sqrt(average_chip+average_control/scaling_factor^2)
-}
-
-
-
-
-Zxi<-function(treat,control,scaling_factor,pos,varianceall) {
-  (treat[pos]-control[pos]/scaling_factor)/
-      max(estimate_variance_one(treat,control,scaling_factor,pos),
-          estimate_variance_ten(treat,control,scaling_factor,pos),
-          varianceall)
-}
-
-
-
-############
-# Calculate Z scores over all wiggle files
-Z<-function(treat,control,scaling_fact,variance_all,name) {
-
-  files1=list.files(path=treat,pattern="*.fsa.wig.gz")
-  files2=list.files(path=control,pattern="*.fsa.wig.gz")
-  Z=list()
-  Z[['name']]=name
-  for (i in 1:length(files1)) {
-    treat<-get(files1[i])
-    control<-get(files2[i])
-    print(files1[i])
-    start=10
-    end=length(treat$V2)-10
-    treatdata=treat$V2
-    controldata=control$V2
-    Zn=function(x){Zxi(treatdata,controldata,scaling_fact,x,variance_all)}
-    V1<-treat$V1[start:end]
-    V2<-sapply(start:end,Zn)
-    Ztable<-as.table(cbind(V1,V2))
-    N<-paste('Z',files1[i])
-    Z[[N]]=Ztable
-  }
-  Z
-}
 
 ###########
 # Get average Z
@@ -348,7 +300,8 @@ getAvgNormDiff<-function(bedfile, path1, path2, scaling_factor, variance) {
 
 
 
-######
+######Sketches
+#
 # Get peak index from bed
 #  (uneeded) match(bed1,bed2)
 ###########
@@ -359,5 +312,26 @@ getAvgNormDiff<-function(bedfile, path1, path2, scaling_factor, variance) {
 #    index[i]=as.integer(unlist(strsplit(as.character(bedfile$V4[i]),'_'))[3])
 #  }
 #  index
+#}
+#########
+#
+#nc$overlapBed(b) {
+#  s=paste('intersectBed -a ',nc$name,'/',nc$name,'_peaks.bed')
+#  s=paste(s, '-b ', b$name, '/', b$name, '_peaks.bed -wa > ')
+#  s=paste(nc$name, '/', nc$name,'_overlap.bed')
+#  system(s)
+#}
+#nc$uniqueBed(b) {
+#  s=paste('subtractBed -a ',nc$name,'/',nc$name,'_peaks.bed')
+#  s=paste(s, '-b ', nc$name, '/', nc$name, '_overlap.bed > ')
+#  s=paste(a$name, '/', a$name,'_unique.bed')
+#  system(s)
+#}
+#plotnew(x1,x2,b1,b2,b3,name1,name2,func) {
+#  id1=match(b2$V4,b1$V4)
+#  id2=match(b3$V4,b1$V4)
+#  r1=hs959$func(b1)
+#  r2=s96$func(b1)
+#  
 #}
 

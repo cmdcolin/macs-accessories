@@ -25,11 +25,11 @@ r2=hs959$getTotalReads(s96bed)
 plot(r1,r2,ylab='HS959 reads',xlab='S96 reads',pch='*')
 points(r1[id1],r2[id1],pch=1,col='pink')
 points(r1[id2],r2[id2],pch=1,col='green')
-title('Total reads S96 peaks')
+title('Total S96 peak reads vs HS959 synteny')
 plot(r1,r2,ylab='HS959 reads',xlab='S96 reads',pch='*',xlim=c(100,1100),ylim=c(0,600))
 points(r1[id1],r2[id1],pch=1,col='pink')
 points(r1[id2],r2[id2],pch=1,col='green')
-title('Total reads S96 peaks (zoom)')
+title('Total S96 peak reads vs HS959 synteny (zoom)')
 
 
 
@@ -130,7 +130,21 @@ legend('bottomright', legend=c('shared', 'unique'), fill=c('blue', 'red'))
 
 
 
-
+estimate_scaling_factor <- function(path1,path2) {
+  files1=list.files(path=path1,pattern="*.fsa.wig.gz")
+  files2=list.files(path=path2,pattern="*.fsa.wig.gz")
+  ratio_data=array()
+  for (i in 1:length(files1)) {
+    treat=get(files1[i])
+    control=get(files2[i])
+    corr=match(treat[,1],control[,1])
+    tsig=treat[,2]
+    csig=control[,2]
+    ratios=sapply(corr,function(x){csig[x]/tsig[x]})
+    ratio_data=c(ratio_data,ratios)
+  }
+  median(ratio_data,na.rm=TRUE)
+}
 
 
 ################
@@ -141,32 +155,7 @@ s96var=s96$estimateVarianceAll()
 hs959var=hs959$estimateVarianceAll()
 
 
-
-
-##########
-# Get S96 normdiff
-#s96ndpeak<-getAvgNormDiff(s96bed, s96t,s96c, s96scale, s96var)
-#s96ndoverlap<-getAvgNormDiff(s96overlap, s96t, s96c, s96scale, s96var)
-#s96ndunique<-getAvgNormDiff(s96unique, s96t,s96c, s96scale, s96var)
-######
-# Get HS959 normdiff
-#hs959nd<-getAvgNormDiff(s96bed, hs959t, hs959c, hs959scale, hs959var)
-#hs959ndoverlap<-getAvgNormDiff(s96overlap, hs959t,hs959t, hs959scale, hs959var)
-#hs959ndunique<-getAvgNormDiff(s96unique, hs959t, hs959c, hs959scale, hs959var)
-################
-# Plot s96 vs hs959 normdiff scores
-#plot(s96ndpeak,hs959nd,pch='*',xlab='S96',ylab='HS959')
-#points(s96ndoverlap,hs959ndoverlap,col='red')
-#points(s96ndunique,hs959ndunique,col='green')
-#title('S96 peaks vs HS959 syntenic NormDiff scores')
-
-
-
-
-
-
-
-
+Zs96=s96$Z()
 
 
 ##########
