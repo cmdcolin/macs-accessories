@@ -1,53 +1,37 @@
-###################
-# Use MACS to generate wiggle files and find peaks
-#
-# >macs14 --bw=25 --mfold=4,30 -g 1.2e7 -w -t chip -c control
 
-s96treat<-'S96/S96_MACS_wiggle/treat/'
-s96control<-'S96/S96_MACS_wiggle/control/'
-hs959treat<-'HS959/HS959_MACS_wiggle/treat/'
-hs959control<-'HS959/HS959_MACS_wiggle/control/'
-s96t<-'S96_treat_afterfiting_'
-s96c<-'S96_control_afterfiting_'
-hs959t<-'HS959_treat_afterfiting_'
-hs959c<-'HS959_control_afterfiting_'
+s96=WiggleClass('S96')
+hs959=WiggleClass('HS959')
+s96$loadWiggles()
+hs959$loadWiggles()
 
-loadWiggle(s96treat)
-loadWiggle(s96control)
-loadWiggle(hs959treat)
-loadWiggle(hs959control)
-
-
-
+#######
+# S96 peaks >macs14 --bw=25 --mfold=4,30 -g 1.2e7 -w -t chip -c control
+# intersectBed -a S96_peaks.bed -b HS959_peaks.bed -wa > S96/S96_overlap.bed
+# intersectBed -a HS959_peaks.bed -b S96_peaks.bed -wa > HS959/HS959_overlap.bed
+# subtractBed -a S96_peaks.bed -b S96_overlap.bed  > S96/S96_unique.bed
+# subtractBed -a HS959_peaks.bed -b HS959_overlap.bed > HS959/HS959_unique.bed
 
 s96bed=read.table('S96/S96_peaks.bed')
-read1=getReads(s96bed, 'S96_treat_afterfiting_')
-read2=getReads(s96bed, 'HS959_treat_afterfiting_')
-
-
-
-#####
-# Overlap of peaks
-# intersectBed -a S96_peaks.bed -b HS959_peaks.bed -wa
 s96overlap=read.table('S96/S96_overlap.bed')
-read3=getReads(s96overlap,'S96_treat_afterfiting_')
-read4=getReads(s96overlap,'HS959_treat_afterfiting_')
-
-##
-# Unique S96 peaks
-# subtractBed -a S96_peaks.bed -b S96_overlap.bed
 s96unique=read.table('S96/S96_unique.bed')
-read5=getReads(s96unique,'S96_treat_afterfiting_')
-read6=getReads(s96unique,'HS959_treat_afterfiting_')
-
-
+r1=s96$getTotalReads(s96bed)[['treat']]
+r2=hs959$getTotalReads(s96bed)[['treat']]
+r3=s96$getTotalReads(s96overlap)[['treat']]
+r4=hs959$getTotalReads(s96overlap)[['treat']]
+r5=s96$getTotalReads(s96unique)[['treat']]
+r6=hs959$getTotalReads(s96unique)[['treat']]
 
 ####
-# Total read plot
-plot(read1,read2,ylab='HS959 reads',xlab='S96 reads',xlim=c(0,50000),ylim=c(0,30000),pch='*')
-points(read3,read4,pch=1,col='red')
-points(read5,read6,pch=1,col='green')
+# S96Total read plot
+plot(r1,r2,ylab='HS959 reads',xlab='S96 reads',pch='*')
+points(r3,r4,pch=1,col='pink')
+points(r5,r6,pch=1,col='green')
 title('Total reads S96 peaks')
+plot(r1,r2,ylab='HS959 reads',xlab='S96 reads',pch='*',xlim=c(100,1100),ylim=c(0,600))
+points(r3,r4,pch=1,col='pink')
+points(r5,r6,pch=1,col='green')
+title('Total reads S96 peaks (zoom)')
+
 
 
 
@@ -56,29 +40,26 @@ title('Total reads S96 peaks')
 #############################################
 # HS959 peaks
 hs959bed=read.table('HS959/HS959_peaks.bed')
-read7=getReads(hs959bed,'HS959_treat_afterfiting_')
-read8=getReads(hs959bed,'S96_treat_afterfiting_')
-
-#####
-# Overlap of peaks
-# intersectBed -a HS959/HS959_peaks.bed -b S96/S96_peaks.bed -wa
 HS959overlap=read.table('HS959/HS959_overlap.bed')
-read9=getReads(HS959overlap,'HS959_treat_afterfiting_')
-read10=getReads(HS959overlap,'S96_treat_afterfiting_')
-
-##
-# Unique HS959 
-# subtractBed -a HS959/HS959_peaks.bed -b HS959/HS959_overlap.bed
 hs959unique=read.table('HS959/HS959_unique.bed')
-read11=getReads(hs959unique,'HS959_treat_afterfiting_')
-read12=getReads(hs959unique,'S96_treat_afterfiting_')
+
+
+r7=hs959$getTotalReads(hs959bed)[['treat']]
+r8=s96$getTotalReads(hs959bed)[['treat']]
+r9=hs959$getTotalReads(HS959overlap)[['treat']]
+r10=s96$getTotalReads(HS959overlap)[['treat']]
+r11=hs959$getTotalReads(hs959unique)[['treat']]
+r12=s96$getTotalReads(hs959unique)[['treat']]
 
 ###
-plot(read7,read8,ylim=c(0,50000),xlim=c(0,30000),ylab='S96 reads',xlab='HS959 reads',pch='*')
-points(read9,read10,pch=1,col='blue')
-points(read11,read12,pch=1,col='green')
+plot(r7,r8,ylab='S96 reads',xlab='HS959 reads',pch='*')
+points(r9,r10,pch=1,col='lightblue')
+points(r11,r12,pch=1,col='green')
 title('Total reads HS959 peaks')
-
+plot(r7,r8,ylab='S96 reads',xlab='HS959 reads',pch='*',xlim=c(50,1000),ylim=c(0,1400))
+points(r9,r10,pch=1,col='lightblue')
+points(r11,r12,pch=1,col='green')
+title('Total reads HS959 peaks (Zoom)')
 
 
 

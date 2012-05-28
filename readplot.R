@@ -27,10 +27,16 @@ WiggleClass<-function(name) {
   }
   nc$getTotalReads = function(bedfile) {
     ret=list()
-    ret[['treat']]=apply(s96bed,1,getTotalReads,filepath=nc$treatname)
-    ret[['control']]=apply(s96bed,1,getTotalReads,filepath=nc$controlname)
+    ret[['treat']]=apply(bedfile,1,getTotalReadsX,filepath=nc$treatname)
+    ret[['control']]=apply(bedfile,1,getTotalReadsX,filepath=nc$controlname)
     ret
   } 
+  nc$getAvgReads = function(bedfile) {
+    ret=list()
+    ret[['treat']]=apply(bedfile,1,getAvgReadsX,filepath=nc$treatname)
+    ret[['control']]=apply(bedfile,1,getAvgReadsX,filepath=nc$controlname)
+    ret
+  }
   nc<-list2env(nc)
   class(nc)<-"WiggleClass"
   return(nc)
@@ -39,7 +45,7 @@ WiggleClass<-function(name) {
 
 #######
 # Get avg reads
-getTotalReads<-function(x,filepath){
+getTotalReadsX<-function(x,filepath){
   chr=x[1]
   start=x[2]
   end=x[3]
@@ -47,17 +53,18 @@ getTotalReads<-function(x,filepath){
   wig=get(wigfile)
   b=findInterval(start,wig$V1)
   e=findInterval(end,wig$V1)
-  sum(wig$V2[b:e]);
+  sum(wig$V2[b:e])
 }
 
 #######
 # Get avg reads
-getAvgReads<-function(x, filepath)
+getAvgReadsX<-function(x, filepath)
 {  
   chr=x[1]
   start=x[2]
   end=x[3]
-  wig=paste(filepath,chr,'.wig.gz',sep='')
+  wigfile=paste(filepath,chr,'.wig.gz',sep='')
+  wig=get(wigfile)
   b=findInterval(start,wig$V1)
   e=findInterval(end,wig$V1)
   sum(wig$V2[b:e])/(end-start);
