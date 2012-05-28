@@ -14,19 +14,64 @@ loadWiggle<-function(wigpath) {
 #! Constructor
 WiggleClass<-function(name) {
   nc=list(
-    name=name
+    name=name,
+    controlpath=paste(name,'/',name,'_MACS_wiggle/control/',sep=''),
+    treatpath=paste(name,'/',name,'_MACS_wiggle/treat/',sep=''),
+    controlname=paste(name,'_control_afterfiting_',sep=''),
+    treatname=paste(name,'_treat_afterfiting_',sep='')
     )
-  nc$getReads = function() {
-    loadWiggle(paste(nc$name,'/',nc$name,'_MACS_wiggle/control/',sep=''))
-    loadWiggle(paste(nc$name,'/',nc$name,'_MACS_wiggle/treat/',sep=''))
+  
+  nc$loadWiggles=function() {
+    loadWiggle(nc$treatpath)
+    loadWiggle(nc$controlpath)
   }
+  nc$getTotalReads = function(bedfile) {
+    ret=list()
+    ret[['treat']]=apply(s96bed,1,getTotalReads,filepath=nc$treatname)
+    ret[['control']]=apply(s96bed,1,getTotalReads,filepath=nc$controlname)
+    ret
+  } 
   nc<-list2env(nc)
   class(nc)<-"WiggleClass"
   return(nc)
 }
 
 
+#######
+# Get avg reads
+getTotalReads<-function(x,filepath){
+  chr=x[1]
+  start=x[2]
+  end=x[3]
+  wigfile=paste(filepath,chr,'.wig.gz',sep='')
+  wig=get(wigfile)
+  b=findInterval(start,wig$V1)
+  e=findInterval(end,wig$V1)
+  sum(wig$V2[b:e]);
+}
 
+#######
+# Get avg reads
+getAvgReads<-function(x, filepath)
+{  
+  chr=x[1]
+  start=x[2]
+  end=x[3]
+  wig=paste(filepath,chr,'.wig.gz',sep='')
+  b=findInterval(start,wig$V1)
+  e=findInterval(end,wig$V1)
+  sum(wig$V2[b:e])/(end-start);
+}
+   
+  newreads=array()
+  for(i in 1:length(bedfile$V1)) {
+    chr=bedfile$V1[i];
+    start=bedfile$V2[i];
+    end=bedfile$V3[i];
+    newreads[i]=totalreads[i]/(end-start);
+  }
+  newreads
+}
 
 ############
 # Get total reads in peaks from bedfile
