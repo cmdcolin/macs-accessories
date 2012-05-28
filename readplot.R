@@ -70,16 +70,14 @@ WiggleClass<-function(name) {
       wig=get(wigfile);
       bstart=start-wsize/10
       bend=end+wsize/10
-      maxreads=array()
-      for(j in seq(bstart,end,by=wsize/10)) {
-        # binary search
-        b=findInterval(j,wig$V1)
-        e=findInterval(j+wsize,wig$V1)
-        # Peak window
-        maxreads[j]=sum(wig$V2[b:e],na.rm=TRUE)/(e-b)
-      }
-      ret=max(maxreads,na.rm=TRUE);
-      cat('Found max at ',ret, ' in ', chr, '\n')
+      maxreads=sapply(seq(bstart,end,by=wsize),function(p){
+        b=findInterval(p,wig$V1)
+        e=findInterval(p+wsize,wig$V1)
+        sum(wig$V2[b:e])/(e-b)
+      })
+      ret=max(maxreads)
+      cat('Found max ',ret,' in ',chr,'\n');
+      ret
     }
     # Apply to treated data
     apply(bedfile,1,gamr,filepath=nc$treatname,wsize=wsize)
@@ -104,6 +102,28 @@ WiggleClass<-function(name) {
   #  r2=s96$func(b1)
   #  
   #}
+  
+  
+  
+  ####
+  # Use all chromosomes for scaling factor
+  nc$estimateScalingFactor <- function() {
+    files1=list.files(nc$treatpath,pattern="*.fsa.wig.gz")
+    files2=list.files(nc$controlpath,pattern="*.fsa.wig.gz")
+    ratio_data=apply(cbind(files1,files2),1,function(x){
+      cat(x[1], ' ',x[2],'\n')
+      treat=get(x[1])
+      control=get(x[2])
+      corr=match(treat[,1],control[,1])
+      tsig=treat[,2]
+      csig=control[,2]
+      sapply(corr,function(p){ csig[p]/tsig[p]})
+    })
+    #Fix this crap
+    median(sapply(ratio_data,function(x){median(x,na.rm=TRUE)}))
+  }
+  
+  
   nc<-list2env(nc)
   class(nc)<-"WiggleClass"
   return(nc)
@@ -122,8 +142,8 @@ WiggleClass<-function(name) {
 ####
 # Use all chromosomes for scaling factor
 estimate_scaling_factor <- function(path1,path2) {
-  files1=list.files(path=path1,pattern="*.fsa.wig.gz")
-  files2=list.files(path=path2,pattern="*.fsa.wig.gz")
+  files1=list.files(treatpath,pattern="*.fsa.wig.gz")
+  files2=list.files(controlpath,pattern="*.fsa.wig.gz")
   ratio_data=array()
   for (i in 1:length(files1)) {
     treat=get(files1[i])

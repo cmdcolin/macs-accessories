@@ -44,15 +44,8 @@ hs959unique=read.table('HS959/HS959_unique.bed')
 # Match indexes
 id3=match(HS959overlap$V4,hs959bed$V4)
 id4=match(hs959unique$V4,hs959bed$V4)
-
-
 r3=hs959$getTotalReads(hs959bed)
 r4=s96$getTotalReads(hs959bed)
-#r9=hs959$getTotalReads(HS959overlap)[['treat']]
-#r10=s96$getTotalReads(HS959overlap)[['treat']]
-#r11=hs959$getTotalReads(hs959unique)[['treat']]
-#r12=s96$getTotalReads(hs959unique)[['treat']]
-
 ###
 plot(r3,r4,ylab='S96 reads',xlab='HS959 reads',pch='*')
 points(r3[id3],r4[id3],pch=1,col='lightblue')
@@ -69,37 +62,29 @@ title('Total reads HS959 peaks (Zoom)')
 
 #####
 # Use average reads over peaks
-ra1=s96$getAvgReads(s96bed)[['treat']]
-ra2=hs959$getAvgReads(s96bed)[['treat']]
-ra3=s96$getAvgReads(s96overlap)[['treat']]
-ra4=hs959$getAvgReads(s96overlap)[['treat']]
-ra5=s96$getAvgReads(s96unique)[['treat']]
-ra6=hs959$getAvgReads(s96unique)[['treat']]
+ra1=s96$getAvgReads(s96bed)
+ra2=hs959$getAvgReads(s96bed)
 # S96 Avg read plot
 plot(ra1,ra2,ylab='HS959 reads',xlab='S96 reads',pch='*')
-points(ra3,ra4,pch=1,col='lightblue')
-points(ra5,ra6,pch=1,col='orange')
+points(ra1[id1],ra2[id1],pch=1,col='lightblue')
+points(ra1[id2],ra2[id2],pch=1,col='orange')
 title('Avg S96 peak reads vs HS959 synteny')
 plot(ra1,ra2,ylab='HS959 reads',xlab='S96 reads',pch='*',xlim=c(9,25),ylim=c(1,15))
-points(ra3,ra4,pch=1,col='lightblue')
-points(ra5,ra6,pch=1,col='orange')
+points(ra1[id1],ra2[id1],pch=1,col='lightblue')
+points(ra1[id2],ra2[id2],pch=1,col='orange')
 title('Avg S96 peak reads vs HS959 synteny (zoom)')
 
-
-ra7=hs959$getAvgReads(hs959bed)[['treat']]
-ra8=s96$getAvgReads(hs959bed)[['treat']]
-ra9=hs959$getAvgReads(HS959overlap)[['treat']]
-ra10=s96$getAvgReads(HS959overlap)[['treat']]
-ra11=hs959$getAvgReads(hs959unique)[['treat']]
-ra12=s96$getAvgReads(hs959unique)[['treat']]
-plot(ra7,ra8,ylab='S96 reads',xlab='HS959 reads',pch='*')
-points(ra9,ra10,pch=1,col='lightgreen')
-points(ra11,ra12,pch=1,col='orange')
+#######
+ra3=hs959$getAvgReads(hs959bed)
+ra4=s96$getAvgReads(hs959bed)
+plot(ra3,ra4,ylab='S96 reads',xlab='HS959 reads',pch='*')
+points(ra3[id3],ra4[id3],pch=1,col='lightgreen')
+points(ra3[id4],ra4[id4],pch=1,col='orange')
 title('Average HS959 peak reads vs S96 synteny')
-
-plot(ra7,ra8,ylab='S96 reads',xlab='HS959 reads',pch='*',xlim=c(6,16),ylim=c(1,25))
-points(ra9,ra10,pch=1,col='lightgreen')
-points(ra11,ra12,pch=1,col='orange')
+##
+plot(ra3,ra4,ylab='S96 reads',xlab='HS959 reads',pch='*',xlim=c(6,16),ylim=c(1,27))
+points(ra3[id3],ra4[id3],pch=1,col='lightgreen')
+points(ra3[id4],ra4[id4],pch=1,col='orange')
 title('Average HS959 peak reads vs S96 synteny (zoom)')
 
 
@@ -109,63 +94,37 @@ title('Average HS959 peak reads vs S96 synteny (zoom)')
 
 ###########
 # Use Max avg reads over windows
-avgread1=s96$getMaxAvgReads(s96bed,100)
-avgread2=hs959$getMaxAvgReads(s96bed,100)
-id1=match(s96overlap$V4,s96bed$V4)
-id2=match(s96unique$V4,s96bed$V4)
-avgreadsmod3=avgread1[id1]
-avgreadsmod4=avgread2[id1]
-avgreadsmod5=avgread1[id2]
-avgreadsmod6=avgread2[id2]
-#avgread3=getMaxAvgReads(s96overlap,s96t,100)
-#avgread4=getMaxAvgReads(s96overlap,hs959t,100)
-#avgread5=getMaxAvgReads(s96unique,s96t,100)
-#avgread6=getMaxAvgReads(s96unique,hs959t,100)
-#########
-#plot(avgread1,avgread2,ylab='Max Avg HS959 reads',xlab='Max Avg S96 reads',pch='*')
-#points(avgread3,avgread4,pch=1,col='red')
-#points(avgread5,avgread6,pch=1,col='green')
-#title('Max Average reads over windows of S96 peaks')
+rma1=s96$getMaxAvgReads(s96bed,100)
+rma2=hs959$getMaxAvgReads(s96bed,100)
 ######################
-plot(avgread1,avgread2,ylab='Max Avg HS959 reads',xlab='Max Avg S96 reads',pch='*')
-points(avgreadsmod3,avgreadsmod4,pch=1,col='red')
-points(avgreadsmod5,avgreadsmod6,pch=1,col='green')
+plot(rma1,rma2,ylab='Max Avg HS959 reads',xlab='Max Avg S96 reads',pch='*')
+points(rma1[id1],rma2[id1],pch=1,col='red')
+points(rma1[id2],rma2[id2],pch=1,col='green')
 title('Max Average reads S96 peaks  w=100')
 legend('bottomright', legend=c('shared', 'unique'), fill=c('red', 'green'))
-plot(avgread1,avgread2,ylab='Max Avg HS959 reads',xlab='Max Avg S96 reads',pch='*',xlim=c(70,400),ylim=c(0,200))
-points(avgreadsmod3,avgreadsmod4,pch=1,col='red')
-points(avgreadsmod5,avgreadsmod6,pch=1,col='green')
+plot(rma1,rma2,ylab='Max Avg HS959 reads',xlab='Max Avg S96 reads',pch='*',xlim=c(10,30),ylim=c(1,20))
+points(rma1[id1],rma2[id1],pch=1,col='red')
+points(rma1[id2],rma2[id2],pch=1,col='green')
 title('Max Avg reads S96 peaks w=100 (Zoom)')
 legend('bottomright', legend=c('shared', 'unique'), fill=c('red', 'green'))
 
 
 
 
-avgread7=getMaxAvgReads(hs959bed,hs959t,100)
-avgread8=getMaxAvgReads(hs959bed,s96t,100)
-id1<-getPeakIndex(HS959overlap)
-id2<-getPeakIndex(hs959unique)
-avgread9=avgread7[id1]
-avgread10=avgread8[id1]
-avgread11=avgread7[id2]
-avgread12=avgread8[id2]
-#avgread9=getMaxAvgReads(HS959overlap,hs959t,100)
-#avgread10=getMaxAvgReads(HS959overlap,s96t,100)
-#avgread11=getMaxAvgReads(hs959unique,hs959t,100)
-#avgread12=getMaxAvgReads(hs959unique,s96t,100)
+rma3=hs959$getMaxAvgReads(hs959bed,100)
+rma4=s96$getMaxAvgReads(hs959bed,100)
 
-
-plot(avgread7,avgread8,ylab='Max Avg S96 reads',xlab='Max Avg HS959 reads',pch='*')
-points(avgread9,avgread10,pch=1,col='blue')
-points(avgread11,avgread12,pch=1,col='red')
+plot(rma3,rma4,ylab='Max Avg S96 reads',xlab='Max Avg HS959 reads',pch='*')
+points(rma3[id3],rma4[id3],pch=1,col='blue')
+points(rma3[id4],rma4[id4],pch=1,col='red')
 title('Max Average reads HS959 peaks w=100')
 legend('bottomright', legend=c('shared', 'unique'), fill=c('blue', 'red'))
 
 #
 #Zoom
-plot(avgread7,avgread8,ylab='Max Avg S96 reads',xlab='Max Avg HS959 reads',pch='*',xlim=c(35,200),ylim=c(25,400))
-points(avgread9,avgread10,pch=1,col='blue')
-points(avgread11,avgread12,pch=1,col='red')
+plot(rma3,rma4,ylab='Max Avg S96 reads',xlab='Max Avg HS959 reads',pch='*',xlim=c(6,30),ylim=c(1,31))
+points(rma3[id3],rma4[id3],pch=1,col='blue')
+points(rma3[id4],rma4[id4],pch=1,col='red')
 title('Max Average reads HS959 peaks w=100 (Zoom)')
 legend('bottomright', legend=c('shared', 'unique'), fill=c('blue', 'red'))
 
@@ -176,8 +135,8 @@ legend('bottomright', legend=c('shared', 'unique'), fill=c('blue', 'red'))
 
 ################
 # Get NormDiff scaling factor, variance
-s96scale=estimate_scaling_factor(s96treat,s96control)
-hs959scale=estimate_scaling_factor(hs959treat,hs959control)
+s96scale=s96$estimateScalingFactor()
+hs959scale=hs959$estimateScalingFactor()
 s96var=estimate_variance_all(s96treat,s96control,s96scale)
 hs959var=estimate_variance_all(hs959treat,hs959control,hs959scale)
 
