@@ -130,32 +130,19 @@ legend('bottomright', legend=c('shared', 'unique'), fill=c('blue', 'red'))
 
 
 
-estimate_scaling_factor <- function(path1,path2) {
-  files1=list.files(path=path1,pattern="*.fsa.wig.gz")
-  files2=list.files(path=path2,pattern="*.fsa.wig.gz")
-  ratio_data=array()
-  for (i in 1:length(files1)) {
-    treat=get(files1[i])
-    control=get(files2[i])
-    corr=match(treat[,1],control[,1])
-    tsig=treat[,2]
-    csig=control[,2]
-    ratios=sapply(corr,function(x){csig[x]/tsig[x]})
-    ratio_data=c(ratio_data,ratios)
-  }
-  median(ratio_data,na.rm=TRUE)
-}
-
-
 ################
 # Get NormDiff scaling factor, variance
-s96scale=s96$estimateScalingFactor()
-hs959scale=hs959$estimateScalingFactor()
-s96var=s96$estimateVarianceAll()
-hs959var=hs959$estimateVarianceAll()
+s96$estimateScalingFactor()
+s96$estimateVarianceAll()
+hs959$estimateScalingFactor()
+hs959$estimateVarianceAll()
 
-
+s96=WiggleClass('S96')
+hs959=WiggleClass('HS959')
+Rprof()
 Zs96=s96$Z()
+Rprof(NULL)
+summaryRprof()
 
 
 ##########

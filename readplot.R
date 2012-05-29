@@ -118,11 +118,12 @@ WiggleClass<-function(name) {
   }
   # Sqrt(Aw+Bw/c), w=1
   nc$estimateVarianceWindow<-function(treat,control,pos,wsize) {
-    b=findInterval(pos-wsize,treat$V1)
-    e=findInterval(pos+wsize,treat$V1)
-    corr=match(treat$V1[b:e],control$V1)
+    b=findInterval(pos-wsize,treat$V1,all.inside=TRUE)
+    e=findInterval(pos+wsize,treat$V1,all.inside=TRUE)
     chip_signal=treat$V2[b:e]
-    control_signal=control$V2[corr]
+    b2=findInterval(treat$V1[b],control$V1,all.inside=TRUE)
+    e2=findInterval(treat$V1[e],control$V1,all.inside=TRUE)
+    control_signal=control$V2[b2:e2]
     average_chip=mean(chip_signal,na.rm=TRUE)
     average_control=mean(control_signal,na.rm=TRUE)
     sqrt(average_chip+average_control/nc$scaling^2)
@@ -142,9 +143,8 @@ WiggleClass<-function(name) {
   # Calculate Z scores over all wiggle files
   nc$Z<-function(wsize=c(10,100)) {
 
-    files1=list.files(nc$treatpath,"*.fsa.wig.gz")
-    files2=list.files(nc$controlpath,"*.fsa.wig.gz")
-    
+    files1=list.files(nc$treatpath,"*.fsa.wig.gz")[1]
+    files2=list.files(nc$controlpath,"*.fsa.wig.gz")[1]
     apply(cbind(files1,files2),1,function(x){
       treat<-get(x[1])
       control<-get(x[2])
@@ -152,6 +152,7 @@ WiggleClass<-function(name) {
       
       start=findInterval(head(treat$V1,1)+max(wsize),treat$V1)
       end=findInterval(tail(treat$V1,1)-max(wsize),treat$V1)
+      cat('(',start,' ',end,')\t',head(treat$V1,1),'\n')
       V1<-treat$V1[start:end]
       V2<-sapply(start:end,function(x){
         nc$Zxi(treat,control,x,wsize)
@@ -160,6 +161,7 @@ WiggleClass<-function(name) {
       as.table(cbind(V1,V2))
     })
   }
+  
   nc<-list2env(nc)
   class(nc)<-"WiggleClass"
   return(nc)
