@@ -17,13 +17,6 @@ WiggleClass<-function(name) {
     scaling=1,
     variance=1,
     spacing=10,
-    matches=0,
-    unmatches=0,
-    matches1=0,
-    unmatches1=0,
-    shifter=0,
-    shifter2=0,
-    oldname='',
     controlpath=paste(name,'/',name,'_MACS_wiggle/control/',sep=''),
     treatpath=paste(name,'/',name,'_MACS_wiggle/treat/',sep=''),
     controlname=paste(name,'_control_afterfiting_',sep=''),
@@ -126,7 +119,7 @@ WiggleClass<-function(name) {
   
   
   ####
-  nc$estimateVarianceWindow<-function(xpos, treat,control,window,corr1,corr2) {
+  nc$estimateVarianceWindow<-function(xpos, treat,control,ws,corr1,corr2) {
     # find start end positions
     # check for inconsistencies in data
     #
@@ -134,28 +127,24 @@ WiggleClass<-function(name) {
     #select signals
     #cat(xpos,'\t(', treat$V1[beginning],',',treat$V1[ending],')',nc$matches, '-', nc$unmatches,'\t',
     #    nc$matches1,' ', nc$unmatches1,'(',beginning, ' ', ending, ') (', nc$shifter, ' ', nc$shifter2, '\n')
-    b1=xpos[1]-window
-    b2=xpos[2]-window
-    e1=xpos[1]+window
-    e2=xpos[2]+window
-    sel1=corr1[b1:e1]
-    sel2=corr2[b2:e2]
+    b1=xpos[1]-ws
+    e1=b1+2*ws
+    b2=xpos[2]-ws
+    e2=b2+2*ws
+    sel1=findInterval(b1:e1,corr1)
+    sel2=findInterval(b2:e2,corr2)
     chip_signal=treat$V2[sel1]
     control_signal=control$V2[sel2]
-    average_chip=mean(chip_signal)
-    average_control=mean(control_signal)
+    average_chip=mean(chip_signal,na.rm=TRUE)
+    average_control=mean(control_signal,na.rm=TRUE)
     sqrt(average_chip+average_control/nc$scaling^2)
   }
   
   nc$Zxi<-function(x,treat,control,window,corr1,corr2) {
     pos1=x[1]
     pos2=x[2]
-    correy1=corr1[-head(corr1,window)]
-    correy1=correy1[-tail(correy1,window)]
-    correy2=corr2[-head(corr2,window)]
-    correy2=correy2[-tail(correy2,window)]
     (treat$V2[pos1]-control$V2[pos2]/nc$scaling)/
-      max(nc$estimateVarianceWindow(x,treat,control,window[1],correy1,correy2),
+      max(nc$estimateVarianceWindow(x,treat,control,window[1],corr1,corr2),
           #nc$estimateVarianceWindow(x2,treat,control,window[2]),
           nc$variance)
   }
@@ -180,9 +169,8 @@ WiggleClass<-function(name) {
       app=cbind(corr1,corr2)
       app=app[-head(app,max(window)),]
       app=app[-tail(app,max(window)),]
-      V2<-apply(app,1,nc$Zxi,treat,control,window,corr1,corr2)
-      V1<-treat$V1[corr1]
-      cbind(V1,V2)
+      res<-apply(app,1,nc$Zxi,treat,control,window,corr1,corr2)
+      cbind(app,res)
     }
     
     apply(bedfile,1,getZscore,f1=nc$treatname,f2=nc$controlname,window)
