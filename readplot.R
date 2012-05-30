@@ -17,6 +17,12 @@ WiggleClass<-function(name) {
     scaling=1,
     variance=1,
     spacing=10,
+    matches=0,
+    unmatches=0,
+    matches1=0,
+    unmatches1=0,
+    shifter=0,
+    shifter2=0,
     controlpath=paste(name,'/',name,'_MACS_wiggle/control/',sep=''),
     treatpath=paste(name,'/',name,'_MACS_wiggle/treat/',sep=''),
     controlname=paste(name,'_control_afterfiting_',sep=''),
@@ -122,27 +128,40 @@ WiggleClass<-function(name) {
   nc$estimateVarianceWindow<-function(treat,control,pos,wsize) {
     # find start end positions, use findinterval if data is inconsistent
     #
-    if(treat$V1[pos]-treat$V1[pos-wsize/spacing]==wsize) {
-      b=pos-wsize/spacing
+    if(!is.na(treat$V1[pos-wsize/nc$spacing]) && 
+      treat$V1[pos]-treat$V1[pos-wsize/nc$spacing]==wsize) {
+      b=pos-wsize/nc$spacing
+      nc$matches=nc$matches+1
     } else {
       b=findInterval(pos-wsize,treat$V1, all.inside=TRUE)
+      nc$unmatches=nc$unmatches+1
     }
-    if(treat$V1[pos+wsize/spacing]-treat$V1[pos]==wsize) {
-      e=pos+wsize/spacing
+    if(treat$V1[pos+wsize/nc$spacing]-treat$V1[pos]==wsize) {
+      e=pos+wsize/nc$spacing
+      nc$matches=nc$matches+1
     } else {
       e=findInterval(pos+wsize,treat$V1, all.inside=TRUE)
+      nc$unmatches=nc$unmatches+1
     }
-    if(!is.na(control$V1[b]) && treat$V1[b]==control$V1[b]) {
+    if(!is.na(control$V1[b]) && treat$V1[b]==control$V1[b-nc$shifter]) {
       b2=b
+      nc$matches1=nc$matches1+1
     } else {
       b2=findInterval(treat$V1[b],control$V1,all.inside=TRUE)
+      nc$shifter=b-b2
+      nc$unmatches1=nc$unmatches1+1
     } 
-    if(!is.na(control$V1[e]) && treat$V1[e]==control$V1[e]) {
+    if(!is.na(control$V1[e]) && treat$V1[e]==control$V1[e+nc$shifter2]) {
       e2=e
+      nc$matches1=nc$matches1+1
     } else { 
       e2=findInterval(treat$V1[e],control$V1,all.inside=TRUE)
+      nc$unmatches1=nc$unmatches1+1
+      nc$shifter2=e2-e
     }
     #select signals
+    cat(pos,' ',length( treat$V1[b]),' ',length(b), '\t(', treat$V1[b],',',treat$V1[e],')',nc$matches, '-', nc$unmatches,'\t',
+        nc$matches1,' ', nc$unmatches1,'(',b, ' ', e, ')\n')
     chip_signal=treat$V2[b:e]
     control_signal=control$V2[b2:e2]
     average_chip=mean(chip_signal)
@@ -162,6 +181,10 @@ WiggleClass<-function(name) {
   # Calculate Z scores over all wiggle files
   nc$Z<-function(bedfile, wsize=c(10,100)) {
     # Get max average reads over window size
+    nc$matches=0
+    nc$unmatches=0
+    nc$unmatches1=0
+    nc$matches1=0
     getZscore<-function(x,f1,f2,wsize){
       chr=x[1];
       start=as.integer(x[2]);
@@ -172,9 +195,10 @@ WiggleClass<-function(name) {
       control=get(cf)
       #select interval from wiggle file
       
-      cat(chr,'-\t(',start,',',end, ')\n')
       b=findInterval(start-max(wsize),treat$V1)
       e=findInterval(end,treat$V1)
+      cat(chr,'-\t(',start,',',end, ')-\t',b,',',e,'\t',e-b<0,'\n')
+      
       V1<-treat$V1[b:e]
       V2<-sapply(b:e,nc$Zxi,treat,control,wsize)
       cbind(V1,V2)
@@ -183,6 +207,26 @@ WiggleClass<-function(name) {
     apply(bedfile,1,getZscore,f1=nc$treatname,f2=nc$controlname,wsize=wsize)
   }
   
+  nc$getMaxAvgZscore<-function(Zscore,wsize=100) {
+    acc1<-function(j,wsize,vpos,vsig) {
+      # binary search
+      b=findInterval(j,vpos)
+      e=findInterval(j+wsize,vpos)
+      mean(vsig[b:e]);
+    }
+    acc2<-function(x,wsize,acc1){
+      vpos=x[,1]
+      vsig=x[,2]
+      bstart=head(vpos,1)
+      bend=tail(vpos,1)
+      cat(bstart,' ',bend, '\n')
+      if(bstart==bend)bend=bend+10
+      windows=seq(bstart,bend-wsize/nc$spacing,by=wsize)
+      reads=sapply(windows, acc1,wsize,vpos,vsig)
+      max(reads)
+    }
+    sapply(Zscore,acc2,wsize,acc1)
+  }
   nc<-list2env(nc)
   class(nc)<-"WiggleClass"
   return(nc)
@@ -193,26 +237,6 @@ WiggleClass<-function(name) {
 
 
 ###########
-# Get average Z
-getAvgZ<-function(bedfile,Zscore) {
-  reads=array();
-  for(i in 1:length(bedfile$V1)) {
-    chr=bedfile$V1[i];
-    start=bedfile$V2[i];
-    end=bedfile$V3[i];
-    name=paste(Zscore[['name']],'_treat_afterfiting_',chr,'.wig.gz',sep='')
-    name=paste('Z', name)
-    
-    Zchr=Zscore[[name]]
-    Zchrpos=as.array(Zchr[,1])
-    Zchrpeak=as.array(Zchr[,2])
-    
-    peak=Zchrpeak[Zchrpos>start & Zchrpos<end];
-    reads[i]=mean(peak,na.rm=TRUE)
-  }
-  reads
-}
-
 
 
 ###########
