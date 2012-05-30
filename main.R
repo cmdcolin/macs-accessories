@@ -138,32 +138,33 @@ hs959$estimateScalingFactor()
 hs959$estimateVarianceAll()
 
 s96=WiggleClass('S96')
-hs959=WiggleClass('HS959')
+Zs96=s96$Z(s96bed)
+
+
+
+
 Rprof()
-Zs96=s96$Z()
 Rprof(NULL)
+#Zs96=s96$Z(s96bed[1:20,])
 summaryRprof()
+
 
 
 ##########
 # Get Z scores
-Zs96=Z(s96treat,s96control,s96scale,s96var,'S96')
-Zhs959=Z(hs959treat,hs959control,hs959scale,hs959var,'HS959')
-s96z<-getAvgZ(s96bed,Zs96)
-s96zoverlap<-getAvgZ(s96overlap,Zs96)
-s96zunique<-getAvgZ(s96unique,Zs96)
-hs959z<-getAvgZ(s96bed,Zhs959)
-hs959zoverlap<-getAvgZ(s96overlap,Zhs959)
-hs959zunique<-getAvgZ(s96unique,Zhs959)
+Zs96=s96$Z(s96bed)
+Zhs959=hs959$Z(s96bed)
+s96z<-sapply(Zs96,mean)
+hs959z<-sapply(Zhs959,mean)
 
 plot(s96z,hs959z,pch='*',xlab='Avg S96 peak normdiff',ylab='hs959 syntenic')
-points(s96zoverlap,hs959zoverlap,col='yellow')
-points(s96zunique,hs959zunique,col='blue')
+points(s96z[id1],hs959z[id1],col='yellow')
+points(s96z[id2],hs959z[id2],col='blue')
 title('S96 average peak NormDiff')
 
 
 
-hs959z<-getAvgZ(hs959bed,Zhs959)
+s959z<-getAvgZ(hs959bed,Zhs959)
 hs959zoverlap<-getAvgZ(HS959overlap,Zhs959)
 hs959zunique<-getAvgZ(hs959unique,Zhs959)
 s96z<-getAvgZ(s96bed,Zs96)
