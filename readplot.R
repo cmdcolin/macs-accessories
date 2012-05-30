@@ -145,7 +145,7 @@ WiggleClass<-function(name) {
     pos2=x[2]
     (treat$V2[pos1]-control$V2[pos2]/nc$scaling)/
       max(nc$estimateVarianceWindow(x,treat,control,window[1],corr1,corr2),
-          nc$estimateVarianceWindow(x2,treat,control,window[2],corr1,corr2),
+          nc$estimateVarianceWindow(x,treat,control,window[2],corr1,corr2),
           nc$variance)
   }
   
@@ -208,114 +208,6 @@ WiggleClass<-function(name) {
 
 
 ###########
-
-
-###########
-# Get average Z
-getMaxAvgZ<-function(bedfile,Zscore,wsize) {
-  reads=array();
-  chrold=''
-  Zchr=NULL
-  for(i in 1:length(bedfile$V1)) {
-    chr=bedfile$V1[i];
-    start=bedfile$V2[i];
-    end=bedfile$V3[i];
-    # Avoid reloading env variables
-    if(as.character(chrold)!=as.character(chr)){
-      name=paste(Zscore[['name']],'_treat_afterfiting_',chr,'.wig.gz',sep='')
-      name=paste('Z', name)
-      
-      Zchr=Zscore[[name]]
-      print(name)
-      chrold=chr
-    }    
-    
-    bstart=start-wsize/10
-    bend=end+wsize/10
-    maxreads=array()
-    # Avoid extract$column in loop
-    wigpos=Zchr[,1]
-    wigpeak=Zchr[,2]
-    
-    for(j in seq(bstart,end,by=100)) {
-      # binary search
-      b=findInterval(j,wigpos)
-      e=findInterval(j+wsize,wigpos)
-      # Peak window
-      peak=wigpeak[b:e];
-      maxreads[j]=mean(peak,na.rm=TRUE);
-    }
-    reads[i]=max(maxreads,na.rm=TRUE);
-    print(cat('Found max reads ', reads[i], ' at ', b, ' ', e,'. Used ', (end-bstart)/100, ' windows'))
-    
-  }
-  reads
-}
-
-
-
-###########
-# Get average Z
-getAvgZ_WholeGenome<-function(Zscore,wsize) {
-  reads=array();
-  for(i in Zscore) {
-    if(is.null(dim(i))) {next;}
-    wigpos=i[,1]
-    wigpeak=i[,2]
-    bstart=wsize
-    bend=length(wigpos)-wsize
-    maxreads=array()
-    for(j in seq.int(bstart,bend,by=wsize)) {
-      # binary search
-      b=findInterval(j,wigpos)
-      e=findInterval(j+wsize,wigpos)
-      
-      # Peak window
-      peak=wigpeak[b:e];
-      
-      maxreads[j/wsize]=mean(peak,na.rm=TRUE);
-    }
-    reads=c(reads,maxreads)
-  }
-  reads
-}
-
-
-
-
-############
-# Old get avg Z
-getAvgNormDiff<-function(bedfile, path1, path2, scaling_factor, variance) {
-  
-  reads=array();
-  for(i in 1:length(bedfile$V1)) {
-    chr=bedfile$V1[i];
-    start=bedfile$V2[i];
-    end=bedfile$V3[i];
-    
-    # Reads from S96
-    wigfile1=paste(path1,chr,'.wig.gz',sep='');
-    wig1=get(wigfile1);
-    treat_peak=wig1[wig1$V1>start & wig1$V1<end,];
-    wigfile2=paste(path2,chr,'.wig.gz',sep='');
-    wig2=get(wigfile2);
-    control_peak=wig2[wig2$V1>start & wig2$V1<end,];
-  
-    treat_peak=as.array(treat_peak$V2)
-    control_peak=as.array(control_peak$V2)
-    Z=array()
-    
-    for(j in 1:(end-start)) {
-      Z[j]= (treat_peak[j]-control_peak[j]/scaling_factor)/sqrt(variance)
-    }
-    reads[i]=mean(Z,na.rm=TRUE);
-  }
-  reads
-}
-
-
-
-
 
 
 ######Sketches

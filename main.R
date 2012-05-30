@@ -137,23 +137,10 @@ s96$estimateVarianceAll()
 hs959$estimateScalingFactor()
 hs959$estimateVarianceAll()
 
-s96=WiggleClass('S96')
-Zs96=s96$Z(s96bed)
-
-
-
-
-Rprof()
-Zs96=s96$Z(s96bed[1:100,])
-Rprof(NULL)
-summaryRprof()
-
 
 
 ##########
 # Get Z scores
-s96=WiggleClass('S96')
-hs959=WiggleClass('HS959')
 Zs96=s96$Z(s96bed)
 Zhs959=hs959$Z(s96bed)
 s96z<-sapply(Zs96,function(x){mean(x[,3])})
@@ -163,7 +150,7 @@ plot(s96z,hs959z,pch='*',xlab='Avg S96 peak normdiff',ylab='hs959 syntenic')
 points(s96z[id1],hs959z[id1],col='yellow')
 points(s96z[id2],hs959z[id2],col='blue')
 title('S96 peaks average NormDiff vs HS959 synteny')
-plot(s96z,hs959z,pch='*',xlab='Avg S96 peak normdiff',ylab='Avg HS959 syntenic normdiff',xlim=c(1.5,9),ylim=c(-0.5,4))
+plot(s96z,hs959z,pch='*',xlab='Avg S96 peak normdiff',ylab='Avg HS959 syntenic normdiff',xlim=c(1.5,20),ylim=c(-1.5,10))
 points(s96z[id1],hs959z[id1],col='yellow')
 points(s96z[id2],hs959z[id2],col='blue')
 title('S96 peaks avg NormDiff vs HS959 synteny (zoom)')
