@@ -198,30 +198,24 @@ plot(maxs96,maxhs959,pch='*',xlab='S96 peak',ylab='HS959 syntenic')
 points(maxs96[id1],maxhs959[id1],col='blue')
 points(maxs96[id2],maxhs959[id2],col='orange')
 title('Max Avg S96 peak normdiff vs HS959 synteny w=100')
-plot(maxs96,maxhs959,pch='*',xlab='HS959 peak',ylab='S96 syntenic',ylim=c(-0.2,4),xlim=c(1.2,6))
+plot(maxs96,maxhs959,pch='*',xlab='HS959 peak',ylab='S96 syntenic',xlim=c(1.6,10),ylim=c(-0.2,7))
 points(maxs96[id1],maxhs959[id1],col='blue')
 points(maxs96[id2],maxhs959[id2],col='orange')
 title('Max Avg S96 peak normdiff vs HS959 synteny w=100 (Zoom)')
 
 
+maxs96dos<-s96$getMaxAvgZscore(Zs96dos)
+maxhs959dos<-hs959$getMaxAvgZscore(Zhs959dos)
 
+plot(maxhs959dos,maxs96dos,pch='*',xlab='S96 peak',ylab='HS959 syntenic')
+points(maxhs959dos[id3],maxs96dos[id3],col='darkblue')
+points(maxhs959dos[id4],maxs96dos[id4],col='orange')
+title('Max Avg HS959 peak normdiff vs S96 synteny w=100')
+plot(maxhs959dos,maxs96dos,pch='*',xlab='HS959 peak',ylab='S96 syntenic',xlim=c(1.2,9),ylim=c(-0.2,7))
+points(maxhs959dos[id3],maxs96dos[id3],col='darkblue')
+points(maxhs959dos[id4],maxs96dos[id4],col='orange')
+title('Max Avg HS959 peak normdiff vs S96 synteny w=100 (Zoom)')
 
-s96z2<-getMaxAvgZ(s96bed,Zs96,100)
-s96zoverlap2<-getMaxAvgZ(s96overlap,Zs96,100)
-s96zunique2<-getMaxAvgZ(s96unique,Zs96,100)
-hs959z2<-getMaxAvgZ(s96bed,Zhs959,100)
-hs959zoverlap2<-getMaxAvgZ(s96overlap,Zhs959,100)
-hs959zunique2<-getMaxAvgZ(s96unique,Zhs959,100)
-plot(s96z2,hs959z2,pch='*',xlab='S96 peak',ylab='HS959 syntenic')
-points(s96zoverlap2,hs959zoverlap2,col='green')
-points(s96zunique2,hs959zunique2,col='brown')
-title('Max Avg S96 peak normdiff w=100')
-
-plot(s96z2,hs959z2,pch='*',xlab='S96 peak',ylab='HS959 syntenic',ylim=c(0,10),xlim=c(3.3,13))
-points(s96zoverlap2,hs959zoverlap2,col='green')
-points(s96zunique2,hs959zunique2,col='brown')
-title('Max Avg S96 peak normdiff w=100 (Zoom)')
-##########3
 
 ################
 # Sort and rank

@@ -145,14 +145,14 @@ WiggleClass<-function(name) {
     pos2=x[2]
     (treat$V2[pos1]-control$V2[pos2]/nc$scaling)/
       max(nc$estimateVarianceWindow(x,treat,control,window[1],corr1,corr2),
-          #nc$estimateVarianceWindow(x2,treat,control,window[2]),
+          nc$estimateVarianceWindow(x2,treat,control,window[2],corr1,corr2),
           nc$variance)
   }
   
   
   
   # Calculate Z scores over all wiggle files
-  nc$Z<-function(bedfile, window=c(10)) {
+  nc$Z<-function(bedfile, window=c(10,100)) {
     # Get max average reads over window size
     getZscore<-function(x,f1,f2,window){
       chr=x[1];
@@ -176,25 +176,27 @@ WiggleClass<-function(name) {
     apply(bedfile,1,getZscore,f1=nc$treatname,f2=nc$controlname,window)
   }
   
-  nc$getMaxAvgZscore<-function(Zscore,window=100) {
-    acc1<-function(j,window,vpos,vsig) {
+  nc$getMaxAvgZscore<-function(Zscore,ws=10) {
+    acc1<-function(j,ws,vpos,vsig) {
       # binary search
       b=findInterval(j,vpos)
-      e=findInterval(j+window,vpos)
+      e=findInterval(j+ws,vpos)
       mean(vsig[b:e]);
     }
     acc2<-function(x,window,acc1){
       vpos=x[,1]
-      vsig=x[,2]
+      vsig=x[,3]
       bstart=head(vpos,1)
       bend=tail(vpos,1)
-      cat(bstart,' ',bend, '\n')
-      if(bstart==bend)bend=bend+10
-      windows=seq(bstart,bend-window/nc$spacing,by=window)
-      reads=sapply(windows, acc1,window,vpos,vsig)
+      if(bstart==bend) { 0}
+      else{
+      cat(bstart,' ',bend, ' ', ws,'\n')
+      windows=seq(bstart,bend-ws/nc$spacing,by=ws)
+      reads=sapply(windows, acc1,ws,vpos,vsig)
       max(reads)
+      }
     }
-    sapply(Zscore,acc2,window,acc1)
+    sapply(Zscore,acc2,ws,acc1)
   }
   nc<-list2env(nc)
   class(nc)<-"WiggleClass"
