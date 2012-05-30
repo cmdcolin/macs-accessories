@@ -126,58 +126,36 @@ WiggleClass<-function(name) {
   
   
   ####
-  nc$estimateVarianceWindow<-function(xpos, treat,control,window) {
+  nc$estimateVarianceWindow<-function(xpos, treat,control,window,corr1,corr2) {
     # find start end positions
     # check for inconsistencies in data
     #
     # checkspacing is correct b window
-    if(!is.na(treat$V1[xpos-window/nc$spacing]) && 
-      treat$V1[xpos]-treat$V1[xpos-window/nc$spacing]==window) {
-      beginning=xpos-window/nc$spacing
-      nc$matches=nc$matches+1
-    } else {
-      beginning=findInterval(xpos-window,treat$V1, all.inside=TRUE)
-      nc$unmatches=nc$unmatches+1
-    }
-    if(treat$V1[xpos+window/nc$spacing]-treat$V1[xpos]==window) {
-      ending=xpos+window/nc$spacing
-      nc$matches=nc$matches+1
-    } else {
-      ending=findInterval(xpos+window,treat$V1, all.inside=TRUE)
-      nc$unmatches=nc$unmatches+1
-    }
-    if(!is.na(control$V1[beginning-nc$shifter])&&
-      treat$V1[beginning]==control$V1[beginning-nc$shifter]) {
-      beginning2=beginning
-      nc$matches1=nc$matches1+1
-    } else {
-      beginning2=findInterval(treat$V1[beginning],control$V1,all.inside=TRUE)
-      nc$shifter=beginning-beginning2
-      nc$unmatches1=nc$unmatches1+1
-    } 
-    if(!is.na(control$V1[ending+nc$shifter2]) &&
-      treat$V1[ending]==control$V1[ending+nc$shifter2]) {
-      ending2=ending
-      nc$matches1=nc$matches1+1
-    } else { 
-      ending2=findInterval(treat$V1[ending],control$V1,all.inside=TRUE)
-      nc$unmatches1=nc$unmatches1+1
-      nc$shifter2=ending2-ending
-    }
     #select signals
     #cat(xpos,'\t(', treat$V1[beginning],',',treat$V1[ending],')',nc$matches, '-', nc$unmatches,'\t',
     #    nc$matches1,' ', nc$unmatches1,'(',beginning, ' ', ending, ') (', nc$shifter, ' ', nc$shifter2, '\n')
-    chip_signal=treat$V2[beginning:ending]
-    control_signal=control$V2[beginning2:ending2]
+    b1=xpos[1]-window
+    b2=xpos[2]-window
+    e1=xpos[1]+window
+    e2=xpos[2]+window
+    sel1=corr1[b1:e1]
+    sel2=corr2[b2:e2]
+    chip_signal=treat$V2[sel1]
+    control_signal=control$V2[sel2]
     average_chip=mean(chip_signal)
     average_control=mean(control_signal)
     sqrt(average_chip+average_control/nc$scaling^2)
   }
   
-  nc$Zxi<-function(x,treat,control,window) {
-    x2=x
-    (treat$V2[x]-control$V2[x]/nc$scaling)/
-      max(nc$estimateVarianceWindow(x,treat,control,window[1]),
+  nc$Zxi<-function(x,treat,control,window,corr1,corr2) {
+    pos1=x[1]
+    pos2=x[2]
+    correy1=corr1[-head(corr1,window)]
+    correy1=correy1[-tail(correy1,window)]
+    correy2=corr2[-head(corr2,window)]
+    correy2=correy2[-tail(correy2,window)]
+    (treat$V2[pos1]-control$V2[pos2]/nc$scaling)/
+      max(nc$estimateVarianceWindow(x,treat,control,window[1],correy1,correy2),
           #nc$estimateVarianceWindow(x2,treat,control,window[2]),
           nc$variance)
   }
@@ -187,10 +165,6 @@ WiggleClass<-function(name) {
   # Calculate Z scores over all wiggle files
   nc$Z<-function(bedfile, window=c(10)) {
     # Get max average reads over window size
-    nc$matches=0
-    nc$unmatches=0
-    nc$unmatches1=0
-    nc$matches1=0
     getZscore<-function(x,f1,f2,window){
       chr=x[1];
       start=as.integer(x[2]);
@@ -199,20 +173,15 @@ WiggleClass<-function(name) {
       cf=paste(f2,chr,'.wig.gz',sep='')
       treat=get(tf)
       control=get(cf)
-      #select interval from wiggle file
-      if(as.character(nc$oldname)!=as.character(chr)){
-        nc$shifter=0
-        nc$shifter2=0
-        nc$oldname=chr
-        print('here')
-      }
       
-      b=findInterval(start:end,treat$V1)
-      e=findInterval(end,treat$V1)
-      cat(chr,'-\t(',start,',',end, ')-\t',b,',',e,'\t',e-b<0,'\n')
-      
-      V1<-treat$V1[b:e]
-      V2<-sapply(b:e,nc$Zxi,treat,control,window)
+      corr1=findInterval(start:end,treat$V1)
+      corr2=findInterval(start:end,control$V1)
+      cat(chr,'-\t(',start,',',end, ')\n')
+      app=cbind(corr1,corr2)
+      app=app[-head(app,max(window)),]
+      app=app[-tail(app,max(window)),]
+      V2<-apply(app,1,nc$Zxi,treat,control,window,corr1,corr2)
+      V1<-treat$V1[corr1]
       cbind(V1,V2)
     }
     
