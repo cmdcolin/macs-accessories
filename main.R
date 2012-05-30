@@ -51,9 +51,9 @@ plot(r3,r4,ylab='S96 reads',xlab='HS959 reads',pch='*')
 points(r3[id3],r4[id3],pch=1,col='lightblue')
 points(r3[id4],r4[id4],pch=1,col='green')
 title('Total reads HS959 peaks')
-plot(r7,r8,ylab='S96 reads',xlab='HS959 reads',pch='*',xlim=c(50,1000),ylim=c(0,1400))
-points(r9,r10,pch=1,col='lightblue')
-points(r11,r12,pch=1,col='green')
+plot(r3,r4,ylab='S96 reads',xlab='HS959 reads',pch='*',xlim=c(50,1000),ylim=c(0,1400))
+points(r3[id3],r4[id3],pch=1,col='lightblue')
+points(r3[id4],r4[id4],pch=1,col='green')
 title('Total reads HS959 peaks (Zoom)')
 
 
@@ -152,6 +152,8 @@ summaryRprof()
 
 ##########
 # Get Z scores
+s96=WiggleClass('S96')
+hs959=WiggleClass('HS959')
 Zs96=s96$Z(s96bed)
 Zhs959=hs959$Z(s96bed)
 s96z<-sapply(Zs96,function(x){mean(x[,2])})
@@ -169,8 +171,6 @@ title('S96 peaks avg NormDiff vs HS959 synteny (zoom)')
 
 
 ###########
-s96=WiggleClass('S96')
-hs959=WiggleClass('HS959')
 Zs96dos=s96$Z(hs959bed)
 Zhs959dos=hs959$Z(hs959bed)
 s96zdos<-sapply(Zs96,function(x){mean(x[,2])})
@@ -188,6 +188,8 @@ title('HS959 peaks avg NormDiff vs S96 synteny (zoom)')
 
 ###########
 #Lol getmaxAvgZscore
+s96=WiggleClass('S96')
+hs959=WiggleClass('HS959')
 maxs96<-s96$getMaxAvgZscore(Zs96)
 maxhs959<-hs959$getMaxAvgZscore(Zhs959)
 

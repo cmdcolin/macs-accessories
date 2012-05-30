@@ -23,6 +23,7 @@ WiggleClass<-function(name) {
     unmatches1=0,
     shifter=0,
     shifter2=0,
+    oldname='',
     controlpath=paste(name,'/',name,'_MACS_wiggle/control/',sep=''),
     treatpath=paste(name,'/',name,'_MACS_wiggle/treat/',sep=''),
     controlname=paste(name,'_control_afterfiting_',sep=''),
@@ -35,7 +36,7 @@ WiggleClass<-function(name) {
   }
   #######
   # Get avg reads
-  nc$getReads = function(bedfile) {
+  nc$getTotalReads = function(bedfile) {
     getTotalReads<-function(x,filepath){
       chr=x[1]
       start=x[2]
@@ -66,9 +67,9 @@ WiggleClass<-function(name) {
     #Apply to treat data
     apply(bedfile,1,getAvgReads,filepath=nc$treatname)
   }
-  nc$getMaxAvgReads<-function(bedfile, wsize,inc) {
+  nc$getMaxAvgReads<-function(bedfile, window,inc) {
     # Get max average reads over window size
-    getMaxAvgReads<-function(x, filepath, wsize)
+    getMaxAvgReads<-function(x, filepath, window)
     {
       maxreads=array()
       chr=x[1];
@@ -76,11 +77,11 @@ WiggleClass<-function(name) {
       end=as.integer(x[3]);
       wigfile=paste(filepath,chr,'.wig.gz',sep='')
       wig=get(wigfile);
-      bstart=start-wsize
+      bstart=start-window
       bend=end
-      maxreads=sapply(seq(bstart,end,by=wsize),function(p){
+      maxreads=sapply(seq(bstart,end,by=window),function(p){
         b=findInterval(p,wig$V1)
-        e=findInterval(p+wsize,wig$V1)
+        e=findInterval(p+window,wig$V1)
         sum(wig$V2[b:e])/(e-b)
       })
       ret=max(maxreads)
@@ -88,7 +89,7 @@ WiggleClass<-function(name) {
       ret
     }
     # Apply to treated data
-    apply(bedfile,1,getMaxAvgReads,filepath=nc$treatname,wsize=wsize)
+    apply(bedfile,1,getMaxAvgReads,filepath=nc$treatname,window)
   }
 
   
@@ -125,67 +126,72 @@ WiggleClass<-function(name) {
   
   
   ####
-  nc$estimateVarianceWindow<-function(treat,control,pos,wsize) {
-    # find start end positions, use findinterval if data is inconsistent
+  nc$estimateVarianceWindow<-function(xpos, treat,control,window) {
+    # find start end positions
+    # check for inconsistencies in data
     #
-    if(!is.na(treat$V1[pos-wsize/nc$spacing]) && 
-      treat$V1[pos]-treat$V1[pos-wsize/nc$spacing]==wsize) {
-      b=pos-wsize/nc$spacing
+    # checkspacing is correct b window
+    if(!is.na(treat$V1[xpos-window/nc$spacing]) && 
+      treat$V1[xpos]-treat$V1[xpos-window/nc$spacing]==window) {
+      beginning=xpos-window/nc$spacing
       nc$matches=nc$matches+1
     } else {
-      b=findInterval(pos-wsize,treat$V1, all.inside=TRUE)
+      beginning=findInterval(xpos-window,treat$V1, all.inside=TRUE)
       nc$unmatches=nc$unmatches+1
     }
-    if(treat$V1[pos+wsize/nc$spacing]-treat$V1[pos]==wsize) {
-      e=pos+wsize/nc$spacing
+    if(treat$V1[xpos+window/nc$spacing]-treat$V1[xpos]==window) {
+      ending=xpos+window/nc$spacing
       nc$matches=nc$matches+1
     } else {
-      e=findInterval(pos+wsize,treat$V1, all.inside=TRUE)
+      ending=findInterval(xpos+window,treat$V1, all.inside=TRUE)
       nc$unmatches=nc$unmatches+1
     }
-    if(!is.na(control$V1[b]) && treat$V1[b]==control$V1[b-nc$shifter]) {
-      b2=b
+    if(!is.na(control$V1[beginning-nc$shifter])&&
+      treat$V1[beginning]==control$V1[beginning-nc$shifter]) {
+      beginning2=beginning
       nc$matches1=nc$matches1+1
     } else {
-      b2=findInterval(treat$V1[b],control$V1,all.inside=TRUE)
-      nc$shifter=b-b2
+      beginning2=findInterval(treat$V1[beginning],control$V1,all.inside=TRUE)
+      nc$shifter=beginning-beginning2
       nc$unmatches1=nc$unmatches1+1
     } 
-    if(!is.na(control$V1[e]) && treat$V1[e]==control$V1[e+nc$shifter2]) {
-      e2=e
+    if(!is.na(control$V1[ending+nc$shifter2]) &&
+      treat$V1[ending]==control$V1[ending+nc$shifter2]) {
+      ending2=ending
       nc$matches1=nc$matches1+1
     } else { 
-      e2=findInterval(treat$V1[e],control$V1,all.inside=TRUE)
+      ending2=findInterval(treat$V1[ending],control$V1,all.inside=TRUE)
       nc$unmatches1=nc$unmatches1+1
-      nc$shifter2=e2-e
+      nc$shifter2=ending2-ending
     }
     #select signals
-    cat(pos,' ',length( treat$V1[b]),' ',length(b), '\t(', treat$V1[b],',',treat$V1[e],')',nc$matches, '-', nc$unmatches,'\t',
-        nc$matches1,' ', nc$unmatches1,'(',b, ' ', e, ')\n')
-    chip_signal=treat$V2[b:e]
-    control_signal=control$V2[b2:e2]
+    #cat(xpos,'\t(', treat$V1[beginning],',',treat$V1[ending],')',nc$matches, '-', nc$unmatches,'\t',
+    #    nc$matches1,' ', nc$unmatches1,'(',beginning, ' ', ending, ') (', nc$shifter, ' ', nc$shifter2, '\n')
+    chip_signal=treat$V2[beginning:ending]
+    control_signal=control$V2[beginning2:ending2]
     average_chip=mean(chip_signal)
     average_control=mean(control_signal)
     sqrt(average_chip+average_control/nc$scaling^2)
   }
   
-  nc$Zxi<-function(pos,treat,control,wsize) {
-    (treat$V2[pos]-control$V2[pos]/nc$scaling)/
-      max(nc$estimateVarianceWindow(treat,control,pos,wsize[1]),
-          nc$estimateVarianceWindow(treat,control,pos,wsize[2]),
+  nc$Zxi<-function(x,treat,control,window) {
+    x2=x
+    (treat$V2[x]-control$V2[x]/nc$scaling)/
+      max(nc$estimateVarianceWindow(x,treat,control,window[1]),
+          #nc$estimateVarianceWindow(x2,treat,control,window[2]),
           nc$variance)
   }
   
   
   
   # Calculate Z scores over all wiggle files
-  nc$Z<-function(bedfile, wsize=c(10,100)) {
+  nc$Z<-function(bedfile, window=c(10)) {
     # Get max average reads over window size
     nc$matches=0
     nc$unmatches=0
     nc$unmatches1=0
     nc$matches1=0
-    getZscore<-function(x,f1,f2,wsize){
+    getZscore<-function(x,f1,f2,window){
       chr=x[1];
       start=as.integer(x[2]);
       end=as.integer(x[3]);
@@ -194,38 +200,44 @@ WiggleClass<-function(name) {
       treat=get(tf)
       control=get(cf)
       #select interval from wiggle file
+      if(as.character(nc$oldname)!=as.character(chr)){
+        nc$shifter=0
+        nc$shifter2=0
+        nc$oldname=chr
+        print('here')
+      }
       
-      b=findInterval(start-max(wsize),treat$V1)
+      b=findInterval(start:end,treat$V1)
       e=findInterval(end,treat$V1)
       cat(chr,'-\t(',start,',',end, ')-\t',b,',',e,'\t',e-b<0,'\n')
       
       V1<-treat$V1[b:e]
-      V2<-sapply(b:e,nc$Zxi,treat,control,wsize)
+      V2<-sapply(b:e,nc$Zxi,treat,control,window)
       cbind(V1,V2)
     }
     
-    apply(bedfile,1,getZscore,f1=nc$treatname,f2=nc$controlname,wsize=wsize)
+    apply(bedfile,1,getZscore,f1=nc$treatname,f2=nc$controlname,window)
   }
   
-  nc$getMaxAvgZscore<-function(Zscore,wsize=100) {
-    acc1<-function(j,wsize,vpos,vsig) {
+  nc$getMaxAvgZscore<-function(Zscore,window=100) {
+    acc1<-function(j,window,vpos,vsig) {
       # binary search
       b=findInterval(j,vpos)
-      e=findInterval(j+wsize,vpos)
+      e=findInterval(j+window,vpos)
       mean(vsig[b:e]);
     }
-    acc2<-function(x,wsize,acc1){
+    acc2<-function(x,window,acc1){
       vpos=x[,1]
       vsig=x[,2]
       bstart=head(vpos,1)
       bend=tail(vpos,1)
       cat(bstart,' ',bend, '\n')
       if(bstart==bend)bend=bend+10
-      windows=seq(bstart,bend-wsize/nc$spacing,by=wsize)
-      reads=sapply(windows, acc1,wsize,vpos,vsig)
+      windows=seq(bstart,bend-window/nc$spacing,by=window)
+      reads=sapply(windows, acc1,window,vpos,vsig)
       max(reads)
     }
-    sapply(Zscore,acc2,wsize,acc1)
+    sapply(Zscore,acc2,window,acc1)
   }
   nc<-list2env(nc)
   class(nc)<-"WiggleClass"
