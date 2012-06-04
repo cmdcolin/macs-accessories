@@ -73,12 +73,216 @@ status open
 
 \begin_layout Plain Layout
 
-<<cond-out2,echo=TRUE>>=
+<<set-options, echo=TRUE, cache=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout
 
-cat('hello world')
+getwd()
+\end_layout
+
+\begin_layout Plain Layout
+
+source('readplot.R')
+\end_layout
+
+\begin_layout Plain Layout
+
+setwd('macs1.4.1')
+\end_layout
+
+\begin_layout Plain Layout
+
+getwd()
+\end_layout
+
+\begin_layout Plain Layout
+
+e1<-new.env() 
+\end_layout
+
+\begin_layout Plain Layout
+
+s96v1=WiggleClass('S96') 
+\end_layout
+
+\begin_layout Plain Layout
+
+hs959v1=WiggleClass('HS959') 
+\end_layout
+
+\begin_layout Plain Layout
+
+s96v1$loadWiggles() 
+\end_layout
+
+\begin_layout Plain Layout
+
+hs959v1$loadWiggles()
+\end_layout
+
+\begin_layout Plain Layout
+
+e2<-new.env() 
+\end_layout
+
+\begin_layout Plain Layout
+
+s96v2=WiggleClass('S96',e2) 
+\end_layout
+
+\begin_layout Plain Layout
+
+hs959v2=WiggleClass('HS959',e2) 
+\end_layout
+
+\begin_layout Plain Layout
+
+s96v2$loadWiggles() 
+\end_layout
+
+\begin_layout Plain Layout
+
+hs959v2$loadWiggles() 
+\end_layout
+
+\begin_layout Plain Layout
+
+##
+\end_layout
+
+\begin_layout Plain Layout
+
+s96bed=read.table('S96/S96_peaks.bed') 
+\end_layout
+
+\begin_layout Plain Layout
+
+s96overlap=read.table('S96/S96_overlap.bed') 
+\end_layout
+
+\begin_layout Plain Layout
+
+s96unique=read.table('S96/S96_unique.bed') 
+\end_layout
+
+\begin_layout Plain Layout
+
+hs959bed=read.table('HS959/HS959_peaks.bed') 
+\end_layout
+
+\begin_layout Plain Layout
+
+HS959overlap=read.table('HS959/HS959_overlap.bed') 
+\end_layout
+
+\begin_layout Plain Layout
+
+hs959unique=read.table('HS959/HS959_unique.bed') 
+\end_layout
+
+\begin_layout Plain Layout
+
+# Match indexes 
+\end_layout
+
+\begin_layout Plain Layout
+
+id1=match(s96overlap$V4,s96bed$V4) 
+\end_layout
+
+\begin_layout Plain Layout
+
+id2=match(s96unique$V4,s96bed$V4)
+\end_layout
+
+\begin_layout Plain Layout
+
+id3=match(HS959overlap$V4,hs959bed$V4) 
+\end_layout
+
+\begin_layout Plain Layout
+
+id4=match(hs959unique$V4,hs959bed$V4)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<Q1, echo=FALSE>>= 
+\end_layout
+
+\begin_layout Plain Layout
+
+r1=s96$getTotalReads(s96bed) 
+\end_layout
+
+\begin_layout Plain Layout
+
+r2=hs959$getTotalReads(s96bed) 
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(r1,r2,ylab='HS959 reads',xlab='S96 reads',pch='*') 
+\end_layout
+
+\begin_layout Plain Layout
+
+points(r1[id1],r2[id1],pch=1,col='pink') 
+\end_layout
+
+\begin_layout Plain Layout
+
+points(r1[id2],r2[id2],pch=1,col='green') 
+\end_layout
+
+\begin_layout Plain Layout
+
+title('Total S96 peak reads vs HS959 synteny') 
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+<<Q2,echo=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(r1,r2,ylab='HS959 reads',xlab='S96 reads',pch='*',xlim=c(0,40000),ylim=c(0,
+15000)) 
+\end_layout
+
+\begin_layout Plain Layout
+
+points(r1[id1],r2[id1],pch=1,col='pink') 
+\end_layout
+
+\begin_layout Plain Layout
+
+points(r1[id2],r2[id2],pch=1,col='green') 
+\end_layout
+
+\begin_layout Plain Layout
+
+title('Total S96 peak reads vs HS959 synteny (zoom)')
 \end_layout
 
 \begin_layout Plain Layout

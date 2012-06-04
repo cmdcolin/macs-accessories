@@ -1,19 +1,11 @@
-########################
-# Read wiggle files from path into memory and assign filesnames
-loadWiggle<-function(wigpath) {
-  files=list.files(path=wigpath,pattern="*.fsa.wig.gz")
-  for (i in files) {
-    file<-paste(wigpath,i,sep='')
-    x<-read.table(file, skip=2)
-    assign(i,x,inherits=TRUE)
-  }
-}
+
 
 #################
 #! Constructor
-WiggleClass<-function(name) {
+WiggleClass<-function(name, environ=environment()) {
   nc=list(
     name=name,
+    environ=environ,
     scaling=1,
     variance=1,
     spacing=10,
@@ -23,9 +15,19 @@ WiggleClass<-function(name) {
     treatname=paste(name,'_treat_afterfiting_',sep='')
     )
   
+  ########################
+  # Read wiggle files from path into memory and assign filesnames
   nc$loadWiggles=function() {
-    loadWiggle(nc$treatpath)
-    loadWiggle(nc$controlpath)
+    loadWiggle<-function(wigpath,environ) {
+      files=list.files(path=wigpath,pattern="*.fsa.wig.gz")
+      for (i in files) {
+        file<-paste(wigpath,i,sep='')
+        x<-read.table(file, skip=2)
+        assign(i,x,inherits=TRUE,envir=environ)
+      }
+    }
+    loadWiggle(nc$treatpath,nc$environ)
+    loadWiggle(nc$controlpath,nc$environ)
   }
   #######
   # Get avg reads
@@ -60,6 +62,7 @@ WiggleClass<-function(name) {
     #Apply to treat data
     apply(bedfile,1,getAvgReads,filepath=nc$treatname)
   }
+  
   nc$getMaxAvgReads<-function(bedfile, window,inc) {
     # Get max average reads over window size
     getMaxAvgReads<-function(x, filepath, window)
@@ -198,11 +201,16 @@ WiggleClass<-function(name) {
     }
     sapply(Zscore,acc2,ws,acc1)
   }
+  
+  
+  
+  getPeaks() {
+    
+  }
   nc<-list2env(nc)
   class(nc)<-"WiggleClass"
   return(nc)
 }
-
 
 
 
