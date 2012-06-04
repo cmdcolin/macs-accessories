@@ -73,12 +73,152 @@ status open
 
 \begin_layout Plain Layout
 
-<<set-options, echo=TRUE, cache=FALSE>>=
+<<set-options, echo=FALSE, cache=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout
 
-getwd()
+loaddir<-function(name) {
+\end_layout
+
+\begin_layout Plain Layout
+
+    oldpath=getwd()
+\end_layout
+
+\begin_layout Plain Layout
+
+	setwd(name)
+\end_layout
+
+\begin_layout Plain Layout
+
+	env<-new.env() 
+\end_layout
+
+\begin_layout Plain Layout
+
+    s96=WiggleClass('S96', env)
+\end_layout
+
+\begin_layout Plain Layout
+
+	hs959=WiggleClass('HS959', env)
+\end_layout
+
+\begin_layout Plain Layout
+
+	assign('s96',s96,env) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	assign('hs959',hs959,env)
+\end_layout
+
+\begin_layout Plain Layout
+
+	s96$loadWiggles() 
+\end_layout
+
+\begin_layout Plain Layout
+
+	hs959$loadWiggles()
+\end_layout
+
+\begin_layout Plain Layout
+
+	###
+\end_layout
+
+\begin_layout Plain Layout
+
+	assign('s96bed',read.table('S96/S96_peaks.bed'),env)
+\end_layout
+
+\begin_layout Plain Layout
+
+	assign('s96overlap',read.table('S96/S96_overlap.bed'),env)
+\end_layout
+
+\begin_layout Plain Layout
+
+	assign('s96unique',read.table('S96/S96_unique.bed'),env)
+\end_layout
+
+\begin_layout Plain Layout
+
+	assign('hs959bed',read.table('HS959/HS959_peaks.bed'),env)
+\end_layout
+
+\begin_layout Plain Layout
+
+	assign('hs959overlap',read.table('S96/S96_overlap.bed'),env)
+\end_layout
+
+\begin_layout Plain Layout
+
+	assign('hs959unique',read.table('S96/S96_unique.bed'),env)
+\end_layout
+
+\begin_layout Plain Layout
+
+	# Match indexes 
+\end_layout
+
+\begin_layout Plain Layout
+
+	id1=match(get('s96overlap',env)$V4,get('s96bed',env)$V4) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	id2=match(get('s96unique',env)$V4,get('s96bed',env)$V4)
+\end_layout
+
+\begin_layout Plain Layout
+
+	id3=match(get('hs959overlap',env)$V4,get('hs959bed',env)$V4) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	id4=match(get('hs959unique',env)$V4,get('hs959bed',env)$V4)
+\end_layout
+
+\begin_layout Plain Layout
+
+    assign('id1',id1,env)
+\end_layout
+
+\begin_layout Plain Layout
+
+	assign('id2',id2,env)
+\end_layout
+
+\begin_layout Plain Layout
+
+	assign('id3',id3,env)
+\end_layout
+
+\begin_layout Plain Layout
+
+	assign('id4',id4,env)
+\end_layout
+
+\begin_layout Plain Layout
+
+	setwd(oldpath)
+\end_layout
+
+\begin_layout Plain Layout
+
+    env
+\end_layout
+
+\begin_layout Plain Layout
+
+}
 \end_layout
 
 \begin_layout Plain Layout
@@ -88,62 +228,12 @@ source('readplot.R')
 
 \begin_layout Plain Layout
 
-setwd('macs1.4.1')
+e1=loaddir('macs1.4.1')
 \end_layout
 
 \begin_layout Plain Layout
 
-getwd()
-\end_layout
-
-\begin_layout Plain Layout
-
-e1<-new.env() 
-\end_layout
-
-\begin_layout Plain Layout
-
-s96v1=WiggleClass('S96') 
-\end_layout
-
-\begin_layout Plain Layout
-
-hs959v1=WiggleClass('HS959') 
-\end_layout
-
-\begin_layout Plain Layout
-
-s96v1$loadWiggles() 
-\end_layout
-
-\begin_layout Plain Layout
-
-hs959v1$loadWiggles()
-\end_layout
-
-\begin_layout Plain Layout
-
-e2<-new.env() 
-\end_layout
-
-\begin_layout Plain Layout
-
-s96v2=WiggleClass('S96',e2) 
-\end_layout
-
-\begin_layout Plain Layout
-
-hs959v2=WiggleClass('HS959',e2) 
-\end_layout
-
-\begin_layout Plain Layout
-
-s96v2$loadWiggles() 
-\end_layout
-
-\begin_layout Plain Layout
-
-hs959v2$loadWiggles() 
+e2=loaddir('macs1.4.2')
 \end_layout
 
 \begin_layout Plain Layout
@@ -153,57 +243,6 @@ hs959v2$loadWiggles()
 
 \begin_layout Plain Layout
 
-s96bed=read.table('S96/S96_peaks.bed') 
-\end_layout
-
-\begin_layout Plain Layout
-
-s96overlap=read.table('S96/S96_overlap.bed') 
-\end_layout
-
-\begin_layout Plain Layout
-
-s96unique=read.table('S96/S96_unique.bed') 
-\end_layout
-
-\begin_layout Plain Layout
-
-hs959bed=read.table('HS959/HS959_peaks.bed') 
-\end_layout
-
-\begin_layout Plain Layout
-
-HS959overlap=read.table('HS959/HS959_overlap.bed') 
-\end_layout
-
-\begin_layout Plain Layout
-
-hs959unique=read.table('HS959/HS959_unique.bed') 
-\end_layout
-
-\begin_layout Plain Layout
-
-# Match indexes 
-\end_layout
-
-\begin_layout Plain Layout
-
-id1=match(s96overlap$V4,s96bed$V4) 
-\end_layout
-
-\begin_layout Plain Layout
-
-id2=match(s96unique$V4,s96bed$V4)
-\end_layout
-
-\begin_layout Plain Layout
-
-id3=match(HS959overlap$V4,hs959bed$V4) 
-\end_layout
-
-\begin_layout Plain Layout
-
-id4=match(hs959unique$V4,hs959bed$V4)
 \end_layout
 
 \begin_layout Plain Layout
@@ -217,17 +256,37 @@ id4=match(hs959unique$V4,hs959bed$V4)
 
 \begin_layout Plain Layout
 
-<<Q1, echo=FALSE>>= 
+<<Q1, fig.width=3, fig.height=2.5, echo=TRUE>>= 
 \end_layout
 
 \begin_layout Plain Layout
 
-r1=s96$getTotalReads(s96bed) 
+s96=get('s96',e1)
 \end_layout
 
 \begin_layout Plain Layout
 
-r2=hs959$getTotalReads(s96bed) 
+hs959=get('hs959',e1)
+\end_layout
+
+\begin_layout Plain Layout
+
+r1=s96$getTotalReads(get('s96bed',e1)) 
+\end_layout
+
+\begin_layout Plain Layout
+
+r2=hs959$getTotalReads(get('s96bed',e1))
+\end_layout
+
+\begin_layout Plain Layout
+
+id1=get('id1',e1)
+\end_layout
+
+\begin_layout Plain Layout
+
+id2=get('id2',e1)
 \end_layout
 
 \begin_layout Plain Layout
@@ -247,27 +306,42 @@ points(r1[id2],r2[id2],pch=1,col='green')
 
 \begin_layout Plain Layout
 
-title('Total S96 peak reads vs HS959 synteny') 
+title('Total S96 peak reads vs HS959 synteny (1.4.1)') 
 \end_layout
 
 \begin_layout Plain Layout
 
-@
+s96=get('s96',e2)
 \end_layout
 
 \begin_layout Plain Layout
 
-<<Q2,echo=TRUE>>=
+hs959=get('hs959',e2)
 \end_layout
 
 \begin_layout Plain Layout
 
+r1=s96$getTotalReads(get('s96bed',e2)) 
 \end_layout
 
 \begin_layout Plain Layout
 
-plot(r1,r2,ylab='HS959 reads',xlab='S96 reads',pch='*',xlim=c(0,40000),ylim=c(0,
-15000)) 
+r2=hs959$getTotalReads(get('s96bed',e2))
+\end_layout
+
+\begin_layout Plain Layout
+
+id1=get('id1',e2)
+\end_layout
+
+\begin_layout Plain Layout
+
+id2=get('id2',e2)
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(r1,r2,ylab='HS959 reads',xlab='S96 reads',pch='*') 
 \end_layout
 
 \begin_layout Plain Layout
@@ -282,7 +356,7 @@ points(r1[id2],r2[id2],pch=1,col='green')
 
 \begin_layout Plain Layout
 
-title('Total S96 peak reads vs HS959 synteny (zoom)')
+title('Total S96 peak reads vs HS959 synteny (1.4.2)') 
 \end_layout
 
 \begin_layout Plain Layout

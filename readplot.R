@@ -203,10 +203,6 @@ WiggleClass<-function(name, environ=environment()) {
   }
   
   
-  
-  getPeaks() {
-    
-  }
   nc<-list2env(nc)
   class(nc)<-"WiggleClass"
   return(nc)
