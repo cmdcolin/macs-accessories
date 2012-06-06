@@ -23,7 +23,7 @@ WiggleClass<-function(name, environ=environment()) {
       for (i in files) {
         file<-paste(wigpath,i,sep='')
         x<-read.table(file, skip=2)
-        assign(i,x,inherits=TRUE,envir=environ)
+        assign(i,x,environ)
       }
     }
     loadWiggle(nc$treatpath,nc$environ)
@@ -32,47 +32,49 @@ WiggleClass<-function(name, environ=environment()) {
   #######
   # Get avg reads
   nc$getTotalReads = function(bedfile) {
-    getTotalReads<-function(x,filepath){
+    getTotalReads<-function(x,filepath, environ){
       chr=x[1]
       start=x[2]
       end=x[3]
       wigfile=paste(filepath,chr,'.wig.gz',sep='')
-      wig=get(wigfile)
+      wig=get(wigfile, environ)
       b=findInterval(start,wig$V1)
       e=findInterval(end,wig$V1)
-      sum(wig$V2[b:e])
+      ret=sum(wig$V2[b:e])
+      #cat(as.integer(end)-as.integer(start), ' ', ret, '\n')
+      ret
     }
     # Apply to chip
-    apply(bedfile,1,getTotalReads,filepath=nc$treatname)
+    apply(bedfile,1,getTotalReads,nc$treatname, nc$environ)
   } 
   
   # Get avg reads
   nc$getAvgReads = function(bedfile) {
-    getAvgReads<-function(x, filepath)
+    getAvgReads<-function(x, filepath, environ)
     {  
       chr=x[1]
       start=x[2]
       end=x[3]
       wigfile=paste(filepath,chr,'.wig.gz',sep='')
-      wig=get(wigfile)
+      wig=get(wigfile, environ)
       b=findInterval(start,wig$V1)
       e=findInterval(end,wig$V1)
       sum(wig$V2[b:e])/(e-b);
     }
     #Apply to treat data
-    apply(bedfile,1,getAvgReads,filepath=nc$treatname)
+    apply(bedfile,1,getAvgReads,nc$treatname, nc$environ)
   }
   
   nc$getMaxAvgReads<-function(bedfile, window,inc) {
     # Get max average reads over window size
-    getMaxAvgReads<-function(x, filepath, window)
+    getMaxAvgReads<-function(x, filepath, window,environ)
     {
       maxreads=array()
       chr=x[1];
       start=as.integer(x[2]);
       end=as.integer(x[3]);
       wigfile=paste(filepath,chr,'.wig.gz',sep='')
-      wig=get(wigfile);
+      wig=get(wigfile, environ);
       bstart=start-window
       bend=end
       maxreads=sapply(seq(bstart,end,by=window),function(p){
@@ -81,11 +83,12 @@ WiggleClass<-function(name, environ=environment()) {
         sum(wig$V2[b:e])/(e-b)
       })
       ret=max(maxreads)
-      cat('Found max ',ret,' in ',chr,'\n');
+      if(debug==TRUE)
+        cat('Found max ',ret,' in ',chr,'\n');
       ret
     }
     # Apply to treated data
-    apply(bedfile,1,getMaxAvgReads,filepath=nc$treatname,window)
+    apply(bedfile,1,getMaxAvgReads,filepath=nc$treatname,window, environ)
   }
 
   
@@ -94,16 +97,17 @@ WiggleClass<-function(name, environ=environment()) {
   ####
   # Use all chromosomes for scaling factor
   nc$estimateScalingFactor <- function() {
-    files1=list.files(nc$treatpath,pattern="*.fsa.wig.gz")
-    files2=list.files(nc$controlpath,pattern="*.fsa.wig.gz")
-    ratio_data=apply(cbind(files1,files2),1,function(x){
-      treat=get(x[1])
-      control=get(x[2])
+    sfactor<-function(x, environ) {
+      treat=get(x[1], environ)
+      control=get(x[2], environ)
       corr=match(treat[,1],control[,1])
       tsig=treat[,2]
       csig=control[,2]
       sapply(corr,function(p){ csig[p]/tsig[p]})
-    })
+    }
+    files1=list.files(nc$treatpath,pattern="*.fsa.wig.gz")
+    files2=list.files(nc$controlpath,pattern="*.fsa.wig.gz")
+    ratio_data=apply(cbind(files1,files2),1,sfactor, nc$environ)
     nc$scaling=median(unlist(ratio_data),na.rm=TRUE)
   }
   
@@ -111,9 +115,9 @@ WiggleClass<-function(name, environ=environment()) {
   nc$estimateVarianceAll<-function() {
     files1=list.files(nc$treatpath,pattern="*.fsa.wig.gz")
     files2=list.files(nc$controlpath,pattern="*.fsa.wig.gz")
-    getSignal<-function(file){get(file)$V2}
-    chip_signal=unlist(lapply(files1,getSignal))
-    control_signal=unlist(lapply(files2,getSignal))
+    getSignal<-function(file, env){get(file, env)$V2}
+    chip_signal=unlist(lapply(files1,getSignal, nc$environ))
+    control_signal=unlist(lapply(files2,getSignal, nc$environ))
     #Average signal
     average_chip=mean(chip_signal)
     average_control=mean(control_signal)
@@ -157,18 +161,19 @@ WiggleClass<-function(name, environ=environment()) {
   # Calculate Z scores over all wiggle files
   nc$Z<-function(bedfile, window=c(10,100)) {
     # Get max average reads over window size
-    getZscore<-function(x,f1,f2,window){
+    getZscore<-function(x,f1,f2,window, env){
       chr=x[1];
       start=as.integer(x[2]);
       end=as.integer(x[3]);
       tf=paste(f1,chr,'.wig.gz',sep='')
       cf=paste(f2,chr,'.wig.gz',sep='')
-      treat=get(tf)
-      control=get(cf)
+      treat=get(tf, env)
+      control=get(cf, env)
       
       corr1=findInterval(start:end,treat$V1)
       corr2=findInterval(start:end,control$V1)
-      cat(chr,'-\t(',start,',',end, ')\n')
+      if(debug==TRUE)
+        cat(chr,'-\t(',start,',',end, ')\n')
       app=cbind(corr1,corr2)
       app=app[-head(app,max(window)),]
       app=app[-tail(app,max(window)),]
@@ -176,7 +181,7 @@ WiggleClass<-function(name, environ=environment()) {
       cbind(app,res)
     }
     
-    apply(bedfile,1,getZscore,f1=nc$treatname,f2=nc$controlname,window)
+    apply(bedfile,1,getZscore,nc$treatname,nc$controlname, window, nc$environ)
   }
   
   nc$getMaxAvgZscore<-function(Zscore,ws=10) {
@@ -193,7 +198,8 @@ WiggleClass<-function(name, environ=environment()) {
       bend=tail(vpos,1)
       if(bstart==bend) { 0}
       else{
-      cat(bstart,' ',bend, ' ', ws,'\n')
+        if(debug==TRUE)
+          cat(bstart,' ',bend, ' ', ws,'\n')
       windows=seq(bstart,bend-ws/nc$spacing,by=ws)
       reads=sapply(windows, acc1,ws,vpos,vsig)
       max(reads)
