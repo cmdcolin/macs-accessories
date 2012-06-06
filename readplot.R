@@ -78,9 +78,10 @@ WiggleClass<-function(name, environ=environment()) {
       bstart=start-window
       bend=end
       maxreads=sapply(seq(bstart,end,by=window),function(p){
-        b=findInterval(p,wig$V1)
-        e=findInterval(p+window,wig$V1)
-        sum(wig$V2[b:e])/(e-b)
+        b=p
+        e=p+window
+        corr=findInterval(b:e,wig$V1)
+        sum(wig$V2[corr])/(e-b)
       })
       ret=max(maxreads)
       if(debug==TRUE)

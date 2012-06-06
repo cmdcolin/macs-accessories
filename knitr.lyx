@@ -73,12 +73,22 @@ status open
 
 \begin_layout Plain Layout
 
-<<set-options, echo=FALSE, cache=FALSE>>=
+<<set-options, echo=FALSE, cache=TRUE>>=
 \end_layout
 
 \begin_layout Plain Layout
 
-loaddir<-function(name) {
+debug=FALSE
+\end_layout
+
+\begin_layout Plain Layout
+
+source('readplot.R')
+\end_layout
+
+\begin_layout Plain Layout
+
+loaddir<-function(name,env) {
 \end_layout
 
 \begin_layout Plain Layout
@@ -89,11 +99,6 @@ loaddir<-function(name) {
 \begin_layout Plain Layout
 
 	setwd(name)
-\end_layout
-
-\begin_layout Plain Layout
-
-	env<-new.env() 
 \end_layout
 
 \begin_layout Plain Layout
@@ -153,12 +158,12 @@ loaddir<-function(name) {
 
 \begin_layout Plain Layout
 
-	assign('hs959overlap',read.table('S96/S96_overlap.bed'),env)
+	assign('hs959overlap',read.table('HS959/HS959_overlap.bed'),env)
 \end_layout
 
 \begin_layout Plain Layout
 
-	assign('hs959unique',read.table('S96/S96_unique.bed'),env)
+	assign('hs959unique',read.table('HS959/HS959_unique.bed'),env)
 \end_layout
 
 \begin_layout Plain Layout
@@ -208,6 +213,11 @@ loaddir<-function(name) {
 
 \begin_layout Plain Layout
 
+	assign('name', name)
+\end_layout
+
+\begin_layout Plain Layout
+
 	setwd(oldpath)
 \end_layout
 
@@ -223,22 +233,17 @@ loaddir<-function(name) {
 
 \begin_layout Plain Layout
 
-source('readplot.R')
+e1=loaddir('macs1.4.1', new.env())
 \end_layout
 
 \begin_layout Plain Layout
 
-e1=loaddir('macs1.4.1')
+e2=loaddir('macs1.4.2', new.env())
 \end_layout
 
 \begin_layout Plain Layout
 
-e2=loaddir('macs1.4.2')
-\end_layout
-
-\begin_layout Plain Layout
-
-##
+e3=loaddir('macs-bad-run', new.env())
 \end_layout
 
 \begin_layout Plain Layout
@@ -252,117 +257,616 @@ e2=loaddir('macs1.4.2')
 
 \begin_layout Plain Layout
 
+Here we observe some differences between version MACS 1.4.1 and MACS 1.4.2.
+ Major differences between these versions are 
 \end_layout
 
 \begin_layout Plain Layout
 
-<<Q1, fig.width=3, fig.height=2.5, echo=TRUE>>= 
+1) stricter removal of duplicate tags 
 \end_layout
 
 \begin_layout Plain Layout
 
-s96=get('s96',e1)
+2) automatically using the peak shifting model ('--off-auto default:false')
+ 
 \end_layout
 
 \begin_layout Plain Layout
 
-hs959=get('hs959',e1)
+3) scaling factor goes from large to small rather than small to large dataset.
+ 
 \end_layout
 
 \begin_layout Plain Layout
 
-r1=s96$getTotalReads(get('s96bed',e1)) 
 \end_layout
 
 \begin_layout Plain Layout
 
-r2=hs959$getTotalReads(get('s96bed',e1))
+<<Q1, echo=FALSE, cache=TRUE, out.width='.49
+\backslash
+
+\backslash
+linewidth'>>= 
 \end_layout
 
 \begin_layout Plain Layout
 
-id1=get('id1',e1)
+plotTotalReads<-function(env, t) {
 \end_layout
 
 \begin_layout Plain Layout
 
-id2=get('id2',e1)
+  s96=get('s96',env)
 \end_layout
 
 \begin_layout Plain Layout
 
-plot(r1,r2,ylab='HS959 reads',xlab='S96 reads',pch='*') 
+  hs959=get('hs959',env)
 \end_layout
 
 \begin_layout Plain Layout
 
-points(r1[id1],r2[id1],pch=1,col='pink') 
+  r1=s96$getTotalReads(get('s96bed',env))
 \end_layout
 
 \begin_layout Plain Layout
 
-points(r1[id2],r2[id2],pch=1,col='green') 
+   r2=hs959$getTotalReads(get('s96bed',env))
 \end_layout
 
 \begin_layout Plain Layout
 
-title('Total S96 peak reads vs HS959 synteny (1.4.1)') 
+  assign('r1',r1,env)
 \end_layout
 
 \begin_layout Plain Layout
 
-s96=get('s96',e2)
+  assign('r2',r2,env)
 \end_layout
 
 \begin_layout Plain Layout
 
-hs959=get('hs959',e2)
+  id1=get('id1',env)
 \end_layout
 
 \begin_layout Plain Layout
 
-r1=s96$getTotalReads(get('s96bed',e2)) 
+  id2=get('id2',env)
 \end_layout
 
 \begin_layout Plain Layout
 
-r2=hs959$getTotalReads(get('s96bed',e2))
+  plot(r1,r2,ylab='HS959 reads',xlab='S96 reads',pch='*')
 \end_layout
 
 \begin_layout Plain Layout
 
-id1=get('id1',e2)
+   points(r1[id1],r2[id1],pch=1,col='pink')
 \end_layout
 
 \begin_layout Plain Layout
 
-id2=get('id2',e2)
+   points(r1[id2],r2[id2],pch=1,col='green')
 \end_layout
 
 \begin_layout Plain Layout
 
-plot(r1,r2,ylab='HS959 reads',xlab='S96 reads',pch='*') 
+   title(t)
 \end_layout
 
 \begin_layout Plain Layout
 
-points(r1[id1],r2[id1],pch=1,col='pink') 
+legend('bottomright', legend=c('shared', 'unique'), fill=c('pink', 'green'))
 \end_layout
 
 \begin_layout Plain Layout
 
-points(r1[id2],r2[id2],pch=1,col='green') 
+}
 \end_layout
 
 \begin_layout Plain Layout
 
-title('Total S96 peak reads vs HS959 synteny (1.4.2)') 
+plotTotalReads(e1,'Total S96 peak reads vs HS959 synteny MACS 1.4.1 bw=25')
+\end_layout
+
+\begin_layout Plain Layout
+
+plotTotalReads(e2,'Total S96 peak reads vs HS959 synteny MACS 1.4.2 bw=25')
 \end_layout
 
 \begin_layout Plain Layout
 
 @
 \end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The last plot here shows that using incorrect scan window size gives incorrect
+ results that highly overestimate the total number of peak reads for a number
+ of reasons, for ex.
+ having a larger peak window size
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<Q2,cache=TRUE,echo=FALSE,out.width='.67
+\backslash
+
+\backslash
+linewidth'>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+plotTotalReads(e3,'Total S96 peak reads vs HS959 synteny MACS 1.4.2 bw=100
+ [Incorrect]')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+Sorting out optimal MACS parameters is clearly important for a dataset.
+ Our software package can visually assist users by generating visual reports
+ for ChIP-seq data comparisons.
+ 
+\end_layout
+
+\begin_layout Standard
+We also use other comparisons for different ChIP-seq metrics, including
+\end_layout
+
+\begin_layout Standard
+- Mean peak reads
+\end_layout
+
+\begin_layout Standard
+- Total peak reads
+\end_layout
+
+\begin_layout Standard
+- Normalized difference scores
+\end_layout
+
+\begin_layout Standard
+- Sliding window representations
+\end_layout
+
+\begin_layout Standard
+Here we use a sliding window to find the maximum average peak reads to represent
+ the distribution of means
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<Q3, cache=TRUE, echo=FALSE,fig.height='.39
+\backslash
+
+\backslash
+paperheight',out.width='
+\backslash
+
+\backslash
+linewidth'>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+plotMaxAvgReadsS96<-function(env, t) {
+\end_layout
+
+\begin_layout Plain Layout
+
+  s96=get('s96',env)
+\end_layout
+
+\begin_layout Plain Layout
+
+  hs959=get('hs959',env)
+\end_layout
+
+\begin_layout Plain Layout
+
+###########
+\end_layout
+
+\begin_layout Plain Layout
+
+# Use Max avg reads over windows
+\end_layout
+
+\begin_layout Plain Layout
+
+rma1=s96$getMaxAvgReads(get('s96bed',env),100)
+\end_layout
+
+\begin_layout Plain Layout
+
+rma2=hs959$getMaxAvgReads(get('s96bed',env),100)
+\end_layout
+
+\begin_layout Plain Layout
+
+  id1=get('id1',env)
+\end_layout
+
+\begin_layout Plain Layout
+
+  id2=get('id2',env)
+\end_layout
+
+\begin_layout Plain Layout
+
+  assign('rma1',rma1,env)
+\end_layout
+
+\begin_layout Plain Layout
+
+  assign('rma2',rma2,env)
+\end_layout
+
+\begin_layout Plain Layout
+
+###################### 
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(rma1,rma2,ylab='Max Avg HS959 reads',xlab='Max Avg S96 reads',pch='*')
+\end_layout
+
+\begin_layout Plain Layout
+
+points(rma1[id1],rma2[id1],pch=1,col='red')
+\end_layout
+
+\begin_layout Plain Layout
+
+points(rma1[id2],rma2[id2],pch=1,col='green')
+\end_layout
+
+\begin_layout Plain Layout
+
+title('Max Average reads S96 peaks  w=100')
+\end_layout
+
+\begin_layout Plain Layout
+
+legend('bottomright', legend=c('shared', 'unique'), fill=c('red', 'green'))
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(rma1,rma2,ylab='Max Avg HS959 reads',xlab='Max Avg S96 reads',pch='*',xlim=
+c(10,30),ylim=c(1,20))
+\end_layout
+
+\begin_layout Plain Layout
+
+points(rma1[id1],rma2[id1],pch=1,col='red')
+\end_layout
+
+\begin_layout Plain Layout
+
+points(rma1[id2],rma2[id2],pch=1,col='green')
+\end_layout
+
+\begin_layout Plain Layout
+
+title('Max Avg reads S96 peaks w=100 (Zoom)')
+\end_layout
+
+\begin_layout Plain Layout
+
+legend('bottomright', legend=c('shared', 'unique'), fill=c('red', 'green'))
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+plotMaxAvgReadsS96(e2)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<Q4, cache=TRUE, echo=FALSE,fig.height='.39
+\backslash
+
+\backslash
+paperheight',out.width='
+\backslash
+
+\backslash
+linewidth'>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+plotTotalReadsHS959<-function(env) {
+\end_layout
+
+\begin_layout Plain Layout
+
+  s96=get('s96',env)
+\end_layout
+
+\begin_layout Plain Layout
+
+  hs959=get('hs959',env)
+\end_layout
+
+\begin_layout Plain Layout
+
+rma3=hs959$getMaxAvgReads(get('hs959bed',env),100) 
+\end_layout
+
+\begin_layout Plain Layout
+
+rma4=s96$getMaxAvgReads(get('hs959bed',env),100)
+\end_layout
+
+\begin_layout Plain Layout
+
+  assign('rma3',rma3,env)
+\end_layout
+
+\begin_layout Plain Layout
+
+  assign('rma4',rma4,env)
+\end_layout
+
+\begin_layout Plain Layout
+
+  id3=get('id3',env)
+\end_layout
+
+\begin_layout Plain Layout
+
+  id4=get('id4',env)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(rma3,rma4,ylab='Max Avg S96 reads',xlab='Max Avg HS959 reads',pch='*')
+\end_layout
+
+\begin_layout Plain Layout
+
+points(rma3[id3],rma4[id3],pch=1,col='blue')
+\end_layout
+
+\begin_layout Plain Layout
+
+points(rma3[id4],rma4[id4],pch=1,col='red')
+\end_layout
+
+\begin_layout Plain Layout
+
+title('Max Average reads HS959 peaks w=100')
+\end_layout
+
+\begin_layout Plain Layout
+
+legend('bottomright', legend=c('shared', 'unique'), fill=c('blue', 'red'))
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+# 
+\end_layout
+
+\begin_layout Plain Layout
+
+#Zoom 
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(rma3,rma4,ylab='Max Avg S96 reads',xlab='Max Avg HS959 reads',pch='*',xlim=
+c(6,30),ylim=c(1,31))
+\end_layout
+
+\begin_layout Plain Layout
+
+points(rma3[id3],rma4[id3],pch=1,col='blue')
+\end_layout
+
+\begin_layout Plain Layout
+
+points(rma3[id4],rma4[id4],pch=1,col='red')
+\end_layout
+
+\begin_layout Plain Layout
+
+title('Max Average reads HS959 peaks w=100 (Zoom)')
+\end_layout
+
+\begin_layout Plain Layout
+
+legend('bottomright', legend=c('shared', 'unique'), fill=c('blue', 'red'))
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+plotTotalReadsHS959(e2)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+x
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Future work:
+\end_layout
+
+\begin_layout Standard
+We want to do statistical hypothesis testing on ChIP-seq datasets to test
+ against normality.
+ If we use a normalized difference score defined by Zheng et al.
+ then we have 
+\begin_inset Formula $A,B,c,\, and\,\hat{\sigma}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Z=\frac{A-B/c}{\hat{\sigma}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We can test the score using the mean values of A in the peak regions to
+ see if it significantly strays from the standard normal contradicts the
+ null hypothesis 
+\begin_inset Formula $H_{0}\sim Normal(0,1)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This specifically would be a test like
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Z=\frac{\bar{A}-\bar{B}/c}{\hat{\sigma}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Source code for plots is available 
+\begin_inset CommandInset href
+LatexCommand href
+target "https://github.com/tonto/macs-accessories/"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Document generated using knitr
+\begin_inset CommandInset href
+LatexCommand href
+target " http://yihui.name/knitr/"
 
 \end_inset
 
