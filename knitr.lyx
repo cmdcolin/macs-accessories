@@ -491,11 +491,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<Q3, cache=TRUE, echo=FALSE,fig.height='.39
-\backslash
-
-\backslash
-paperheight',out.width='
+<<Q3, cache=TRUE, echo=FALSE,fig.height=6,fig.width=8,out.width='
 \backslash
 
 \backslash
@@ -642,11 +638,7 @@ plotMaxAvgReadsS96(e2)
 
 \begin_layout Plain Layout
 
-<<Q4, cache=TRUE, echo=FALSE,fig.height='.39
-\backslash
-
-\backslash
-paperheight',out.width='
+<<Q4, cache=TRUE, echo=FALSE,fig.height=6,fig.width=8,out.width='
 \backslash
 
 \backslash
