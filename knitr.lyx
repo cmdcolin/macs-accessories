@@ -88,142 +88,82 @@ source('readplot.R')
 
 \begin_layout Plain Layout
 
-loaddir<-function(name,env) {
+loadMacsEnv<-function(name1,name2) {   
 \end_layout
 
 \begin_layout Plain Layout
 
-    oldpath=getwd()
+local({
 \end_layout
 
 \begin_layout Plain Layout
 
-	setwd(name)
+wig1=WiggleClass(name1)
 \end_layout
 
 \begin_layout Plain Layout
 
-    s96=WiggleClass('S96', env)
+wig2=WiggleClass(name2)
 \end_layout
 
 \begin_layout Plain Layout
 
-	hs959=WiggleClass('HS959', env)
+wig1$loadWiggles()
 \end_layout
 
 \begin_layout Plain Layout
 
-	assign('s96',s96,env) 
+ wig2$loadWiggles()
 \end_layout
 
 \begin_layout Plain Layout
 
-	assign('hs959',hs959,env)
+###
 \end_layout
 
 \begin_layout Plain Layout
 
-	s96$loadWiggles() 
+wig1$peaks=read.table(paste(name1,'/',name1,'_peaks.bed',sep=''))
 \end_layout
 
 \begin_layout Plain Layout
 
-	hs959$loadWiggles()
+wig1$shared=read.table(paste(name1,'/',name1,'_overlap.bed',sep=''))
 \end_layout
 
 \begin_layout Plain Layout
 
-	###
+wig1$unique=read.table(paste(name1,'/',name1,'_unique.bed',sep=''))
 \end_layout
 
 \begin_layout Plain Layout
 
-	assign('s96bed',read.table('S96/S96_peaks.bed'),env)
+wig2$peaks=read.table(paste(name2,'/',name2,'_peaks.bed',sep=''))
 \end_layout
 
 \begin_layout Plain Layout
 
-	assign('s96overlap',read.table('S96/S96_overlap.bed'),env)
+wig2$shared=read.table(paste(name2,'/',name2,'_overlap.bed',sep=''))
 \end_layout
 
 \begin_layout Plain Layout
 
-	assign('s96unique',read.table('S96/S96_unique.bed'),env)
+wig2$unique=read.table(paste(name2,'/',name2,'_unique.bed',sep=''))
 \end_layout
 
 \begin_layout Plain Layout
 
-	assign('hs959bed',read.table('HS959/HS959_peaks.bed'),env)
+# Match indexes
 \end_layout
 
 \begin_layout Plain Layout
 
-	assign('hs959overlap',read.table('HS959/HS959_overlap.bed'),env)
+environment()   
 \end_layout
 
 \begin_layout Plain Layout
 
-	assign('hs959unique',read.table('HS959/HS959_unique.bed'),env)
-\end_layout
-
-\begin_layout Plain Layout
-
-	# Match indexes 
-\end_layout
-
-\begin_layout Plain Layout
-
-	id1=match(get('s96overlap',env)$V4,get('s96bed',env)$V4) 
-\end_layout
-
-\begin_layout Plain Layout
-
-	id2=match(get('s96unique',env)$V4,get('s96bed',env)$V4)
-\end_layout
-
-\begin_layout Plain Layout
-
-	id3=match(get('hs959overlap',env)$V4,get('hs959bed',env)$V4) 
-\end_layout
-
-\begin_layout Plain Layout
-
-	id4=match(get('hs959unique',env)$V4,get('hs959bed',env)$V4)
-\end_layout
-
-\begin_layout Plain Layout
-
-    assign('id1',id1,env)
-\end_layout
-
-\begin_layout Plain Layout
-
-	assign('id2',id2,env)
-\end_layout
-
-\begin_layout Plain Layout
-
-	assign('id3',id3,env)
-\end_layout
-
-\begin_layout Plain Layout
-
-	assign('id4',id4,env)
-\end_layout
-
-\begin_layout Plain Layout
-
-	assign('name', name)
-\end_layout
-
-\begin_layout Plain Layout
-
-	setwd(oldpath)
-\end_layout
-
-\begin_layout Plain Layout
-
-    env
+}) 
 \end_layout
 
 \begin_layout Plain Layout
@@ -233,17 +173,37 @@ loaddir<-function(name,env) {
 
 \begin_layout Plain Layout
 
-e1=loaddir('macs1.4.1', new.env())
+setwd('macs1.4.1')
 \end_layout
 
 \begin_layout Plain Layout
 
-e2=loaddir('macs1.4.2', new.env())
+e1=loadMacsEnv('S96','HS959')
 \end_layout
 
 \begin_layout Plain Layout
 
-e3=loaddir('macs-bad-run', new.env())
+setwd('../macs1.4.2')
+\end_layout
+
+\begin_layout Plain Layout
+
+e2=loadMacsEnv('S96','HS959')
+\end_layout
+
+\begin_layout Plain Layout
+
+setwd('../macs-bad-run')
+\end_layout
+
+\begin_layout Plain Layout
+
+e3=loadMacsEnv('S96','HS959')
+\end_layout
+
+\begin_layout Plain Layout
+
+setwd('..')
 \end_layout
 
 \begin_layout Plain Layout
@@ -257,30 +217,39 @@ e3=loaddir('macs-bad-run', new.env())
 
 \begin_layout Plain Layout
 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 Here we observe some differences between version MACS 1.4.1 and MACS 1.4.2.
  Major differences between these versions are 
 \end_layout
 
-\begin_layout Plain Layout
-
+\begin_layout Standard
 1) stricter removal of duplicate tags 
 \end_layout
 
-\begin_layout Plain Layout
-
+\begin_layout Standard
 2) automatically using the peak shifting model ('--off-auto default:false')
  
 \end_layout
 
-\begin_layout Plain Layout
-
+\begin_layout Standard
 3) scaling factor goes from large to small rather than small to large dataset.
  
 \end_layout
 
-\begin_layout Plain Layout
+\begin_layout Standard
 
 \end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
 
 \begin_layout Plain Layout
 
@@ -293,62 +262,46 @@ linewidth'>>=
 
 \begin_layout Plain Layout
 
-plotTotalReads<-function(env, t) {
 \end_layout
 
 \begin_layout Plain Layout
 
-  s96=get('s96',env)
+plotTotalReads<-function(t, w1, w2,c1,c2) {
 \end_layout
 
 \begin_layout Plain Layout
 
-  hs959=get('hs959',env)
+  r1=w1$getTotalReads(w1$peaks)
 \end_layout
 
 \begin_layout Plain Layout
 
-  r1=s96$getTotalReads(get('s96bed',env))
+   r2=w2$getTotalReads(w1$peaks)
 \end_layout
 
 \begin_layout Plain Layout
 
-   r2=hs959$getTotalReads(get('s96bed',env))
+  plot(r1,r2,xlab=paste(w1$name,'reads'),ylab=paste(w2$name, 'reads'),pch='*')
 \end_layout
 
 \begin_layout Plain Layout
 
-  assign('r1',r1,env)
+   id1=match(wig1$shared$V4,wig1$peaks$V4)
 \end_layout
 
 \begin_layout Plain Layout
 
-  assign('r2',r2,env)
+   id2=match(wig1$unique$V4,wig1$peaks$V4)
 \end_layout
 
 \begin_layout Plain Layout
 
-  id1=get('id1',env)
+  points(r1[id1],r2[id1],pch=1,col=c1)
 \end_layout
 
 \begin_layout Plain Layout
 
-  id2=get('id2',env)
-\end_layout
-
-\begin_layout Plain Layout
-
-  plot(r1,r2,ylab='HS959 reads',xlab='S96 reads',pch='*')
-\end_layout
-
-\begin_layout Plain Layout
-
-   points(r1[id1],r2[id1],pch=1,col='pink')
-\end_layout
-
-\begin_layout Plain Layout
-
-   points(r1[id2],r2[id2],pch=1,col='green')
+   points(r1[id2],r2[id2],pch=1,col=c2)
 \end_layout
 
 \begin_layout Plain Layout
@@ -358,7 +311,7 @@ plotTotalReads<-function(env, t) {
 
 \begin_layout Plain Layout
 
-legend('bottomright', legend=c('shared', 'unique'), fill=c('pink', 'green'))
+  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2)) 
 \end_layout
 
 \begin_layout Plain Layout
@@ -368,12 +321,34 @@ legend('bottomright', legend=c('shared', 'unique'), fill=c('pink', 'green'))
 
 \begin_layout Plain Layout
 
-plotTotalReads(e1,'Total S96 peak reads vs HS959 synteny MACS 1.4.1 bw=25')
+attach(e1)
 \end_layout
 
 \begin_layout Plain Layout
 
-plotTotalReads(e2,'Total S96 peak reads vs HS959 synteny MACS 1.4.2 bw=25')
+plotTotalReads('Total S96 peak reads vs HS959 synteny MACS 1.4.1 bw=25',wig1,wig2,
+'pink','green') 
+\end_layout
+
+\begin_layout Plain Layout
+
+detach(e1)
+\end_layout
+
+\begin_layout Plain Layout
+
+attach(e2)
+\end_layout
+
+\begin_layout Plain Layout
+
+plotTotalReads('Total S96 peak reads vs HS959 synteny MACS 1.4.2 bw=25',wig1,wig2,
+'lightblue','green')
+\end_layout
+
+\begin_layout Plain Layout
+
+detach(e2)
 \end_layout
 
 \begin_layout Plain Layout
@@ -381,26 +356,17 @@ plotTotalReads(e2,'Total S96 peak reads vs HS959 synteny MACS 1.4.2 bw=25')
 @
 \end_layout
 
-\begin_layout Plain Layout
+\end_inset
+
 
 \end_layout
 
-\begin_layout Plain Layout
+\begin_layout Standard
 
 \end_layout
 
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
+\begin_layout Standard
+\begin_inset Newpage pagebreak
 \end_inset
 
 
@@ -419,11 +385,7 @@ status open
 
 \begin_layout Plain Layout
 
-\end_layout
-
-\begin_layout Plain Layout
-
-<<Q2,cache=TRUE,echo=FALSE,out.width='.67
+<<Q2,cache=TRUE,echo=FALSE,out.width='.6
 \backslash
 
 \backslash
@@ -443,6 +405,10 @@ plotTotalReads(e3,'Total S96 peak reads vs HS959 synteny MACS 1.4.2 bw=100
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Standard
 Sorting out optimal MACS parameters is clearly important for a dataset.
  Our software package can visually assist users by generating visual reports
  for ChIP-seq data comparisons.
@@ -491,7 +457,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<Q3, cache=TRUE, echo=FALSE,fig.height=6,fig.width=8,out.width='
+<<Q3, cache=TRUE, echo=FALSE, out.width='.49
 \backslash
 
 \backslash
@@ -500,117 +466,73 @@ linewidth'>>=
 
 \begin_layout Plain Layout
 
-plotMaxAvgReadsS96<-function(env, t) {
+attach(e2)
 \end_layout
 
 \begin_layout Plain Layout
 
-  s96=get('s96',env)
+plotMaxAvgReads<-function(t, w1, w2,c1,c2) {
 \end_layout
 
 \begin_layout Plain Layout
 
-  hs959=get('hs959',env)
+  ###########
 \end_layout
 
 \begin_layout Plain Layout
 
-###########
+  # Use Max avg reads over windows
 \end_layout
 
 \begin_layout Plain Layout
 
-# Use Max avg reads over windows
+  rma1=w1$getMaxAvgReads(w1$peaks,100)
 \end_layout
 
 \begin_layout Plain Layout
 
-rma1=s96$getMaxAvgReads(get('s96bed',env),100)
+  rma2=w2$getMaxAvgReads(w1$peaks,100)
 \end_layout
 
 \begin_layout Plain Layout
 
-rma2=hs959$getMaxAvgReads(get('s96bed',env),100)
+  ######################
 \end_layout
 
 \begin_layout Plain Layout
 
-  id1=get('id1',env)
+   plot(rma1,rma2,xlab=paste('Max Avg', w1$name,'reads'),ylab=paste('Max
+ Avg',w2$name,'reads'),pch='*')
 \end_layout
 
 \begin_layout Plain Layout
 
-  id2=get('id2',env)
+  id1=match(w1$shared$V4,w1$peaks$V4)
 \end_layout
 
 \begin_layout Plain Layout
 
-  assign('rma1',rma1,env)
+   id2=match(w1$unique$V4,w1$peaks$V4)
 \end_layout
 
 \begin_layout Plain Layout
 
-  assign('rma2',rma2,env)
+  points(rma1[id1],rma2[id1],pch=1,col=c1)
 \end_layout
 
 \begin_layout Plain Layout
 
-###################### 
+  points(rma1[id2],rma2[id2],pch=1,col=c2)
 \end_layout
 
 \begin_layout Plain Layout
 
-plot(rma1,rma2,ylab='Max Avg HS959 reads',xlab='Max Avg S96 reads',pch='*')
+  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
 \end_layout
 
 \begin_layout Plain Layout
 
-points(rma1[id1],rma2[id1],pch=1,col='red')
-\end_layout
-
-\begin_layout Plain Layout
-
-points(rma1[id2],rma2[id2],pch=1,col='green')
-\end_layout
-
-\begin_layout Plain Layout
-
-title('Max Average reads S96 peaks  w=100')
-\end_layout
-
-\begin_layout Plain Layout
-
-legend('bottomright', legend=c('shared', 'unique'), fill=c('red', 'green'))
-\end_layout
-
-\begin_layout Plain Layout
-
-plot(rma1,rma2,ylab='Max Avg HS959 reads',xlab='Max Avg S96 reads',pch='*',xlim=
-c(10,30),ylim=c(1,20))
-\end_layout
-
-\begin_layout Plain Layout
-
-points(rma1[id1],rma2[id1],pch=1,col='red')
-\end_layout
-
-\begin_layout Plain Layout
-
-points(rma1[id2],rma2[id2],pch=1,col='green')
-\end_layout
-
-\begin_layout Plain Layout
-
-title('Max Avg reads S96 peaks w=100 (Zoom)')
-\end_layout
-
-\begin_layout Plain Layout
-
-legend('bottomright', legend=c('shared', 'unique'), fill=c('red', 'green'))
-\end_layout
-
-\begin_layout Plain Layout
-
+  title(t) 
 \end_layout
 
 \begin_layout Plain Layout
@@ -620,163 +542,24 @@ legend('bottomright', legend=c('shared', 'unique'), fill=c('red', 'green'))
 
 \begin_layout Plain Layout
 
-plotMaxAvgReadsS96(e2)
+plotMaxAvgReads('Max Average reads S96 peaks  w=100', wig1,wig2,'purple','green'
+) 
+\end_layout
+
+\begin_layout Plain Layout
+
+plotMaxAvgReads('Max Average reads HS959 peaks  w=100', wig2,wig1,'yellow','gree
+n') 
+\end_layout
+
+\begin_layout Plain Layout
+
+detach(e2)
 \end_layout
 
 \begin_layout Plain Layout
 
 @
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-<<Q4, cache=TRUE, echo=FALSE,fig.height=6,fig.width=8,out.width='
-\backslash
-
-\backslash
-linewidth'>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-plotTotalReadsHS959<-function(env) {
-\end_layout
-
-\begin_layout Plain Layout
-
-  s96=get('s96',env)
-\end_layout
-
-\begin_layout Plain Layout
-
-  hs959=get('hs959',env)
-\end_layout
-
-\begin_layout Plain Layout
-
-rma3=hs959$getMaxAvgReads(get('hs959bed',env),100) 
-\end_layout
-
-\begin_layout Plain Layout
-
-rma4=s96$getMaxAvgReads(get('hs959bed',env),100)
-\end_layout
-
-\begin_layout Plain Layout
-
-  assign('rma3',rma3,env)
-\end_layout
-
-\begin_layout Plain Layout
-
-  assign('rma4',rma4,env)
-\end_layout
-
-\begin_layout Plain Layout
-
-  id3=get('id3',env)
-\end_layout
-
-\begin_layout Plain Layout
-
-  id4=get('id4',env)
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-plot(rma3,rma4,ylab='Max Avg S96 reads',xlab='Max Avg HS959 reads',pch='*')
-\end_layout
-
-\begin_layout Plain Layout
-
-points(rma3[id3],rma4[id3],pch=1,col='blue')
-\end_layout
-
-\begin_layout Plain Layout
-
-points(rma3[id4],rma4[id4],pch=1,col='red')
-\end_layout
-
-\begin_layout Plain Layout
-
-title('Max Average reads HS959 peaks w=100')
-\end_layout
-
-\begin_layout Plain Layout
-
-legend('bottomright', legend=c('shared', 'unique'), fill=c('blue', 'red'))
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-# 
-\end_layout
-
-\begin_layout Plain Layout
-
-#Zoom 
-\end_layout
-
-\begin_layout Plain Layout
-
-plot(rma3,rma4,ylab='Max Avg S96 reads',xlab='Max Avg HS959 reads',pch='*',xlim=
-c(6,30),ylim=c(1,31))
-\end_layout
-
-\begin_layout Plain Layout
-
-points(rma3[id3],rma4[id3],pch=1,col='blue')
-\end_layout
-
-\begin_layout Plain Layout
-
-points(rma3[id4],rma4[id4],pch=1,col='red')
-\end_layout
-
-\begin_layout Plain Layout
-
-title('Max Average reads HS959 peaks w=100 (Zoom)')
-\end_layout
-
-\begin_layout Plain Layout
-
-legend('bottomright', legend=c('shared', 'unique'), fill=c('blue', 'red'))
- 
-\end_layout
-
-\begin_layout Plain Layout
-
-}
-\end_layout
-
-\begin_layout Plain Layout
-
-plotTotalReadsHS959(e2)
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\begin_layout Plain Layout
-
 \end_layout
 
 \end_inset
@@ -785,7 +568,6 @@ plotTotalReadsHS959(e2)
 \end_layout
 
 \begin_layout Standard
-x
 \begin_inset Newpage pagebreak
 \end_inset
 

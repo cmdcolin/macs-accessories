@@ -13,9 +13,9 @@ WiggleClass<-function(name) {
     controlname=paste(name,'_control_afterfiting_',sep=''),
     treatname=paste(name,'_treat_afterfiting_',sep=''),
     wiglist=list(),
-    peaks=table(),
-    unique()=table(),
-    shared=table()
+    peaks=NULL,
+    unique=NULL,
+    shared=NULL
     )
   
   ########################
@@ -33,9 +33,6 @@ WiggleClass<-function(name) {
     }
     loadWiggle(nc$treatpath)
     loadWiggle(nc$controlpath)
-  }
-  nc$loadPeaks() {
-    
   }
   #######
   # Get avg reads
