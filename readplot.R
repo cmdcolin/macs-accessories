@@ -25,8 +25,6 @@ WiggleClass<-function(name) {
       files=list.files(path=wigpath,pattern="*.fsa.wig.gz")
       for (filename in files) {
         file<-paste(wigpath,filename,sep='')
-        if(debug)
-          print(filename)
         wig<-read.table(file, skip=2)
         nc$wiglist[[filename]]=wig
       }

@@ -1,0 +1,116 @@
+\batchmode
+\makeatletter
+\def\input@path{{C:/Users/2010/Documents/GitHub/macs-accessories//}}
+\makeatother
+\documentclass[english]{article}
+\usepackage{mathpazo}
+\usepackage{helvet}
+\usepackage{courier}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{geometry}
+\geometry{verbose,tmargin=2.54cm,bmargin=2.54cm,lmargin=2.54cm,rmargin=2.54cm}
+\usepackage{babel}
+\usepackage[unicode=true]
+ {hyperref}
+\begin{document}
+<<set-options, echo=FALSE, cache=TRUE>>=
+debug=FALSE
+source('readplot.R')
+source('knitr.R')
+setwd('macs1.4.1')
+e1=loadMacsEnv('S96','HS959')
+setwd('../macs1.4.2')
+e2=loadMacsEnv('S96','HS959')
+setwd('../macs-bad-run')
+e3=loadMacsEnv('S96','HS959')
+setwd('..')
+
+@
+
+
+Here we observe some differences between version MACS 1.4.1 and MACS
+1.4.2. Major differences between these versions are 
+
+1) stricter removal of duplicate tags 
+
+2) automatically using the peak shifting model ('--off-auto default:false') 
+
+3) scaling factor goes from large to small rather than small to large
+dataset. 
+
+
+
+<<Q1, echo=FALSE, cache=TRUE,out.width='.49\\linewidth'>>= 
+attach(e1)
+plotTotalReads('Total S96 peak reads vs HS959 synteny MACS 1.4.1 bw=25',wig1,wig2,'pink','green') 
+detach(e1)
+attach(e2)
+plotTotalReads('Total S96 peak reads vs HS959 synteny MACS 1.4.2 bw=25',wig1,wig2,'lightblue','green')
+detach(e2)
+@
+
+
+
+The last plot here shows that using incorrect scan window size gives
+incorrect results that highly overestimate the total number of peak
+reads for a number of reasons, for ex. having a larger peak window
+size
+
+<<Q2,cache=TRUE,echo=FALSE,out.width='.49\\linewidth'>>=
+attach(e3)
+plotTotalReads('Total S96 peak reads vs HS959 synteny MACS 1.4.1 bw=100 [Incorrect]',wig1,wig2,'peru','green')
+detach(e3)
+@
+
+Sorting out optimal MACS parameters is clearly important for a dataset.
+Our software package can visually assist users by generating visual
+reports for ChIP-seq data comparisons. 
+
+We also use other comparisons for different ChIP-seq metrics, including
+
+- Mean peak reads
+
+- Total peak reads
+
+- Normalized difference scores
+
+- Sliding window representations
+
+Here we use a sliding window to find the maximum average peak reads
+to represent the distribution of means
+
+
+<<Q3, cache=TRUE, echo=FALSE,out.width='.49\\linewidth'>>=
+attach(e2)
+plotMaxAvgReads('Max Average reads S96 peaks  w=100', wig1,wig2,'purple','green') 
+plotMaxAvgReads('Max Average reads HS959 peaks  w=100', wig2,wig1,'yellow','green') 
+detach(e2)
+@
+
+Future work:
+
+We want to do statistical hypothesis testing on ChIP-seq datasets
+to test against normality. If we use a normalized difference score
+defined by Zheng et al. then we have $A,B,c,\, and\,\hat{\sigma}$
+
+\[
+Z=\frac{A-B/c}{\hat{\sigma}}
+\]
+
+
+We can test the score using the mean values of A in the peak regions
+to see if it significantly strays from the standard normal contradicts
+the null hypothesis $H_{0}\sim Normal(0,1)$
+
+This specifically would be a test like
+
+\[
+Z=\frac{\bar{A}-\bar{B}/c}{\hat{\sigma}}
+\]
+
+
+Source code for plots is available \href{https://github.com/tonto/macs-accessories/}{https://github.com/tonto/macs-accessories/}
+
+Document generated using knitr\href{ http://yihui.name/knitr/}{ http://yihui.name/knitr/}
+\end{document}

@@ -88,87 +88,7 @@ source('readplot.R')
 
 \begin_layout Plain Layout
 
-loadMacsEnv<-function(name1,name2) {   
-\end_layout
-
-\begin_layout Plain Layout
-
-local({
-\end_layout
-
-\begin_layout Plain Layout
-
-wig1=WiggleClass(name1)
-\end_layout
-
-\begin_layout Plain Layout
-
-wig2=WiggleClass(name2)
-\end_layout
-
-\begin_layout Plain Layout
-
-wig1$loadWiggles()
-\end_layout
-
-\begin_layout Plain Layout
-
- wig2$loadWiggles()
-\end_layout
-
-\begin_layout Plain Layout
-
-###
-\end_layout
-
-\begin_layout Plain Layout
-
-wig1$peaks=read.table(paste(name1,'/',name1,'_peaks.bed',sep=''))
-\end_layout
-
-\begin_layout Plain Layout
-
-wig1$shared=read.table(paste(name1,'/',name1,'_overlap.bed',sep=''))
-\end_layout
-
-\begin_layout Plain Layout
-
-wig1$unique=read.table(paste(name1,'/',name1,'_unique.bed',sep=''))
-\end_layout
-
-\begin_layout Plain Layout
-
-wig2$peaks=read.table(paste(name2,'/',name2,'_peaks.bed',sep=''))
-\end_layout
-
-\begin_layout Plain Layout
-
-wig2$shared=read.table(paste(name2,'/',name2,'_overlap.bed',sep=''))
-\end_layout
-
-\begin_layout Plain Layout
-
-wig2$unique=read.table(paste(name2,'/',name2,'_unique.bed',sep=''))
-\end_layout
-
-\begin_layout Plain Layout
-
-# Match indexes
-\end_layout
-
-\begin_layout Plain Layout
-
-environment()   
-\end_layout
-
-\begin_layout Plain Layout
-
-}) 
-\end_layout
-
-\begin_layout Plain Layout
-
-}
+source('knitr.R')
 \end_layout
 
 \begin_layout Plain Layout
@@ -253,70 +173,11 @@ status open
 
 \begin_layout Plain Layout
 
-<<Q1, echo=FALSE, cache=TRUE, out.width='.49
+<<Q1, echo=FALSE, cache=TRUE,out.width='.49
 \backslash
 
 \backslash
 linewidth'>>= 
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-plotTotalReads<-function(t, w1, w2,c1,c2) {
-\end_layout
-
-\begin_layout Plain Layout
-
-  r1=w1$getTotalReads(w1$peaks)
-\end_layout
-
-\begin_layout Plain Layout
-
-   r2=w2$getTotalReads(w1$peaks)
-\end_layout
-
-\begin_layout Plain Layout
-
-  plot(r1,r2,xlab=paste(w1$name,'reads'),ylab=paste(w2$name, 'reads'),pch='*')
-\end_layout
-
-\begin_layout Plain Layout
-
-   id1=match(wig1$shared$V4,wig1$peaks$V4)
-\end_layout
-
-\begin_layout Plain Layout
-
-   id2=match(wig1$unique$V4,wig1$peaks$V4)
-\end_layout
-
-\begin_layout Plain Layout
-
-  points(r1[id1],r2[id1],pch=1,col=c1)
-\end_layout
-
-\begin_layout Plain Layout
-
-   points(r1[id2],r2[id2],pch=1,col=c2)
-\end_layout
-
-\begin_layout Plain Layout
-
-   title(t)
-\end_layout
-
-\begin_layout Plain Layout
-
-  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2)) 
-\end_layout
-
-\begin_layout Plain Layout
-
-}
 \end_layout
 
 \begin_layout Plain Layout
@@ -366,13 +227,6 @@ detach(e2)
 \end_layout
 
 \begin_layout Standard
-\begin_inset Newpage pagebreak
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 The last plot here shows that using incorrect scan window size gives incorrect
  results that highly overestimate the total number of peak reads for a number
  of reasons, for ex.
@@ -385,7 +239,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<Q2,cache=TRUE,echo=FALSE,out.width='.6
+<<Q2,cache=TRUE,echo=FALSE,out.width='.49
 \backslash
 
 \backslash
@@ -394,8 +248,18 @@ linewidth'>>=
 
 \begin_layout Plain Layout
 
-plotTotalReads(e3,'Total S96 peak reads vs HS959 synteny MACS 1.4.2 bw=100
- [Incorrect]')
+attach(e3)
+\end_layout
+
+\begin_layout Plain Layout
+
+plotTotalReads('Total S96 peak reads vs HS959 synteny MACS 1.4.1 bw=100 [Incorrect
+]',wig1,wig2,'peru','green')
+\end_layout
+
+\begin_layout Plain Layout
+
+detach(e3)
 \end_layout
 
 \begin_layout Plain Layout
@@ -441,13 +305,6 @@ Here we use a sliding window to find the maximum average peak reads to represent
 \end_layout
 
 \begin_layout Standard
-\begin_inset Newpage pagebreak
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 \begin_inset ERT
 status open
 
@@ -457,7 +314,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<Q3, cache=TRUE, echo=FALSE, out.width='.49
+<<Q3, cache=TRUE, echo=FALSE,out.width='.49
 \backslash
 
 \backslash
@@ -467,77 +324,6 @@ linewidth'>>=
 \begin_layout Plain Layout
 
 attach(e2)
-\end_layout
-
-\begin_layout Plain Layout
-
-plotMaxAvgReads<-function(t, w1, w2,c1,c2) {
-\end_layout
-
-\begin_layout Plain Layout
-
-  ###########
-\end_layout
-
-\begin_layout Plain Layout
-
-  # Use Max avg reads over windows
-\end_layout
-
-\begin_layout Plain Layout
-
-  rma1=w1$getMaxAvgReads(w1$peaks,100)
-\end_layout
-
-\begin_layout Plain Layout
-
-  rma2=w2$getMaxAvgReads(w1$peaks,100)
-\end_layout
-
-\begin_layout Plain Layout
-
-  ######################
-\end_layout
-
-\begin_layout Plain Layout
-
-   plot(rma1,rma2,xlab=paste('Max Avg', w1$name,'reads'),ylab=paste('Max
- Avg',w2$name,'reads'),pch='*')
-\end_layout
-
-\begin_layout Plain Layout
-
-  id1=match(w1$shared$V4,w1$peaks$V4)
-\end_layout
-
-\begin_layout Plain Layout
-
-   id2=match(w1$unique$V4,w1$peaks$V4)
-\end_layout
-
-\begin_layout Plain Layout
-
-  points(rma1[id1],rma2[id1],pch=1,col=c1)
-\end_layout
-
-\begin_layout Plain Layout
-
-  points(rma1[id2],rma2[id2],pch=1,col=c2)
-\end_layout
-
-\begin_layout Plain Layout
-
-  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
-\end_layout
-
-\begin_layout Plain Layout
-
-  title(t) 
-\end_layout
-
-\begin_layout Plain Layout
-
-}
 \end_layout
 
 \begin_layout Plain Layout
@@ -562,13 +348,6 @@ detach(e2)
 @
 \end_layout
 
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Newpage pagebreak
 \end_inset
 
 
