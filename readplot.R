@@ -190,13 +190,12 @@ WiggleClass<-function(name) {
     apply(bedfile,1,getZscore,nc$treatname,nc$controlname, window)
   }
   
-  nc$getMaxAvgZscore<-function(zeb,jgdkfgj=10,ws=10) {
-    getMaxAverageZscore<-function(zlist) {
+  nc$getMaxAvgZscore<-function(wz,ws=10) {
+    gmaz<-function(zlist) {
       reads=array()
       for(i in 1:length(zlist)) {
         b=i
         e=i+ws
-        cat(b, ' ', e, '\n')
         reads[i]=mean(zlist[b:e],na.rm=TRUE);
       }
         
@@ -206,9 +205,9 @@ WiggleClass<-function(name) {
       #  cat(b, ' ', e, '\n')
       #  mean(zlist[b:e],na.rm=TRUE);
       #})
-      #max(reads)
+      max(reads)
     }
-    sapply(zeb,getMaxAverageZscore)
+    sapply(wz,gmaz)
   }
   
   
