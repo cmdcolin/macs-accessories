@@ -24,6 +24,8 @@ WiggleClass<-function(name) {
     loadWiggle<-function(wigpath) {
       files=list.files(path=wigpath,pattern="*.fsa.wig.gz")
       for (filename in files) {
+        if(debug)
+          print(filename)
         file<-paste(wigpath,filename,sep='')
         wig<-read.table(file, skip=2)
         nc$wiglist[[filename]]=wig
@@ -103,12 +105,13 @@ WiggleClass<-function(name) {
   # Use all chromosomes for scaling factor
   nc$estimateScalingFactor <- function() {
     sfactor<-function(x) {
+      if(debug) {
+        cat(x[1], '\t', x[2], '\n')
+      }
       treat=nc$wiglist[[x[1]]]
       control=nc$wiglist[[x[2]]]
-      corr=match(treat[,1],control[,1])
-      tsig=treat[,2]
-      csig=control[,2]
-      sapply(corr,function(p){ csig[p]/tsig[p]})
+      corr=findInterval(treat[,1],control[,1])
+      control[corr,2]/treat[corr,2]
     }
     files1=list.files(nc$treatpath,pattern="*.fsa.wig.gz")
     files2=list.files(nc$controlpath,pattern="*.fsa.wig.gz")
@@ -139,16 +142,15 @@ WiggleClass<-function(name) {
     #select signals
     #cat(xpos,'\t(', treat$V1[beginning],',',treat$V1[ending],')',nc$matches, '-', nc$unmatches,'\t',
     #    nc$matches1,' ', nc$unmatches1,'(',beginning, ' ', ending, ') (', nc$shifter, ' ', nc$shifter2, '\n')
-    b1=xpos[1]-ws
-    e1=b1+2*ws
-    b2=xpos[2]-ws
-    e2=b2+2*ws
-    sel1=findInterval(b1:e1,corr1)
-    sel2=findInterval(b2:e2,corr2)
-    chip_signal=treat$V2[sel1]
-    control_signal=control$V2[sel2]
-    average_chip=mean(chip_signal,na.rm=TRUE)
-    average_control=mean(control_signal,na.rm=TRUE)
+
+    b1=findInterval(xpos[1]-ws,corr1)
+    e1=findInterval(xpos[1]+ws,corr1)
+    b2=findInterval(xpos[2]-ws,corr2)
+    e2=findInterval(xpos[2]+ws,corr2)
+    chip_signal=treat$V2[b1:e1]
+    control_signal=control$V2[b2:e2]
+    average_chip=mean(chip_signal)
+    average_control=mean(control_signal)
     sqrt(average_chip+average_control/nc$scaling^2)
   }
   
@@ -175,42 +177,38 @@ WiggleClass<-function(name) {
       treat=nc$wiglist[[tf]]
       control=nc$wiglist[[cf]]
       
-      corr1=findInterval(start:end,treat$V1)
-      corr2=findInterval(start:end,control$V1)
+      corr1=findInterval(seq(start,end,by=nc$spacing),treat$V1)
+      corr2=findInterval(seq(start,end,by=nc$spacing),control$V1)
       if(debug==TRUE)
         cat(chr,'-\t(',start,',',end, ')\n')
       app=cbind(corr1,corr2)
       app=app[-head(app,max(window)),]
       app=app[-tail(app,max(window)),]
-      res<-apply(app,1,nc$Zxi,treat,control,window,corr1,corr2)
-      cbind(app,res)
+      apply(app,1,nc$Zxi,treat,control,window,corr1,corr2)
     }
     
     apply(bedfile,1,getZscore,nc$treatname,nc$controlname, window)
   }
   
-  nc$getMaxAvgZscore<-function(Zscore,ws=10) {
-    acc1<-function(j,ws,vpos,vsig) {
-      # binary search
-      b=findInterval(j,vpos)
-      e=findInterval(j+ws,vpos)
-      mean(vsig[b:e]);
-    }
-    acc2<-function(x,window,acc1){
-      vpos=x[,1]
-      vsig=x[,3]
-      bstart=head(vpos,1)
-      bend=tail(vpos,1)
-      if(bstart==bend) { 0}
-      else{
-        if(debug==TRUE)
-          cat(bstart,' ',bend, ' ', ws,'\n')
-      windows=seq(bstart,bend-ws/nc$spacing,by=ws)
-      reads=sapply(windows, acc1,ws,vpos,vsig)
-      max(reads)
+  nc$getMaxAvgZscore<-function(zeb,jgdkfgj=10,ws=10) {
+    getMaxAverageZscore<-function(zlist) {
+      reads=array()
+      for(i in 1:length(zlist)) {
+        b=i
+        e=i+ws
+        cat(b, ' ', e, '\n')
+        reads[i]=mean(zlist[b:e],na.rm=TRUE);
       }
+        
+      #reads=sapply(1:length(zlist), function(j) {
+      #  b=j
+      #  e=j+ws
+      #  cat(b, ' ', e, '\n')
+      #  mean(zlist[b:e],na.rm=TRUE);
+      #})
+      #max(reads)
     }
-    sapply(Zscore,acc2,ws,acc1)
+    sapply(zeb,getMaxAverageZscore)
   }
   
   

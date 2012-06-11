@@ -137,7 +137,19 @@ s96$estimateVarianceAll()
 hs959$estimateScalingFactor()
 hs959$estimateVarianceAll()
 
+debug=TRUE
+env=loadMacsEnv('S96','HS959')
+attach(env)
+wig1$estimateScalingFactor()
+wig1$estimateVarianceAll()
+wig2$estimateScalingFactor()
+wig2$estimateVarianceAll()
+xtable(cbind(c(wig1$scaling,wig1$variance),c(wig2$scaling,wig2$variance))) 
 
+Rprof()
+wig1$estimateScalingFactor()
+Rprof(NULL)
+summaryRprof()
 
 ##########
 # Get Z scores

@@ -1,4 +1,3 @@
-debug=TRUE
 loadMacsEnv<-function(name1,name2) {
   local({
     wig1=WiggleClass(name1)
@@ -21,14 +20,17 @@ plotTotalReads<-function(t, w1, w2,c1,c2) {
   r1=w1$getTotalReads(w1$peaks) 
   r2=w2$getTotalReads(w1$peaks)
   plot(r1,r2,xlab=paste(w1$name,'reads'),ylab=paste(w2$name, 'reads'),pch='*') 
-  id1=match(wig1$shared$V4,wig1$peaks$V4) 
-  id2=match(wig1$unique$V4,wig1$peaks$V4)
+  id1=match(w1$shared$V4,w1$peaks$V4) 
+  id2=match(w1$unique$V4,w1$peaks$V4)
   points(r1[id1],r2[id1],pch=1,col=c1) 
   points(r1[id2],r2[id2],pch=1,col=c2) 
   title(t)
   legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
 }
 
+
+
+
 plotMaxAvgReads<-function(t, w1, w2,c1,c2) {
   ###########
   # Use Max avg reads over windows
@@ -45,34 +47,36 @@ plotMaxAvgReads<-function(t, w1, w2,c1,c2) {
 }
 
 
-plotMaxAvgReads<-function(t, w1, w2,c1,c2) {
-  ###########
-  # Use Max avg reads over windows
-  rma1=w1$getMaxAvgReads(w1$peaks,100)
-  rma2=w2$getMaxAvgReads(w1$peaks,100)
-  ###################### 
-  plot(rma1,rma2,xlab=paste('Max Avg', w1$name,'reads'),ylab=paste('Max Avg',w2$name,'reads'),pch='*')
-  id1=match(w1$shared$V4,w1$peaks$V4) 
-  id2=match(w1$unique$V4,w1$peaks$V4)
-  points(rma1[id1],rma2[id1],pch=1,col=c1)
-  points(rma1[id2],rma2[id2],pch=1,col=c2)
-  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
-  title(t)
-}
 
-
-
-plotMaxAvgZscore<-function(t, w1, w2,c1,c2) {
-  ################
-  # Get NormDiff scaling factor, variance
-  w1$estimateScalingFactor()
-  w1$estimateVarianceAll()
-  w2$estimateScalingFactor()
-  w2$estimateVarianceAll()
+plotAvgZscore<-function(t, w1, w2, wz1, wz2, c1,c2) {
   ##########
-  # Get Z scores
-  Zw1=w1$Z(w1$peaks)
-  Zw2=w2$Z(w1$peaks)
+  # Get Z scoresmn/.,mnb,.,..,m.,
+  Z1<-sapply(wz1,mean)
+  Z2<-sapply(wz2,mean)
+  plot(Z1,Z2,xlab=paste('Max Avg', w1$name,'Zscore'),ylab=paste('Max Avg',w2$name,'Zscore'),pch='*')
+  id1=match(w1$shared$V4,w1$peaks$V4) 
+  id2=match(w1$unique$V4,w1$peaks$V4)
+  points(Z1[id1],Z2[id1],pch=1,col=c1)
+  points(Z1[id2],Z2[id2],pch=1,col=c2)
+  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  title(t)
+}
+
+plotMaxAvgZscore<-function(t, w1, w2, wz1,wz2, c1,c2) {
+  ##########
+  # Get Z scoresmn/.,mnb,.,..,m.,
+  maxw1<-w1$getMaxAvgZscore(wz1)
+  maxw2<-w2$getMaxAvgZscore(wz2)
+  id1=match(w1$shared$V4,w1$peaks$V4) 
+  id2=match(w1$unique$V4,w1$peaks$V4)
+  plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
+  points(maxw1[id1],maxw2[id1],col=c1)
+  points(maxw1[id2],maxw2[id2],col=c2)
+  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  title(t)
+  ret=list()
+  ret[['1']]=maxw1
+  ret[['2']]=maxw2
 }
 
 
