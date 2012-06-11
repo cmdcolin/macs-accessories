@@ -150,10 +150,10 @@ xtable(cbind(c(wig1$scaling,wig1$variance),c(wig2$scaling,wig2$variance)))
 
 wz1=wig1$Z(wig1$peaks)
 wz2=wig2$Z(wig1$peaks)
-r1=plotMaxAvgZscore('Mean S96 peak Normdiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2,'yellow', 'violet')
+r1=plotMaxAvgZscore('Mean S96 peak Normdiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2,'yellow', 'darkviolet')
 wz4=wig2$Z(wig2$peaks)
 wz3=wig1$Z(wig2$peaks)
-r2=plotMaxAvgZscore('Mean HS959 peak Normdiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'peru','purple')
+r2=plotMaxAvgZscore('Mean HS959 peak Normdiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'orange','darkviolet')
 
 
 

@@ -1,0 +1,59 @@
+\batchmode
+\makeatletter
+\def\input@path{{\string"C:/Documents and Settings/Tonto/Desktop/macs-accessories/\string"/}}
+\makeatother
+\documentclass[english]{article}
+\usepackage{mathpazo}
+\usepackage{helvet}
+\usepackage{courier}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{geometry}
+\geometry{verbose,tmargin=2.54cm,bmargin=2.54cm,lmargin=2.54cm,rmargin=2.54cm}
+\usepackage{babel}
+\begin{document}
+<<set-options, echo=FALSE, cache=FALSE>>=
+debug=FALSE
+source('readplot.R')
+source('knitr.R')
+atenv=loadMacsEnv('S96','HS959')
+attach(atenv)
+wig1$estimateScalingFactor()  
+wig1$estimateVarianceAll()   
+wig2$estimateScalingFactor()   
+wig2$estimateVarianceAll()
+@
+
+We can use a Normalized difference score to evaluate the 'background
+subtracted' ChIP-seq data. Using methods from Zheng et al. we can
+estimate the variance of the data and the scaling between control
+and ChIP-seq sequencing depths.
+
+<<table-demo, echo=FALSE, cache=FALSE>>= 
+library(xtable)
+xtable(cbind(c(wig1$scaling,wig1$variance),c(wig2$scaling,wig2$variance))) 
+@
+
+We can use this to calculate the normalized difference score, and
+find the average normalized difference scores in the peak regions.
+Comparing the shared and unique peaks fromdifferent strains shows
+that considerably higher normalized difference scores indicate peaks
+
+<<Q2, echo=FALSE, cache=FALSE, out.width='.49\\linewidth'>>=
+setwd('macs1.4.2')
+plotAvgZscore('Mean S96 peak Normdiff score vs HS959 synteny w=100', wig1, wig2, 'lightblue', 'orange')
+plotAvgZscore('Mean HS959 peak Normdiff score vs S96 synteny w=100', wig2, wig1,'pink','orange')
+@
+
+We can use a scanning window to find maximum avg normalized difference
+scores to localize the peaks in the peak regions also
+
+<<Q3, echo=FALSE, cache=FALSE, out.width='.49\\linewidth'>>=
+wz1=wig1$Z(wig1$peaks)
+wz2=wig2$Z(wig1$peaks)
+plotMaxAvgZscore('Mean S96 peak Normdiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2,'yellow', 'darkviolet')
+wz4=wig2$Z(wig2$peaks)
+wz3=wig1$Z(wig2$peaks)
+plotMaxAvgZscore('Mean HS959 peak Normdiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'orange','darkviolet')
+@
+\end{document}

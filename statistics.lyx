@@ -93,17 +93,52 @@ source('knitr.R')
 
 \begin_layout Plain Layout
 
-setwd('macs1.4.2')
+atenv=loadMacsEnv('S96','HS959')
 \end_layout
 
 \begin_layout Plain Layout
 
-envd=loadMacsEnv('S96','HS959')
+attach(atenv)
 \end_layout
 
 \begin_layout Plain Layout
 
-attach(envd)
+wig1$estimateScalingFactor()  
+\end_layout
+
+\begin_layout Plain Layout
+
+wig1$estimateVarianceAll()   
+\end_layout
+
+\begin_layout Plain Layout
+
+wig2$estimateScalingFactor()   
+\end_layout
+
+\begin_layout Plain Layout
+
+wig2$estimateVarianceAll()
+\end_layout
+
+\begin_layout Plain Layout
+
+wz1=wig1$Z(wig1$peaks)
+\end_layout
+
+\begin_layout Plain Layout
+
+wz2=wig2$Z(wig1$peaks)
+\end_layout
+
+\begin_layout Plain Layout
+
+wz4=wig2$Z(wig2$peaks)
+\end_layout
+
+\begin_layout Plain Layout
+
+wz3=wig1$Z(wig2$peaks)
 \end_layout
 
 \begin_layout Plain Layout
@@ -140,32 +175,19 @@ library(xtable)
 
 \begin_layout Plain Layout
 
-getwd()
+retm=matrix(c(wig1$scaling,wig1$variance,wig2$scaling,wig2$variance),c(2,2))
 \end_layout
 
 \begin_layout Plain Layout
 
-setwd('macs1.4.2')
+rownames(retm)<-c('Est.
+ Scaling factor', 'Est.
+ Variance')
 \end_layout
 
 \begin_layout Plain Layout
 
-wig1$estimateScalingFactor()  
-\end_layout
-
-\begin_layout Plain Layout
-
-wig1$estimateVarianceAll()   
-\end_layout
-
-\begin_layout Plain Layout
-
-wig2$estimateScalingFactor()   
-\end_layout
-
-\begin_layout Plain Layout
-
-wig2$estimateVarianceAll()
+colnames(retm)<-c('S96', 'HS959')
 \end_layout
 
 \begin_layout Plain Layout
@@ -206,19 +228,14 @@ linewidth'>>=
 
 \begin_layout Plain Layout
 
-setwd('macs1.4.2')
-\end_layout
-
-\begin_layout Plain Layout
-
 plotAvgZscore('Mean S96 peak Normdiff score vs HS959 synteny w=100', wig1,
- wig2, 'lightblue', 'orange')
+ wig2, wz1, wz2, 'lightblue', 'orange')
 \end_layout
 
 \begin_layout Plain Layout
 
 plotAvgZscore('Mean HS959 peak Normdiff score vs S96 synteny w=100', wig2,
- wig1,'pink','orange')
+ wig1, wz4, wz3, 'pink','orange')
 \end_layout
 
 \begin_layout Plain Layout
@@ -232,8 +249,8 @@ plotAvgZscore('Mean HS959 peak Normdiff score vs S96 synteny w=100', wig2,
 \end_layout
 
 \begin_layout Standard
-We can use a scanning window to find maximum avg normalized difference scores
- to localize the peaks in the peak regions also
+We can use a scanning window to find the maximum average normalized difference
+ scores in the peak windows to localize the peaks in the peak regions also
 \end_layout
 
 \begin_layout Standard
@@ -251,44 +268,14 @@ linewidth'>>=
 
 \begin_layout Plain Layout
 
-getwd()
-\end_layout
-
-\begin_layout Plain Layout
-
-setwd('macs1.4.2')
-\end_layout
-
-\begin_layout Plain Layout
-
-wz1=wig1$Z(wig1$peaks)
-\end_layout
-
-\begin_layout Plain Layout
-
-wz2=wig2$Z(wig1$peaks)
-\end_layout
-
-\begin_layout Plain Layout
-
 plotMaxAvgZscore('Mean S96 peak Normdiff score vs HS959 synteny w=100',
- wig1, wig2, wz1, wz2,'yellow', 'darkviolet')
-\end_layout
-
-\begin_layout Plain Layout
-
-wz4=wig2$Z(wig2$peaks)
-\end_layout
-
-\begin_layout Plain Layout
-
-wz3=wig1$Z(wig2$peaks)
+ wig1, wig2, wz1, wz2,'lightblue', 'orange')
 \end_layout
 
 \begin_layout Plain Layout
 
 plotMaxAvgZscore('Mean HS959 peak Normdiff score vs S96 synteny w=100',
- wig2, wig1, wz4, wz3, 'peru','darkviolet')
+ wig2, wig1, wz4, wz3, 'pink','orange')
 \end_layout
 
 \begin_layout Plain Layout
