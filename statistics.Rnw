@@ -19,7 +19,7 @@ source('knitr.R')
 library(xtable)
 @
 
-<<setup, cache=FALSE, echo=FALSE>>=
+<<setup, cache=TRUE, echo=FALSE>>=
 atenv=loadMacsEnv('S96','HS959')
 attach(atenv)
 wig1$estimateScalingFactor()  
@@ -50,8 +50,8 @@ Comparing the shared and unique peaks fromdifferent strains shows
 that considerably higher normalized difference scores indicate peaks
 
 <<Q2, echo=FALSE, cache=FALSE, out.width='.49\\linewidth'>>=
-r3=plotAvgZscore('Mean S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2, 'lightblue', 'orange')
-r4=plotAvgZscore('Mean HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'pink','orange')
+plotAvgZscore('Mean S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2, 'lightblue', 'orange')
+plotAvgZscore('Mean HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'pink','orange')
 @
 
 We can use a scanning window to find the maximum average normalized
@@ -59,16 +59,7 @@ difference scores in the peak windows to localize the peaks in the
 peak regions also
 
 <<Q3, echo=FALSE, cache=FALSE, out.width='.49\\linewidth'>>=
-r1=plotMaxAvgZscore('Max Avg S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2,'lightblue', 'orange')
-r2=plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'pink','orange')
-@
-
-If we sort the values then we can get an idea of the cutoff that exists
-
-<<Q4,echo=FALSE, out.width='.49\\linewidth'>>=
-plotSortedMaxAvgZscore('Sorted HS959 Avg Normdiff in S96 peak regions',wig1,wig2,r3,r4,'red','blue')
-plotSortedMaxAvgZscore('Sorted S96 Avg Normdiff in HS959 peak regions',wig2,wig1,r4,r3,'green','blue')
-plotSortedMaxAvgZscore('Sorted HS959 Max Avg Normdiff in S96 peak regions',wig1,wig2,r1,r2,'red','blue')
-plotSortedMaxAvgZscore('Sorted S96 Max Avg Normdiff in HS959 peak regions',wig2,wig1,r2,r1,'green','blue') 
+plotMaxAvgZscore('Max Avg S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2,'lightblue', 'orange')
+plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'pink','orange')
 @
 \end{document}

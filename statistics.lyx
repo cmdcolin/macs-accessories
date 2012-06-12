@@ -321,25 +321,25 @@ linewidth'>>=
 \begin_layout Plain Layout
 
 plotSortedMaxAvgZscore('Sorted HS959 Avg Normdiff in S96 peak regions',wig1,wig2
-,r3,r4,'red','blue')
+,r3,'red','blue')
 \end_layout
 
 \begin_layout Plain Layout
 
 plotSortedMaxAvgZscore('Sorted S96 Avg Normdiff in HS959 peak regions',wig2,wig1
-,r4,r3,'green','blue')
+,r4,'green','blue')
 \end_layout
 
 \begin_layout Plain Layout
 
 plotSortedMaxAvgZscore('Sorted HS959 Max Avg Normdiff in S96 peak regions',wig1,
-wig2,r1,r2,'red','blue')
+wig2,r1,'red','blue')
 \end_layout
 
 \begin_layout Plain Layout
 
 plotSortedMaxAvgZscore('Sorted S96 Max Avg Normdiff in HS959 peak regions',wig2,
-wig1,r2,r1,'green','blue') 
+wig1,r2,'green','blue') 
 \end_layout
 
 \begin_layout Plain Layout
