@@ -60,6 +60,10 @@ plotAvgZscore<-function(t, w1, w2, wz1, wz2, c1,c2) {
   points(Z1[id2],Z2[id2],pch=1,col=c2)
   legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
+  ret=list()
+  ret[['1']]=Z1
+  ret[['2']]=Z2
+  ret
 }
 
 plotMaxAvgZscore<-function(t, w1, w2, wz1,wz2, c1,c2) {
@@ -77,9 +81,26 @@ plotMaxAvgZscore<-function(t, w1, w2, wz1,wz2, c1,c2) {
   ret=list()
   ret[['1']]=maxw1
   ret[['2']]=maxw2
+  ret
 }
 
-
+plotSortedMaxAvgZscore<-function(t, w1, w2, r1, r2, c1,c2) {
+  
+  wz1sort=sort(r1[['1']])
+  wz2sort=sort(r1[['2']])
+  id1=match(w1$shared$V4,w1$peaks$V4) 
+  id2=match(w1$unique$V4,w1$peaks$V4)
+  xs=1:length(wz2sort)
+  xs2=1:length(wz1sort)
+  plot(xs,wz2sort,pch='.',xlab='Rank',ylab='Avg NormDiff')
+  points(xs[id1],wz2sort[id1],col=c1,pch='.')
+  points(xs[id2],wz2sort[id2],col=c2,pch='.')
+  polygon(c(xs2,rev(xs)),c(wz1sort,rev(wz2sort)),col='lightyellow',border=FALSE)
+  points(xs2[id1],wz1sort[id1],col=c1,pch='.')
+  points(xs2[id2],wz1sort[id2],col=c2,pch='.')
+  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  title(t)
+}
 
 #setwd('macs1.4.2')
 #e2=loadMacsEnv('S96','HS959')

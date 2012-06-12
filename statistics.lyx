@@ -241,14 +241,14 @@ linewidth'>>=
 
 \begin_layout Plain Layout
 
-plotAvgZscore('Mean S96 peak NormDiff score vs HS959 synteny w=100', wig1,
- wig2, wz1, wz2, 'lightblue', 'orange')
+r3=plotAvgZscore('Mean S96 peak NormDiff score vs HS959 synteny w=100',
+ wig1, wig2, wz1, wz2, 'lightblue', 'orange')
 \end_layout
 
 \begin_layout Plain Layout
 
-plotAvgZscore('Mean HS959 peak NormDiff score vs S96 synteny w=100', wig2,
- wig1, wz4, wz3, 'pink','orange')
+r4=plotAvgZscore('Mean HS959 peak NormDiff score vs S96 synteny w=100',
+ wig2, wig1, wz4, wz3, 'pink','orange')
 \end_layout
 
 \begin_layout Plain Layout
@@ -281,14 +281,65 @@ linewidth'>>=
 
 \begin_layout Plain Layout
 
-plotMaxAvgZscore('Max Avg S96 peak NormDiff score vs HS959 synteny w=100',
+r1=plotMaxAvgZscore('Max Avg S96 peak NormDiff score vs HS959 synteny w=100',
  wig1, wig2, wz1, wz2,'lightblue', 'orange')
 \end_layout
 
 \begin_layout Plain Layout
 
-plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100',
+r2=plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100',
  wig2, wig1, wz4, wz3, 'pink','orange')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If we sort the values then we can get an idea of the cutoff that exists
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<Q4,echo=FALSE, out.width='.49
+\backslash
+
+\backslash
+linewidth'>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+plotSortedMaxAvgZscore('Sorted HS959 Avg Normdiff in S96 peak regions',wig1,wig2
+,r3,r4,'red','blue')
+\end_layout
+
+\begin_layout Plain Layout
+
+plotSortedMaxAvgZscore('Sorted S96 Avg Normdiff in HS959 peak regions',wig2,wig1
+,r4,r3,'green','blue')
+\end_layout
+
+\begin_layout Plain Layout
+
+plotSortedMaxAvgZscore('Sorted HS959 Max Avg Normdiff in S96 peak regions',wig1,
+wig2,r1,r2,'red','blue')
+\end_layout
+
+\begin_layout Plain Layout
+
+plotSortedMaxAvgZscore('Sorted S96 Max Avg Normdiff in HS959 peak regions',wig2,
+wig1,r2,r1,'green','blue') 
 \end_layout
 
 \begin_layout Plain Layout
