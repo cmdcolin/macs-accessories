@@ -4,7 +4,7 @@ loadMacsEnv<-function(name1,name2) {
     wig2=WiggleClass(name2)
     wig1$loadWiggles() 
     wig2$loadWiggles()
-    ###
+    ###``
     wig1$peaks=read.table(paste(name1,'/',name1,'_peaks.bed',sep=''))
     wig1$shared=read.table(paste(name1,'/',name1,'_overlap.bed',sep=''))
     wig1$unique=read.table(paste(name1,'/',name1,'_unique.bed',sep=''))
@@ -120,7 +120,7 @@ plotSortedMaxAvgZscoreX<-function(t, w1, w2, r, c1,c2) {
   points(xs1,wz1sort,col=c1,pch='.')
   points(xs2,wz2sort,col=c2,pch='.')
   #polygon(c(xs1,rev(xs)),c(wz1sort,rev(wz2sort)),col='lightyellow',border=FALSE)
-  #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
 }
 plotSortedMaxAvgZscoreOld<-function(t, w1, w2, r, c1,c2) {

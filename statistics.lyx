@@ -68,6 +68,22 @@ knitr
 \begin_body
 
 \begin_layout Standard
+ChIP-seq comparison plots
+\end_layout
+
+\begin_layout Standard
+Colin Diesh
+\end_layout
+
+\begin_layout Standard
+6/12/12
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 \begin_inset ERT
 status open
 
@@ -107,7 +123,7 @@ library(xtable)
 
 \begin_layout Plain Layout
 
-<<setup, cache=TRUE, echo=FALSE>>=
+<<setup, cache=FALSE, echo=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -174,8 +190,22 @@ wz3=wig1$Z(wig2$peaks)
 We can use a Normalized difference score to evaluate the 'background subtracted'
  ChIP-seq data.
  Using methods from Zheng et al.
- we can estimate the variance of the data and the scaling between control
- and ChIP-seq sequencing depths.
+ we estimate the variance of the data and the scaling between control and
+ treated ChIP-seq experiments in order to calculate the normalized difference
+ score
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -302,7 +332,12 @@ r2=plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100',
 \end_layout
 
 \begin_layout Standard
-If we sort the values then we can get an idea of the cutoff that exists
+If we sort the values then we can get an idea of the differences that exist
+ between the shared peaks in two different strains and the peaks that are
+ unique to one experiment.
+ Here, we look at the syntenic regions in HS959 and S96 from peaks found
+ in the other strain, and see that the shared peaks from both have higher
+ NormDiff scores than the peaks that are unique to one strain.
 \end_layout
 
 \begin_layout Standard
@@ -311,7 +346,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<Q4,echo=FALSE, out.width='.49
+<<Q4,echo=FALSE,cache=FALSE,out.width='.49
 \backslash
 
 \backslash
@@ -340,6 +375,89 @@ plotSortedMaxAvgZscoreX('Sorted HS959 Max Avg Normdiff in S96 peak regions',wig1
 
 plotSortedMaxAvgZscoreX('Sorted S96 Max Avg Normdiff in HS959 peak regions',wig2
 ,wig1,r2,'green','blue') 
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If we look at the distribution of the means of the normalized difference
+ scores, then we can see that they cluster around a 'truncated' normal distribut
+ion.
+ This is interesting in some respects for what the normalized difference
+ score represents.
+ It is the treated data subtracted from the control data, so the data will
+ have a longer tail on the 'chipseq' side rather than the 'control' side.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<Q5,echo=FALSE,cache=FALSE,out.width='.6
+\backslash
+
+\backslash
+linewidth'>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+r2s=c(r1[['2shared']],r1[['2unique']])
+\end_layout
+
+\begin_layout Plain Layout
+
+corr1=match(r1[['2shared']],r2s)
+\end_layout
+
+\begin_layout Plain Layout
+
+corr2=match(r1[['2unique']],r2s)
+\end_layout
+
+\begin_layout Plain Layout
+
+r2s=(r2s-mean(r2s))/sqrt(var(r2s))
+\end_layout
+
+\begin_layout Plain Layout
+
+r2snorm=dnorm(r2s,mean(r2s),sqrt(var(r2s)))
+\end_layout
+
+\begin_layout Plain Layout
+
+r2s1norm=dnorm(r1[['2shared']],mean(r2s),sqrt(var(r2s)))
+\end_layout
+
+\begin_layout Plain Layout
+
+r2s2norm=dnorm(r1[['2unique']],mean(r2s),sqrt(var(r2s)))
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(r2s,r2snorm,pch='.',col='blue')
+\end_layout
+
+\begin_layout Plain Layout
+
+points(r2s[corr1],r2snorm[corr1],pch=20,col='red')
+\end_layout
+
+\begin_layout Plain Layout
+
+points(r2s[corr2],r2snorm[corr2],pch=20,col='green')
 \end_layout
 
 \begin_layout Plain Layout

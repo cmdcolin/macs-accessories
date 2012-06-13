@@ -147,8 +147,8 @@ WiggleClass<-function(name) {
     e1=findInterval(xpos[1]+ws,corr1)
     b2=findInterval(xpos[2]-ws,corr2)
     e2=findInterval(xpos[2]+ws,corr2)
-    chip_signal=treat$V2[b1:e1]
-    control_signal=control$V2[b2:e2]
+    chip_signal=treat[b1:e1]
+    control_signal=control[b2:e2]
     average_chip=mean(chip_signal)
     average_control=mean(control_signal)
     sqrt(average_chip+average_control/nc$scaling^2)
@@ -157,10 +157,12 @@ WiggleClass<-function(name) {
   nc$Zxi<-function(x,treat,control,window,corr1,corr2) {
     pos1=x[1]
     pos2=x[2]
-    (treat$V2[pos1]-control$V2[pos2]/nc$scaling)/
-      max(nc$estimateVarianceWindow(x,treat,control,window[1],corr1,corr2),
-          nc$estimateVarianceWindow(x,treat,control,window[2],corr1,corr2),
-          nc$variance)
+    mr=array()
+    mr[1]=nc$estimateVarianceWindow(x,treat,control,window[1],corr1,corr2)
+    mr[2]=nc$estimateVarianceWindow(x,treat,control,window[2],corr1,corr2)
+    mr[3]=nc$variance
+    ma=max(mr)
+    (treat[pos1]-control[pos2]/nc$scaling)/ma
   }
   
   
@@ -184,7 +186,7 @@ WiggleClass<-function(name) {
       app=cbind(corr1,corr2)
       app=app[-head(app,max(window)),]
       app=app[-tail(app,max(window)),]
-      apply(app,1,nc$Zxi,treat,control,window,corr1,corr2)
+      apply(app,1,nc$Zxi,treat$V2,control$V2,window,corr1,corr2)
     }
     
     apply(bedfile,1,getZscore,nc$treatname,nc$controlname, window)
