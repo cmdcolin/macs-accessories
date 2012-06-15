@@ -107,7 +107,7 @@ library(xtable)
 
 \begin_layout Plain Layout
 
-<<setup, cache=TRUE, echo=FALSE>>=
+<<setup, cache=FALSE, echo=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout

@@ -31,3 +31,18 @@ plotSortedMaxAvgZscoreX('Sorted HS959 Max Avg Normdiff in S96 peak regions',wig1
 plotSortedMaxAvgZscoreX('Sorted S96 Normdiff in HS959 peak regions',wig2,wig1,r2,'green','blue')
 plotSortedMaxAvgZscoreX('Sorted S96 peak Avg NormDiff score vs HS959 synteny w=100', wig1, wig2, r3, 'red', 'darkblue')
 plotSortedMaxAvgZscoreX('Sorted HS959 peak Avg NormDiff score vs S96 synteny w=100', wig2, wig1, r4, 'green','darkblue')
+
+
+
+library(xtable)
+debug=TRUE
+env=loadMacsEnv('S96rep1','S96rep2')
+attach(env)
+wig1$estimateScalingFactor()
+wig1$estimateVarianceAll()
+wig2$estimateScalingFactor()
+wig2$estimateVarianceAll()
+xtable(cbind(c(wig1$scaling,wig1$variance),c(wig2$scaling,wig2$variance))) 
+wig1$peaks
+wig1$shared
+wig1$unique
