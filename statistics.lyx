@@ -432,6 +432,16 @@ r2s=(r2s-mean(r2s))/sqrt(var(r2s))
 
 \begin_layout Plain Layout
 
+print(mean(r2s))
+\end_layout
+
+\begin_layout Plain Layout
+
+print(var(r2s))
+\end_layout
+
+\begin_layout Plain Layout
+
 r2snorm=dnorm(r2s,mean(r2s),sqrt(var(r2s)))
 \end_layout
 

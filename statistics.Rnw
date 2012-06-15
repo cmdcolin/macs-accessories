@@ -28,6 +28,7 @@ library(xtable)
 
 <<setup, cache=FALSE, echo=FALSE>>=
 atenv=loadMacsEnv('S96','HS959')
+ls(atenv)
 attach(atenv)
 wig1$estimateScalingFactor()  
 wig1$estimateVarianceAll()   
@@ -85,25 +86,5 @@ plotSortedMaxAvgZscoreX('Sorted HS959 Avg Normdiff in S96 peak regions',wig1,wig
 plotSortedMaxAvgZscoreX('Sorted S96 Avg Normdiff in HS959 peak regions',wig2,wig1,r4,'green','blue')
 plotSortedMaxAvgZscoreX('Sorted HS959 Max Avg Normdiff in S96 peak regions',wig1,wig2,r1,'red','blue')
 plotSortedMaxAvgZscoreX('Sorted S96 Max Avg Normdiff in HS959 peak regions',wig2,wig1,r2,'green','blue') 
-@
-
-If we look at the distribution of the means of the normalized difference
-scores, then we can see that they cluster around a 'truncated' normal
-distribution. This is interesting in some respects for what the normalized
-difference score represents. It is the treated data subtracted from
-the control data, so the data will have a longer tail on the 'chipseq'
-side rather than the 'control' side.
-
-<<Q5,echo=FALSE,cache=FALSE,out.width='.6\\linewidth'>>=
-r2s=c(r1[['2shared']],r1[['2unique']])
-corr1=match(r1[['2shared']],r2s)
-corr2=match(r1[['2unique']],r2s)
-r2s=(r2s-mean(r2s))/sqrt(var(r2s))
-r2snorm=dnorm(r2s,mean(r2s),sqrt(var(r2s)))
-r2s1norm=dnorm(r1[['2shared']],mean(r2s),sqrt(var(r2s)))
-r2s2norm=dnorm(r1[['2unique']],mean(r2s),sqrt(var(r2s)))
-plot(r2s,r2snorm,pch='.',col='blue')
-points(r2s[corr1],r2snorm[corr1],pch=20,col='red')
-points(r2s[corr2],r2snorm[corr2],pch=20,col='green')
 @
 \end{document}
