@@ -217,8 +217,53 @@ WiggleClass<-function(name) {
 }
 
 
+intersectBed<-function(nc1,nc2) {
+  fixer=apply(nc1$peaks,1,function(x){
+    chr1=x[1]
+    start1=as.integer(x[2])
+    end1=as.integer(x[3])
+    if(debug)
+      cat(chr1,' ',start1, ' ', end1, '\n')
+    sub=nc2$peaks[nc2$peaks$V1==chr1,]
+    ret=NA
+    apply(sub,1,function(y){
+      chr2=y[1]
+      start2=as.integer(y[2])
+      end2=as.integer(y[3])
+      
+      if(chr1==chr2) {
+        #!(AR < BL || BR < AL)
+        if(start2 <= end1 && start1 <= end2) ret=x
+      }
+    })
+    ret
+  })
+  lapply(fixer,na.omit)
+}
 
-
+uniqueBed<-function(nc1,nc2) {
+  fixer=apply(nc1$peaks,1,function(x){
+    chr1=x[1]
+    start1=as.integer(x[2])
+    end1=as.integer(x[3])
+    if(debug)
+      cat(chr1,' ',start1, ' ', end1, '\n')
+    sub=nc2$peaks[nc2$peaks$V1==chr1,]
+    ret=NA
+    apply(sub,1,function(y){
+      chr2=y[1]
+      start2=as.integer(y[2])
+      end2=as.integer(y[3])
+      if(chr1==chr2) {
+        #AR < BL || BR < AL
+        if(end1 <= start2 || end2 <= start1) ret=x
+      }
+    })
+    #fix??
+    ret
+  })
+  fixer
+}
 ###########
 
 
