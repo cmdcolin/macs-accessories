@@ -57,3 +57,17 @@ r2s2norm=dnorm(r1[['2unique']],mean(r2s),sqrt(var(r2s)))
 plot(r2s,r2snorm,pch='.',col='blue')
 points(r2s[corr1],r2snorm[corr1],pch=20,col='red')
 points(r2s[corr2],r2snorm[corr2],pch=20,col='green')
+
+
+library(xtable)
+debug=TRUE
+env=loadMacsEnv('S96rep1','S96rep2')
+attach(env)
+wig1$estimateScalingFactor()
+wig1$estimateVarianceAll()
+wig2$estimateScalingFactor()
+wig2$estimateVarianceAll()
+xtable(cbind(c(wig1$scaling,wig1$variance),c(wig2$scaling,wig2$variance))) 
+wig1$peaks
+wig1$shared
+wig1$unique

@@ -2,18 +2,19 @@ loadMacsEnv<-function(name1,name2) {
   local({
     wig1=WiggleClass(name1)
     wig2=WiggleClass(name2)
-    wig1$loadWiggles() 
-    wig2$loadWiggles()
-    ###``
+    #wig1$loadWiggles() 
+    #wig2$loadWiggles()
+    ###
     wig1$peaks=read.table(paste(name1,'/',name1,'_peaks.bed',sep=''))
-    wig1$shared=read.table(paste(name1,'/',name1,'_overlap.bed',sep=''))
-    wig1$unique=read.table(paste(name1,'/',name1,'_unique.bed',sep=''))
     wig2$peaks=read.table(paste(name2,'/',name2,'_peaks.bed',sep=''))
-    wig2$shared=read.table(paste(name2,'/',name2,'_overlap.bed',sep=''))
-    wig2$unique=read.table(paste(name2,'/',name2,'_unique.bed',sep=''))
+    wig1$shared=intersectBed(wig1,wig2)
+    wig1$unique=uniqueBed(wig1,wig2)
+    wig2$shared=intersectBed(wig2,wig1)
+    wig2$unique=uniqueBed(wig2,wig1)
     # Return environment
     environment()
   })
+  
 }
 
 plotTotalReads<-function(t, w1, w2,c1,c2) {
