@@ -13,9 +13,7 @@ WiggleClass<-function(name) {
     controlname=paste(name,'_control_afterfiting_',sep=''),
     treatname=paste(name,'_treat_afterfiting_',sep=''),
     peaks=read.table(paste(name,'/',name,'_peaks.bed',sep='')),
-    wiglist=list(),
-    unique=NULL,
-    shared=NULL
+    wiglist=list()
     )
   
   ########################
@@ -29,16 +27,16 @@ WiggleClass<-function(name) {
           cat(filename, '\n')
         if(exists(filename,env))
           wig<-get(filename,env)
-        else
+        else {
           wig<-read.table(fn, skip=2)
+          assign(filename,wig,env)
+        }
         nc$wiglist[[filename]]=wig
       }
-    
     }
+    
     loadWiggle(nc$treatpath,env)
     loadWiggle(nc$controlpath,env)
-    if(!is.null(env))
-      list2env(nc$wiglist,env)
   }
   #######
   # Get avg reads
@@ -163,33 +161,32 @@ WiggleClass<-function(name) {
   nc$Zxi<-function(x,treat,control,window,corr1,corr2) {
     pos1=x[1]
     pos2=x[2]
-    (treat$V2[pos1]-control$V2[pos2]/nc$scaling)/
-      max(nc$estimateVarianceWindow(x,treat,control,window[1],corr1,corr2),
-          nc$estimateVarianceWindow(x,treat,control,window[2],corr1,corr2),
-          nc$variance)
+    ma=array()
+    ma[1]=nc$estimateVarianceWindow(x,treat,control,window[1],corr1,corr2)
+    ma[2]=nc$estimateVarianceWindow(x,treat,control,window[2],corr1,corr2)
+    ma[3]=nc$variance
+    (treat$V2[pos1]-control$V2[pos2]/nc$scaling)/max(ma)
   }
   
   
   
   # Calculate Z scores over all wiggle files
-  nc$Z<-function(bedfile, window=c(10,100)) {
+  nc$Z<-function(bedfile, window=c(1,10)) {
     # Get max average reads over window size
     getZscore<-function(x,f1,f2,window){
       chr=x[1];
-      start=as.integer(x[2]);
-      end=as.integer(x[3]);
+      start=as.integer(x[2])
+      end=as.integer(x[3])
       tf=paste(f1,chr,'.wig.gz',sep='')
       cf=paste(f2,chr,'.wig.gz',sep='')
       treat=nc$wiglist[[tf]]
       control=nc$wiglist[[cf]]
-      
-      corr1=findInterval(seq(start,end,by=nc$spacing),treat$V1)
-      corr2=findInterval(seq(start,end,by=nc$spacing),control$V1)
+      mw=max(window)
+      corr1=findInterval(seq(start-mw,end+mw,by=nc$spacing),treat$V1)
+      corr2=findInterval(seq(start-mw,end+mw,by=nc$spacing),control$V1)
       if(debug==TRUE)
         cat(chr,'-\t(',start,',',end, ')\n')
       app=cbind(corr1,corr2)
-      app=app[-head(app,max(window)),]
-      app=app[-tail(app,max(window)),]
       apply(app,1,nc$Zxi,treat,control,window,corr1,corr2)
     }
     

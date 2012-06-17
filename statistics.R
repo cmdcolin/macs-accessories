@@ -49,13 +49,17 @@ wig1$unique
 
 
 
-
+debug=TRUE
 wig1=WiggleClass('S96rep1u')
 wig2=WiggleClass('S96rep2u')
 wig1$loadWiggles(globalenv()) 
 wig2$loadWiggles(globalenv())
 ###
-wig1$shared=intersectBed(wig1,wig2)
-wig2$shared=intersectBed(wig2,wig1)
-wig1$unique=uniqueBed(wig1,wig2)
-wig2$unique=uniqueBed(wig2,wig1)
+wig1$estimateScalingFactor()
+wig1$estimateVarianceAll()
+wig2$estimateScalingFactor()
+wig2$estimateVarianceAll()
+wz1=wig1$Z(wig1$peaks)
+wz2=wig2$Z(wig1$peaks)
+wz4=wig2$Z(wig2$peaks)
+wz3=wig1$Z(wig2$peaks)
