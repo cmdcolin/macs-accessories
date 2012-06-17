@@ -2,15 +2,15 @@ loadMacsEnv<-function(name1,name2) {
   local({
     wig1=WiggleClass(name1)
     wig2=WiggleClass(name2)
-    wig1$loadWiggles(environment()) 
-    wig2$loadWiggles(environment())
+    wig1$loadWiggles(globalenv()) 
+    wig2$loadWiggles(globalenv())
     ###
     wig1$peaks=read.table(paste(name1,'/',name1,'_peaks.bed',sep=''))
     wig2$peaks=read.table(paste(name2,'/',name2,'_peaks.bed',sep=''))
     wig1$shared=intersectBed(wig1,wig2)
-    #wig1$unique=uniqueBed(wig1,wig2)
+    wig1$unique=uniqueBed(wig1,wig2)
     wig2$shared=intersectBed(wig2,wig1)
-    #wig2$unique=uniqueBed(wig2,wig1)
+    wig2$unique=uniqueBed(wig2,wig1)
     # Return environment
     environment()
   })

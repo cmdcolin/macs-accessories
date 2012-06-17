@@ -46,3 +46,16 @@ xtable(cbind(c(wig1$scaling,wig1$variance),c(wig2$scaling,wig2$variance)))
 wig1$peaks
 wig1$shared
 wig1$unique
+
+
+
+
+wig1=WiggleClass('S96rep1u')
+wig2=WiggleClass('S96rep2u')
+wig1$loadWiggles(globalenv()) 
+wig2$loadWiggles(globalenv())
+###
+wig1$shared=intersectBed(wig1,wig2)
+wig2$shared=intersectBed(wig2,wig1)
+wig1$unique=uniqueBed(wig1,wig2)
+wig2$unique=uniqueBed(wig2,wig1)

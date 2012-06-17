@@ -12,8 +12,8 @@ WiggleClass<-function(name) {
     treatpath=paste(name,'/',name,'_MACS_wiggle/treat/',sep=''),
     controlname=paste(name,'_control_afterfiting_',sep=''),
     treatname=paste(name,'_treat_afterfiting_',sep=''),
+    peaks=read.table(paste(name,'/',name,'_peaks.bed',sep='')),
     wiglist=list(),
-    peaks=NULL,
     unique=NULL,
     shared=NULL
     )
@@ -27,7 +27,10 @@ WiggleClass<-function(name) {
         fn<-paste(wigpath,filename,sep='')
         if(debug)
           cat(filename, '\n')
-        wig<-read.table(fn, skip=2)
+        if(exists(filename,env))
+          wig<-get(filename,env)
+        else
+          wig<-read.table(fn, skip=2)
         nc$wiglist[[filename]]=wig
       }
     
@@ -225,54 +228,53 @@ intersectBed<-function(nc1,nc2) {
     start1=as.integer(x[2])
     end1=as.integer(x[3])
     pn1=x[4]
-    sub=nc2$peaks[nc2$peaks$V1==chr1,]
-    ret=apply(sub,1,function(y){
+    sublist=nc2$peaks[nc2$peaks$V1==chr1,]
+    sum(sublist$V2<=end1&&start1<=sublist$V3)>0
+  })
+  
+  nc1$peaks[selectrows,]
+}
+
+intersectBed<-function(nc1,nc2) {
+  selectrows=apply(nc1$peaks,1,function(x){
+    chr1=x[1]
+    start1=as.integer(x[2])
+    end1=as.integer(x[3])
+    pn1=x[4]
+    sublist=nc2$peaks[nc2$peaks$V1==chr1,]
+    ret=apply(sublist,1,function(y){
       chr2=y[1]
       start2=as.integer(y[2])
       end2=as.integer(y[3])
       pn2=y[4]
-      b=FALSE
-      #!(AR < BL || BR < AL) -> BL <= AR && AL <= BR
-      if(start2 <= end1 && start1 <= end2) {
-        if(debug)
-          cat('(',chr1,',',chr2,') (',start1,',', end1, ') (',start2,',',end2,') (',pn1,',',pn2,')\n')
-        b=TRUE
-      }
-      b
+      (start2<=end1)&&(start1<=end2)
     })
     sum(ret)>0
   })
   
   nc1$peaks[selectrows,]
 }
-
 uniqueBed<-function(nc1,nc2) {
   selectrows=apply(nc1$peaks,1,function(x){
     chr1=x[1]
     start1=as.integer(x[2])
     end1=as.integer(x[3])
     pn1=x[4]
-    sub=nc2$peaks[nc2$peaks$V1==chr1,]
-    ret=apply(sub,1,function(y){
+    sublist=nc2$peaks[nc2$peaks$V1==chr1,]
+    ret=apply(sublist,1,function(y){
       chr2=y[1]
       start2=as.integer(y[2])
       end2=as.integer(y[3])
       pn2=y[4]
-      b=FALSE
       #AR < BL || BR < AL
-      if(end1 <= start2 || end2 <= start1) {
-        if(debug)
-          cat('(',chr1,',',chr2,') (',start1,',', end1, ') (',start2,',',end2,') (',pn1,',',pn2,')\n')
-        b=TRUE
-      }
-      b
+      (start2<=end1)&&(start1<=end2)
     })
-    #View(ret)
-    sum(ret)>0
+    sum(ret)==0
   })
   
   nc1$peaks[selectrows,]
 }
+
 ###########
 
 
