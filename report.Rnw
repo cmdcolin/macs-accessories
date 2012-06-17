@@ -1,0 +1,42 @@
+\batchmode
+\makeatletter
+\def\input@path{{\string"C:/Documents and Settings/Tonto/Desktop/macs-accessories/\string"/}}
+\makeatother
+\documentclass[english]{article}
+\usepackage{mathpazo}
+\usepackage{helvet}
+\usepackage{courier}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{geometry}
+\geometry{verbose,tmargin=2.54cm,bmargin=2.54cm,lmargin=2.54cm,rmargin=2.54cm}
+\usepackage{babel}
+\begin{document}
+<<sources, cache=FALSE, echo=FALSE>>=
+debug=FALSE
+source('readplot.R')
+source('knitr.R')
+library(xtable)
+@
+
+We can use a Normalized difference score to evaluate the 'background
+subtracted' ChIP-seq data. Using methods from Zheng et al. we can
+estimate the variance of the data and the scaling between control
+and ChIP-seq sequencing depths.
+
+<<setup, cache=FALSE79, echo=FALSE>>=
+wig1=WiggleClass('S96rep1u')
+wig2=WiggleClass('S96rep2u')
+wig1$loadWiggles(globalenv())
+wig2$loadWiggles(globalenv())
+####
+wig1$estimateScalingFactor()  
+wig1$estimateVarianceAll()   
+wig2$estimateScalingFactor()   
+wig2$estimateVarianceAll()
+wz1=wig1$Z(wig1$peaks)
+wz2=wig2$Z(wig1$peaks)
+wz4=wig2$Z(wig2$peaks)
+wz3=wig1$Z(wig2$peaks)
+@
+\end{document}

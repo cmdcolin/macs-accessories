@@ -73,152 +73,12 @@ status open
 
 \begin_layout Plain Layout
 
-<<set-options, echo=FALSE, cache=FALSE>>=
+<<set-options, echo=FALSE, cache=TRUE>>=
 \end_layout
 
 \begin_layout Plain Layout
 
-loaddir<-function(name) {
-\end_layout
-
-\begin_layout Plain Layout
-
-    oldpath=getwd()
-\end_layout
-
-\begin_layout Plain Layout
-
-	setwd(name)
-\end_layout
-
-\begin_layout Plain Layout
-
-	env<-new.env() 
-\end_layout
-
-\begin_layout Plain Layout
-
-    s96=WiggleClass('S96', env)
-\end_layout
-
-\begin_layout Plain Layout
-
-	hs959=WiggleClass('HS959', env)
-\end_layout
-
-\begin_layout Plain Layout
-
-	assign('s96',s96,env) 
-\end_layout
-
-\begin_layout Plain Layout
-
-	assign('hs959',hs959,env)
-\end_layout
-
-\begin_layout Plain Layout
-
-	s96$loadWiggles() 
-\end_layout
-
-\begin_layout Plain Layout
-
-	hs959$loadWiggles()
-\end_layout
-
-\begin_layout Plain Layout
-
-	###
-\end_layout
-
-\begin_layout Plain Layout
-
-	assign('s96bed',read.table('S96/S96_peaks.bed'),env)
-\end_layout
-
-\begin_layout Plain Layout
-
-	assign('s96overlap',read.table('S96/S96_overlap.bed'),env)
-\end_layout
-
-\begin_layout Plain Layout
-
-	assign('s96unique',read.table('S96/S96_unique.bed'),env)
-\end_layout
-
-\begin_layout Plain Layout
-
-	assign('hs959bed',read.table('HS959/HS959_peaks.bed'),env)
-\end_layout
-
-\begin_layout Plain Layout
-
-	assign('hs959overlap',read.table('S96/S96_overlap.bed'),env)
-\end_layout
-
-\begin_layout Plain Layout
-
-	assign('hs959unique',read.table('S96/S96_unique.bed'),env)
-\end_layout
-
-\begin_layout Plain Layout
-
-	# Match indexes 
-\end_layout
-
-\begin_layout Plain Layout
-
-	id1=match(get('s96overlap',env)$V4,get('s96bed',env)$V4) 
-\end_layout
-
-\begin_layout Plain Layout
-
-	id2=match(get('s96unique',env)$V4,get('s96bed',env)$V4)
-\end_layout
-
-\begin_layout Plain Layout
-
-	id3=match(get('hs959overlap',env)$V4,get('hs959bed',env)$V4) 
-\end_layout
-
-\begin_layout Plain Layout
-
-	id4=match(get('hs959unique',env)$V4,get('hs959bed',env)$V4)
-\end_layout
-
-\begin_layout Plain Layout
-
-    assign('id1',id1,env)
-\end_layout
-
-\begin_layout Plain Layout
-
-	assign('id2',id2,env)
-\end_layout
-
-\begin_layout Plain Layout
-
-	assign('id3',id3,env)
-\end_layout
-
-\begin_layout Plain Layout
-
-	assign('id4',id4,env)
-\end_layout
-
-\begin_layout Plain Layout
-
-	setwd(oldpath)
-\end_layout
-
-\begin_layout Plain Layout
-
-    env
-\end_layout
-
-\begin_layout Plain Layout
-
-}
+debug=FALSE
 \end_layout
 
 \begin_layout Plain Layout
@@ -228,21 +88,128 @@ source('readplot.R')
 
 \begin_layout Plain Layout
 
-e1=loaddir('macs1.4.1')
+source('knitr.R')
 \end_layout
 
 \begin_layout Plain Layout
 
-e2=loaddir('macs1.4.2')
+setwd('macs1.4.1')
 \end_layout
 
 \begin_layout Plain Layout
 
-##
+e1=loadMacsEnv('S96','HS959')
 \end_layout
 
 \begin_layout Plain Layout
 
+setwd('../macs1.4.2')
+\end_layout
+
+\begin_layout Plain Layout
+
+e2=loadMacsEnv('S96','HS959')
+\end_layout
+
+\begin_layout Plain Layout
+
+setwd('../macs-bad-run')
+\end_layout
+
+\begin_layout Plain Layout
+
+e3=loadMacsEnv('S96','HS959')
+\end_layout
+
+\begin_layout Plain Layout
+
+setwd('..')
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here we observe some differences between version MACS 1.4.1 and MACS 1.4.2.
+ Major differences between these versions are 
+\end_layout
+
+\begin_layout Standard
+1) stricter removal of duplicate tags 
+\end_layout
+
+\begin_layout Standard
+2) automatically using the peak shifting model ('--off-auto default:false')
+ 
+\end_layout
+
+\begin_layout Standard
+3) scaling factor goes from large to small rather than small to large dataset.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<Q1, echo=FALSE, cache=TRUE,out.width='.49
+\backslash
+
+\backslash
+linewidth'>>= 
+\end_layout
+
+\begin_layout Plain Layout
+
+attach(e1)
+\end_layout
+
+\begin_layout Plain Layout
+
+plotTotalReads('Total S96 peak reads vs HS959 synteny MACS 1.4.1 bw=25',wig1,wig2,
+'pink','green') 
+\end_layout
+
+\begin_layout Plain Layout
+
+detach(e1)
+\end_layout
+
+\begin_layout Plain Layout
+
+attach(e2)
+\end_layout
+
+\begin_layout Plain Layout
+
+plotTotalReads('Total S96 peak reads vs HS959 synteny MACS 1.4.2 bw=25',wig1,wig2,
+'lightblue','green')
+\end_layout
+
+\begin_layout Plain Layout
+
+detach(e2)
 \end_layout
 
 \begin_layout Plain Layout
@@ -250,119 +217,209 @@ e2=loaddir('macs1.4.2')
 @
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+The last plot here shows that using incorrect scan window size gives incorrect
+ results that highly overestimate the total number of peak reads for a number
+ of reasons, for ex.
+ having a larger peak window size
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
 \begin_layout Plain Layout
 
+<<Q2,cache=TRUE,echo=FALSE,out.width='.49
+\backslash
+
+\backslash
+linewidth'>>=
 \end_layout
 
 \begin_layout Plain Layout
 
-<<Q1, echo=TRUE>>= 
+attach(e3)
 \end_layout
 
 \begin_layout Plain Layout
 
-s96=get('s96',e1)
+plotTotalReads('Total S96 peak reads vs HS959 synteny MACS 1.4.1 bw=100 [Incorrect
+]',wig1,wig2,'peru','green')
 \end_layout
 
 \begin_layout Plain Layout
 
-hs959=get('hs959',e1)
-\end_layout
-
-\begin_layout Plain Layout
-
-r1=s96$getTotalReads(get('s96bed',e1)) 
-\end_layout
-
-\begin_layout Plain Layout
-
-r2=hs959$getTotalReads(get('s96bed',e1))
-\end_layout
-
-\begin_layout Plain Layout
-
-id1=get('id1',e1)
-\end_layout
-
-\begin_layout Plain Layout
-
-id2=get('id2',e1)
-\end_layout
-
-\begin_layout Plain Layout
-
-plot(r1,r2,ylab='HS959 reads',xlab='S96 reads',pch='*') 
-\end_layout
-
-\begin_layout Plain Layout
-
-points(r1[id1],r2[id1],pch=1,col='pink') 
-\end_layout
-
-\begin_layout Plain Layout
-
-points(r1[id2],r2[id2],pch=1,col='green') 
-\end_layout
-
-\begin_layout Plain Layout
-
-title('Total S96 peak reads vs HS959 synteny (1.4.1)') 
-\end_layout
-
-\begin_layout Plain Layout
-
-s96=get('s96',e2)
-\end_layout
-
-\begin_layout Plain Layout
-
-hs959=get('hs959',e2)
-\end_layout
-
-\begin_layout Plain Layout
-
-r1=s96$getTotalReads(get('s96bed',e2)) 
-\end_layout
-
-\begin_layout Plain Layout
-
-r2=hs959$getTotalReads(get('s96bed',e2))
-\end_layout
-
-\begin_layout Plain Layout
-
-id1=get('id1',e2)
-\end_layout
-
-\begin_layout Plain Layout
-
-id2=get('id2',e2)
-\end_layout
-
-\begin_layout Plain Layout
-
-plot(r1,r2,ylab='HS959 reads',xlab='S96 reads',pch='*') 
-\end_layout
-
-\begin_layout Plain Layout
-
-points(r1[id1],r2[id1],pch=1,col='pink') 
-\end_layout
-
-\begin_layout Plain Layout
-
-points(r1[id2],r2[id2],pch=1,col='green') 
-\end_layout
-
-\begin_layout Plain Layout
-
-title('Total S96 peak reads vs HS959 synteny (1.4.2)') 
+detach(e3)
 \end_layout
 
 \begin_layout Plain Layout
 
 @
 \end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Sorting out optimal MACS parameters is clearly important for a dataset.
+ Our software package can visually assist users by generating visual reports
+ for ChIP-seq data comparisons.
+ 
+\end_layout
+
+\begin_layout Standard
+We also use other comparisons for different ChIP-seq metrics, including
+\end_layout
+
+\begin_layout Standard
+- Mean peak reads
+\end_layout
+
+\begin_layout Standard
+- Total peak reads
+\end_layout
+
+\begin_layout Standard
+- Normalized difference scores
+\end_layout
+
+\begin_layout Standard
+- Sliding window representations
+\end_layout
+
+\begin_layout Standard
+Here we use a sliding window to find the maximum average peak reads to represent
+ the distribution of means
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<Q3, cache=TRUE, echo=FALSE,out.width='.49
+\backslash
+
+\backslash
+linewidth'>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+attach(e2)
+\end_layout
+
+\begin_layout Plain Layout
+
+plotMaxAvgReads('Max Average reads S96 peaks  w=100', wig1,wig2,'purple','green'
+) 
+\end_layout
+
+\begin_layout Plain Layout
+
+plotMaxAvgReads('Max Average reads HS959 peaks  w=100', wig2,wig1,'yellow','gree
+n') 
+\end_layout
+
+\begin_layout Plain Layout
+
+detach(e2)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Future work:
+\end_layout
+
+\begin_layout Standard
+We want to do statistical hypothesis testing on ChIP-seq datasets to test
+ against normality.
+ If we use a normalized difference score defined by Zheng et al.
+ then we have 
+\begin_inset Formula $A,B,c,\, and\,\hat{\sigma}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Z=\frac{A-B/c}{\hat{\sigma}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We can test the score using the mean values of A in the peak regions to
+ see if it significantly strays from the standard normal contradicts the
+ null hypothesis 
+\begin_inset Formula $H_{0}\sim Normal(0,1)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This specifically would be a test like
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Z=\frac{\bar{A}-\bar{B}/c}{\hat{\sigma}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Source code for plots is available 
+\begin_inset CommandInset href
+LatexCommand href
+target "https://github.com/tonto/macs-accessories/"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Document generated using knitr
+\begin_inset CommandInset href
+LatexCommand href
+target " http://yihui.name/knitr/"
 
 \end_inset
 

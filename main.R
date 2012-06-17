@@ -130,15 +130,10 @@ legend('bottomright', legend=c('shared', 'unique'), fill=c('blue', 'red'))
 
 
 
-################
-# Get NormDiff scaling factor, variance
-s96$estimateScalingFactor()
-s96$estimateVarianceAll()
-hs959$estimateScalingFactor()
-hs959$estimateVarianceAll()
 
 
-
+maxs96dos<-s96$getMaxAvgZscore(Zs96dos)
+maxhs959dos<-hs959$getMaxAvgZscore(Zhs959dos)
 ##########
 # Get Z scores
 Zs96=s96$Z(s96bed)
