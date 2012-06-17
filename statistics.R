@@ -36,7 +36,7 @@ plotSortedMaxAvgZscoreX('Sorted HS959 peak Avg NormDiff score vs S96 synteny w=1
 
 library(xtable)
 debug=TRUE
-env=loadMacsEnv('S96rep1','S96rep2')
+env=loadMacsEnv('S96rep1u','S96rep2u')
 attach(env)
 wig1$estimateScalingFactor()
 wig1$estimateVarianceAll()

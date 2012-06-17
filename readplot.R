@@ -20,19 +20,22 @@ WiggleClass<-function(name) {
   
   ########################
   # Read wiggle files from path into memory and assign filesnames
-  nc$loadWiggles=function() {
-    loadWiggle<-function(wigpath) {
+  nc$loadWiggles=function(env=NULL) {
+    loadWiggle<-function(wigpath,env) {
       files=list.files(path=wigpath,pattern="*.fsa.wig.gz")
       for (filename in files) {
+        fn<-paste(wigpath,filename,sep='')
         if(debug)
-          print(filename)
-        file<-paste(wigpath,filename,sep='')
-        wig<-read.table(file, skip=2)
+          cat(filename, '\n')
+        wig<-read.table(fn, skip=2)
         nc$wiglist[[filename]]=wig
       }
+    
     }
-    loadWiggle(nc$treatpath)
-    loadWiggle(nc$controlpath)
+    loadWiggle(nc$treatpath,env)
+    loadWiggle(nc$controlpath,env)
+    if(!is.null(env))
+      list2env(nc$wiglist,env)
   }
   #######
   # Get avg reads
@@ -216,47 +219,59 @@ WiggleClass<-function(name) {
   return(nc)
 }
 
-
 intersectBed<-function(nc1,nc2) {
-  apply(nc1$peaks,1,function(x){
+  selectrows=apply(nc1$peaks,1,function(x){
     chr1=x[1]
     start1=as.integer(x[2])
     end1=as.integer(x[3])
-    #if(debug)
-      #cat(chr1,' ',start1, ' ', end1, '\n')
+    pn1=x[4]
     sub=nc2$peaks[nc2$peaks$V1==chr1,]
-    apply(sub,1,function(y){
+    ret=apply(sub,1,function(y){
       chr2=y[1]
       start2=as.integer(y[2])
       end2=as.integer(y[3])
-      
-      if(chr1==chr2) {
-        #!(AR < BL || BR < AL)
-        if(start2 <= end1 && start1 <= end2) x
+      pn2=y[4]
+      b=FALSE
+      #!(AR < BL || BR < AL) -> BL <= AR && AL <= BR
+      if(start2 <= end1 && start1 <= end2) {
+        if(debug)
+          cat('(',chr1,',',chr2,') (',start1,',', end1, ') (',start2,',',end2,') (',pn1,',',pn2,')\n')
+        b=TRUE
       }
+      b
     })
+    sum(ret)>0
   })
+  
+  nc1$peaks[selectrows,]
 }
 
 uniqueBed<-function(nc1,nc2) {
-  apply(nc1$peaks,1,function(x){
+  selectrows=apply(nc1$peaks,1,function(x){
     chr1=x[1]
     start1=as.integer(x[2])
     end1=as.integer(x[3])
-    if(debug)
-      cat(chr1,' ',start1, ' ', end1, '\n')
+    pn1=x[4]
     sub=nc2$peaks[nc2$peaks$V1==chr1,]
-    apply(sub,1,function(y){
+    ret=apply(sub,1,function(y){
       chr2=y[1]
       start2=as.integer(y[2])
       end2=as.integer(y[3])
-      if(chr1==chr2) {
-        #AR < BL || BR < AL
-        if(end1 <= start2 || end2 <= start1) x
+      pn2=y[4]
+      b=FALSE
+      #AR < BL || BR < AL
+      if(end1 <= start2 || end2 <= start1) {
+        if(debug)
+          cat('(',chr1,',',chr2,') (',start1,',', end1, ') (',start2,',',end2,') (',pn1,',',pn2,')\n')
+        b=TRUE
       }
+      b
     })
-    #fix??
+    #View(ret)
+    sum(ret)>0
   })
+  
+  nc1$peaks[selectrows,]
 }
 ###########
 
