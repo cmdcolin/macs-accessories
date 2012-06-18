@@ -161,11 +161,10 @@ WiggleClass<-function(name) {
   nc$Zxi<-function(x,treat,control,window,corr1,corr2) {
     pos1=x[1]
     pos2=x[2]
-    ma=array()
-    ma[1]=nc$estimateVarianceWindow(x,treat,control,window[1],corr1,corr2)
-    ma[2]=nc$estimateVarianceWindow(x,treat,control,window[2],corr1,corr2)
-    ma[3]=nc$variance
-    (treat$V2[pos1]-control$V2[pos2]/nc$scaling)/max(ma)
+    ma=sapply(window,function(w){
+      nc$estimateVarianceWindow(x,treat,control,w,corr1,corr2)
+    })
+    (treat$V2[pos1]-control$V2[pos2]/nc$scaling)/max(ma,nc$variance)
   }
   
   
@@ -192,6 +191,27 @@ WiggleClass<-function(name) {
     
     apply(bedfile,1,getZscore,nc$treatname,nc$controlname, window)
   }
+  
+  
+  # Calculate Z scores over all wiggle files
+  nc$Zall<-function(window=c(1,10)) {
+    files1=list.files(path=nc$treatpath,pattern="*.fsa.wig.gz")
+    files2=list.files(path=nc$controlpath,pattern="*.fsa.wig.gz")
+    apply(cbind(files1,files2),1,function(f){
+      treat<-get(f[1])
+      control<-get(f[2])
+      if(debug==TRUE)
+        cat(f[1],'\t',f[2],'\n')
+      
+      corr1=1:length(treat$V1)
+      corr2=findInterval(treat$V1,control$V1)
+      app=cbind(corr1,corr2)
+      apply(app, 1, function(x){nc$Zxi(x,treat,control,window,corr1,corr2)})
+    })
+  }
+  
+  
+  
   
   nc$getMaxAvgZscore<-function(wz,ws=10) {
     gmaz<-function(zlist) {
