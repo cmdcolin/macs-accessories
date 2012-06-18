@@ -59,6 +59,10 @@ wig1$estimateScalingFactor()
 wig1$estimateVarianceAll()
 wig2$estimateScalingFactor()
 wig2$estimateVarianceAll()
+Rprof()
+wza1=wig1$Zall()
+Rprof(NULL)
+summaryRprof()
 wz1=wig1$Z(wig1$peaks)
 wz2=wig2$Z(wig1$peaks)
 wz4=wig2$Z(wig2$peaks)
@@ -78,3 +82,5 @@ plotSortedMaxAvgZscoreX('Sorted S96 Max Avg Normdiff in HS959 peak regions',wig2
 
 plotSortedMaxAvgZscore('Sorted HS959 Max Avg Normdiff connected with S96 peak regions',wig1,wig2,r1,'#00334455','#55221122')
 plotSortedMaxAvgZscore('Sorted S96 Max Avg Normdiff connected with HS959 peak regions',wig2,wig1,r2,'#00661155','#55221122') 
+
+

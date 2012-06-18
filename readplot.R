@@ -147,10 +147,15 @@ WiggleClass<-function(name) {
     #cat(xpos,'\t(', treat$V1[beginning],',',treat$V1[ending],')',nc$matches, '-', nc$unmatches,'\t',
     #    nc$matches1,' ', nc$unmatches1,'(',beginning, ' ', ending, ') (', nc$shifter, ' ', nc$shifter2, '\n')
 
-    b1=findInterval(xpos[1]-ws,corr1)
-    e1=findInterval(xpos[1]+ws,corr1)
-    b2=findInterval(xpos[2]-ws,corr2)
-    e2=findInterval(xpos[2]+ws,corr2)
+    b1=xpos[1]-ws
+    e1=xpos[1]+ws
+    b2=xpos[2]-ws
+    e2=xpos[2]+ws
+    b1=ifelse(b1<1,1,b1)
+    b2=ifelse(b2<1,1,b2)
+    e1=ifelse(e1>dim(treat)[1],dim(treat)[1],e1)
+    e2=ifelse(e2>dim(control)[1],dim(control)[1],e2)
+    
     chip_signal=treat$V2[b1:e1]
     control_signal=control$V2[b2:e2]
     average_chip=mean(chip_signal)
@@ -164,7 +169,13 @@ WiggleClass<-function(name) {
     ma=sapply(window,function(w){
       nc$estimateVarianceWindow(x,treat,control,w,corr1,corr2)
     })
-    (treat$V2[pos1]-control$V2[pos2]/nc$scaling)/max(ma,nc$variance)
+    
+    ## Normdiff
+    A=treat$V2[pos1]
+    B=control$V2[pos2]
+    c=nc$scaling
+    sigma=max(ma,nc$variance)
+    (A-B/c)/sigma
   }
   
   
@@ -192,6 +203,9 @@ WiggleClass<-function(name) {
     apply(bedfile,1,getZscore,nc$treatname,nc$controlname, window)
   }
   
+ 
+  
+  
   
   # Calculate Z scores over all wiggle files
   nc$Zall<-function(window=c(1,10)) {
@@ -206,11 +220,10 @@ WiggleClass<-function(name) {
       corr1=1:length(treat$V1)
       corr2=findInterval(treat$V1,control$V1)
       app=cbind(corr1,corr2)
-      apply(app, 1, function(x){nc$Zxi(x,treat,control,window,corr1,corr2)})
+      list=apply(app, 1, function(x){nc$Zxi(x,treat,control,window,corr1,corr2)})
+      cbind(treat$V1[corr1],control$V1[corr2],unlist(list))
     })
   }
-  
-  
   
   
   nc$getMaxAvgZscore<-function(wz,ws=10) {
