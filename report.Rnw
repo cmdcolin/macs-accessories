@@ -1,6 +1,6 @@
 \batchmode
 \makeatletter
-\def\input@path{{\string"C:/Documents and Settings/Tonto/Desktop/macs-accessories/\string"/}}
+\def\input@path{{\string"C:/Documents and Settings/Colin Diesh/Desktop/Workspace/NormDiff/\string"/}}
 \makeatother
 \documentclass[english]{article}
 \usepackage{mathpazo}
@@ -24,9 +24,9 @@ subtracted' ChIP-seq data. Using methods from Zheng et al. we can
 estimate the variance of the data and the scaling between control
 and ChIP-seq sequencing depths.
 
-<<setup, cache=FALSE79, echo=FALSE>>=
-wig1=WiggleClass('S96rep1u')
-wig2=WiggleClass('S96rep2u')
+<<setup, cache=TRUE, echo=FALSE>>=
+wig1=WiggleClass('S96')
+wig2=WiggleClass('HS959')
 wig1$loadWiggles(globalenv())
 wig2$loadWiggles(globalenv())
 ####
@@ -38,5 +38,44 @@ wz1=wig1$Z(wig1$peaks)
 wz2=wig2$Z(wig1$peaks)
 wz4=wig2$Z(wig2$peaks)
 wz3=wig1$Z(wig2$peaks)
+@
+
+Thus
+
+<<table-demo, echo=FALSE, cache=FALSE, results=tex>>= 
+retm=matrix(c(wig1$scaling,wig1$variance,wig2$scaling,wig2$variance),c(2,2))
+rownames(retm)<-c('Est. Scaling factor', 'Est. Variance')
+colnames(retm)<-c('S96', 'HS959')
+xtable(retm) 
+@
+
+Therefore
+
+<<Q2, echo=FALSE, cache=FALSE, out.width='.49\\linewidth'>>=
+r3=plotAvgZscore('Mean S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2, 'lightblue', 'orange')
+r4=plotAvgZscore('Mean HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'pink','orange')
+@
+
+Then
+
+<<Q3, echo=FALSE, cache=FALSE, out.width='.49\\linewidth'>>=
+r1=plotMaxAvgZscore('Max Avg S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2,'lightblue', 'orange')
+r2=plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'pink','orange')
+@
+
+So
+
+<<Q4,echo=FALSE, out.width='.49\\linewidth'>>=
+plotSortedMaxAvgZscoreX('Sorted HS959 Avg Normdiff in S96 peak regions',wig1,wig2,r3,'red','blue')
+plotSortedMaxAvgZscoreX('Sorted S96 Avg Normdiff in HS959 peak regions',wig2,wig1,r4,'green','blue')
+plotSortedMaxAvgZscoreX('Sorted HS959 Max Avg Normdiff in S96 peak regions',wig1,wig2,r1,'red','blue')
+plotSortedMaxAvgZscoreX('Sorted S96 Max Avg Normdiff in HS959 peak regions',wig2,wig1,r2,'green','blue') 
+@
+
+Sorted connections
+
+<<Q4,echo=FALSE, out.width='.49\\linewidth'>>=
+plotSortedMaxAvgZscore('Sorted HS959 Max Avg Normdiff connected with S96 peak regions',wig1,wig2,r1,'#00334455','#55221122') 
+plotSortedMaxAvgZscore('Sorted S96 Max Avg Normdiff connected with HS959 peak regions',wig2,wig1,r2,'#00661155','#55221122')
 @
 \end{document}

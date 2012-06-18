@@ -36,7 +36,7 @@ plotSortedMaxAvgZscoreX('Sorted HS959 peak Avg NormDiff score vs S96 synteny w=1
 
 library(xtable)
 debug=TRUE
-env=loadMacsEnv('S96rep1u','S96rep2u')
+env=loadMacsEnv('S96','HS959')
 attach(env)
 wig1$estimateScalingFactor()
 wig1$estimateVarianceAll()
@@ -50,8 +50,8 @@ wig1$unique
 
 
 debug=TRUE
-wig1=WiggleClass('S96rep1u')
-wig2=WiggleClass('S96rep2u')
+wig1=WiggleClass('S96')
+wig2=WiggleClass('HS959')
 wig1$loadWiggles(globalenv()) 
 wig2$loadWiggles(globalenv())
 ###
@@ -63,3 +63,18 @@ wz1=wig1$Z(wig1$peaks)
 wz2=wig2$Z(wig1$peaks)
 wz4=wig2$Z(wig2$peaks)
 wz3=wig1$Z(wig2$peaks)
+r1=plotMaxAvgZscore('Max Avg S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2,'lightblue', 'orange')
+r2=plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'pink','orange')
+r3=plotAvgZscore('Mean S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2, 'lightblue', 'orange')
+r4=plotAvgZscore('Mean HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'pink','orange')
+
+plotSortedMaxAvgZscoreX('Sorted HS959 Avg Normdiff in S96 peak regions',wig1,wig2,r3,'red','blue')
+plotSortedMaxAvgZscoreX('Sorted S96 Avg Normdiff in HS959 peak regions',wig2,wig1,r4,'green','blue')
+plotSortedMaxAvgZscoreX('Sorted HS959 Max Avg Normdiff in S96 peak regions',wig1,wig2,r1,'red','blue')
+plotSortedMaxAvgZscoreX('Sorted S96 Max Avg Normdiff in HS959 peak regions',wig2,wig1,r2,'green','blue') 
+
+
+
+
+plotSortedMaxAvgZscore('Sorted HS959 Max Avg Normdiff connected with S96 peak regions',wig1,wig2,r1,'#00334455','#55221122')
+plotSortedMaxAvgZscore('Sorted S96 Max Avg Normdiff connected with HS959 peak regions',wig2,wig1,r2,'#00661155','#55221122') 

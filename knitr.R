@@ -80,31 +80,30 @@ plotMaxAvgZscore<-function(t, w1, w2, wz1,wz2, c1,c2) {
 }
 
 plotSortedMaxAvgZscore<-function(t, w1, w2, r, c1,c2) {
-  
-  wz1sort=sort(r[['2shared']])
-  wz2sort=sort(r[['2shared']])
-  idx1temp=match(r[['1']],wz1sort)
-  idx2temp=match(r[['2']],wz2sort)
-  shared=intersectBed(w1,w2)
-  unique=uniqueBed(w1,w2)
-  id1=match(shared$V4,w1$peaks$V4) 
-  id2=match(unique$V4,w1$peaks$V4)
-  idx1=match(id1,idx1temp)
-  idx2=match(id2,idx2temp)
-  xs=1:length(wz2sort)
-  xs2=1:length(wz1sort)
-  plot(xs,wz2sort,pch='.',xlab='Rank',ylab='Avg NormDiff')
-  points(xs[idx1],wz2sort[idx1],col=c1,pch='.')
-  points(xs[idx2],wz2sort[idx2],col=c2,pch='.')
-  polygon(c(xs2,rev(xs)),c(wz1sort,rev(wz2sort)),col='lightyellow',border=FALSE)
-  points(xs2[idx1],wz1sort[idx1],col=c1,pch='.')
-  points(xs2[idx2],wz1sort[idx2],col=c2,pch='.')
-  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  ls(r)
+  wz1sort=sort(c(r[['2shared']],r[['2unique']]))
+  wz2sort=sort(c(r[['1shared']],r[['1unique']]))
+  xs1=1:length(wz1sort)
+  xs11=match(r[['2unique']],wz1sort)
+  xs12=match(r[['2shared']],wz1sort)
+  xs2=1:length(wz2sort)
+  xs21=match(r[['1unique']],wz2sort)
+  xs22=match(r[['1shared']],wz2sort)
+  plot(xs1,wz1sort,pch='.',xlab='Rank',ylab='Avg NormDiff')
+  points(xs11,wz1sort[xs11],col=c1,pch='.')
+  points(xs12,wz1sort[xs12],col=c2,pch='.')
+  points(xs21,wz2sort[xs21],col=c1,pch='.')
+  points(xs22,wz2sort[xs22],col=c2,pch='.')
+  for(i in 1:length(xs12))
+    lines(c(xs12[i],xs22[i]),c(wz1sort[xs12][i],wz2sort[xs22][i]),col=c1)
+  for(i in 1:length(xs11))
+    lines(c(xs11[i],xs21[i]),c(wz1sort[xs11][i],wz2sort[xs21][i]),col=c2)
+  #polygon(c(xs1,rev(xs)),c(wz1sort,rev(wz2sort)),col='lightyellow',border=FALSE)
+  #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
 }
 
 plotSortedMaxAvgZscoreX<-function(t, w1, w2, r, c1,c2) {
-  
   wz1sort=sort(r[['2shared']])
   wz2sort=sort(r[['2unique']])
   xs1=1:length(wz1sort)
@@ -113,28 +112,10 @@ plotSortedMaxAvgZscoreX<-function(t, w1, w2, r, c1,c2) {
   points(xs1,wz1sort,col=c1,pch='.')
   points(xs2,wz2sort,col=c2,pch='.')
   #polygon(c(xs1,rev(xs)),c(wz1sort,rev(wz2sort)),col='lightyellow',border=FALSE)
-  #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
-  title(t)
-}
-plotSortedMaxAvgZscoreOld<-function(t, w1, w2, r, c1,c2) {
-  
-  wz1sort=sort(r[['1']])
-  wz2sort=sort(r[['2']])
-  shared=intersectBed(w1,w2)
-  unique=uniqueBed(w1,w2)
-  id1=match(shared$V4,w1$peaks$V4) 
-  id2=match(unique$V4,w1$peaks$V4)
-  xs=1:length(wz2sort)
-  xs2=1:length(wz1sort)
-  plot(xs,wz2sort,pch='.',xlab='Rank',ylab='Avg NormDiff')
-  points(xs[id1],wz2sort[id1],col=c1,pch='.')
-  points(xs[id2],wz2sort[id2],col=c2,pch='.')
-  polygon(c(xs2,rev(xs)),c(wz1sort,rev(wz2sort)),col='lightyellow',border=FALSE)
-  points(xs2[id1],wz1sort[id1],col=c1,pch='.')
-  points(xs2[id2],wz1sort[id2],col=c2,pch='.')
   legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
 }
+
 
 
 #setwd('macs1.4.2')
