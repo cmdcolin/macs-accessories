@@ -218,10 +218,13 @@ WiggleClass<-function(name) {
         cat(f[1],'\t',f[2],'\n')
       
       corr1=1:length(treat$V1)
-      corr2=findInterval(treat$V1,control$V1)
+      corr2=findInterval(treat$V1,control$V1,all.inside=TRUE)
       app=cbind(corr1,corr2)
-      list=apply(app, 1, function(x){nc$Zxi(x,treat,control,window,corr1,corr2)})
-      cbind(treat$V1[corr1],control$V1[corr2],unlist(list))
+      listret=apply(app, 1, function(x){nc$Zxi(x,treat,control,window,corr1,corr2)})
+      
+      #todo get chr from filename
+      cat(length(treat$V1[corr1]),' ',length(control$V1[corr2]),' ',length(listret), ' ', length(corr2), '\n')
+      cbind(treat$V1[corr1],control$V1[corr2],listret)
     })
   }
   
@@ -273,20 +276,6 @@ intersectBed<-function(nc1,nc2) {
     chr1=x[1]
     start1=as.integer(x[2])
     end1=as.integer(x[3])
-    pn1=x[4]
-    sublist=nc2$peaks[nc2$peaks$V1==chr1,]
-    sum(sublist$V2<=end1&&start1<=sublist$V3)>0
-  })
-  
-  nc1$peaks[selectrows,]
-}
-
-intersectBed<-function(nc1,nc2) {
-  selectrows=apply(nc1$peaks,1,function(x){
-    chr1=x[1]
-    start1=as.integer(x[2])
-    end1=as.integer(x[3])
-    pn1=x[4]
     sublist=nc2$peaks[nc2$peaks$V1==chr1,]
     ret=apply(sublist,1,function(y){
       chr2=y[1]
