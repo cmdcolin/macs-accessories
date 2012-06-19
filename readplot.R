@@ -211,7 +211,7 @@ WiggleClass<-function(name) {
   nc$Zall<-function(window=c(1,10)) {
     files1=list.files(path=nc$treatpath,pattern="*.fsa.wig.gz")
     files2=list.files(path=nc$controlpath,pattern="*.fsa.wig.gz")
-    apply(cbind(files1,files2),1,function(f){
+    ret=apply(cbind(files1,files2),1,function(f){
       treat<-get(f[1])
       control<-get(f[2])
       if(debug==TRUE)
@@ -223,23 +223,40 @@ WiggleClass<-function(name) {
       listret=apply(app, 1, function(x){nc$Zxi(x,treat,control,window,corr1,corr2)})
       
       #todo get chr from filename
-      cat(length(treat$V1[corr1]),' ',length(control$V1[corr2]),' ',length(listret), ' ', length(corr2), '\n')
+      cat(length(treat$V1[corr1]),' ',length(control$V1[corr2]),' ',length(listret),'\n')
       cbind(treat$V1[corr1],control$V1[corr2],listret)
     })
+    
+    # get chr w/ regex
+    for(wigfile in files1) {
+      regyy=regexpr(f[1],"chr[0-9]{2}.fsa")
+      chrf=substr(wigfile,regyy[1],attr(regyy,"match.length"))
+      ret[['chr']]=chrf
+    }
+    ret
   }
   
   nc$getMaxAvgZscoreAll<-function(za,ws=100) {
-
-    sapply(za,function(x) {
-      
-      iter=seq(1,length(x),by=ws)
-      v=numeric(length(iter))
-      for(i in length(iter)) {
+    
+    sapply(za,function(z){
+      scores=z[,3]
+      cat(length(scores),'\n')
+      iter=seq(1,length(scores)-1,by=ws)
+      sapply(iter,function(x){
+        
         start=iter[i]
         end=iter[i]+ws
-        v[i]=mean(za[start:end])
-      }
-      v
+        cbind(z[['chr']],start,end,mean(scores[start:end]))
+      })
+      #v=numeric(length(iter))
+      #for(i in 1:length(iter)) {
+    ##    #start=iter[i]
+        #end=iter[i]+ws
+      #  start=iter[i]
+       # end=iter[i]+ws
+      #  v[i]=mean(scores[start:end])
+      #}
+      #v
     })
   }
   

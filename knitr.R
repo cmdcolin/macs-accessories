@@ -131,6 +131,26 @@ plotSortedMaxAvgZscoreX<-function(t, w1, w2, r, c1,c2) {
   title(t)
 }
 
+
+plotZall<-function(ts,w1,w2) {
+  cols=sapply(ts,function(z){
+    for(i in 1:length(z)) {
+      cat(z[1],' ',z[2], ' ',z[3],'\n')
+      a=intersectBed(rbind(z[1],z[2],z[3]),w1$peaks)
+      b=intersectBed(rbind(z[1],z[2],z[3]),w2$peaks)
+      print(a)
+      print(b)
+      #if(a&&b)col='red'
+     # else if(a)col='blue'
+    ##  else if(b)col='green'
+    #  else col='yellow'
+    #  points()
+    }
+  })
+  #zaw=cbind(zaw,cols)
+  #sort(zaw)
+##  plot(zaw)
+}
 #setwd('macs1.4.2')
 #e2=loadMacsEnv('S96','HS959')
 #setwd('..')
