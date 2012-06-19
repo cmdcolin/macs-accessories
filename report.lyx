@@ -331,7 +331,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<Q4,echo=FALSE, out.width='.49
+<<Q4,echo=FALSE, cache=TRUE, out.width='.49
 \backslash
 
 \backslash
@@ -373,7 +373,8 @@ plotSortedMaxAvgZscoreX('Sorted S96 Max Avg Normdiff in HS959 peak regions',wig2
 \end_layout
 
 \begin_layout Standard
-Sorted connections
+Here we have the connections between sorted max average normdiff score in
+ the peak regions with the scores and the syntenic regions in compared strains
 \end_layout
 
 \begin_layout Standard
@@ -382,23 +383,20 @@ status open
 
 \begin_layout Plain Layout
 
-<<Q5,echo=FALSE, out.width='.49
-\backslash
-
-\backslash
-linewidth'>>=
+<<Q5, cache=FALSE, echo=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout
 
 plotSortedMaxAvgZscore('Sorted HS959 Max Avg Normdiff connected with S96
- peak regions',wig1,wig2,r1,'#00334455','#55221122') 
+ peak regions',wig1,wig2,r1,'#00119919','#bb000019','#001199','#aa0000')
+  
 \end_layout
 
 \begin_layout Plain Layout
 
 plotSortedMaxAvgZscore('Sorted S96 Max Avg Normdiff connected with HS959
- peak regions',wig2,wig1,r2,'#00661155','#55221122')
+ peak regions',wig2,wig1,r2,'#00990019','#bb000019','#009900','#aa0000')
 \end_layout
 
 \begin_layout Plain Layout

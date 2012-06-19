@@ -225,6 +225,22 @@ WiggleClass<-function(name) {
     })
   }
   
+  nc$getMaxAvgZscoreAll<-function(za,ws=100) {
+
+    sapply(za,function(x) {
+      
+      iter=seq(1,length(x),by=ws)
+      v=numeric(length(iter))
+      for(i in length(iter)) {
+        start=iter[i]
+        end=iter[i]+ws
+        v[i]=mean(za[start:end])
+      }
+      v
+    })
+  }
+  
+  
   
   nc$getMaxAvgZscore<-function(wz,ws=10) {
     gmaz<-function(zlist) {
