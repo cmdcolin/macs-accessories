@@ -12,27 +12,31 @@ WiggleClass<-function(name) {
     treatpath=paste(name,'/',name,'_MACS_wiggle/treat/',sep=''),
     controlname=paste(name,'_control_afterfiting_',sep=''),
     treatname=paste(name,'_treat_afterfiting_',sep=''),
-    wiglist=list(),
-    peaks=NULL,
-    unique=NULL,
-    shared=NULL
+    peaks=read.table(paste(name,'/',name,'_peaks.bed',sep='')),
+    wiglist=list()
     )
   
   ########################
   # Read wiggle files from path into memory and assign filesnames
-  nc$loadWiggles=function() {
-    loadWiggle<-function(wigpath) {
+  nc$loadWiggles=function(env=NULL) {
+    loadWiggle<-function(wigpath,env) {
       files=list.files(path=wigpath,pattern="*.fsa.wig.gz")
       for (filename in files) {
+        fn<-paste(wigpath,filename,sep='')
         if(debug)
-          print(filename)
-        file<-paste(wigpath,filename,sep='')
-        wig<-read.table(file, skip=2)
+          cat(filename, '\n')
+        if(exists(filename,env))
+          wig<-get(filename,env)
+        else {
+          wig<-read.table(fn, skip=2)
+          assign(filename,wig,env)
+        }
         nc$wiglist[[filename]]=wig
       }
     }
-    loadWiggle(nc$treatpath)
-    loadWiggle(nc$controlpath)
+    
+    loadWiggle(nc$treatpath,env)
+    loadWiggle(nc$controlpath,env)
   }
   #######
   # Get avg reads
@@ -143,12 +147,17 @@ WiggleClass<-function(name) {
     #cat(xpos,'\t(', treat$V1[beginning],',',treat$V1[ending],')',nc$matches, '-', nc$unmatches,'\t',
     #    nc$matches1,' ', nc$unmatches1,'(',beginning, ' ', ending, ') (', nc$shifter, ' ', nc$shifter2, '\n')
 
-    b1=findInterval(xpos[1]-ws,corr1)
-    e1=findInterval(xpos[1]+ws,corr1)
-    b2=findInterval(xpos[2]-ws,corr2)
-    e2=findInterval(xpos[2]+ws,corr2)
-    chip_signal=treat[b1:e1]
-    control_signal=control[b2:e2]
+    b1=xpos[1]-ws
+    e1=xpos[1]+ws
+    b2=xpos[2]-ws
+    e2=xpos[2]+ws
+    b1=ifelse(b1<1,1,b1)
+    b2=ifelse(b2<1,1,b2)
+    e1=ifelse(e1>dim(treat)[1],dim(treat)[1],e1)
+    e2=ifelse(e2>dim(control)[1],dim(control)[1],e2)
+    
+    chip_signal=treat$V2[b1:e1]
+    control_signal=control$V2[b2:e2]
     average_chip=mean(chip_signal)
     average_control=mean(control_signal)
     sqrt(average_chip+average_control/nc$scaling^2)
@@ -157,40 +166,81 @@ WiggleClass<-function(name) {
   nc$Zxi<-function(x,treat,control,window,corr1,corr2) {
     pos1=x[1]
     pos2=x[2]
-    mr=array()
-    mr[1]=nc$estimateVarianceWindow(x,treat,control,window[1],corr1,corr2)
-    mr[2]=nc$estimateVarianceWindow(x,treat,control,window[2],corr1,corr2)
-    mr[3]=nc$variance
-    ma=max(mr)
-    (treat[pos1]-control[pos2]/nc$scaling)/ma
+    ma=sapply(window,function(w){
+      nc$estimateVarianceWindow(x,treat,control,w,corr1,corr2)
+    })
+    
+    ## Normdiff
+    A=treat$V2[pos1]
+    B=control$V2[pos2]
+    c=nc$scaling
+    sigma=max(ma,nc$variance)
+    (A-B/c)/sigma
   }
   
   
   
   # Calculate Z scores over all wiggle files
-  nc$Z<-function(bedfile, window=c(10,100)) {
+  nc$Z<-function(bedfile, window=c(1,10)) {
     # Get max average reads over window size
     getZscore<-function(x,f1,f2,window){
       chr=x[1];
-      start=as.integer(x[2]);
-      end=as.integer(x[3]);
+      start=as.integer(x[2])
+      end=as.integer(x[3])
       tf=paste(f1,chr,'.wig.gz',sep='')
       cf=paste(f2,chr,'.wig.gz',sep='')
       treat=nc$wiglist[[tf]]
       control=nc$wiglist[[cf]]
-      
-      corr1=findInterval(seq(start,end,by=nc$spacing),treat$V1)
-      corr2=findInterval(seq(start,end,by=nc$spacing),control$V1)
+      mw=max(window)
+      corr1=findInterval(seq(start-mw,end+mw,by=nc$spacing),treat$V1)
+      corr2=findInterval(seq(start-mw,end+mw,by=nc$spacing),control$V1)
       if(debug==TRUE)
         cat(chr,'-\t(',start,',',end, ')\n')
       app=cbind(corr1,corr2)
-      app=app[-head(app,max(window)),]
-      app=app[-tail(app,max(window)),]
-      apply(app,1,nc$Zxi,treat$V2,control$V2,window,corr1,corr2)
+      apply(app,1,nc$Zxi,treat,control,window,corr1,corr2)
     }
     
     apply(bedfile,1,getZscore,nc$treatname,nc$controlname, window)
   }
+  
+ 
+  
+  
+  
+  # Calculate Z scores over all wiggle files
+  nc$Zall<-function(window=c(1,10)) {
+    files1=list.files(path=nc$treatpath,pattern="*.fsa.wig.gz")
+    files2=list.files(path=nc$controlpath,pattern="*.fsa.wig.gz")
+    apply(cbind(files1,files2),1,function(f){
+      treat<-get(f[1])
+      control<-get(f[2])
+      if(debug==TRUE)
+        cat(f[1],'\t',f[2],'\n')
+      
+      corr1=1:length(treat$V1)
+      corr2=findInterval(treat$V1,control$V1)
+      app=cbind(corr1,corr2)
+      list=apply(app, 1, function(x){nc$Zxi(x,treat,control,window,corr1,corr2)})
+      cbind(treat$V1[corr1],control$V1[corr2],unlist(list))
+    })
+  }
+  
+  nc$getMaxAvgZscoreAll<-function(za,ws=100) {
+
+    sapply(za,function(x) {
+      
+      iter=seq(1,length(x),by=ws)
+      v=numeric(length(iter))
+      for(i in length(iter)) {
+        start=iter[i]
+        end=iter[i]+ws
+        v[i]=mean(za[start:end])
+      }
+      v
+    })
+  }
+  
+  
   
   nc$getMaxAvgZscore<-function(wz,ws=10) {
     gmaz<-function(zlist) {
@@ -218,48 +268,59 @@ WiggleClass<-function(name) {
   return(nc)
 }
 
+intersectBed<-function(nc1,nc2) {
+  selectrows=apply(nc1$peaks,1,function(x){
+    chr1=x[1]
+    start1=as.integer(x[2])
+    end1=as.integer(x[3])
+    pn1=x[4]
+    sublist=nc2$peaks[nc2$peaks$V1==chr1,]
+    sum(sublist$V2<=end1&&start1<=sublist$V3)>0
+  })
+  
+  nc1$peaks[selectrows,]
+}
 
 intersectBed<-function(nc1,nc2) {
-  apply(nc1$peaks,1,function(x){
+  selectrows=apply(nc1$peaks,1,function(x){
     chr1=x[1]
     start1=as.integer(x[2])
     end1=as.integer(x[3])
-    #if(debug)
-      #cat(chr1,' ',start1, ' ', end1, '\n')
-    sub=nc2$peaks[nc2$peaks$V1==chr1,]
-    apply(sub,1,function(y){
+    pn1=x[4]
+    sublist=nc2$peaks[nc2$peaks$V1==chr1,]
+    ret=apply(sublist,1,function(y){
       chr2=y[1]
       start2=as.integer(y[2])
       end2=as.integer(y[3])
-      
-      if(chr1==chr2) {
-        #!(AR < BL || BR < AL)
-        if(start2 <= end1 && start1 <= end2) x
-      }
+      pn2=y[4]
+      (start2<=end1)&&(start1<=end2)
     })
+    sum(ret)>0
   })
+  
+  nc1$peaks[selectrows,]
+}
+uniqueBed<-function(nc1,nc2) {
+  selectrows=apply(nc1$peaks,1,function(x){
+    chr1=x[1]
+    start1=as.integer(x[2])
+    end1=as.integer(x[3])
+    pn1=x[4]
+    sublist=nc2$peaks[nc2$peaks$V1==chr1,]
+    ret=apply(sublist,1,function(y){
+      chr2=y[1]
+      start2=as.integer(y[2])
+      end2=as.integer(y[3])
+      pn2=y[4]
+      #AR < BL || BR < AL
+      (start2<=end1)&&(start1<=end2)
+    })
+    sum(ret)==0
+  })
+  
+  nc1$peaks[selectrows,]
 }
 
-uniqueBed<-function(nc1,nc2) {
-  apply(nc1$peaks,1,function(x){
-    chr1=x[1]
-    start1=as.integer(x[2])
-    end1=as.integer(x[3])
-    if(debug)
-      cat(chr1,' ',start1, ' ', end1, '\n')
-    sub=nc2$peaks[nc2$peaks$V1==chr1,]
-    apply(sub,1,function(y){
-      chr2=y[1]
-      start2=as.integer(y[2])
-      end2=as.integer(y[3])
-      if(chr1==chr2) {
-        #AR < BL || BR < AL
-        if(end1 <= start2 || end2 <= start1) x
-      }
-    })
-    #fix??
-  })
-}
 ###########
 
 
