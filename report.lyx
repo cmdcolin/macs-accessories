@@ -374,7 +374,7 @@ plotSortedMaxAvgZscoreX('Sorted S96 Max Avg Normdiff in HS959 peak regions',wig2
 
 \begin_layout Standard
 Here we have the connections between sorted max average normdiff score in
- the peak regions with the scores and the syntenic regions in compared strains
+ the peak regions with the score of the syntenic regions
 \end_layout
 
 \begin_layout Standard
@@ -397,6 +397,59 @@ plotSortedMaxAvgZscore('Sorted HS959 Max Avg Normdiff connected with S96
 
 plotSortedMaxAvgZscore('Sorted S96 Max Avg Normdiff connected with HS959
  peak regions',wig2,wig1,r2,'#00990019','#bb000019','#009900','#aa0000')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If we do the same thing and look at the whole genome
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<Q6, cache=TRUE, echo=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+wza1=wig1$Zall() 
+\end_layout
+
+\begin_layout Plain Layout
+
+wzamax1=wig1$getMaxAvgZscoreAll(wza1) 
+\end_layout
+
+\begin_layout Plain Layout
+
+plotZall(wzamax1,wig1,wig2)
+\end_layout
+
+\begin_layout Plain Layout
+
+wza2=wig2$Zall() 
+\end_layout
+
+\begin_layout Plain Layout
+
+wzamax2=wig2$getMaxAvgZscoreAll(wza2) 
+\end_layout
+
+\begin_layout Plain Layout
+
+plotZall(wzamax2,wig2,wig1)
 \end_layout
 
 \begin_layout Plain Layout

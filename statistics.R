@@ -67,10 +67,18 @@ Rprof(NULL)
 summaryRprof()
 
 
-t1wza1=wig1$Zall()
 wza1=wig1$Zall()
 wza2=wig2$Zall()
-plotZall(wza1,wig1,wig2)
+wzamax1=wig1$getMaxAvgZscoreAll(wza1)
+wzamax2=wig2$getMaxAvgZscoreAll(wza2)
+c1=plotZall(wzamax1,wig1,wig2)
+plotZall(wzamax1,wig1,wig2,c1)
+c2=plotZall(wzamax2,wig2,wig1)
+plotZall(wzamax2,wig2,wig1,c2)
+
+
+
+
 wz1=wig1$Z(wig1$peaks)
 wz2=wig2$Z(wig1$peaks)
 wz4=wig2$Z(wig2$peaks)
@@ -93,5 +101,3 @@ plotSortedMaxAvgZscore('Sorted HS959 Max Avg Normdiff connected with S96 peak re
 plotSortedMaxAvgZscore('Sorted S96 Max Avg Normdiff connected with HS959 peak regions',wig2,wig1,r2,'#00661107','#55221133')
 plotSortedMaxAvgZscore('Sorted HS959 Max Avg Normdiff connected with S96 peak regions',wig1,wig2,r1,'#00334407','#55221133','#003344','#552211') 
 plotSortedMaxAvgZscore('Sorted S96 Max Avg Normdiff connected with HS959 peak regions',wig2,wig1,r2,'#00661107','#55221133','#006611','#552211')
-
-

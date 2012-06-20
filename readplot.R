@@ -1,5 +1,5 @@
 
-
+library(stringr)
 #################
 #! Constructor
 WiggleClass<-function(name) {
@@ -220,44 +220,45 @@ WiggleClass<-function(name) {
       corr1=1:length(treat$V1)
       corr2=findInterval(treat$V1,control$V1,all.inside=TRUE)
       app=cbind(corr1,corr2)
+      
       listret=apply(app, 1, function(x){nc$Zxi(x,treat,control,window,corr1,corr2)})
       
-      #todo get chr from filename
-      cat(length(treat$V1[corr1]),' ',length(control$V1[corr2]),' ',length(listret),'\n')
-      cbind(treat$V1[corr1],control$V1[corr2],listret)
+      # first column chr.fsa
+      a=character(length(corr1))
+      for(i in 1:length(corr1)) {
+        chr=str_extract(f[1],"chr[0-9a-z]{2}.fsa")
+        a[i]=chr
+      }
+      cbind(a,treat$V1[corr1],control$V1[corr2],listret)
     })
     
     # get chr w/ regex
-    for(wigfile in files1) {
-      regyy=regexpr(f[1],"chr[0-9]{2}.fsa")
-      chrf=substr(wigfile,regyy[1],attr(regyy,"match.length"))
-      ret[['chr']]=chrf
-    }
-    ret
+    #todo get chr from filename
+    #for(i in 1:length(ret)) {
+    #  name=files1[i]
+    #  chr=str_extract(name,"chr[0-9a-z]{2}.fsa")
+    #  ret[i][['chr']]=chr
+    #}
+    #ret
   }
   
-  nc$getMaxAvgZscoreAll<-function(za,ws=100) {
-    
-    sapply(za,function(z){
-      scores=z[,3]
-      cat(length(scores),'\n')
-      iter=seq(1,length(scores)-1,by=ws)
-      sapply(iter,function(x){
-        
-        start=iter[i]
-        end=iter[i]+ws
-        cbind(z[['chr']],start,end,mean(scores[start:end]))
-      })
-      #v=numeric(length(iter))
-      #for(i in 1:length(iter)) {
-    ##    #start=iter[i]
-        #end=iter[i]+ws
-      #  start=iter[i]
-       # end=iter[i]+ws
-      #  v[i]=mean(scores[start:end])
-      #}
-      #v
-    })
+  nc$getMaxAvgZscoreAll<-function(wza,ws=100) {
+    ret=data.frame(chr=character(0),start=numeric(0),end=numeric(0),normdiff=numeric(0))
+    for(z in wza) {
+      chr=z[,1]
+      tpos=z[,2]
+      cpos=z[,3]
+      scores=z[,4]
+      if(debug)
+        cat(length(scores),'\n')
+      for(i in seq(1,length(scores)-1,by=ws)) {
+        start=i
+        end=i+ws
+        mscore=mean(as.numeric(scores[start:end]))
+        ret<-rbind(ret,data.frame(chr=chr[start],start=start,end=end,normdiff=mscore))
+      }
+    }
+    ret
   }
   
   
@@ -289,11 +290,11 @@ WiggleClass<-function(name) {
 }
 
 intersectBed<-function(nc1,nc2) {
-  selectrows=apply(nc1$peaks,1,function(x){
+  selectrows=apply(nc1,1,function(x){
     chr1=x[1]
     start1=as.integer(x[2])
     end1=as.integer(x[3])
-    sublist=nc2$peaks[nc2$peaks$V1==chr1,]
+    sublist=nc2[nc2$V1==chr1,]
     ret=apply(sublist,1,function(y){
       chr2=y[1]
       start2=as.integer(y[2])
@@ -304,15 +305,15 @@ intersectBed<-function(nc1,nc2) {
     sum(ret)>0
   })
   
-  nc1$peaks[selectrows,]
+  nc1[selectrows,]
 }
 uniqueBed<-function(nc1,nc2) {
-  selectrows=apply(nc1$peaks,1,function(x){
+  selectrows=apply(nc1,1,function(x){
     chr1=x[1]
     start1=as.integer(x[2])
     end1=as.integer(x[3])
     pn1=x[4]
-    sublist=nc2$peaks[nc2$peaks$V1==chr1,]
+    sublist=nc2[nc2$V1==chr1,]
     ret=apply(sublist,1,function(y){
       chr2=y[1]
       start2=as.integer(y[2])
@@ -324,7 +325,7 @@ uniqueBed<-function(nc1,nc2) {
     sum(ret)==0
   })
   
-  nc1$peaks[selectrows,]
+  nc1[selectrows,]
 }
 
 ###########

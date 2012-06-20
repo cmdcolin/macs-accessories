@@ -132,23 +132,52 @@ plotSortedMaxAvgZscoreX<-function(t, w1, w2, r, c1,c2) {
 }
 
 
-plotZall<-function(ts,w1,w2) {
-  cols=sapply(ts,function(z){
-    for(i in 1:length(z)) {
-      cat(z[1],' ',z[2], ' ',z[3],'\n')
-      a=intersectBed(rbind(z[1],z[2],z[3]),w1$peaks)
-      b=intersectBed(rbind(z[1],z[2],z[3]),w2$peaks)
-      print(a)
-      print(b)
+plotZall<-function(ts,w1,w2,cols=NULL) {
+  if(is.null(cols)) {
+    cols=data.frame(score=numeric(0),color=character(0))
+    
+    for(i in 1:nrow(ts)) {
+      z=ts[i,]
+      if(debug)
+        print(z)
+      #l=as.table(cbind(z[1],z[2],z[3]))
+      a=intersectBed(z,w1$peaks)
+      b=intersectBed(z,w2$peaks)
+      if(nrow(b)!=0&&nrow(a)!=0)colselect='red'
+      else if(nrow(b)!=0) colselect='blue'
+      else if(nrow(a)!=0)colselect='green'
+      else colselect='yellow'
+      cols<-rbind(cols,data.frame(score=z[4],color=colselect))
+      #print(a)
+      #print(b)
       #if(a&&b)col='red'
-     # else if(a)col='blue'
-    ##  else if(b)col='green'
-    #  else col='yellow'
-    #  points()
+      # else if(a)col='blue'
+      ##  else if(b)col='green'
+      #  else col='yellow'
+      #  points()
+      
     }
-  })
+  }
   #zaw=cbind(zaw,cols)
-  #sort(zaw)
+  select=cols[order(cols[,1]),]
+  plot(1:nrow(select),select$normdiff,pch='.',
+       col='yellow',
+       xlab='Sorted rank',
+       ylab='NormDiff score')
+  for(i in 1:nrow(select)) {
+    mycol=select$color[i]
+    mypch='.'
+    if(mycol!="yellow")
+      mypch=20
+    points(i,select$normdiff[i],col=mycol,pch=mypch)
+  }
+  legend("topleft",
+         legend=c(paste('peak in',w2$name),paste('peak in',w1$name),'peak in both'),
+         fill=c('blue','green','red'))
+  title(paste('Sorted normdiff scores for entire',w1$name,'genome w=100'))
+  cols
+  
+  
 ##  plot(zaw)
 }
 #setwd('macs1.4.2')
@@ -164,3 +193,4 @@ plotZall<-function(ts,w1,w2) {
 # e2 is the latest and greatest run....
 #plotMaxAvgReads('Max Average reads S96 peaks  w=100', wig1,wig2,'orange','lightgreen')
 #plotMaxAvgReads('Max Average reads HS959 peaks  w=100', wig2,wig1,'yellow','lightgreen')
+
