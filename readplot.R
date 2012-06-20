@@ -151,10 +151,10 @@ WiggleClass<-function(name) {
     e1=xpos[1]+ws
     b2=xpos[2]-ws
     e2=xpos[2]+ws
-    b1=ifelse(b1<1,1,b1)
-    b2=ifelse(b2<1,1,b2)
-    e1=ifelse(e1>dim(treat)[1],dim(treat)[1],e1)
-    e2=ifelse(e2>dim(control)[1],dim(control)[1],e2)
+    b1=if(b1<1) 1 else b1
+    b2=if(b2<1) 1 else b2
+    e1=if(e1>dim(treat)[1]) dim(treat)[1] else e1
+    e2=if(e2>dim(control)[1]) dim(control)[1] else e2
     
     chip_signal=treat$V2[b1:e1]
     control_signal=control$V2[b2:e2]
@@ -162,7 +162,6 @@ WiggleClass<-function(name) {
     average_control=mean(control_signal)
     sqrt(average_chip+average_control/nc$scaling^2)
   }
-  
   nc$Zxi<-function(x,treat,control,window,corr1,corr2) {
     pos1=x[1]
     pos2=x[2]
@@ -171,8 +170,8 @@ WiggleClass<-function(name) {
     })
     
     ## Normdiff
-    A=treat$V2[pos1]
-    B=control$V2[pos2]
+    A=treat[pos1,2]
+    B=control[pos2,2]
     c=nc$scaling
     sigma=max(ma,nc$variance)
     (A-B/c)/sigma
@@ -225,8 +224,8 @@ WiggleClass<-function(name) {
       
       # first column chr.fsa
       a=character(length(corr1))
+      chr=str_extract(f[1],"chr[0-9a-z]{2}.fsa")
       for(i in 1:length(corr1)) {
-        chr=str_extract(f[1],"chr[0-9a-z]{2}.fsa")
         a[i]=chr
       }
       cbind(a,treat$V1[corr1],control$V1[corr2],listret)
@@ -245,6 +244,7 @@ WiggleClass<-function(name) {
   nc$getMaxAvgZscoreAll<-function(wza,ws=100) {
     ret=data.frame(chr=character(0),start=numeric(0),end=numeric(0),normdiff=numeric(0))
     for(z in wza) {
+      print
       chr=z[,1]
       tpos=z[,2]
       cpos=z[,3]
@@ -254,9 +254,13 @@ WiggleClass<-function(name) {
       for(i in seq(1,length(scores)-1,by=ws)) {
         start=i
         end=i+ws
+        mchr=chr[start]
         mscore=mean(as.numeric(scores[start:end]))
-        ret<-rbind(ret,data.frame(chr=chr[start],start=start,end=end,normdiff=mscore))
+        row=data.frame(mchr,start,end,mscore)
+        ret<-rbind(ret,row)
       }
+      if(debug)
+        cat(length(scores),' ',nrow(ret),'\n')
     }
     ret
   }
@@ -264,7 +268,8 @@ WiggleClass<-function(name) {
   
   
   nc$getMaxAvgZscore<-function(wz,ws=10) {
-    gmaz<-function(zlist) {
+    ret=data.frame(maxnormdiff=numeric(0))
+    for(zlist in wz) {
       reads=array()
       for(i in 1:length(zlist)) {
         b=i
@@ -278,9 +283,9 @@ WiggleClass<-function(name) {
       #  cat(b, ' ', e, '\n')
       #  mean(zlist[b:e],na.rm=TRUE);
       #})
-      max(reads)
+      ret<-rbind(ret,max(reads))
     }
-    sapply(wz,gmaz)
+    ret
   }
   
   

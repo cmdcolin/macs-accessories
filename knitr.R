@@ -40,7 +40,9 @@ plotAvgZscore<-function(t, w1, w2, wz1, wz2, c1,c2) {
   # Get Z scoresmn/.,mnb,.,..,m.,
   Z1<-sapply(wz1,mean)
   Z2<-sapply(wz2,mean)
-  plot(Z1,Z2,xlab=paste('Max Avg', w1$name,'Zscore'),ylab=paste('Max Avg',w2$name,'Zscore'),pch='*')
+  plot(Z1,Z2,
+       xlab=paste('Max Avg', w1$name,'Zscore'),
+       ylab=paste('Max Avg',w2$name,'Zscore'),pch='*')
   shared=intersectBed(w1,w2)
   unique=uniqueBed(w1,w2)
   id1=match(shared$V4,w1$peaks$V4) 
@@ -80,7 +82,6 @@ plotMaxAvgZscore<-function(t, w1, w2, wz1,wz2, c1,c2) {
 }
 
 plotSortedMaxAvgZscore<-function(t, w1, w2, r, c1,c2,c3,c4) {
-  ls(r)
   wz1sort=sort(c(r[['2shared']],r[['2unique']]))
   wz2sort=sort(c(r[['1shared']],r[['1unique']]))
   xs1=1:length(wz1sort)
@@ -99,7 +100,7 @@ plotSortedMaxAvgZscore<-function(t, w1, w2, r, c1,c2,c3,c4) {
   for(i in 1:length(xs11))
     lines(c(xs11[i],xs21[i]),c(wz1sort[xs11][i],wz2sort[xs21][i]),col=c2)
   #polygon(c(xs1,rev(xs)),c(wz1sort,rev(wz2sort)),col='lightyellow',border=FALSE)
-  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  legend('bottomright', legend=c('shared', 'unique'), fill=c(c3, c4))
   title(t)
 }
 
@@ -131,6 +132,40 @@ plotSortedMaxAvgZscoreX<-function(t, w1, w2, r, c1,c2) {
   title(t)
 }
 
+
+
+
+plotZall2<-function(cols,w1,w2){
+  select=cols[order(cols[,1]),]
+  plot(x=1:nrow(select),y=select$mscore,pch='.',xlab='Sort rank', ylab='NormDiff score')
+  for(i in 1:nrow(select)) {
+    mycol=select$color[i]
+    mypch='.'
+    if(mycol!="yellow")
+      mypch='*'
+    points(x=i,y=select$mscore[i],col=mycol,pch=mypch)
+  }
+  legend("topleft",
+         legend=c(paste('peak in',w2$name),paste('peak in',w1$name),'peak in both'),
+         title='window overlaps',
+         fill=c('blue','green','red'))
+  title(paste('Sorted normdiff scores for entire',w1$name,'genome w=100'))
+}
+#Defunct
+plotZall3<-function(cols,w1,w2){
+  sel=cols[order(cols[,1]),]
+  s1=sel[sel$color=="blue",]
+  s2=sel[sel$color=="red",]
+  s3=sel[sel$color=="green",]
+  plot(1:nrow(sel),sel$mscore,pch='.')
+  points(1:nrow(s3),s3$mscore,col="green")
+  points(1:nrow(s1),s1$mscore,col="blue")
+  points(1:nrow(s2),s2$mscore,col="red")
+  legend("topleft",
+         legend=c(paste('peak in',w2$name),paste('peak in',w1$name),'peak in both'),
+         fill=c('blue','green','red'))
+  title(paste('Sorted normdiff scores for entire',w1$name,'genome w=100'))
+}
 
 plotZall<-function(ts,w1,w2,cols=NULL) {
   if(is.null(cols)) {
@@ -148,33 +183,8 @@ plotZall<-function(ts,w1,w2,cols=NULL) {
       else if(nrow(a)!=0)colselect='green'
       else colselect='yellow'
       cols<-rbind(cols,data.frame(score=z[4],color=colselect))
-      #print(a)
-      #print(b)
-      #if(a&&b)col='red'
-      # else if(a)col='blue'
-      ##  else if(b)col='green'
-      #  else col='yellow'
-      #  points()
-      
     }
   }
-  #zaw=cbind(zaw,cols)
-  select=cols[order(cols[,1]),]
-  plot(1:nrow(select),select$normdiff,pch='.',
-       col='yellow',
-       xlab='Sorted rank',
-       ylab='NormDiff score')
-  for(i in 1:nrow(select)) {
-    mycol=select$color[i]
-    mypch='.'
-    if(mycol!="yellow")
-      mypch=20
-    points(i,select$normdiff[i],col=mycol,pch=mypch)
-  }
-  legend("topleft",
-         legend=c(paste('peak in',w2$name),paste('peak in',w1$name),'peak in both'),
-         fill=c('blue','green','red'))
-  title(paste('Sorted normdiff scores for entire',w1$name,'genome w=100'))
   cols
   
   

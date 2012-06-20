@@ -107,11 +107,15 @@ library(xtable)
 \end_layout
 
 \begin_layout Standard
-We can use a Normalized difference score to evaluate the 'background subtracted'
- ChIP-seq data.
- Using methods from Zheng et al.
- we can estimate the variance of the data and the scaling between control
- and ChIP-seq sequencing depths.
+ChIP-seq data comparison
+\end_layout
+
+\begin_layout Standard
+Colin Diesh
+\end_layout
+
+\begin_layout Standard
+6/20/12
 \end_layout
 
 \begin_layout Standard
@@ -120,7 +124,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<setup, cache=TRUE, echo=FALSE>>=
+<<setup, cache=FALSE, echo=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -199,52 +203,18 @@ wz3=wig1$Z(wig2$peaks)
 \end_layout
 
 \begin_layout Standard
-Thus
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-<<table-demo, echo=FALSE, cache=FALSE, results=tex>>= 
-\end_layout
-
-\begin_layout Plain Layout
-
-retm=matrix(c(wig1$scaling,wig1$variance,wig2$scaling,wig2$variance),c(2,2))
-\end_layout
-
-\begin_layout Plain Layout
-
-rownames(retm)<-c('Est.
- Scaling factor', 'Est.
- Variance')
-\end_layout
-
-\begin_layout Plain Layout
-
-colnames(retm)<-c('S96', 'HS959')
-\end_layout
-
-\begin_layout Plain Layout
-
-xtable(retm) 
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Therefore
+ChIP-seq data is used to give us experimental evidence of transcription
+ factor binding sites.
+ Using methods from Zheng et al.
+ we can use a Normalized difference score to evaluate ChIP-seq data and
+ input control.
+ We want to leverage conservation from our experiments and ultimately investigat
+e something possibilities for differential binding.
+ We can see from many different views of our data that there is a correlation
+ between shared binding sites.
+ Where we have found using a peak finding program that is 'unique' in one
+ dataset, then the correlation is less well defined.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -280,10 +250,6 @@ r4=plotAvgZscore('Mean HS959 peak NormDiff score vs S96 synteny w=100',
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-Then
 \end_layout
 
 \begin_layout Standard
@@ -410,6 +376,13 @@ plotSortedMaxAvgZscore('Sorted S96 Max Avg Normdiff connected with HS959
 \end_layout
 
 \begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 If we do the same thing and look at the whole genome
 \end_layout
 
@@ -419,43 +392,75 @@ status open
 
 \begin_layout Plain Layout
 
-<<Q6, cache=TRUE, echo=FALSE>>=
+<<Q6setup,cache=TRUE,echo=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout
 
-wza1=wig1$Zall() 
 \end_layout
 
 \begin_layout Plain Layout
 
-wzamax1=wig1$getMaxAvgZscoreAll(wza1) 
+#wza1=wig1$Zall() 
 \end_layout
 
 \begin_layout Plain Layout
 
-plotZall(wzamax1,wig1,wig2)
-\end_layout
-
-\begin_layout Plain Layout
-
-wza2=wig2$Zall() 
-\end_layout
-
-\begin_layout Plain Layout
-
-wzamax2=wig2$getMaxAvgZscoreAll(wza2) 
-\end_layout
-
-\begin_layout Plain Layout
-
-plotZall(wzamax2,wig2,wig1)
+#wza2=wig2$Zall() 
 \end_layout
 
 \begin_layout Plain Layout
 
 @
 \end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<Q6, cache=FALSE, echo=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+#wzamax1=wig1$getMaxAvgZscoreAll(wza1) 
+\end_layout
+
+\begin_layout Plain Layout
+
+#c1=plotZall(wzamax1,wig1,wig2)
+\end_layout
+
+\begin_layout Plain Layout
+
+#wzamax2=wig2$getMaxAvgZscoreAll(wza2) 
+\end_layout
+
+\begin_layout Plain Layout
+
+#c2=plotZall(wzamax2,wig2,wig1)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Rplot06.pdf
+	scale 60
 
 \end_inset
 
