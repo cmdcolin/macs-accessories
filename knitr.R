@@ -16,20 +16,21 @@ plotTotalReads<-function(t, w1, w2, c1, c2) {
 
 
 
-plotMaxAvgReads<-function(t, w1, w2,c1,c2) {
+plotMaxAvgReads<-function(t, w1, w2,c1,c2,xl=NULL,yl=NULL,p=NULL) {
   ###########
   # Use Max avg reads over windows
   rma1=w1$getMaxAvgReads(w1$peaks)
   rma2=w2$getMaxAvgReads(w1$peaks)
   ###################### 
-  plot(rma1,rma2,xlab=paste(w1$name,'peak reads'),ylab=paste(w2$name,'peak reads'),pch='*')
+  plot(rma1,rma2,xlab=paste(w1$name,'peak reads'),ylab=paste(w2$name,'peak reads'),pch='*',xlim=xl,ylim=yl)
   shared=intersectBed(w1$peaks,w2$peaks)
   unique=uniqueBed(w1$peaks,w2$peaks)
   id1=match(shared$V4,w1$peaks$V4) 
   id2=match(unique$V4,w1$peaks$V4)
   points(rma1[id1],rma2[id1],pch=1,col=c1)
   points(rma1[id2],rma2[id2],pch=1,col=c2)
-  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  if(!is.null(p))
+    legend(p, legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
 }
 
@@ -59,7 +60,7 @@ plotAvgZscore<-function(t, w1, w2, wz1, wz2, c1,c2) {
   ret
 }
 
-plotMaxAvgZscore<-function(t, w1, w2, wz1,wz2, c1,c2) {
+plotMaxAvgZscore<-function(t, w1, w2, wz1,wz2, c1,c2,xl=NULL,yl=NULL,p=NULL) {
   ##########
   # Get Z scoresmn/.,mnb,.,..,m.,
   maxw1<-w1$getMaxAvgZscore(wz1)
@@ -68,10 +69,11 @@ plotMaxAvgZscore<-function(t, w1, w2, wz1,wz2, c1,c2) {
   unique=uniqueBed(w1$peaks,w2$peaks)
   id1=match(shared$V4,w1$peaks$V4) 
   id2=match(unique$V4,w1$peaks$V4)
-  plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
+  plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'),xlim=xl,ylim=yl)
   points(maxw1[id1],maxw2[id1],col=c1)
   points(maxw1[id2],maxw2[id2],col=c2)
-  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  if(!is.null(p))
+    #legend(p, legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
   ret=list()
   ret[['1shared']]=maxw1[id1]

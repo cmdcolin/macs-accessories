@@ -36,6 +36,18 @@ r1=plotMaxAvgZscore('Max Avg  S96 peak NormDiff score vs HS959 synteny w=100', w
 r2=plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'orange','darkviolet')
 par(op)
 
+
+
+r1=plotMaxAvgZscore('Max Avg  S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2,'orange', 'blue')
+r2=plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'orange','darkviolet')
+
+
+
+r1=plotMaxAvgZscore('Max Avg  S96 peak NormDiff score vs HS959 synteny w=100 (Zoom)', wig1, wig2, wz1, wz2,'orange', 'blue',c(1,4), c(-0.5,4))
+r2=plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'orange','darkviolet')
+
+
+
 r3=plotAvgZscore('Mean S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2, 'lightblue', 'orange')
 r4=plotAvgZscore('Mean HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'pink','orange')
 
@@ -59,5 +71,8 @@ lines(p2,col="#101010cc")
 var()
 
 
-plotMaxAvgReads('S96 avg peak reads vs HS959 syntenic', wig1, wig2, 'green', 'red') 
-plotMaxAvgReads('HS959 avg peak reads vs S96 syntenic', wig2, wig1, 'green', 'blue')
+plotMaxAvgReads('S96 avg peak reads vs HS959 syntenic', wig1, wig2, 'green', 'blue') 
+plotMaxAvgReads('HS959 avg peak reads vs S96 syntenic', wig2, wig1, 'green', 'red')
+
+plotMaxAvgReads('S96 avg peak reads vs HS959 syntenic', wig1, wig2, 'green', 'blue',c(8,16),c(0,20)) 
+plotMaxAvgReads('HS959 avg peak reads vs S96 syntenic', wig2, wig1, 'green', 'red',c(5,15),c(1,25))
