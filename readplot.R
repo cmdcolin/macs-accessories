@@ -75,11 +75,10 @@ WiggleClass<-function(name) {
     apply(bedfile,1,getAvgReads,nc$treatname)
   }
   
-  nc$getMaxAvgReads<-function(bedfile, window,inc) {
+  nc$getMaxAvgReads<-function(bedfile, window=100) {
     # Get max average reads over window size
     getMaxAvgReads<-function(x, filepath, window)
     {
-      maxreads=array()
       chr=x[1];
       start=as.integer(x[2]);
       end=as.integer(x[3]);
@@ -268,24 +267,15 @@ WiggleClass<-function(name) {
   
   
   nc$getMaxAvgZscore<-function(wz,ws=10) {
-    ret=data.frame(maxnormdiff=numeric(0))
-    for(zlist in wz) {
-      reads=array()
+    sapply(wz,function(zlist){
+      reads=numeric(length(zlist))
       for(i in 1:length(zlist)) {
         b=i
         e=i+ws
         reads[i]=mean(zlist[b:e],na.rm=TRUE);
       }
-        
-      #reads=sapply(1:length(zlist), function(j) {
-      #  b=j
-      #  e=j+ws
-      #  cat(b, ' ', e, '\n')
-      #  mean(zlist[b:e],na.rm=TRUE);
-      #})
-      ret<-rbind(ret,max(reads))
-    }
-    ret
+      max(reads)
+    })
   }
   
   

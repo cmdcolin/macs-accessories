@@ -3,8 +3,8 @@ plotTotalReads<-function(t, w1, w2, c1, c2) {
   r1=w1$getTotalReads(w1$peaks) 
   r2=w2$getTotalReads(w1$peaks)
   plot(r1,r2,xlab=paste(w1$name,'reads'),ylab=paste(w2$name, 'reads'),pch='*') 
-  shared=intersectBed(w1,w2)
-  unique=uniqueBed(w1,w2)
+  shared=intersectBed(w1$peaks,w2$peaks)
+  unique=uniqueBed(w1$peaks,w2$peaks)
   id1=match(shared$V4,w1$peaks$V4) 
   id2=match(unique$V4,w1$peaks$V4)
   points(r1[id1],r2[id1],pch=1,col=c1) 
@@ -19,12 +19,12 @@ plotTotalReads<-function(t, w1, w2, c1, c2) {
 plotMaxAvgReads<-function(t, w1, w2,c1,c2) {
   ###########
   # Use Max avg reads over windows
-  rma1=w1$getMaxAvgReads(w1$peaks,100)
-  rma2=w2$getMaxAvgReads(w1$peaks,100)
+  rma1=w1$getMaxAvgReads(w1$peaks)
+  rma2=w2$getMaxAvgReads(w1$peaks)
   ###################### 
-  plot(rma1,rma2,xlab=paste('Max Avg', w1$name,'reads'),ylab=paste('Max Avg',w2$name,'reads'),pch='*')
-  shared=intersectBed(w1,w2)
-  unique=uniqueBed(w1,w2)
+  plot(rma1,rma2,xlab=paste(w1$name,'peak reads'),ylab=paste(w2$name,'peak reads'),pch='*')
+  shared=intersectBed(w1$peaks,w2$peaks)
+  unique=uniqueBed(w1$peaks,w2$peaks)
   id1=match(shared$V4,w1$peaks$V4) 
   id2=match(unique$V4,w1$peaks$V4)
   points(rma1[id1],rma2[id1],pch=1,col=c1)
@@ -43,8 +43,8 @@ plotAvgZscore<-function(t, w1, w2, wz1, wz2, c1,c2) {
   plot(Z1,Z2,
        xlab=paste('Max Avg', w1$name,'Zscore'),
        ylab=paste('Max Avg',w2$name,'Zscore'),pch='*')
-  shared=intersectBed(w1,w2)
-  unique=uniqueBed(w1,w2)
+  shared=intersectBed(w1$peaks,w2$peaks)
+  unique=uniqueBed(w1$peaks,w2$peaks)
   id1=match(shared$V4,w1$peaks$V4) 
   id2=match(unique$V4,w1$peaks$V4)
   points(Z1[id1],Z2[id1],pch=1,col=c1)
@@ -64,14 +64,14 @@ plotMaxAvgZscore<-function(t, w1, w2, wz1,wz2, c1,c2) {
   # Get Z scoresmn/.,mnb,.,..,m.,
   maxw1<-w1$getMaxAvgZscore(wz1)
   maxw2<-w2$getMaxAvgZscore(wz2)
-  shared=intersectBed(w1,w2)
-  unique=uniqueBed(w1,w2)
+  shared=intersectBed(w1$peaks,w2$peaks)
+  unique=uniqueBed(w1$peaks,w2$peaks)
   id1=match(shared$V4,w1$peaks$V4) 
   id2=match(unique$V4,w1$peaks$V4)
   plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
   points(maxw1[id1],maxw2[id1],col=c1)
   points(maxw1[id2],maxw2[id2],col=c2)
-  #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
   ret=list()
   ret[['1shared']]=maxw1[id1]
