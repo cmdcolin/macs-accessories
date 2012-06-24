@@ -223,7 +223,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<Q2, echo=FALSE, cache=TRUE, out.width='.49
+<<Q2, echo=FALSE, cache=FALSE, out.width='.49
 \backslash
 
 \backslash
@@ -258,7 +258,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<Q3, echo=FALSE, cache=TRUE, out.width='.49
+<<Q3, echo=FALSE, cache=FALSE, out.width='.49
 \backslash
 
 \backslash
@@ -297,7 +297,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<Q4,echo=FALSE, cache=TRUE, out.width='.49
+<<Q4,echo=FALSE, cache=FALSE, out.width='.49
 \backslash
 
 \backslash
@@ -392,7 +392,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<Q6setup,cache=TRUE,echo=FALSE>>=
+<<Q6setup,cache=FALSE,echo=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -451,16 +451,6 @@ status open
 
 @
 \end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Graphics
-	filename Rplot06.pdf
-	scale 60
 
 \end_inset
 
