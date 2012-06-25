@@ -24,14 +24,14 @@ wig2$loadWiggles(globalenv())
 
 The normalized difference score gives us on average the expected value of the ChIP-seq subtracted from the input data using a simple random model
 
-$A~Poisson(f+g)$
-$B~Poisson(cg)$
+[math]A~Poisson(f+g)[/math]
+[math]B~Poisson(cg)[/math]
 
 Then the NormDiff score is defined as
 
-$Z=(A-B/c)/\hat\sigma$
+[eqn]Z=(A-B/c)/\hat\sigma[/eqn]
 
-We can look at the distribution of average normalized difference scores on the plots
+We use functions to estimate scaling and variance and we can look at the distribution of average normalized difference scores for all peaks, and see how they correspond to syntenic regions in other datasets
 
 
 
@@ -68,12 +68,13 @@ plotSortedMaxAvgZscore("Sorted HS959 Max Avg Normdiff connected with S96 peak re
     wig1, wig2, r1, "#00119919", "#bb000019", "#001199", "#aa0000")
 ```
 
-![plot of chunk sorted](http://i.imgur.com/1GDeM.png) 
+![plot of chunk sorted](http://i.imgur.com/Q3cgx.png) 
 
 ```r
 plotSortedMaxAvgZscore("Sorted S96 Max Avg Normdiff connected with HS959 peak regions", 
     wig2, wig1, r2, "#00990019", "#bb000019", "#009900", "#aa0000")
 ```
 
-![plot of chunk sorted](http://i.imgur.com/sP2pW.png) 
+![plot of chunk sorted](http://i.imgur.com/i4woA.png) 
+
 

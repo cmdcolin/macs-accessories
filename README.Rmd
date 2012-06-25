@@ -23,14 +23,14 @@ wig2$loadWiggles(globalenv())
 
 The normalized difference score gives us on average the expected value of the ChIP-seq subtracted from the input data using a simple random model
 
-$A~Poisson(f+g)$
-$B~Poisson(cg)$
+[math]A~Poisson(f+g)[/math]
+[math]B~Poisson(cg)[/math]
 
 Then the NormDiff score is defined as
 
-$Z=(A-B/c)/\hat\sigma$
+[eqn]Z=(A-B/c)/\hat\sigma[/eqn]
 
-We can look at the distribution of average normalized difference scores on the plots
+We use functions to estimate scaling and variance and we can look at the distribution of average normalized difference scores for all peaks, and see how they correspond to syntenic regions in other datasets
 
 
 ```{r d2,dev='png',cache=TRUE}

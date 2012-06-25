@@ -72,8 +72,7 @@ plotMaxAvgZscore<-function(t, w1, w2, wz1,wz2, c1,c2,xl=NULL,yl=NULL,p=NULL) {
   plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'),xlim=xl,ylim=yl)
   points(maxw1[id1],maxw2[id1],col=c1)
   points(maxw1[id2],maxw2[id2],col=c2)
-  if(!is.null(p))
-    #legend(p, legend=c('shared', 'unique'), fill=c(c1, c2))
+  legend(p, legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
   ret=list()
   ret[['1shared']]=maxw1[id1]
