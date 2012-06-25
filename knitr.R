@@ -3,8 +3,8 @@ plotTotalReads<-function(t, w1, w2, c1, c2) {
   r1=w1$getTotalReads(w1$peaks) 
   r2=w2$getTotalReads(w1$peaks)
   plot(r1,r2,xlab=paste(w1$name,'reads'),ylab=paste(w2$name, 'reads'),pch='*') 
-  shared=intersectBed(w1,w2)
-  unique=uniqueBed(w1,w2)
+  shared=intersectBed(w1$peaks,w2$peaks)
+  unique=uniqueBed(w1$peaks,w2$peaks)
   id1=match(shared$V4,w1$peaks$V4) 
   id2=match(unique$V4,w1$peaks$V4)
   points(r1[id1],r2[id1],pch=1,col=c1) 
@@ -16,15 +16,15 @@ plotTotalReads<-function(t, w1, w2, c1, c2) {
 
 
 
-plotMaxAvgReads<-function(t, w1, w2,c1,c2) {
+plotMaxAvgReads<-function(t, w1, w2,c1,c2,xl=NULL,yl=NULL,p=NULL) {
   ###########
   # Use Max avg reads over windows
-  rma1=w1$getMaxAvgReads(w1$peaks,100)
-  rma2=w2$getMaxAvgReads(w1$peaks,100)
+  rma1=w1$getMaxAvgReads(w1$peaks)
+  rma2=w2$getMaxAvgReads(w1$peaks)
   ###################### 
-  plot(rma1,rma2,xlab=paste('Max Avg', w1$name,'reads'),ylab=paste('Max Avg',w2$name,'reads'),pch='*')
-  shared=intersectBed(w1,w2)
-  unique=uniqueBed(w1,w2)
+  plot(rma1,rma2,xlab=paste(w1$name,'peak reads'),ylab=paste(w2$name,'peak reads'),pch='*',xlim=xl,ylim=yl)
+  shared=intersectBed(w1$peaks,w2$peaks)
+  unique=uniqueBed(w1$peaks,w2$peaks)
   id1=match(shared$V4,w1$peaks$V4) 
   id2=match(unique$V4,w1$peaks$V4)
   points(rma1[id1],rma2[id1],pch=1,col=c1)
@@ -41,13 +41,13 @@ plotAvgZscore<-function(t, w1, w2, wz1, wz2, c1,c2) {
   Z1<-sapply(wz1,mean)
   Z2<-sapply(wz2,mean)
   plot(Z1,Z2,xlab=paste('Max Avg', w1$name,'Zscore'),ylab=paste('Max Avg',w2$name,'Zscore'),pch='*')
-  shared=intersectBed(w1,w2)
-  unique=uniqueBed(w1,w2)
+  shared=intersectBed(w1$peaks,w2$peaks)
+  unique=uniqueBed(w1$peaks,w2$peaks)
   id1=match(shared$V4,w1$peaks$V4) 
   id2=match(unique$V4,w1$peaks$V4)
   points(Z1[id1],Z2[id1],pch=1,col=c1)
   points(Z1[id2],Z2[id2],pch=1,col=c2)
-  #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
   ret=list()
   ret[['1shared']]=Z1[id1]
@@ -57,19 +57,19 @@ plotAvgZscore<-function(t, w1, w2, wz1, wz2, c1,c2) {
   ret
 }
 
-plotMaxAvgZscore<-function(t, w1, w2, wz1,wz2, c1,c2) {
+plotMaxAvgZscore<-function(t, w1, w2, wz1,wz2, c1,c2,xl=NULL,yl=NULL,p=NULL) {
   ##########
   # Get Z scoresmn/.,mnb,.,..,m.,
   maxw1<-w1$getMaxAvgZscore(wz1)
   maxw2<-w2$getMaxAvgZscore(wz2)
-  shared=intersectBed(w1,w2)
-  unique=uniqueBed(w1,w2)
+  shared=intersectBed(w1$peaks,w2$peaks)
+  unique=uniqueBed(w1$peaks,w2$peaks)
   id1=match(shared$V4,w1$peaks$V4) 
   id2=match(unique$V4,w1$peaks$V4)
-  plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
+  plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'),xlim=xl,ylim=yl)
   points(maxw1[id1],maxw2[id1],col=c1)
   points(maxw1[id2],maxw2[id2],col=c2)
-  #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  legend('bottomright',legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
   ret=list()
   ret[['1shared']]=maxw1[id1]
@@ -80,7 +80,6 @@ plotMaxAvgZscore<-function(t, w1, w2, wz1,wz2, c1,c2) {
 }
 
 plotSortedMaxAvgZscore<-function(t, w1, w2, r, c1,c2,c3,c4) {
-  ls(r)
   wz1sort=sort(c(r[['2shared']],r[['2unique']]))
   wz2sort=sort(c(r[['1shared']],r[['1unique']]))
   xs1=1:length(wz1sort)
@@ -99,7 +98,7 @@ plotSortedMaxAvgZscore<-function(t, w1, w2, r, c1,c2,c3,c4) {
   for(i in 1:length(xs11))
     lines(c(xs11[i],xs21[i]),c(wz1sort[xs11][i],wz2sort[xs21][i]),col=c2)
   #polygon(c(xs1,rev(xs)),c(wz1sort,rev(wz2sort)),col='lightyellow',border=FALSE)
-  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  legend('bottomright', legend=c('shared', 'unique'), fill=c(c3, c4))
   title(t)
 }
 
@@ -131,6 +130,64 @@ plotSortedMaxAvgZscoreX<-function(t, w1, w2, r, c1,c2) {
   title(t)
 }
 
+
+
+
+plotZall2<-function(cols,w1,w2){
+  select=cols[order(cols[,1]),]
+  plot(x=1:nrow(select),y=select$mscore,pch='.',xlab='Sort rank', ylab='NormDiff score')
+  for(i in 1:nrow(select)) {
+    mycol=select$color[i]
+    mypch='.'
+    if(mycol!="yellow")
+      mypch='*'
+    points(x=i,y=select$mscore[i],col=mycol,pch=mypch)
+  }
+  legend("topleft",
+         legend=c(paste('peak in',w2$name),paste('peak in',w1$name),'peak in both'),
+         title='window overlaps',
+         fill=c('blue','green','red'))
+  title(paste('Sorted normdiff scores for entire',w1$name,'genome w=100'))
+}
+#Defunct
+plotZall3<-function(cols,w1,w2){
+  sel=cols[order(cols[,1]),]
+  s1=sel[sel$color=="blue",]
+  s2=sel[sel$color=="red",]
+  s3=sel[sel$color=="green",]
+  plot(1:nrow(sel),sel$mscore,pch='.')
+  points(1:nrow(s3),s3$mscore,col="green")
+  points(1:nrow(s1),s1$mscore,col="blue")
+  points(1:nrow(s2),s2$mscore,col="red")
+  legend("topleft",
+         legend=c(paste('peak in',w2$name),paste('peak in',w1$name),'peak in both'),
+         fill=c('blue','green','red'))
+  title(paste('Sorted normdiff scores for entire',w1$name,'genome w=100'))
+}
+
+plotZall<-function(ts,w1,w2,cols=NULL) {
+  if(is.null(cols)) {
+    cols=data.frame(score=numeric(0),color=character(0))
+    
+    for(i in 1:nrow(ts)) {
+      z=ts[i,]
+      if(debug)
+        print(z)
+      #l=as.table(cbind(z[1],z[2],z[3]))
+      a=intersectBed(z,w1$peaks)
+      b=intersectBed(z,w2$peaks)
+      if(nrow(b)!=0&&nrow(a)!=0)colselect='red'
+      else if(nrow(b)!=0) colselect='blue'
+      else if(nrow(a)!=0)colselect='green'
+      else colselect='yellow'
+      cols<-rbind(cols,data.frame(score=z[4],color=colselect))
+    }
+  }
+  cols
+  
+  
+##  plot(zaw)
+}
 #setwd('macs1.4.2')
 #e2=loadMacsEnv('S96','HS959')
 #setwd('..')
@@ -144,3 +201,4 @@ plotSortedMaxAvgZscoreX<-function(t, w1, w2, r, c1,c2) {
 # e2 is the latest and greatest run....
 #plotMaxAvgReads('Max Average reads S96 peaks  w=100', wig1,wig2,'orange','lightgreen')
 #plotMaxAvgReads('Max Average reads HS959 peaks  w=100', wig2,wig1,'yellow','lightgreen')
+
