@@ -23,14 +23,14 @@ wig2$loadWiggles(globalenv())
 
 
 The normalized difference score gives us on average the expected value of the ChIP-seq subtracted from the input data using a simple random model, 
-
-\\( A\sim Poisson(f+g) \\)
-\\( B\sim Poisson(cg) \\)
+ 
+$ A\sim Poisson(f+g) $
+$ B\sim Poisson(cg) $
 
 where A and B are the data from ChIP-seq and input files resp.
 Then the NormDiff score is defined as
 
-\\[ Z(x_i) = {{A(x_i)-B(x_i)/c}\over {\hat\sigma}} \\]
+$$ Z(x_i) = {{A(x_i)-B(x_i)/c}\over {\hat\sigma}} $$
 
 We use functions to estimate scaling and variance and we can look at the distribution of average normalized difference scores for all peaks, and see how they correspond to syntenic regions in other datasets
 
@@ -50,14 +50,14 @@ r1 = plotMaxAvgZscore("Max Avg S96 peak NormDiff score vs HS959 synteny w=100",
     wig1, wig2, wz1, wz2, "lightblue", "orange")
 ```
 
-![plot of chunk d2](http://i.imgur.com/IK0Yk.png) 
+![plot of chunk d2](http://i.imgur.com/yo7b8.png) 
 
 ```r
 r2 = plotMaxAvgZscore("Max Avg HS959 peak NormDiff score vs S96 synteny w=100", 
     wig2, wig1, wz4, wz3, "pink", "orange")
 ```
 
-![plot of chunk d2](http://i.imgur.com/eRRwj.png) 
+![plot of chunk d2](http://i.imgur.com/wRpw0.png) 
 
 
 If we sort the data we can get an idea of the connections between the cutoff applied to both datasets
@@ -69,13 +69,13 @@ plotSortedMaxAvgZscore("Sorted HS959 Max Avg Normdiff connected with S96 peak re
     wig1, wig2, r1, "#00119919", "#bb000019", "#001199", "#aa0000")
 ```
 
-![plot of chunk sorted](http://i.imgur.com/BYfxG.png) 
+![plot of chunk sorted](http://i.imgur.com/sE3GN.png) 
 
 ```r
 plotSortedMaxAvgZscore("Sorted S96 Max Avg Normdiff connected with HS959 peak regions", 
     wig2, wig1, r2, "#00990019", "#bb000019", "#009900", "#aa0000")
 ```
 
-![plot of chunk sorted](http://i.imgur.com/nGkPn.png) 
+![plot of chunk sorted](http://i.imgur.com/kIelJ.png) 
 
 
