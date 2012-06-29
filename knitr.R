@@ -227,8 +227,18 @@ getZcorrelation<-function(wz1,wz2) {
 }
 
 
+
+getZcovariance<-function(wz1,wz2) {
+  apply(cbind(wz1,wz2),1,function(z){
+    z1=z[1]
+    z2=z[2]
+    cov(unlist(z1),unlist(z2))
+  })
+}
+
+
 getBayesian<-function(w1, w2,wz1,wz2,maxw1,maxw2,ids) {
-  corrs<-getZcorrelation(wz1[ids],wz2[ids])
+  corrs<-getZcovariance(wz1[ids],wz2[ids])
   arr=numeric(length(corrs))
   
   for(i in 1:length(corrs)) {
@@ -274,7 +284,7 @@ plotMaxAvgZscoreColor<-function(t, w1, w2, wz1,wz2) {
   
   plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
   for(i in 1:length(id1))
-    points(maxw1[id1][i],maxw2[id1][i],col=hsv(log(pvals[i]+1)))
+    points(maxw1[id1][i],maxw2[id1][i],col=hsv(exp((pvals[i]-1)*2)*3/4))
   #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
 }

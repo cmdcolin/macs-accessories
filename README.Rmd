@@ -55,7 +55,7 @@ plotSortedMaxAvgZscore('Sorted S96 Max Avg Normdiff connected with HS959 peak re
 
 We can use a conditional probability based on a correlation between the datasets. This is defined as, for normalized difference scores for peaks
 
-$$ p(x|y)={{normalCDF(\bar x) corr(x,y)}\over{normalCDF(\bar y)}} $$
+$$ p(x|y)={{P(\bar x \leq X) corr(x,y)}\over{P(\bar y \leq Y)}} $$
 
 
 If we look at colored plots of the probability we get from these plots we see something like this
