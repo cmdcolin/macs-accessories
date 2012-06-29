@@ -5,7 +5,7 @@ The package Model-based analysis for ChIP-seq (MACS) is very useful software for
 
 ```{r setup, dev='png',cache=FALSE,echo=FALSE}
 debug=FALSE
-#opts_knit$set(upload.fun = imgur_upload) # upload all images to imgur.com
+opts_knit$set(upload.fun = imgur_upload) # upload all images to imgur.com
 source('readplot.R')
 source('knitr.R')
 ```
