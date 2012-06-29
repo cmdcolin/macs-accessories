@@ -65,9 +65,11 @@ title('Conditional probability for shared peaks in HS959')
 
 
 
+plotMaxAvgZscoreColor('Colors1',wig1,wig2,wz1,wz2)
 
 
 
+plotMaxAvgZscoreColor('Colors2',wig2,wig1,wz2,wz1)
 
 
 
