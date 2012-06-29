@@ -29,7 +29,7 @@ plotMaxAvgReads<-function(t, w1, w2,c1,c2,xl=NULL,yl=NULL,p=NULL) {
   id2=match(unique$V4,w1$peaks$V4)
   points(rma1[id1],rma2[id1],pch=1,col=c1)
   points(rma1[id2],rma2[id2],pch=1,col=c2)
-  legend("bottomright", legend=c('shared', 'unique'), fill=c(c1, c2))
+  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
 }
 
@@ -40,9 +40,7 @@ plotAvgZscore<-function(t, w1, w2, wz1, wz2, c1,c2) {
   # Get Z scoresmn/.,mnb,.,..,m.,
   Z1<-sapply(wz1,mean)
   Z2<-sapply(wz2,mean)
-  plot(Z1,Z2,
-       xlab=paste('Max Avg', w1$name,'Zscore'),
-       ylab=paste('Max Avg',w2$name,'Zscore'),pch='*')
+  plot(Z1,Z2,xlab=paste('Max Avg', w1$name,'Zscore'),ylab=paste('Max Avg',w2$name,'Zscore'),pch='*')
   shared=intersectBed(w1$peaks,w2$peaks)
   unique=uniqueBed(w1$peaks,w2$peaks)
   id1=match(shared$V4,w1$peaks$V4) 

@@ -1,6 +1,6 @@
 \batchmode
 \makeatletter
-\def\input@path{{\string"C:/Documents and Settings/Tonto/Desktop/macs-accessories/\string"/}}
+\def\input@path{{C:/Users/2010/Documents/GitHub/macs-accessories//}}
 \makeatother
 \documentclass[english]{article}
 \usepackage{mathpazo}
@@ -12,6 +12,13 @@
 \geometry{verbose,tmargin=2.54cm,bmargin=2.54cm,lmargin=2.54cm,rmargin=2.54cm}
 \usepackage{babel}
 \begin{document}
+ChIP-seq comparison plots
+
+Colin Diesh
+
+6/12/12\\
+
+
 <<sources, cache=FALSE, echo=FALSE>>=
 debug=FALSE
 source('readplot.R')
@@ -19,8 +26,9 @@ source('knitr.R')
 library(xtable)
 @
 
-<<setup, cache=TRUE, echo=FALSE>>=
+<<setup, cache=FALSE, echo=FALSE>>=
 atenv=loadMacsEnv('S96','HS959')
+ls(atenv)
 attach(atenv)
 wig1$estimateScalingFactor()  
 wig1$estimateVarianceAll()   
@@ -33,9 +41,12 @@ wz3=wig1$Z(wig2$peaks)
 @
 
 We can use a Normalized difference score to evaluate the 'background
-subtracted' ChIP-seq data. Using methods from Zheng et al. we can
-estimate the variance of the data and the scaling between control
-and ChIP-seq sequencing depths.
+subtracted' ChIP-seq data. Using methods from Zheng et al. we estimate
+the variance of the data and the scaling between control and treated
+ChIP-seq experiments in order to calculate the normalized difference
+score
+
+
 
 <<table-demo, echo=FALSE, cache=FALSE, results=tex>>= 
 retm=matrix(c(wig1$scaling,wig1$variance,wig2$scaling,wig2$variance),c(2,2))
@@ -50,8 +61,8 @@ Comparing the shared and unique peaks fromdifferent strains shows
 that considerably higher normalized difference scores indicate peaks
 
 <<Q2, echo=FALSE, cache=FALSE, out.width='.49\\linewidth'>>=
-plotAvgZscore('Mean S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2, 'lightblue', 'orange')
-plotAvgZscore('Mean HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'pink','orange')
+r3=plotAvgZscore('Mean S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2, 'lightblue', 'orange')
+r4=plotAvgZscore('Mean HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'pink','orange')
 @
 
 We can use a scanning window to find the maximum average normalized
@@ -59,7 +70,21 @@ difference scores in the peak windows to localize the peaks in the
 peak regions also
 
 <<Q3, echo=FALSE, cache=FALSE, out.width='.49\\linewidth'>>=
-plotMaxAvgZscore('Max Avg S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2,'lightblue', 'orange')
-plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'pink','orange')
+r1=plotMaxAvgZscore('Max Avg S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2,'lightblue', 'orange')
+r2=plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'pink','orange')
+@
+
+If we sort the values then we can get an idea of the differences that
+exist between the shared peaks in two different strains and the peaks
+that are unique to one experiment. Here, we look at the syntenic regions
+in HS959 and S96 from peaks found in the other strain, and see that
+the shared peaks from both have higher NormDiff scores than the peaks
+that are unique to one strain.
+
+<<Q4,echo=FALSE,cache=FALSE,out.width='.49\\linewidth'>>=
+plotSortedMaxAvgZscoreX('Sorted HS959 Avg Normdiff in S96 peak regions',wig1,wig2,r3,'red','blue')
+plotSortedMaxAvgZscoreX('Sorted S96 Avg Normdiff in HS959 peak regions',wig2,wig1,r4,'green','blue')
+plotSortedMaxAvgZscoreX('Sorted HS959 Max Avg Normdiff in S96 peak regions',wig1,wig2,r1,'red','blue')
+plotSortedMaxAvgZscoreX('Sorted S96 Max Avg Normdiff in HS959 peak regions',wig2,wig1,r2,'green','blue') 
 @
 \end{document}
