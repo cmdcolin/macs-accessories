@@ -227,10 +227,7 @@ getZcorrelation<-function(wz1,wz2) {
 }
 
 
-getBayesian<-function(w1, w2,wz1,wz2,ids) {
-  
-  maxw1<-w1$getMaxAvgZscore(wz1[ids])
-  maxw2<-w2$getMaxAvgZscore(wz2[ids])
+getBayesian<-function(w1, w2,wz1,wz2,maxw1,maxw2,ids) {
   corrs<-getZcorrelation(wz1[ids],wz2[ids])
   arr=numeric(length(corrs))
   
@@ -241,19 +238,55 @@ getBayesian<-function(w1, w2,wz1,wz2,ids) {
   arr
 }
 
+plotBarCharts<-function(w1,w2,wz1,wz2){
+  
+  unique=uniqueBed(w1$peaks,w2$peaks)
+  shared=intersectBed(w1$peaks,w2$peaks)
+  uniqueid=match(unique$V4,w1$peaks$V4)
+  sharedid=match(shared$V4,w1$peaks$V4)  
+  maxw1<-w1$getMaxAvgZscore(wz1)
+  maxw2<-w2$getMaxAvgZscore(wz2)
+  
+  
+  
+  xx=getBayesian(w1,w2,wz1,wz2,maxw1,maxw2,uniqueid)
+  yy=getBayesian(w1,w2,wz2,wz1,maxw1,maxw2,sharedid)
+  par(mfrow=c(1,2))
+  barplot(sort(xx),xlab='conditional probability', ylim=c(0,1))
+  title(paste('Unique peaks in',w1$name))
+  barplot(sort(yy),xlab='conditional probability', ylim=c(0,1))
+  title(paste('Shared peaks in HS959',w1$name))
+}
 
 
+# HSV rainbows
 plotMaxAvgZscoreColor<-function(t, w1, w2, wz1,wz2) {
-  ##########
-  # Get Z scoresmn/.,mnb,.,..,m.,
+  maxw1<-w1$getMaxAvgZscore(wz1)
+  maxw2<-w2$getMaxAvgZscore(wz2)
+  id1=w1$peaks$V4
+  pvals=getBayesian(w1,w2,wz1,wz2,maxw1,maxw2,id1)
+  
+  ## Fix data
+  pvals[is.nan(pvals)]=0;
+  pvals[is.na(pvals)]=0
+  pvals[pvals>1]=1
+  
+  
+  plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
+  for(i in 1:length(id1))
+    points(maxw1[id1][i],maxw2[id1][i],col=hsv(log(pvals[i]+1)))
+  #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  title(t)
+}
+
+
+plotMaxAvgZscoreColorX<-function(t, w1, w2, wz1,wz2) {
   maxw1<-w1$getMaxAvgZscore(wz1)
   maxw2<-w2$getMaxAvgZscore(wz2)
   shared=intersectBed(w1$peaks,w2$peaks)
   unique=uniqueBed(w1$peaks,w2$peaks)
   id1=match(shared$V4,w1$peaks$V4) 
   id2=match(unique$V4,w1$peaks$V4)
-  if(debug)
-    print("Done match")
   
   xx=getBayesian(w1,w2,wz1,wz2,id1)
   yy=getBayesian(w1,w2,wz1,wz2,id2)

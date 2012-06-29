@@ -52,12 +52,15 @@ plotSortedMaxAvgZscore('Sorted S96 Max Avg Normdiff connected with HS959 peak re
 unique=uniqueBed(wig1$peaks,wig2$peaks)
 shared=intersectBed(wig1$peaks,wig2$peaks)
 uniqueid=match(unique$V4,wig1$peaks$V4)
-sharedid=match(shared$V4,wig1$peaks$V4)
+sharedid=match(shared$V4,wig1$peaks$V4)  
+maxw1<-wig1$getMaxAvgZscore(wz1)
+maxw2<-wig2$getMaxAvgZscore(wz2)
 
 
 
-xx=getBayesian(wig1,wig2,wz1,wz2,uniqueid)
-yy=getBayesian(wig1,wig2,wz1,wz2,sharedid)
+xx=getBayesian(wig1,wig2,wz1,wz2,maxw1,maxw2,uniqueid)
+yy=getBayesian(wig1,wig2,wz2,wz1,maxw1,maxw2,sharedid)
+par(mfrow=c(1,2))
 barplot(sort(xx),xlab='conditional probability', ylim=c(0,1))
 title('Conditional probability of unique peaks in HS959')
 barplot(sort(yy),xlab='conditional probability', ylim=c(0,1))
@@ -66,10 +69,7 @@ title('Conditional probability for shared peaks in HS959')
 
 
 plotMaxAvgZscoreColor('Colors1',wig1,wig2,wz1,wz2)
-
-
-
-plotMaxAvgZscoreColor('Colors2',wig2,wig1,wz2,wz1)
+plotMaxAvgZscoreColor('Colors2',wig2,wig1,wz4,wz3)
 
 
 

@@ -93,19 +93,11 @@ plotMaxAvgZscoreColor("S96 vs HS959 peaks colored by probability",
     wig1, wig2, wz1, wz2)
 ```
 
-```
-## [1] "Done match"
-```
-
 ![plot of chunk rainbow](figure/rainbow1.png) 
 
 ```r
 plotMaxAvgZscoreColor("HS959 vs S96 peaks colored by probability", 
-    wig2, wig1, wz2, wz1)
-```
-
-```
-## [1] "Done match"
+    wig2, wig1, wz4, wz3)
 ```
 
 ![plot of chunk rainbow](figure/rainbow2.png) 

@@ -63,6 +63,6 @@ If we look at colored plots of the probability we get from these plots we see so
 ```{r rainbow, dev='png',warning=FALSE}
 
 plotMaxAvgZscoreColor('S96 vs HS959 peaks colored by probability',wig1,wig2,wz1,wz2)
-plotMaxAvgZscoreColor('HS959 vs S96 peaks colored by probability',wig2,wig1,wz2,wz1)
+plotMaxAvgZscoreColor('HS959 vs S96 peaks colored by probability',wig2,wig1,wz4,wz3)
 ```
 
