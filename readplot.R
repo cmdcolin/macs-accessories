@@ -18,7 +18,7 @@ WiggleClass<-function(name) {
   
   ########################
   # Read wiggle files from path into memory and assign filesnames
-  nc$loadWiggles=function(env=NULL) {
+  nc$loadWiggles=function(e=environment()) {
     loadWiggle<-function(wigpath,env) {
       files=list.files(path=wigpath,pattern="*.fsa.wig.gz")
       for (filename in files) {
@@ -35,8 +35,8 @@ WiggleClass<-function(name) {
       }
     }
     
-    loadWiggle(nc$treatpath,env)
-    loadWiggle(nc$controlpath,env)
+    loadWiggle(nc$treatpath,e)
+    loadWiggle(nc$controlpath,e)
   }
   #######
   # Get avg reads
@@ -210,8 +210,8 @@ WiggleClass<-function(name) {
     files1=list.files(path=nc$treatpath,pattern="*.fsa.wig.gz")
     files2=list.files(path=nc$controlpath,pattern="*.fsa.wig.gz")
     ret=apply(cbind(files1,files2),1,function(f){
-      treat<-get(f[1])
-      control<-get(f[2])
+      treat<-nc$wiglist[[f[1]]]
+      control<-nc$wiglist[[f[2]]]
       if(debug==TRUE)
         cat(f[1],'\t',f[2],'\n')
       
@@ -279,10 +279,13 @@ WiggleClass<-function(name) {
   }
   
   
+  
   nc<-list2env(nc)
   class(nc)<-"WiggleClass"
   return(nc)
 }
+
+
 
 intersectBed<-function(nc1,nc2) {
   selectrows=apply(nc1,1,function(x){

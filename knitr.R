@@ -29,8 +29,7 @@ plotMaxAvgReads<-function(t, w1, w2,c1,c2,xl=NULL,yl=NULL,p=NULL) {
   id2=match(unique$V4,w1$peaks$V4)
   points(rma1[id1],rma2[id1],pch=1,col=c1)
   points(rma1[id2],rma2[id2],pch=1,col=c2)
-  if(!is.null(p))
-    legend(p, legend=c('shared', 'unique'), fill=c(c1, c2))
+  legend("bottomright", legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
 }
 
@@ -50,7 +49,7 @@ plotAvgZscore<-function(t, w1, w2, wz1, wz2, c1,c2) {
   id2=match(unique$V4,w1$peaks$V4)
   points(Z1[id1],Z2[id1],pch=1,col=c1)
   points(Z1[id2],Z2[id2],pch=1,col=c2)
-  #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
   ret=list()
   ret[['1shared']]=Z1[id1]
@@ -72,7 +71,7 @@ plotMaxAvgZscore<-function(t, w1, w2, wz1,wz2, c1,c2,xl=NULL,yl=NULL,p=NULL) {
   plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'),xlim=xl,ylim=yl)
   points(maxw1[id1],maxw2[id1],col=c1)
   points(maxw1[id2],maxw2[id2],col=c2)
-  legend(p, legend=c('shared', 'unique'), fill=c(c1, c2))
+  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
   ret=list()
   ret[['1shared']]=maxw1[id1]
@@ -191,6 +190,85 @@ plotZall<-function(ts,w1,w2,cols=NULL) {
   
 ##  plot(zaw)
 }
+
+
+
+
+plotMaxAvgZscore<-function(t, w1, w2, wz1,wz2, c1,c2) {
+  ##########
+  # Get Z scoresmn/.,mnb,.,..,m.,
+  maxw1<-w1$getMaxAvgZscore(wz1)
+  maxw2<-w2$getMaxAvgZscore(wz2)
+  shared=intersectBed(w1$peaks,w2$peaks)
+  unique=uniqueBed(w1$peaks,w2$peaks)
+  id1=match(shared$V4,w1$peaks$V4) 
+  id2=match(unique$V4,w1$peaks$V4)
+  plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'),xlim=xl,ylim=yl)
+  points(maxw1[id1],maxw2[id1],col=c1)
+  points(maxw1[id2],maxw2[id2],col=c2)
+  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  title(t)
+  ret=list()
+  ret[['1shared']]=maxw1[id1]
+  ret[['1unique']]=maxw1[id2]
+  ret[['2shared']]=maxw2[id1]
+  ret[['2unique']]=maxw2[id2]
+  ret
+}
+
+
+
+
+
+getZcorrelation<-function(wz1,wz2) {
+  apply(cbind(wz1,wz2),1,function(z){
+    z1=z[1]
+    z2=z[2]
+    cor(unlist(z1),unlist(z2))
+  })
+}
+
+
+getBayesian<-function(w1, w2,wz1,wz2,ids) {
+  
+  maxw1<-w1$getMaxAvgZscore(wz1[ids])
+  maxw2<-w2$getMaxAvgZscore(wz2[ids])
+  corrs<-getZcorrelation(wz1[ids],wz2[ids])
+  arr=numeric(length(corrs))
+  
+  for(i in 1:length(corrs)) {
+    arr[i]=pnorm(maxw1[i])/pnorm(maxw2[i])
+    arr[i]=arr[i]*(corrs[i]+1)/2
+  }
+  arr
+}
+
+
+
+plotMaxAvgZscoreColor<-function(t, w1, w2, wz1,wz2, c1,c2) {
+  ##########
+  # Get Z scoresmn/.,mnb,.,..,m.,
+  maxw1<-w1$getMaxAvgZscore(wz1)
+  maxw2<-w2$getMaxAvgZscore(wz2)
+  shared=intersectBed(w1$peaks,w2$peaks)
+  unique=uniqueBed(w1$peaks,w2$peaks)
+  id1=match(shared$V4,w1$peaks$V4) 
+  id2=match(unique$V4,w1$peaks$V4)
+  plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'),xlim=xl,ylim=yl)
+  points(maxw1[id1],maxw2[id1],col=c1)
+  points(maxw1[id2],maxw2[id2],col=c2)
+  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  title(t)
+  ret=list()
+  ret[['1shared']]=maxw1[id1]
+  ret[['1unique']]=maxw1[id2]
+  ret[['2shared']]=maxw2[id1]
+  ret[['2unique']]=maxw2[id2]
+  ret
+}
+
+
+
 #setwd('macs1.4.2')
 #e2=loadMacsEnv('S96','HS959')
 #setwd('..')

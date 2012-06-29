@@ -13,8 +13,8 @@ Typical setup preamble creates a 'wiggle class', an S3 R object and loadswiggle 
 ```r
 wig1 = WiggleClass("S96")
 wig2 = WiggleClass("HS959")
-wig1$loadWiggles(globalenv())
-wig2$loadWiggles(globalenv())
+wig1$loadWiggles()
+wig2$loadWiggles()
 ####
 ```
 
@@ -24,12 +24,12 @@ wig2$loadWiggles(globalenv())
 
 The normalized difference score gives us on average the expected value of the ChIP-seq subtracted from the input data using a simple random model
 
-[math]A~Poisson(f+g)[/math]
-[math]B~Poisson(cg)[/math]
+$A~Poisson(f+g)$
+$B~Poisson(cg)$
 
 Then the NormDiff score is defined as
 
-[eqn]Z=(A-B/c)/\hat\sigma[/eqn]
+$$Z=(A-B/c)/\hat\sigma$$
 
 We use functions to estimate scaling and variance and we can look at the distribution of average normalized difference scores for all peaks, and see how they correspond to syntenic regions in other datasets
 
@@ -45,18 +45,24 @@ wz1 = wig1$Z(wig1$peaks)
 wz2 = wig2$Z(wig1$peaks)
 wz4 = wig2$Z(wig2$peaks)
 wz3 = wig1$Z(wig2$peaks)
-r1 = plotMaxAvgZscore("Max Avg S96 peak NormDiff score vs HS959 synteny w=100", 
-    wig1, wig2, wz1, wz2, "lightblue", "orange")
+r1 = plotMaxAvgZscore("Max Avg  S96 peak NormDiff score vs HS959 synteny w=100", 
+    wig1, wig2, wz1, wz2, "#bb0000", "#001199")
 ```
 
-![plot of chunk d2](http://i.imgur.com/bUNTU.png) 
+```
+## Error: object 'xl' not found
+```
 
 ```r
 r2 = plotMaxAvgZscore("Max Avg HS959 peak NormDiff score vs S96 synteny w=100", 
-    wig2, wig1, wz4, wz3, "pink", "orange")
+    wig2, wig1, wz4, wz3, "#bb0000", "#009900")
 ```
 
-![plot of chunk d2](http://i.imgur.com/jZZaK.png) 
+```
+## Error: object 'xl' not found
+```
+
+
 
 
 If we sort the data we can get an idea of the connections between the cutoff applied to both datasets
@@ -68,13 +74,22 @@ plotSortedMaxAvgZscore("Sorted HS959 Max Avg Normdiff connected with S96 peak re
     wig1, wig2, r1, "#00119919", "#bb000019", "#001199", "#aa0000")
 ```
 
-![plot of chunk sorted](http://i.imgur.com/Q3cgx.png) 
+```
+## Error: object 'r1' not found
+```
 
 ```r
 plotSortedMaxAvgZscore("Sorted S96 Max Avg Normdiff connected with HS959 peak regions", 
     wig2, wig1, r2, "#00990019", "#bb000019", "#009900", "#aa0000")
 ```
 
-![plot of chunk sorted](http://i.imgur.com/i4woA.png) 
+```
+## Error: object 'r2' not found
+```
 
 
+
+
+We can use a conditional probability based on a correlation between the datasets. This is defined as, for normalized difference scores for peaks
+
+$$ p(x|y)={{normalCDF(\bar x) corr(x,y)}\over{normalCDF(\bar y)}} $$

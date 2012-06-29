@@ -1,27 +1,18 @@
-
+source('readplot.R')
+source('knitr.R')
 debug=TRUE
 wig1=WiggleClass('S96')
 wig2=WiggleClass('HS959')
-wig1$loadWiggles(globalenv()) 
-wig2$loadWiggles(globalenv())
+wig1$loadWiggles() 
+wig2$loadWiggles()
+#wig1$loadWiggles(globalenv()) 
+#wig2$loadWiggles(globalenv())
 ###
 wig1$estimateScalingFactor()
 wig1$estimateVarianceAll()
 wig2$estimateScalingFactor()
 wig2$estimateVarianceAll()
 
-
-wza1=wig1$Zall()
-wza2=wig2$Zall()
-wzamax1=wig1$getMaxAvgZscoreAll(wza1)
-wzamax2=wig2$getMaxAvgZscoreAll(wza2)
-c1=plotZall(wzamax1,wig1,wig2)
-c2=plotZall(wzamax2,wig2,wig1)
-plotZall(wzamax1,wig1,wig2,c1)
-plotZall(wzamax2,wig2,wig1,c2)
-
-plotZall2(c1,wig1,wig2)
-plotZall3(c1,wig1,wig2)
 
 ############
 # Z score peaks
@@ -30,20 +21,7 @@ wz2=wig2$Z(wig1$peaks)
 wz4=wig2$Z(wig2$peaks)
 wz3=wig1$Z(wig2$peaks)
 
-op <- par(mfrow=c(1,2))
-
 r1=plotMaxAvgZscore('Max Avg  S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2,'orange', 'blue')
-r2=plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'orange','darkviolet')
-par(op)
-
-
-
-r1=plotMaxAvgZscore('Max Avg  S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2,'orange', 'blue')
-r2=plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'orange','darkviolet')
-
-
-
-r1=plotMaxAvgZscore('Max Avg  S96 peak NormDiff score vs HS959 synteny w=100 (Zoom)', wig1, wig2, wz1, wz2,'orange', 'blue',c(1,4), c(-0.5,4))
 r2=plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'orange','darkviolet')
 
 
@@ -65,14 +43,52 @@ plotSortedMaxAvgZscore('Sorted S96 Max Avg Normdiff connected with HS959 peak re
 plotSortedMaxAvgZscore('Sorted HS959 Max Avg Normdiff connected with S96 peak regions',wig1,wig2,r1,'#00334407','#55221133','#003344','#552211') 
 plotSortedMaxAvgZscore('Sorted S96 Max Avg Normdiff connected with HS959 peak regions',wig2,wig1,r2,'#00661107','#55221133','#006611','#552211')
 
-plot(p1,type='l',col="#aa0000bb",ylim=c(0,20),xlim=c(0,100000))
-lines(p2,col="#101010cc")
-
-var()
 
 
-plotMaxAvgReads('S96 avg peak reads vs HS959 syntenic', wig1, wig2, 'green', 'blue') 
-plotMaxAvgReads('HS959 avg peak reads vs S96 syntenic', wig2, wig1, 'green', 'red')
 
-plotMaxAvgReads('S96 avg peak reads vs HS959 syntenic', wig1, wig2, 'green', 'blue',c(8,16),c(0,20)) 
-plotMaxAvgReads('HS959 avg peak reads vs S96 syntenic', wig2, wig1, 'green', 'red',c(5,15),c(1,25))
+
+
+
+unique=uniqueBed(wig1$peaks,wig2$peaks)
+shared=intersectBed(wig1$peaks,wig2$peaks)
+uniqueid=match(unique$V4,wig1$peaks$V4)
+sharedid=match(shared$V4,wig1$peaks$V4)
+
+
+
+xx=getBayesian(wig1,wig2,wz1,wz2,uniqueid)
+yy=getBayesian(wig1,wig2,wz1,wz2,sharedid)
+barplot(sort(xx),xlab='conditional probability', ylim=c(0,1))
+title('Conditional probability of unique peaks in HS959')
+barplot(sort(yy),xlab='conditional probability', ylim=c(0,1))
+title('Conditional probability for shared peaks in HS959')
+
+
+
+
+
+
+
+
+
+#plot(p1,type='l',col="#aa0000bb",ylim=c(0,20),xlim=c(0,100000))
+#lines(p2,col="#101010cc")
+
+
+
+
+
+#wza1=wig1$Zall()
+#wza2=wig2$Zall()
+#wzamax1=wig1$getMaxAvgZscoreAll(wza1)
+#wzamax2=wig2$getMaxAvgZscoreAll(wza2)
+#c1=plotZall(wzamax1,wig1,wig2)
+#c2=plotZall(wzamax2,wig2,wig1)
+#plotZall(wzamax1,wig1,wig2,c1)
+#plotZall(wzamax2,wig2,wig1,c2)
+
+#plotZall2(c1,wig1,wig2)
+#plotZall3(c1,wig1,wig2)
+
+#plotMaxAvgReads('S96 avg peak reads vs HS959 syntenic', wig1, wig2, 'green', 'blue') 
+#plotMaxAvgReads('HS959 avg peak reads vs S96 syntenic', wig2, wig1, 'green', 'red')
