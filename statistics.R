@@ -73,11 +73,36 @@ plotMaxAvgZscoreColor('Colors2',wig2,wig1,wz4,wz3)
 
 
 
+
+datasort=as.numeric(wza1[[1]][,4])
+plot(datasort,dnorm(datasort))
+
+h=hist(datasort,breaks=50)
+xfit=datasort
+yfit=dnorm(datasort)
+yfit <- yfit*diff(h$mids[1:2])*length(datasort)
+lines(xfit, yfit, col="blue", lwd=1) 
+
+
+d <- density(datasort,adjust=1.5) # returns the density data
+plot(d, main='Kernel density of NormDiff scores') # plots the results 
+polygon(d, col="#BB2222CC", border="#222244") 
+
+clone=datasort
+qqnorm(clone)
+qqline(clone,col=2)
+qqplot(clone, datasort)
+
+
+
+x <- rnorm(100, mean=5, sd=2)
+
+# sort in ascending order
+x.sorted <- sort(x)
+
+
 #plot(p1,type='l',col="#aa0000bb",ylim=c(0,20),xlim=c(0,100000))
 #lines(p2,col="#101010cc")
-
-
-
 
 
 #wza1=wig1$Zall()

@@ -243,7 +243,7 @@ getBayesian<-function(w1, w2,wz1,wz2,maxw1,maxw2,ids) {
   
   for(i in 1:length(corrs)) {
     arr[i]=pnorm(maxw1[i])/pnorm(maxw2[i])
-    arr[i]=arr[i]*(corrs[i]+1)/2
+    arr[i]=arr[i]*abs(corrs[i])
   }
   arr
 }
@@ -284,7 +284,7 @@ plotMaxAvgZscoreColor<-function(t, w1, w2, wz1,wz2) {
   
   plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
   for(i in 1:length(id1))
-    points(maxw1[id1][i],maxw2[id1][i],col=hsv(exp((pvals[i]-1)*2)*3/4))
+    points(maxw1[id1][i],maxw2[id1][i],col=hsv(exp((pvals[i]-1)*2)/3))
   #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
 }
