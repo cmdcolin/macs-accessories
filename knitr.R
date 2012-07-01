@@ -232,7 +232,7 @@ getZcovariance<-function(wz1,wz2) {
   apply(cbind(wz1,wz2),1,function(z){
     z1=z[1]
     z2=z[2]
-    cov(unlist(z1),unlist(z2))
+    cov(sort(unlist(z1)),sort(unlist(z2)))
   })
 }
 
@@ -247,6 +247,10 @@ getBayesian<-function(w1, w2,wz1,wz2,maxw1,maxw2,ids) {
   }
   arr
 }
+
+
+
+
 
 plotBarCharts<-function(w1,w2,wz1,wz2){
   
@@ -284,7 +288,7 @@ plotMaxAvgZscoreColor<-function(t, w1, w2, wz1,wz2) {
   
   plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
   for(i in 1:length(id1))
-    points(maxw1[id1][i],maxw2[id1][i],col=hsv(exp((pvals[i]-1)*2)/3))
+    points(maxw1[id1][i],maxw2[id1][i],col=hsv(10^(pvals[i]-1)*3/4))
   #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
 }
@@ -317,6 +321,82 @@ plotMaxAvgZscoreColorX<-function(t, w1, w2, wz1,wz2) {
       points(maxw1[id2][i],maxw2[id2][i],col=hsv(yy[i]*3/4))
   #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
+}
+
+
+
+getBayesian2<-function(w1, w2,wz1,wz2,maxw1,maxw2,ids) {
+  corrs<-apply(cbind(wz1,wz2),1,function(z){
+    z1=z[1]
+    z2=z[2]
+    cor(sort(unlist(z1)),sort(unlist(z2)))
+  })
+  arr=numeric(length(corrs))
+  
+  for(i in 1:length(corrs)) {
+    arr[i]=pnorm(maxw1[i])/pnorm(maxw2[i])
+    arr[i]=arr[i]*abs(corrs[i])
+  }
+  arr
+}
+
+# HSV rainbows
+plotMaxAvgZscoreColorY<-function(t, w1, w2, wz1,wz2) {
+  maxw1<-w1$getMaxAvgZscore(wz1)
+  maxw2<-w2$getMaxAvgZscore(wz2)
+  id1=w1$peaks$V4
+  pvals=getBayesian(w1,w2,wz1,wz2,maxw1,maxw2,id1)
+  
+  ## Fix data
+  pvals=pvals/2.5
+  pvals[is.nan(pvals)]=0;
+  pvals[is.na(pvals)]=0
+  pvals[pvals>1]=1
+  
+  View(pvals)
+  plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
+  for(i in 1:length(id1))
+    points(maxw1[id1][i],maxw2[id1][i],col=hsv(pvals[i]*3/4))
+  #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  title(t)
+}
+
+
+
+
+# HSV rainbows
+plotBarChartY<-function(t, wig1, wig2, wz1,wz2) {
+  
+  unique=uniqueBed(wig1$peaks,wig2$peaks)
+  shared=intersectBed(wig1$peaks,wig2$peaks)
+  uniqueid=match(unique$V4,wig1$peaks$V4)
+  sharedid=match(shared$V4,wig1$peaks$V4)  
+  maxw1<-wig1$getMaxAvgZscore(wz1)
+  maxw2<-wig2$getMaxAvgZscore(wz2)
+  id1=wig1$peaks$V4
+  xx=getBayesian(wig1,wig2,wz1,wz2,maxw1,maxw2,uniqueid)
+  yy=getBayesian(wig1,wig2,wz1,wz2,maxw1,maxw2,sharedid)
+  
+  ##pvals=getBayesian(wig1,wig2,wz1,wz2,maxw1,maxw2,id1)
+  ##xx=pvals[uniqueid]
+  ##yy=pvals[sharedid]
+  
+  
+  ## Fix data
+  xx=xx/4
+  xx[is.nan(xx)]=0;
+  xx[is.na(xx)]=0
+  xx[xx>1]=1
+  yy=yy/4
+  yy[is.nan(yy)]=0;
+  yy[is.na(yy)]=0
+  yy[yy>1]=1
+  
+  par(mfrow=c(2,1))
+  barplot(sort(xx),ylab='conditional probability', ylim=c(0,1))
+  title('Unique peaks in HS959')
+  barplot(sort(yy),ylab='conditional probability', ylim=c(0,1))
+  title('Shared peaks in HS959')
 }
 
 

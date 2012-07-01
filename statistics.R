@@ -47,7 +47,7 @@ plotSortedMaxAvgZscore('Sorted S96 Max Avg Normdiff connected with HS959 peak re
 
 
 
-
+plotBarCharts(wig1,wig2,wz1,wz2)
 
 unique=uniqueBed(wig1$peaks,wig2$peaks)
 shared=intersectBed(wig1$peaks,wig2$peaks)
@@ -58,47 +58,56 @@ maxw2<-wig2$getMaxAvgZscore(wz2)
 
 
 
-xx=getBayesian(wig1,wig2,wz1,wz2,maxw1,maxw2,uniqueid)
-yy=getBayesian(wig1,wig2,wz2,wz1,maxw1,maxw2,sharedid)
+xx=getBayesian(wig1,wig2,wz1,wz2,maxw1,maxw2,uniqueid)/4
+yy=getBayesian(wig1,wig2,wz2,wz1,maxw1,maxw2,sharedid)/4
 par(mfrow=c(1,2))
 barplot(sort(xx),xlab='conditional probability', ylim=c(0,1))
 title('Conditional probability of unique peaks in HS959')
 barplot(sort(yy),xlab='conditional probability', ylim=c(0,1))
 title('Conditional probability for shared peaks in HS959')
 
-
-
-plotMaxAvgZscoreColor('Colors1',wig1,wig2,wz1,wz2)
-plotMaxAvgZscoreColor('Colors2',wig2,wig1,wz4,wz3)
+plotBarChartY('Title',wig1,wig2,wz1,wz2)
 
 
 
 
+### Color plots
+plotMaxAvgZscoreColorY('S96 peaks vs HS959 synteny',wig1,wig2,wz1,wz2)
+plotMaxAvgZscoreColorY('HS959 peaksvs S96 synteny',wig2,wig1,wz4,wz3)
+
+
+## Setup data
 datasort=as.numeric(wza1[[1]][,4])
 plot(datasort,dnorm(datasort))
 
+### Histogram
 h=hist(datasort,breaks=50)
 xfit=datasort
 yfit=dnorm(datasort)
 yfit <- yfit*diff(h$mids[1:2])*length(datasort)
 lines(xfit, yfit, col="blue", lwd=1) 
 
-
-d <- density(datasort,adjust=1.5) # returns the density data
+## Kernel density plot
+d <- density(datasort,adjust=1.2) # returns the density data
 plot(d, main='Kernel density of NormDiff scores') # plots the results 
 polygon(d, col="#BB2222CC", border="#222244") 
 
+
+## Q-Q Plot
 clone=datasort
 qqnorm(clone)
 qqline(clone,col=2)
 qqplot(clone, datasort)
 
 
+#### Draw rainbow
 
-x <- rnorm(100, mean=5, sd=2)
-
-# sort in ascending order
-x.sorted <- sort(x)
+## set up the plot region:
+plot(c(100, 250), c(300, 450), type = "n",
+     main = "11 rectangles using `rect(120+i,300+i,  177+i,380+i)'")
+i <- 4*(0:10)
+## draw rectangles with bottom left (120, 300)+i  and top right (177, 380)+i
+rect(120, 300+i, 177, 380+i, col=rainbow(11, start=.0,end=.7))
 
 
 #plot(p1,type='l',col="#aa0000bb",ylim=c(0,20),xlim=c(0,100000))

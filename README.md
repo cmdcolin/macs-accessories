@@ -68,14 +68,14 @@ plotSortedMaxAvgZscore("Sorted HS959 Max Avg Normdiff connected with S96 peak re
     wig1, wig2, r1, "#00119919", "#bb000019", "#001199", "#aa0000")
 ```
 
-![plot of chunk sorted](http://i.imgur.com/G9VHo.png) 
+![plot of chunk sorted](http://i.imgur.com/ctuBS.png) 
 
 ```r
 plotSortedMaxAvgZscore("Sorted S96 Max Avg Normdiff connected with HS959 peak regions", 
     wig2, wig1, r2, "#00990019", "#bb000019", "#009900", "#aa0000")
 ```
 
-![plot of chunk sorted](http://i.imgur.com/UCnpo.png) 
+![plot of chunk sorted](http://i.imgur.com/ttfhR.png) 
 
 
 We can use a conditional probability based on a correlation between the datasets. This is defined as, for normalized difference scores for peaks
@@ -89,16 +89,16 @@ If we look at colored plots of the probability we get from these plots we see so
 
 ```r
 
-plotMaxAvgZscoreColor("S96 vs HS959 peaks colored by probability", 
-    wig1, wig2, wz1, wz2)
+plotMaxAvgZscoreColor("S96 peaks vs HS959 synteny", wig1, wig2, wz1, 
+    wz2)
 ```
 
-![plot of chunk rainbow](http://i.imgur.com/HwzDh.png) 
+![plot of chunk rainbow](http://i.imgur.com/tnBP6.png) 
 
 ```r
 plotMaxAvgZscoreColor("HS959 vs S96 peaks colored by probability", 
     wig2, wig1, wz4, wz3)
 ```
 
-![plot of chunk rainbow](http://i.imgur.com/EEb5t.png) 
+![plot of chunk rainbow](http://i.imgur.com/GR7SR.png) 
 
