@@ -3,10 +3,10 @@ source('knitr.R')
 debug=TRUE
 wig1=WiggleClass('S96')
 wig2=WiggleClass('HS959')
-wig1$loadWiggles() 
-wig2$loadWiggles()
-#wig1$loadWiggles(globalenv()) 
-#wig2$loadWiggles(globalenv())
+#wig1$loadWiggles() 
+#wig2$loadWiggles()
+wig1$loadWiggles(globalenv()) 
+wig2$loadWiggles(globalenv())
 ###
 wig1$estimateScalingFactor()
 wig1$estimateVarianceAll()
@@ -80,7 +80,33 @@ plotMaxAvgZscoreColorY('HS959 peaksvs S96 synteny',wig2,wig1,wz4,wz3)
 b1=plotMaxAvgZscoreColorUnique('S96 peaks vs HS959 synteny (Unique only)',wig1,wig2,wz1,wz2)
 b2=plotMaxAvgZscoreColorUnique('HS959 peaksvs S96 synteny (Unique only)',wig2,wig1,wz4,wz3)
 
-wig2$peaks[b1[,1],]
+bedselect=wig2$peaks[b1[,1],]
+selection1=wig1$Z(bedselect)
+selection2=wig2$Z(bedselect)
+reads1=wig1$getChipReads(bedselect)
+reads2=wig2$getChipReads(bedselect)
+
+plotOverlaps(b1[,1],wig1,wig2,1,250)
+plotOverlaps(b1[,1],wig1,wig2,2,250)
+plotOverlaps(b1[,1],wig1,wig2,3,250)
+plotOverlaps(b1[,1],wig1,wig2,4,250)
+plotOverlaps(b1[,1],wig1,wig2,5,250)
+
+## Plot - axis 1
+xx=seq(bedselect[1,2]-10,bedselect[1,3]+10,by=wig2$spacing)
+plot(xx,unlist(selection1[1]),type='l',xlab='Genome position',ylab='NormDiff score')
+lines(xx,unlist(selection2[1]))
+polygon(c(xx,rev(xx)),c(unlist(selection1[1]),numeric(length(unlist(selection1[1])))),col='#0000bb44')
+polygon(c(xx,rev(xx)),c(unlist(selection2[1]),numeric(length(unlist(selection2[1])))),col='#bb000044')
+## Plot - axis 2
+par(new=TRUE)
+xx=seq(bedselect[1,2],bedselect[1,3],by=wig2$spacing)
+plot(xx,unlist(reads1[1]),type="l",col="blue",xaxt="n",yaxt="n",xlab="",ylab="")
+lines(xx,unlist(reads2[1]),col='red')
+polygon(c(xx,rev(xx)),c(unlist(reads1[1]),numeric(length(unlist(reads1[1])))),col='#0000bb22')
+polygon(c(xx,rev(xx)),c(unlist(reads2[1]),numeric(length(unlist(reads2[1])))),col='#bb000088')
+axis(4)
+mtext('ChIP-seq reads',side=4,line=3)
 
 
 ## Setup data
@@ -108,14 +134,15 @@ qqplot(clone, datasort)
 
 
 #### Draw rainbow
-
-## set up the plot region:
-plot(c(100, 250), c(300, 450), type = "n",
-     main = "11 rectangles using `rect(120+i,300+i,  177+i,380+i)'")
+plot(c(100, 250), c(300, 450), type = "n",main="r")
 i <- 4*(0:10)
 ## draw rectangles with bottom left (120, 300)+i  and top right (177, 380)+i
 rect(120, 300+i, 177, 380+i, col=rainbow(11, start=.0,end=.7))
 
+
+
+#####################3
+# SCRAP CODE
 
 #plot(p1,type='l',col="#aa0000bb",ylim=c(0,20),xlim=c(0,100000))
 #lines(p2,col="#101010cc")

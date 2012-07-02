@@ -68,14 +68,14 @@ plotSortedMaxAvgZscore("Sorted HS959 Max Avg Normdiff connected with S96 peak re
     wig1, wig2, r1, "#00119919", "#bb000019", "#001199", "#aa0000")
 ```
 
-![plot of chunk sorted](http://i.imgur.com/ctuBS.png) 
+![plot of chunk sorted](figure/sorted1.png) 
 
 ```r
 plotSortedMaxAvgZscore("Sorted S96 Max Avg Normdiff connected with HS959 peak regions", 
     wig2, wig1, r2, "#00990019", "#bb000019", "#009900", "#aa0000")
 ```
 
-![plot of chunk sorted](http://i.imgur.com/ttfhR.png) 
+![plot of chunk sorted](figure/sorted2.png) 
 
 
 We can use a conditional probability based on a correlation between the datasets. This is defined as, for normalized difference scores for peaks
@@ -93,12 +93,59 @@ plotMaxAvgZscoreColor("S96 peaks vs HS959 synteny", wig1, wig2, wz1,
     wz2)
 ```
 
-![plot of chunk rainbow](http://i.imgur.com/tnBP6.png) 
+![plot of chunk rainbow](figure/rainbow1.png) 
 
 ```r
 plotMaxAvgZscoreColor("HS959 vs S96 peaks colored by probability", 
     wig2, wig1, wz4, wz3)
 ```
 
-![plot of chunk rainbow](http://i.imgur.com/GR7SR.png) 
+![plot of chunk rainbow](figure/rainbow2.png) 
+
+
+
+We can select the top 5 pvalues from our data to examine
+
+
+```r
+b1 = plotMaxAvgZscoreColorUnique("S96 peaks vs HS959 synteny (Unique only)", 
+    wig1, wig2, wz1, wz2)
+```
+
+![plot of chunk bedselect](http://i.imgur.com/t4Nwt.png) 
+
+
+Then zooming in, we see that many of these plots have significant correlations with each other, and could possibly be called peaks. Here are some example from
+
+
+
+```r
+bedselect = wig2$peaks[b1[, 1], ]
+selection1 = wig1$Z(bedselect)
+selection2 = wig2$Z(bedselect)
+reads1 = wig1$getChipReads(bedselect)
+reads2 = wig2$getChipReads(bedselect)
+
+plotOverlaps(b1[, 1], wig1, wig2, 1, context = 250)
+```
+
+![plot of chunk twilight](http://i.imgur.com/8oxln.png) 
+
+```r
+plotOverlaps(b1[, 1], wig1, wig2, 2, context = 250)
+```
+
+![plot of chunk twilight](http://i.imgur.com/oPXYJ.png) 
+
+```r
+plotOverlaps(b1[, 1], wig1, wig2, 3, context = 150)
+```
+
+![plot of chunk twilight](http://i.imgur.com/GDHID.png) 
+
+```r
+plotOverlaps(b1[, 1], wig1, wig2, 4, context = 150)
+```
+
+![plot of chunk twilight](http://i.imgur.com/SPAZi.png) 
 

@@ -379,7 +379,41 @@ plotBarChartY<-function(t, wig1, wig2, wz1,wz2) {
 }
 
 
+plotOverlaps<-function(blist,w1,w2,i,context) {
+  bedselect=w2$peaks[blist[i],]
+  bedselect[2]=bedselect[2]-context
+  bedselect[3]=bedselect[3]+context
+  selection1=unlist(w1$Z(bedselect))
+  selection2=unlist(w2$Z(bedselect))
+  reads1=unlist(w1$getChipReads(bedselect))
+  reads2=unlist(w2$getChipReads(bedselect))
+  sint=as.numeric(bedselect)
+  plotPeakOverlaps(sint,reads1,reads2,selection1,selection2,context)
+}
 
+plotPeakOverlaps<-function(bedselect,reads1,reads2,selection1,selection2,context) {
+  ## Plot - axis 1
+  start=bedselect[2]
+  end=bedselect[3]
+  l1=length(selection1)
+  xx=seq(start-10,end+10,by=10)
+  plot(xx,selection1,type='l',xlab='Genome position',ylab='NormDiff score',ylim=c(0,max(selection1)+1),yaxs="i")
+  lines(xx,unlist(selection2))
+  polygon(c(xx,rev(xx)),c(selection1,numeric(l1)),col='#0000bb44')
+  polygon(c(xx,rev(xx)),c(selection2,numeric(l1)),col='#bb000044')
+  ## Plot - axis 2
+  #par(new=TRUE)
+  #l2=length(unlist(reads1))
+  #xx=seq(start,end,by=10)
+  #plot(xx,reads1,type="l",col="blue",xaxt="n",yaxt="n",xlab="",ylab="",lwd=2)
+  #lines(xx,reads2,col='red',lwd=2)
+  lines(c(start+context,start+context),c(0,1000),col='green',lwd=2)
+  lines(c(end-context,end-context),c(0,1000),col='green',lwd=2)
+  #polygon(c(xx,rev(xx)),c(reads1,numeric(l2)),col='#0000bb22')
+  #polygon(c(xx,rev(xx)),c(reads2,numeric(l2)),col='#bb000088')
+  #axis(4)
+  #mtext('ChIP-seq reads',side=4,line=3)
+}
 #setwd('macs1.4.2')
 #e2=loadMacsEnv('S96','HS959')
 #setwd('..')

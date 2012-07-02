@@ -48,7 +48,7 @@ r2=plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100', wi
 
 If we sort the data we can get an idea of the connections between the cutoff applied to both datasets
 
-```{r sorted, dev='png'}
+```{r sorted, dev='png',cache=TRUE}
 plotSortedMaxAvgZscore('Sorted HS959 Max Avg Normdiff connected with S96 peak regions',wig1,wig2,r1,'#00119919','#bb000019','#001199','#aa0000')  
 plotSortedMaxAvgZscore('Sorted S96 Max Avg Normdiff connected with HS959 peak regions',wig2,wig1,r2,'#00990019','#bb000019','#009900','#aa0000')
 ```
@@ -60,8 +60,29 @@ $$ p(x|y)={{P(\bar x \leq X) corr(x,y)}\over{P(\bar y \leq Y)}} $$
 
 If we look at colored plots of the probability we get from these plots we see something like this
 
-```{r rainbow, dev='png',warning=FALSE}
+```{r rainbow, dev='png',warning=FALSE,cache=TRUE}
 
 plotMaxAvgZscoreColor('S96 peaks vs HS959 synteny',wig1,wig2,wz1,wz2)
 plotMaxAvgZscoreColor('HS959 vs S96 peaks colored by probability',wig2,wig1,wz4,wz3)
+```
+
+
+We can select the top 5 pvalues from our data to examine
+```{r bedselect, cache=TRUE}
+b1=plotMaxAvgZscoreColorUnique('S96 peaks vs HS959 synteny (Unique only)',wig1,wig2,wz1,wz2)
+```
+
+Then zooming in, we see that many of these plots have significant correlations with each other, and could possibly be called peaks. Here are some example from
+
+```{r twilight,cache=TRUE}
+bedselect=wig2$peaks[b1[,1],]
+selection1=wig1$Z(bedselect)
+selection2=wig2$Z(bedselect)
+reads1=wig1$getChipReads(bedselect)
+reads2=wig2$getChipReads(bedselect)
+
+plotOverlaps(b1[,1],wig1,wig2,1,context=250)
+plotOverlaps(b1[,1],wig1,wig2,2,context=250)
+plotOverlaps(b1[,1],wig1,wig2,3,context=150)
+plotOverlaps(b1[,1],wig1,wig2,4,context=150)
 ```

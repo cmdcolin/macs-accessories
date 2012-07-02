@@ -1,5 +1,6 @@
-
+# Regex library
 library(stringr)
+
 #################
 #! Constructor
 WiggleClass<-function(name) {
@@ -38,6 +39,26 @@ WiggleClass<-function(name) {
     loadWiggle(nc$treatpath,e)
     loadWiggle(nc$controlpath,e)
   }
+  
+
+
+  nc$getChipReads <- function(bedfile) {
+    getChipReadsX<-function(x,filepath){
+      chr=x[1]
+      start=as.integer(x[2])
+      end=as.integer(x[3])
+      wigfile=paste(filepath,chr,'.wig.gz',sep='')
+      wig=nc$wiglist[[wigfile]]
+      corr=findInterval(seq(start,end,by=nc$spacing),wig$V1)
+      ret=wig$V2[corr]
+      if(debug)
+        cat(as.integer(end)-as.integer(start), ' ', ret, '\n')
+      ret
+    }
+    # Apply to chip
+    apply(bedfile,1,getChipReadsX,nc$treatname)
+  }
+  
   #######
   # Get avg reads
   nc$getTotalReads = function(bedfile) {
