@@ -294,51 +294,41 @@ plotMaxAvgZscoreColor<-function(t, w1, w2, wz1,wz2) {
 }
 
 
-plotMaxAvgZscoreColorX<-function(t, w1, w2, wz1,wz2) {
+plotMaxAvgZscoreColorUnique<-function(t, w1, w2, wz1,wz2) {
   maxw1<-w1$getMaxAvgZscore(wz1)
   maxw2<-w2$getMaxAvgZscore(wz2)
-  shared=intersectBed(w1$peaks,w2$peaks)
   unique=uniqueBed(w1$peaks,w2$peaks)
-  id1=match(shared$V4,w1$peaks$V4) 
   id2=match(unique$V4,w1$peaks$V4)
-  
-  xx=getBayesian(w1,w2,wz1,wz2,id1)
-  yy=getBayesian(w1,w2,wz1,wz2,id2)
+
+  ## Get pvalues and top pvalues
+  punique=getBayesian(w1,w2,wz1,wz2,maxw1,maxw2,id2)
   
   ## Fix data
-  xx[is.nan(xx)]=0;
-  xx[is.na(xx)]=0
-  yy[is.nan(yy)]=0;
-  yy[is.na(yy)]=0
-  xx[xx>1]=1
-  yy[yy>1]=1
+  punique=punique/2.5
+  bestp=tail(sort(punique))
+  best=match(bestp,punique)
+  bestp[bestp>1]=1
+  punique[is.nan(punique)]=0;
+  punique[is.na(punique)]=0
+  punique[punique>1]=1
   
   
-  plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
-  for(i in 1:length(id1))
-      points(maxw1[id1][i],maxw2[id1][i],col=hsv(xx[i]*3/4))
+  plot(maxw1[id2],maxw2[id2],pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
+
+  # Color p scores
   for(i in 1:length(id2))
-      points(maxw1[id2][i],maxw2[id2][i],col=hsv(yy[i]*3/4))
+    points(maxw1[id2][i],maxw2[id2][i],col=hsv(punique[i]*3/4))
+  
+  # Color best p-scores bold
+  for(i in 1:length(best)) 
+    points(maxw1[id2][best][i],maxw2[id2][best][i],col=hsv(bestp[i]*3/4),cex=2.5,lwd=2)
+    
   #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
+  cbind(id2[best],bestp)
 }
 
 
-
-getBayesian2<-function(w1, w2,wz1,wz2,maxw1,maxw2,ids) {
-  corrs<-apply(cbind(wz1,wz2),1,function(z){
-    z1=z[1]
-    z2=z[2]
-    cor(sort(unlist(z1)),sort(unlist(z2)))
-  })
-  arr=numeric(length(corrs))
-  
-  for(i in 1:length(corrs)) {
-    arr[i]=pnorm(maxw1[i])/pnorm(maxw2[i])
-    arr[i]=arr[i]*abs(corrs[i])
-  }
-  arr
-}
 
 # HSV rainbows
 plotMaxAvgZscoreColorY<-function(t, w1, w2, wz1,wz2) {
@@ -353,7 +343,6 @@ plotMaxAvgZscoreColorY<-function(t, w1, w2, wz1,wz2) {
   pvals[is.na(pvals)]=0
   pvals[pvals>1]=1
   
-  View(pvals)
   plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
   for(i in 1:length(id1))
     points(maxw1[id1][i],maxw2[id1][i],col=hsv(pvals[i]*3/4))
@@ -383,20 +372,10 @@ plotBarChartY<-function(t, wig1, wig2, wz1,wz2) {
   
   
   ## Fix data
-  xx=xx/4
-  xx[is.nan(xx)]=0;
-  xx[is.na(xx)]=0
-  xx[xx>1]=1
-  yy=yy/4
-  yy[is.nan(yy)]=0;
-  yy[is.na(yy)]=0
-  yy[yy>1]=1
-  
+
   par(mfrow=c(2,1))
-  barplot(sort(xx),ylab='conditional probability', ylim=c(0,1))
-  title('Unique peaks in HS959')
-  barplot(sort(yy),ylab='conditional probability', ylim=c(0,1))
-  title('Shared peaks in HS959')
+  hist(xx,ylab='p', main='Unique peaks in HS959',freq=TRUE)
+  hist(yy,ylab='p', main='Shared peaks in HS959',freq=TRUE)
 }
 
 

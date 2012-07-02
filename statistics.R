@@ -76,6 +76,13 @@ plotMaxAvgZscoreColorY('S96 peaks vs HS959 synteny',wig1,wig2,wz1,wz2)
 plotMaxAvgZscoreColorY('HS959 peaksvs S96 synteny',wig2,wig1,wz4,wz3)
 
 
+### Zoom on unique plots
+b1=plotMaxAvgZscoreColorUnique('S96 peaks vs HS959 synteny (Unique only)',wig1,wig2,wz1,wz2)
+b2=plotMaxAvgZscoreColorUnique('HS959 peaksvs S96 synteny (Unique only)',wig2,wig1,wz4,wz3)
+
+wig2$peaks[b1[,1],]
+
+
 ## Setup data
 datasort=as.numeric(wza1[[1]][,4])
 plot(datasort,dnorm(datasort))
