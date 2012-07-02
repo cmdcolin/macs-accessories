@@ -69,20 +69,22 @@ plotMaxAvgZscoreColor('HS959 vs S96 peaks colored by probability',wig2,wig1,wz4,
 
 We can select the top 5 pvalues from our data to examine
 ```{r bedselect, cache=TRUE}
-b1=plotMaxAvgZscoreColorUnique('S96 peaks vs HS959 synteny (Unique only)',wig1,wig2,wz1,wz2)
+ret=plotMaxAvgZscoreColorUnique('S96 peaks vs HS959 synteny (Unique only)',wig1,wig2,wz1,wz2)
+print(ret)
+b1=as.numeric(ret[,1])
 ```
 
 Then zooming in, we see that many of these plots have significant correlations with each other, and could possibly be called peaks. Here are some example from
 
-```{r twilight,cache=TRUE}
-bedselect=wig2$peaks[b1[,1],]
+```{r twilight,cache=FALSE}
+bedselect=wig2$peaks[b1,]
 selection1=wig1$Z(bedselect)
 selection2=wig2$Z(bedselect)
 reads1=wig1$getChipReads(bedselect)
 reads2=wig2$getChipReads(bedselect)
 
-plotOverlaps(b1[,1],wig1,wig2,1,context=250)
-plotOverlaps(b1[,1],wig1,wig2,2,context=250)
-plotOverlaps(b1[,1],wig1,wig2,3,context=150)
-plotOverlaps(b1[,1],wig1,wig2,4,context=150)
+plotOverlaps(b1,wig1,wig2,1,context=250)
+plotOverlaps(b1,wig1,wig2,2,context=250)
+plotOverlaps(b1,wig1,wig2,3,context=150)
+plotOverlaps(b1,wig1,wig2,4,context=150)
 ```

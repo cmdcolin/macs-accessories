@@ -80,17 +80,23 @@ plotMaxAvgZscoreColorY('HS959 peaksvs S96 synteny',wig2,wig1,wz4,wz3)
 b1=plotMaxAvgZscoreColorUnique('S96 peaks vs HS959 synteny (Unique only)',wig1,wig2,wz1,wz2)
 b2=plotMaxAvgZscoreColorUnique('HS959 peaksvs S96 synteny (Unique only)',wig2,wig1,wz4,wz3)
 
-bedselect=wig2$peaks[b1[,1],]
+
+ret=plotMaxAvgZscoreColorUnique('S96 peaks vs HS959 synteny (Unique only)',wig1,wig2,wz1,wz2)
+print(ret)
+b1=as.numeric(ret[,1])
+
+
+bedselect=wig2$peaks[b1,]
 selection1=wig1$Z(bedselect)
 selection2=wig2$Z(bedselect)
 reads1=wig1$getChipReads(bedselect)
 reads2=wig2$getChipReads(bedselect)
 
-plotOverlaps(b1[,1],wig1,wig2,1,250)
-plotOverlaps(b1[,1],wig1,wig2,2,250)
-plotOverlaps(b1[,1],wig1,wig2,3,250)
-plotOverlaps(b1[,1],wig1,wig2,4,250)
-plotOverlaps(b1[,1],wig1,wig2,5,250)
+plotOverlaps(b1,wig1,wig2,1,250)
+plotOverlaps(b1,wig1,wig2,2,250)
+plotOverlaps(b1,wig1,wig2,3,250)
+plotOverlaps(b1,wig1,wig2,4,250)
+plotOverlaps(b1,wig1,wig2,5,250)
 
 ## Plot - axis 1
 xx=seq(bedselect[1,2]-10,bedselect[1,3]+10,by=wig2$spacing)

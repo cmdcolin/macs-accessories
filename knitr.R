@@ -374,8 +374,10 @@ plotBarChartY<-function(t, wig1, wig2, wz1,wz2) {
   ## Fix data
 
   par(mfrow=c(2,1))
-  hist(xx,ylab='p', main='Unique peaks in HS959',freq=TRUE)
-  hist(yy,ylab='p', main='Shared peaks in HS959',freq=TRUE)
+  barplot(sort(xx),ylab='p(x|y)', ylim=c(0,1))
+  title('Unique peaks in HS959')
+  barplot(sort(yy),ylab='p(x|y)', ylim=c(0,1))
+  title('Shared peaks in HS959')
 }
 
 
@@ -399,16 +401,18 @@ plotPeakOverlaps<-function(bedselect,reads1,reads2,selection1,selection2,context
   xx=seq(start-10,end+10,by=10)
   plot(xx,selection1,type='l',xlab='Genome position',ylab='NormDiff score',ylim=c(0,max(selection1)+1),yaxs="i")
   lines(xx,unlist(selection2))
-  polygon(c(xx,rev(xx)),c(selection1,numeric(l1)),col='#0000bb44')
-  polygon(c(xx,rev(xx)),c(selection2,numeric(l1)),col='#bb000044')
+  polygon(c(xx,rev(xx)),c(selection1,numeric(l1)),col='#0000bb77')
+  polygon(c(xx,rev(xx)),c(selection2,numeric(l1)),col='#bb000077')
   ## Plot - axis 2
   #par(new=TRUE)
   #l2=length(unlist(reads1))
   #xx=seq(start,end,by=10)
   #plot(xx,reads1,type="l",col="blue",xaxt="n",yaxt="n",xlab="",ylab="",lwd=2)
   #lines(xx,reads2,col='red',lwd=2)
-  lines(c(start+context,start+context),c(0,1000),col='green',lwd=2)
-  lines(c(end-context,end-context),c(0,1000),col='green',lwd=2)
+  lines(c(start+context,start+context),c(0,1000),col='#00aa0077',lwd=2)
+  lines(c(end-context,end-context),c(0,1000),col='#00aa0077',lwd=2)
+  title(paste('Peak from', wig1$name, 'vs',wig2$name, 'in chr',bedselect[1]))
+  legend('topright',legend=c(wig1$name,wig2$name),fill=c("#0000bb77","#bb000077"))
   #polygon(c(xx,rev(xx)),c(reads1,numeric(l2)),col='#0000bb22')
   #polygon(c(xx,rev(xx)),c(reads2,numeric(l2)),col='#bb000088')
   #axis(4)
