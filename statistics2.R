@@ -2,7 +2,7 @@ source('readplot.R')
 source('knitr.R')
 debug=TRUE
 wig1=WiggleClass('S96')
-wig2=WiggleClass('HS959')
+wig2=WiggleClass('S96rep2u')
 #wig1$loadWiggles() 
 #wig2$loadWiggles()
 wig1$loadWiggles(globalenv()) 
@@ -72,12 +72,12 @@ plotBarChartY('Title',wig1,wig2,wz1,wz2)
 
 
 ### Color plots
-plotMaxAvgZscoreColorY('S96 peaks vs HS959 synteny',wig1,wig2,wz1,wz2)
-plotMaxAvgZscoreColorY('HS959 peaksvs S96 synteny',wig2,wig1,wz4,wz3)
+plotMaxAvgZscoreColorY('S96rep1 peaks vs S96rep2 synteny',wig1,wig2,wz1,wz2)
+plotMaxAvgZscoreColorY('S96rep2 peaks vs S96rep1 synteny',wig2,wig1,wz4,wz3)
 
 
 ### Zoom on unique plots
-b1=plotMaxAvgZscoreColorUnique('S96 peaks vs HS959 synteny (Unique only)',wig1,wig2,wz1,wz2)
+b1=plotMaxAvgZscoreColorUnique('S96 peaks vs S96rep2 synteny (Unique only)',wig1,wig2,wz1,wz2)
 b2=plotMaxAvgZscoreColorUnique('HS959 peaksvs S96 synteny (Unique only)',wig2,wig1,wz4,wz3)
 
 
@@ -116,7 +116,8 @@ mtext('ChIP-seq reads',side=4,line=3)
 
 
 ## Setup data
-datasort=as.numeric(wza1[[1]][,4])
+datasort1=as.numeric(wza1[[1]][,4])
+datasort2=as.numeric(wza2[[1]][,4])
 plot(datasort,dnorm(datasort))
 
 ### Histogram
@@ -159,8 +160,8 @@ rect(120, 300+i, 177, 380+i, col=rainbow(11, start=.0,end=.7))
 #lines(p2,col="#101010cc")
 
 
-#wza1=wig1$Zall()
-#wza2=wig2$Zall()
+wza1=wig1$Zall()
+wza2=wig2$Zall()
 #wzamax1=wig1$getMaxAvgZscoreAll(wza1)
 #wzamax2=wig2$getMaxAvgZscoreAll(wza2)
 #c1=plotZall(wzamax1,wig1,wig2)
