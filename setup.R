@@ -1,10 +1,8 @@
-source('readplot.R')
-source('knitr.R')
-debug=TRUE
+wigenv=new.env()
 wig1=WiggleClass('S96')
 wig2=WiggleClass('HS959')
-wig1$loadWiggles(globalenv()) 
-wig2$loadWiggles(globalenv())
+wig1$loadWiggles(wigenv) 
+wig2$loadWiggles(wigenv)
 ###
 wig1$estimateScalingFactor()
 wig1$estimateVarianceAll()
@@ -26,9 +24,10 @@ wz3=wig1$Z(wig2$peaks)
 # Z score all
 wza1=wig1$Zall()
 wza2=wig2$Zall()
+maxw1<-wig1$getMaxAvgZscore(wz1)
+maxw2<-wig2$getMaxAvgZscore(wz2)
 wzamax1=wig1$getMaxAvgZscoreAll(wza1)
 wzamax2=wig2$getMaxAvgZscoreAll(wza2)
-
 
 
 

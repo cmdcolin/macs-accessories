@@ -1,4 +1,4 @@
-
+# Plot Z scores
 
 r1=plotMaxAvgZscore('Max Avg  S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2,'orange', 'blue')
 r2=plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'orange','darkviolet')

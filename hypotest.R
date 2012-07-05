@@ -7,7 +7,7 @@
 
 
 ## Setup data
-datasort=as.numeric(wza1[[3]][,4])
+datasort=as.numeric(wza1[[3]][,4])  
 
 
 
@@ -46,14 +46,54 @@ qqnorm(clone)
 points(qqnorm(datasel1,plot=FALSE),col="blue")
 points(qqnorm(datasel2,plot=FALSE),col="red")
 qqline(rnorm(5000),col=2)
+legend('topleft',legend=c('Whole genome','S96 peaks','HS959 peaks'),fill=c('black','blue','red'))
+
+
+
+## Q-Q plot MEAN peak scores
+dataselmean=wzamax1[,4]
+dataselmean1=maxw1
+dataselmean2=maxw2
+clone=dataselmean
+qqnorm(clone)
+points(qqnorm(dataselmean1,plot=FALSE),col="blue")
+points(qqnorm(dataselmean2,plot=FALSE),col="red")
+qqline(clone,col=2)
+legend('topleft',legend=c('Whole genome','S96 peaks','HS959 peaks'),fill=c('black','blue','red'))
+
+
+
+
+
+## Kernel density plot MEANS
+d <- density(dataselmean,adjust=1.4) # returns the density data
+plot(d, main='Kernel density of MEAN NormDiff scores') # plots the results 
+polygon(d, col="#2222BBCC", border="#222244")
+d1 <- density(dataselmean1,adjust=1.4) # returns the density data
+d2 <- density(dataselmean2,adjust=1.4) # returns the density data
+lines(d1)
+lines(d2)
+polygon(d1, col="#BB222288", border="#222244")
+polygon(d2, col="#22BB2288", border="#222244")
+legend('topright',legend=c('Whole genome','S96 peaks','HS959 peaks'),fill=c('blue','green','red'))
+
+
+
+
+
 
 
 
 
 # Basic density plot
+# note: needs setup
 plot(datasort,dnorm(datasort))
 points(datasel1,dnorm(datasel1),col="blue")
 points(datasel2,dnorm(datasel2),col="red")
+
+
+
+
 
 ## Kernel density plot
 d <- density(datasort,adjust=1.4) # returns the density data
@@ -66,6 +106,15 @@ lines(d2)
 polygon(d1, col="#BB222288", border="#222244")
 polygon(d2, col="#22BB2288", border="#222244")
 legend('topright',legend=c('Whole genome','S96 peaks','HS959 peaks'),fill=c('blue','green','red'))
+
+
+
+
+
+
+
+
+
 
 #### Scrap code
 
