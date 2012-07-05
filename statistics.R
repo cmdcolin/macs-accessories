@@ -3,8 +3,6 @@ source('knitr.R')
 debug=TRUE
 wig1=WiggleClass('S96')
 wig2=WiggleClass('HS959')
-#wig1$loadWiggles() 
-#wig2$loadWiggles()
 wig1$loadWiggles(globalenv()) 
 wig2$loadWiggles(globalenv())
 ###
@@ -21,163 +19,37 @@ wz2=wig2$Z(wig1$peaks)
 wz4=wig2$Z(wig2$peaks)
 wz3=wig1$Z(wig2$peaks)
 
-r1=plotMaxAvgZscore('Max Avg  S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2,'orange', 'blue')
-r2=plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'orange','darkviolet')
 
 
 
-r3=plotAvgZscore('Mean S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2, 'lightblue', 'orange')
-r4=plotAvgZscore('Mean HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'pink','orange')
-
-plotSortedMaxAvgZscoreX('Sorted HS959 Avg Normdiff in S96 peak regions',wig1,wig2,r3,'red','blue')
-plotSortedMaxAvgZscoreX('Sorted S96 Avg Normdiff in HS959 peak regions',wig2,wig1,r4,'green','blue')
-plotSortedMaxAvgZscoreX('Sorted HS959 Max Avg Normdiff in S96 peak regions',wig1,wig2,r1,'red','blue')
-plotSortedMaxAvgZscoreX('Sorted S96 Max Avg Normdiff in HS959 peak regions',wig2,wig1,r2,'green','blue') 
-
-
-
-
-
-plotSortedMaxAvgZscore('Sorted HS959 Max Avg Normdiff connected with S96 peak regions',wig1,wig2,r1,'#00334407','#55221133') 
-plotSortedMaxAvgZscore('Sorted S96 Max Avg Normdiff connected with HS959 peak regions',wig2,wig1,r2,'#00661107','#55221133')
-plotSortedMaxAvgZscore('Sorted HS959 Max Avg Normdiff connected with S96 peak regions',wig1,wig2,r1,'#00334407','#55221133','#003344','#552211') 
-plotSortedMaxAvgZscore('Sorted S96 Max Avg Normdiff connected with HS959 peak regions',wig2,wig1,r2,'#00661107','#55221133','#006611','#552211')
-
-
-
-
-
-plotBarCharts(wig1,wig2,wz1,wz2)
-
-unique=uniqueBed(wig1$peaks,wig2$peaks)
-shared=intersectBed(wig1$peaks,wig2$peaks)
-uniqueid=match(unique$V4,wig1$peaks$V4)
-sharedid=match(shared$V4,wig1$peaks$V4)  
-maxw1<-wig1$getMaxAvgZscore(wz1)
-maxw2<-wig2$getMaxAvgZscore(wz2)
-
-
-
-xx=getBayesian(wig1,wig2,wz1,wz2,maxw1,maxw2,uniqueid)/4
-yy=getBayesian(wig1,wig2,wz2,wz1,maxw1,maxw2,sharedid)/4
-par(mfrow=c(1,2))
-barplot(sort(xx),xlab='conditional probability', ylim=c(0,1))
-title('Conditional probability of unique peaks in HS959')
-barplot(sort(yy),xlab='conditional probability', ylim=c(0,1))
-title('Conditional probability for shared peaks in HS959')
-
-plotBarChartY('Title',wig1,wig2,wz1,wz2)
-
-
-
-
-### Color plots
-plotMaxAvgZscoreColorY('S96 peaks vs HS959 synteny',wig1,wig2,wz1,wz2)
-plotMaxAvgZscoreColorY('HS959 peaksvs S96 synteny',wig2,wig1,wz4,wz3)
-
-
-### Zoom on unique plots
-b1=plotMaxAvgZscoreColorUnique('S96 peaks vs HS959 synteny (Unique only)',wig1,wig2,wz1,wz2)
-b2=plotMaxAvgZscoreColorUnique('HS959 peaksvs S96 synteny (Unique only)',wig2,wig1,wz4,wz3)
-
-
-ret=plotMaxAvgZscoreColorUnique('S96 peaks vs HS959 synteny (Unique only)',wig1,wig2,wz1,wz2)
-print(ret)
-b1=as.numeric(ret[,1])
-
-
-bedselect=wig2$peaks[b1,]
-selection1=wig1$Z(bedselect)
-selection2=wig2$Z(bedselect)
-reads1=wig1$getChipReads(bedselect)
-reads2=wig2$getChipReads(bedselect)
-
-plotOverlaps(b1,wig1,wig2,1,250)
-plotOverlaps(b1,wig1,wig2,2,250)
-plotOverlaps(b1,wig1,wig2,3,250)
-plotOverlaps(b1,wig1,wig2,4,250)
-plotOverlaps(b1,wig1,wig2,5,250)
-
-## Plot - axis 1
-xx=seq(bedselect[1,2]-10,bedselect[1,3]+10,by=wig2$spacing)
-plot(xx,unlist(selection1[1]),type='l',xlab='Genome position',ylab='NormDiff score')
-lines(xx,unlist(selection2[1]))
-polygon(c(xx,rev(xx)),c(unlist(selection1[1]),numeric(length(unlist(selection1[1])))),col='#0000bb44')
-polygon(c(xx,rev(xx)),c(unlist(selection2[1]),numeric(length(unlist(selection2[1])))),col='#bb000044')
-## Plot - axis 2
-par(new=TRUE)
-xx=seq(bedselect[1,2],bedselect[1,3],by=wig2$spacing)
-plot(xx,unlist(reads1[1]),type="l",col="blue",xaxt="n",yaxt="n",xlab="",ylab="")
-lines(xx,unlist(reads2[1]),col='red')
-polygon(c(xx,rev(xx)),c(unlist(reads1[1]),numeric(length(unlist(reads1[1])))),col='#0000bb22')
-polygon(c(xx,rev(xx)),c(unlist(reads2[1]),numeric(length(unlist(reads2[1])))),col='#bb000088')
-axis(4)
-mtext('ChIP-seq reads',side=4,line=3)
-
-
-## Setup data
-datasort=as.numeric(wza1[[1]][,4])
-plot(datasort,dnorm(datasort))
-
-### Histogram
-h=hist(datasort,breaks=50)
-xfit=datasort
-yfit=dnorm(datasort)
-yfit <- yfit*diff(h$mids[1:2])*length(datasort)
-lines(xfit, yfit, col="blue", lwd=1) 
-
-## Kernel density plot
-d <- density(datasort,adjust=1.2) # returns the density data
-plot(d, main='Kernel density of NormDiff scores') # plots the results 
-polygon(d, col="#BB2222CC", border="#222244") 
-
-
-## Q-Q Plot wholte genome
-datasort=as.numeric(wza1[[1]][,4])
-clone=datasort
-qqnorm(clone)
-qqline(clone,col=2)
-
-## Q-Q Plot peaks
-
-clone1=sapply(wz1,mean)
-clone2=sapply(wz2,mean)
-
-qqnorm(clone)
-points(qqnorm(clone2,plot=FALSE),col="blue")
-points(qqnorm(clone1,plot=FALSE),col="red")
-qqline(rnorm(5000),col=2)
-
-
-qqline(rnorm(5000),col=2)
-par(new=TRUE)
-clone=sapply(wz1,mean)
-qqnorm(clone)
-
-
+#########
+# Z score all
 wza1=wig1$Zall()
 wza2=wig2$Zall()
 wzamax1=wig1$getMaxAvgZscoreAll(wza1)
 wzamax2=wig2$getMaxAvgZscoreAll(wza2)
-datamax1=wzamax1[,4]
-qqnorm(datamax1)
-qqline(rnorm(5000),col=2)
 
-c1=plotZall(wzamax1,wig1,wig2)
-c2=plotZall(wzamax2,wig2,wig1)
-plotZall(wzamax1,wig1,wig2,c1)
-plotZall(wzamax2,wig2,wig1,c2)
 
 
 
 #####################3
 # SCRAP CODE
 
-# densityplot
+#wig1$loadWiggles() 
+#wig2$loadWiggles()
+###### densityplot
 #library(lattice)
 #d<-densityplot(~datasort,data=faithful,kernel="rect")
 #d<densityplot(~datasort,kernel="gaussian")
 #plot(d, main='Kernel density of NormDiff scores') # plots the results
+
+##############
+# Plot Overlaps
+#bedselect=wig2$peaks[b1,]
+#selection1=wig1$Z(bedselect)
+#selection2=wig2$Z(bedselect)
+##reads1=wig1$getChipReads(bedselect)
+#reads2=wig2$getChipReads(bedselect)
 
 
 #### Draw rainbow

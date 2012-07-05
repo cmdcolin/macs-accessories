@@ -64,4 +64,15 @@ qqnorm(clone)
 qqline(clone,col=2)
 ```
 
-We want to use hypothesis testingto obsereve transcriptionfactor binding sites onthetail ofthe distribution. 
+We want to use hypothesis testingto obsereve transcriptionfactor binding sites onthetail ofthe distribution. Plotting the max average normdiff scores from peak regions shows that these are considerably different from the population.
+
+```{r test}
+wzamax1=wig1$getMaxAvgZscoreAll(wza1)
+wzamax2=wig2$getMaxAvgZscoreAll(wza2)
+datamax1=wzamax1[,4]
+datamax2=wzamax2[,4]
+qqnorm(datasort)
+points(qqnorm(datamax1,plot=FALSE),col="blue")
+points(qqnorm(datamax2,plot=FALSE),col="red")
+qqline(rnorm(5000),col=2)
+```
