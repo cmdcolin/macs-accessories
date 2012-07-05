@@ -59,115 +59,37 @@ r2 = plotMaxAvgZscore("Max Avg HS959 peak NormDiff score vs S96 synteny w=100",
 ![plot of chunk d2](http://i.imgur.com/zwUUU.png) 
 
 
-
-
+We can calculate NormDiff scores for the whole genome using 
 
 
 ```r
 wza1 = wig1$Zall()
 wza2 = wig2$Zall()
+```
+
+
+
+
+We can observe the distribution of NormDiff scores
+
+
+
+```r
 datasort = as.numeric(wza1[[1]][, 4])
-par(mfrow = c(2, 1))
 d <- density(datasort, adjust = 1.2)  # returns the density data
 plot(d, main = "Kernel density of NormDiff scores")  # plots the results
 polygon(d, col = "#BB2222CC", border = "#222244")
+```
+
+![plot of chunk zall](http://i.imgur.com/xJz4N.png) 
+
+```r
 clone = datasort
 qqnorm(clone)
 qqline(clone, col = 2)
 ```
 
-![plot of chunk zall](figure/zall.png) 
+![plot of chunk zall](http://i.imgur.com/KEQif.png) 
 
 
-
-The NormDiff scores are the signal that we detected. We can use a conditional probability based on a correlation between the datasets to find the probability of peaks. This score is defined as
-
-$$ p(y|x)={{P(\bar y \leq Y) corr(x,y)}\over{P(\bar x \leq X)}} $$
-
-
-If we look at colored plots of the probability we get from these plots we see something like this
-
-
-
-```r
-
-plotMaxAvgZscoreColor("S96 peaks vs HS959 synteny", wig1, wig2, wz1, 
-    wz2)
-```
-
-![plot of chunk rainbow](http://i.imgur.com/pVvWE.png) 
-
-```r
-plotMaxAvgZscoreColor("HS959 vs S96 peaks colored by probability", 
-    wig2, wig1, wz4, wz3)
-```
-
-![plot of chunk rainbow](http://i.imgur.com/cuwsi.png) 
-
-
-
-We can select the top 5 pvalues from our data to examine
-
-
-```r
-ret = plotMaxAvgZscoreColorUnique("S96 peaks vs HS959 synteny (Unique only)", 
-    wig1, wig2, wz1, wz2)
-```
-
-![plot of chunk bedselect](http://i.imgur.com/NKGBX.png) 
-
-```r
-print(ret)
-```
-
-```
-##           bestp
-## [1,] 292 0.8136
-## [2,] 144 0.8193
-## [3,]  12 0.9948
-## [4,] 716 1.0000
-## [5,] 578 1.0000
-## [6,] 543 1.0000
-```
-
-```r
-b1 = as.numeric(ret[, 1])
-```
-
-
-
-
-Then zooming in, we see that many of these plots have significant correlations with each other, and could possibly be called peaks. Here are some example from
-
-
-
-```r
-bedselect = wig2$peaks[b1, ]
-selection1 = wig1$Z(bedselect)
-selection2 = wig2$Z(bedselect)
-reads1 = wig1$getChipReads(bedselect)
-reads2 = wig2$getChipReads(bedselect)
-
-plotOverlaps(b1, wig1, wig2, 1, context = 250)
-```
-
-![plot of chunk twilight](figure/twilight1.png) 
-
-```r
-plotOverlaps(b1, wig1, wig2, 2, context = 250)
-```
-
-![plot of chunk twilight](figure/twilight2.png) 
-
-```r
-plotOverlaps(b1, wig1, wig2, 3, context = 150)
-```
-
-![plot of chunk twilight](figure/twilight3.png) 
-
-```r
-plotOverlaps(b1, wig1, wig2, 4, context = 150)
-```
-
-![plot of chunk twilight](figure/twilight4.png) 
-
+We want to use hypothesis testingto obsereve transcriptionfactor binding sites onthetail ofthe distribution. 
