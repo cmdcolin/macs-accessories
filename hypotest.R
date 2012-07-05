@@ -7,15 +7,13 @@
 
 
 ## Setup data
-datasort=as.numeric(wza1[[1]][,4])
+datasort=as.numeric(wza1[[3]][,4])
+
+
+
+# Basic density plot
 plot(datasort,dnorm(datasort))
 
-### Histogram
-h=hist(datasort,breaks=50)
-xfit=datasort
-yfit=dnorm(datasort)
-yfit <- yfit*diff(h$mids[1:2])*length(datasort)
-lines(xfit, yfit, col="blue", lwd=1) 
 
 ## Kernel density plot
 d <- density(datasort,adjust=1.2) # returns the density data
@@ -23,24 +21,62 @@ plot(d, main='Kernel density of NormDiff scores') # plots the results
 polygon(d, col="#BB2222CC", border="#222244") 
 
 
-## Q-Q Plot wholte genome
-datasort=as.numeric(wza1[[1]][,4])
+## Q-Q Plot whole genome
 clone=datasort
 qqnorm(clone)
 qqline(clone,col=2)
 
-## Q-Q Plot peaks
 
+## Q-Q Plot peak means
 clone1=sapply(wz1,mean)
 clone2=sapply(wz2,mean)
-
 qqnorm(clone)
 points(qqnorm(clone2,plot=FALSE),col="blue")
 points(qqnorm(clone1,plot=FALSE),col="red")
 qqline(rnorm(5000),col=2)
 
 
-qqline(rnorm(5000),col=2)
-par(new=TRUE)
-clone=sapply(wz1,mean)
+
+## Q-Q plot peak scores
+select=(wig1$peaks[,1]=="chr01.fsa")
+datasel1=unlist(wz1[select])
+datasel2=unlist(wz2[select])
+clone=datasort
 qqnorm(clone)
+points(qqnorm(datasel1,plot=FALSE),col="blue")
+points(qqnorm(datasel2,plot=FALSE),col="red")
+qqline(rnorm(5000),col=2)
+
+
+
+
+# Basic density plot
+plot(datasort,dnorm(datasort))
+points(datasel1,dnorm(datasel1),col="blue")
+points(datasel2,dnorm(datasel2),col="red")
+
+## Kernel density plot
+d <- density(datasort,adjust=1.4) # returns the density data
+plot(d, main='Kernel density of NormDiff scores') # plots the results 
+polygon(d, col="#2222BBCC", border="#222244")
+d1 <- density(datasel1,adjust=1.4) # returns the density data
+d2 <- density(datasel2,adjust=1.4) # returns the density data
+lines(d1)
+lines(d2)
+polygon(d1, col="#BB222288", border="#222244")
+polygon(d2, col="#22BB2288", border="#222244")
+legend('topright',legend=c('Whole genome','S96 peaks','HS959 peaks'),fill=c('blue','green','red'))
+
+#### Scrap code
+
+# Histogram
+#h=hist(datasort,breaks=50)
+#xfit=datasort
+#yfit=dnorm(datasort)
+#yfit <- yfit*diff(h$mids[1:2])*length(datasort)
+#lines(xfit, yfit, col="blue", lwd=1)
+
+#qqline(rnorm(5000),col=2)
+#par(new=TRUE)
+#clone=sapply(wz1,mean)
+#qqnorm(clone)
