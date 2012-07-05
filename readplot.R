@@ -288,21 +288,21 @@ WiggleClass<-function(name) {
   
   
   nc$getMaxAvgZscore<-function(wz,ws=10) {
-    i=0
     sapply(wz,function(zlist){
-      reads=numeric(length(zlist))
-      len=length(zlist)-ws
-      if(len<0) len=1
+      len=length(zlist)
+      reads=numeric(len)
+      #if(debug)
+      #  print(len)
+      if(is.numeric(zlist)==FALSE) {
+        cat('here1 ', length(zlist), typeof(zlist),'\n')
+      print(unlist(zlist))
+        zlist=unlist(zlist)
+    }
+      
       for(i in 1:len) {
         b=i
         e=i+ws
-        if(debug) {
-          if(e-b<0) 
-            cat('here1\n')
-          else if(length(zlist[b:e])==0)
-            cat(i, ') ', b, ' ', e, '\n')
-        }
-        reads[i]=mean(zlist[b:e],na.rm=TRUE);
+        reads[i]=mean(zlist[b:e],na.rm=TRUE)
       }
       max(reads)
     })

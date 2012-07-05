@@ -132,10 +132,46 @@ plot(d, main='Kernel density of NormDiff scores') # plots the results
 polygon(d, col="#BB2222CC", border="#222244") 
 
 
-## Q-Q Plot
+## Q-Q Plot wholte genome
+datasort=as.numeric(wza1[[1]][,4])
 clone=datasort
 qqnorm(clone)
 qqline(clone,col=2)
+
+## Q-Q Plot peaks
+
+clone1=sapply(wz1,mean)
+clone2=sapply(wz2,mean)
+
+qqnorm(clone)
+points(qqnorm(clone2,plot=FALSE),col="blue")
+points(qqnorm(clone1,plot=FALSE),col="red")
+qqline(rnorm(5000),col=2)
+
+
+qqline(rnorm(5000),col=2)
+par(new=TRUE)
+clone=sapply(wz1,mean)
+qqnorm(clone)
+
+
+wza1=wig1$Zall()
+wza2=wig2$Zall()
+wzamax1=wig1$getMaxAvgZscoreAll(wza1)
+wzamax2=wig2$getMaxAvgZscoreAll(wza2)
+datamax1=wzamax1[,4]
+qqnorm(datamax1)
+qqline(rnorm(5000),col=2)
+
+c1=plotZall(wzamax1,wig1,wig2)
+c2=plotZall(wzamax2,wig2,wig1)
+plotZall(wzamax1,wig1,wig2,c1)
+plotZall(wzamax2,wig2,wig1,c2)
+
+
+
+#####################3
+# SCRAP CODE
 
 # densityplot
 #library(lattice)
@@ -145,28 +181,15 @@ qqline(clone,col=2)
 
 
 #### Draw rainbow
-plot(c(100, 250), c(300, 450), type = "n",main="r")
-i <- 4*(0:10)
+#plot(c(100, 250), c(300, 450), type = "n",main="r")
+#i <- 4*(0:10)
 ## draw rectangles with bottom left (120, 300)+i  and top right (177, 380)+i
-rect(120, 300+i, 177, 380+i, col=rainbow(11, start=.0,end=.7))
-
-
-
-#####################3
-# SCRAP CODE
+#rect(120, 300+i, 177, 380+i, col=rainbow(11, start=.0,end=.7))
 
 #plot(p1,type='l',col="#aa0000bb",ylim=c(0,20),xlim=c(0,100000))
 #lines(p2,col="#101010cc")
 
 
-#wza1=wig1$Zall()
-#wza2=wig2$Zall()
-#wzamax1=wig1$getMaxAvgZscoreAll(wza1)
-#wzamax2=wig2$getMaxAvgZscoreAll(wza2)
-#c1=plotZall(wzamax1,wig1,wig2)
-#c2=plotZall(wzamax2,wig2,wig1)
-#plotZall(wzamax1,wig1,wig2,c1)
-#plotZall(wzamax2,wig2,wig1,c2)
 
 #plotZall2(c1,wig1,wig2)
 #plotZall3(c1,wig1,wig2)

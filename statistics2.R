@@ -21,11 +21,25 @@ wz2=wig2$Z(wig1$peaks)
 wz4=wig2$Z(wig2$peaks)
 wz3=wig1$Z(wig2$peaks)
 
-r1=plotMaxAvgZscore('Max Avg  S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2,'orange', 'blue')
-r2=plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'orange','darkviolet')
+r1=plotMaxAvgZscore('Max Avg  S96rep1 peak NormDiff score vs S96rep2 synteny w=100', wig1, wig2, wz1, wz2,'orange', 'blue')
+r2=plotMaxAvgZscore('Max Avg S96rep2 peak NormDiff score vs S96rep1 synteny w=100', wig2, wig1, wz4, wz3, 'orange','darkviolet')
+
+## Test  warning signals
+#withCallingHandlers(plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'orange','darkviolet') , warning=function(c) recover())
+
+#r2=plotMaxAvgZscore('Max Avg HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4[[5]], wz3[[5]], 'orange','darkviolet')
+#i=0
+#apply(cbind(wz3,wz4),1,function(x)
+#  {
+#  i=i+1;
+#  cat('step', i);
+##  plotMaxAvgZscore(paste('str',i), wig2, wig1, x[2], x[1], 'orange','darkviolet')
+#  })
+#######
 
 
 
+##
 r3=plotAvgZscore('Mean S96 peak NormDiff score vs HS959 synteny w=100', wig1, wig2, wz1, wz2, 'lightblue', 'orange')
 r4=plotAvgZscore('Mean HS959 peak NormDiff score vs S96 synteny w=100', wig2, wig1, wz4, wz3, 'pink','orange')
 

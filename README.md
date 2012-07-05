@@ -59,28 +59,30 @@ r2 = plotMaxAvgZscore("Max Avg HS959 peak NormDiff score vs S96 synteny w=100",
 ![plot of chunk d2](http://i.imgur.com/zwUUU.png) 
 
 
-If we sort the data we can get an idea of the connections between the cutoff applied to both datasets
 
 
 
-```r
-plotSortedMaxAvgZscore("Sorted HS959 Max Avg Normdiff connected with S96 peak regions", 
-    wig1, wig2, r1, "#00119919", "#bb000019", "#001199", "#aa0000")
-```
-
-![plot of chunk sorted](http://i.imgur.com/VYnmJ.png) 
 
 ```r
-plotSortedMaxAvgZscore("Sorted S96 Max Avg Normdiff connected with HS959 peak regions", 
-    wig2, wig1, r2, "#00990019", "#bb000019", "#009900", "#aa0000")
+wza1 = wig1$Zall()
+wza2 = wig2$Zall()
+datasort = as.numeric(wza1[[1]][, 4])
+par(mfrow = c(2, 1))
+d <- density(datasort, adjust = 1.2)  # returns the density data
+plot(d, main = "Kernel density of NormDiff scores")  # plots the results
+polygon(d, col = "#BB2222CC", border = "#222244")
+clone = datasort
+qqnorm(clone)
+qqline(clone, col = 2)
 ```
 
-![plot of chunk sorted](http://i.imgur.com/zqlQs.png) 
+![plot of chunk zall](figure/zall.png) 
 
 
-We can use a conditional probability based on a correlation between the datasets. This is defined as, for normalized difference scores for peaks
 
-$$ p(x|y)={{P(\bar x \leq X) corr(x,y)}\over{P(\bar y \leq Y)}} $$
+The NormDiff scores are the signal that we detected. We can use a conditional probability based on a correlation between the datasets to find the probability of peaks. This score is defined as
+
+$$ p(y|x)={{P(\bar y \leq Y) corr(x,y)}\over{P(\bar x \leq X)}} $$
 
 
 If we look at colored plots of the probability we get from these plots we see something like this
@@ -149,23 +151,23 @@ reads2 = wig2$getChipReads(bedselect)
 plotOverlaps(b1, wig1, wig2, 1, context = 250)
 ```
 
-![plot of chunk twilight](http://i.imgur.com/Uorx2.png) 
+![plot of chunk twilight](figure/twilight1.png) 
 
 ```r
 plotOverlaps(b1, wig1, wig2, 2, context = 250)
 ```
 
-![plot of chunk twilight](http://i.imgur.com/tu5SY.png) 
+![plot of chunk twilight](figure/twilight2.png) 
 
 ```r
 plotOverlaps(b1, wig1, wig2, 3, context = 150)
 ```
 
-![plot of chunk twilight](http://i.imgur.com/ewy6w.png) 
+![plot of chunk twilight](figure/twilight3.png) 
 
 ```r
 plotOverlaps(b1, wig1, wig2, 4, context = 150)
 ```
 
-![plot of chunk twilight](http://i.imgur.com/GSKa5.png) 
+![plot of chunk twilight](figure/twilight4.png) 
 

@@ -192,11 +192,11 @@ plotZall<-function(ts,w1,w2,cols=NULL) {
 
 
 
-plotMaxAvgZscore<-function(t, w1, w2, wz1,wz2, c1,c2) {
+plotMaxAvgZscore<-function(t, w1, w2, z1,z2, c1,c2) {
   ##########
   # Get Z scoresmn/.,mnb,.,..,m.,
-  maxw1<-w1$getMaxAvgZscore(wz1)
-  maxw2<-w2$getMaxAvgZscore(wz2)
+  maxw1<-w1$getMaxAvgZscore(z1)
+  maxw2<-w2$getMaxAvgZscore(z2)
   shared=intersectBed(w1$peaks,w2$peaks)
   unique=uniqueBed(w1$peaks,w2$peaks)
   id1=match(shared$V4,w1$peaks$V4) 
