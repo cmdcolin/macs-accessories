@@ -283,31 +283,6 @@ plotMaxAvgZscoreW<-function(t, w1, w2, z1,z2, cutoff) {
 plotMaxAvgZscoreU<-function(t, w1, w2, z1,z2, cutoff) {
   ##########
   # Get Z scoresmn/.,mnb,.,..,m.,
-  shared=intersectBed(w1$peaks,w2$peaks)
-  unique=uniqueBed(w1$peaks,w2$peaks)
-  id1=match(shared$V4,w1$peaks$V4) 
-  id2=match(unique$V4,w1$peaks$V4)
-  plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
-  
-  
-  tab=read.table(paste(wig1$name,'/',wig1$name,'_peaks.xls'),sep='\t',skip=2)
-  pvals=as.numeric(as.character(tab$V7[2:nrow(tab)]))
-  ret=max(pvals)
-  
-  maxv=4/3*max(pvals)
-  hsvscale=pvals/maxv
-  hsvscale[hsvscale>1]=3/4
-  for(i in 1:length(maxw1)) {
-      points(maxw1[i],maxw2[i],col=hsv(hsvscale[i]))
-  }
-  #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
-  title(t)
-}
-
-
-
-
-plotMaxAvgZscoreW<-function(t, w1, w2, z1,z2, cutoff) {
   ##########
   # Get Z scoresmn/.,mnb,.,..,m.,
   maxw1<-w1$getMaxAvgZscore(z1)
@@ -321,15 +296,105 @@ plotMaxAvgZscoreW<-function(t, w1, w2, z1,z2, cutoff) {
   
   scales=1-pnorm(maxw1)
   hsvscale=-log10(1-pnorm(maxw1))
-  maxv=3/4*max(hsvscale)
+  maxv=4/3*max(hsvscale)
   hsvscale=hsvscale/maxv
   hsvscale[hsvscale>1]=0.75
+  
+  tab=read.table(paste(wig1$name,'/',wig1$name,'_peaks.xls',sep=''),sep='\t',skip=2)
+  pvals=as.numeric(as.character(tab$V7[2:nrow(tab)]))
+
+  #maxv=4/3*max(pvals)
+  hsvscale=pvals/maxv
+  hsvscale[hsvscale>1]=3/4
   for(i in 1:length(maxw1)) {
-    if(scales[i]<cutoff)
       points(maxw1[i],maxw2[i],col=hsv(hsvscale[i]))
   }
   #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
+}
+
+## GGPlot2
+plotMaxAvgZscoreT<-function(t, w1, w2, z1,z2, cutoff) {
+  ##########
+  # Get Z scoresmn/.,mnb,.,..,m.,
+  maxw1<-w1$getMaxAvgZscore(z1)
+  maxw2<-w2$getMaxAvgZscore(z2)
+  shared=intersectBed(w1$peaks,w2$peaks)
+  unique=uniqueBed(w1$peaks,w2$peaks)
+  id1=match(shared$V4,w1$peaks$V4) 
+  id2=match(unique$V4,w1$peaks$V4)
+  p=qplot(maxw1,maxw2,xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
+  p<-p+ scale_color_hue()
+}
+
+
+
+plotMaxAvgZscoreR<-function(t, w1, w2, z1,z2, z3,z4,cutoff) {
+  ##########
+  # Get Z scoresmn/.,mnb,.,..,m.,
+  maxw1<-w1$getMaxAvgZscore(z1)
+  maxw2<-w2$getMaxAvgZscore(z2)
+  maxw3<-w1$getMaxAvgZscore(z3)
+  maxw4<-w2$getMaxAvgZscore(z4)
+  
+  
+  M1=log2(maxw1)-log2(maxw2)
+  A1=1/2*(log2(maxw1)+log2(maxw2))
+  
+  M2=log2(maxw3)-log2(maxw4)
+  A2=1/2*(log2(maxw3)+log2(maxw4))
+  
+  plot(A1,M1,pch='*',ylim=c(-6,6))
+  points(A2,M2,pch='*')
+  
+  scales1=1-pnorm(maxw2)
+  scales2=1-pnorm(maxw3)
+  s1=-log10(scales1)
+  s2=-log10(scales2)
+  smax=4/3*max(s1,s2)
+  for(i in 1:length(maxw1)) {
+  
+    points(A1[i],M1[i],col=hsv(s1[i]/smax,alpha='0.6'))
+  }  
+  for(i in 1:length(maxw3)) {
+    
+    points(A2[i],M2[i],col=hsv(s2[i]/smax,alpha='0.6'))
+  }
+  #scales1=1-pnorm(maxw1)
+  #scales2=1-pnorm(maxw2)
+  #s1=-log10(scales1)
+  #s2=-log10(scales2)
+  #plot(s1,s2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
+  
+  #points(s1[scales2<cutoff],s2[scales2<cutoff],col='green')
+  #points(s1[scales2>=cutoff],s2[scales2>=cutoff],col='red')
+  
+  title(t)
+}
+
+
+plotMaxAvgZscoreW<-function(t, w1, w2, z1,z2, cutoff) {
+  ##########
+  # Get Z scoresmn/.,mnb,.,..,m.,
+  maxw1<-w1$getMaxAvgZscore(z1)
+  maxw2<-w2$getMaxAvgZscore(z2)
+  shared=intersectBed(w1$peaks,w2$peaks)
+  unique=uniqueBed(w1$peaks,w2$peaks)
+  id1=match(shared$V4,w1$peaks$V4) 
+  id2=match(unique$V4,w1$peaks$V4)
+  
+  
+  
+  scales1=1-pnorm(maxw1)
+  scales2=1-pnorm(maxw2)
+  s1=-log10(scales1)
+  s2=-log10(scales2)
+  plot(s1,s2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
+  
+  points(s1[scales2<cutoff],s2[scales2<cutoff],col='green')
+  points(s1[scales2>=cutoff],s2[scales2>=cutoff],col='red')
+  
+  title()
 }
 
 

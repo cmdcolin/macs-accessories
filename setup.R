@@ -1,3 +1,5 @@
+source('readplot.R')
+debug=FALSE
 wigenv=new.env()
 wig1=WiggleClass('S96')
 wig2=WiggleClass('HS959')

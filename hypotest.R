@@ -116,6 +116,14 @@ legend('topright',legend=c('Whole genome','S96 peaks','HS959 peaks'),fill=c('blu
 
 
 
+# MACS pvalues
+ret=plotMaxAvgZscoreU('S96 peaks vs HS959 synteny',wig1,wig2,wz1,wz2,0.5)
+
+# NormDiff pvalues
+ret=plotMaxAvgZscoreW('S96 peaks vs HS959 synteny',wig1,wig2,wz1,wz2,0.05)
+
+# MA plot
+ret=plotMaxAvgZscoreR('S96 peaks vs HS959 synteny',wig1,wig2,wz1,wz2,wz3,wz4,0.05)
 
 
 #### Scrap code
