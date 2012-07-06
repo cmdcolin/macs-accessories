@@ -1,0 +1,57 @@
+Testing
+
+Analyze replicates in SOFTWARE
+
+
+parallax
+size 36 mspaint
+
+post on blog more
+new blog?
+
+
+Include zscores in wiggleclass member variables
+
+cash check
+Figure out better bayesian
+Figure out QQ plot
+
+Subtract control
+Use Z score
+do peak finding using Z score?
+use techniques from MACS on Z score?
+
+
+
+ I am trying to detect signals in a experiment that has experiment and control data. The control data is basically 'background noise', and  I want to use a algorithm called NormDiff that subtracts the control data away and normalizes the data. When i applied that algorithm the data isn't actually normal, and those strong signals appear as outliers (see pic). Is there a good way to detect those outliers?
+ 
+ 
+ Bayes-data derived from the same "class"?
+ 
+ Poisson - number of reads centered at a tag. 
+ 
+ Background lambda for Normal!!!
+ Use regular Z-score???
+ 
+ Is the background lambda S Normal(0,1)?
+ ****************Use hypothesis testing with MEAN and VARIANCE different from 0,1
+ 
+ clapping with album leaf - red eye
+ normalize between samples
+ 
+ 
+ plot P(x<=X) normdiff scores for syntenic
+ -log10(pvalue)
+ cutoff pvalue at same value as MACS?
+ 
+ 
+ 
+ 
+ Since NormDiff effectively normalizes ChIP-seq data,  it is suitable for comparing ChIP-seq data from multiple experiments. 
+ 
+ 
+ Normalize between experiments
+ - Zheng et al do not!!
+ 
+ Random sampling needed for random testing
+ Will add confirmation to results!!!!!?>????

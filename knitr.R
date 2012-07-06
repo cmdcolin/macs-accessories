@@ -165,6 +165,7 @@ plotZall3<-function(cols,w1,w2){
   title(paste('Sorted normdiff scores for entire',w1$name,'genome w=100'))
 }
 
+
 plotZall<-function(ts,w1,w2,cols=NULL) {
   if(is.null(cols)) {
     cols=data.frame(score=numeric(0),color=character(0))
@@ -217,7 +218,7 @@ plotMaxAvgZscore<-function(t, w1, w2, z1,z2, c1,c2) {
 
 
 
-plotMaxAvgZscoreZ<-function(t, w1, w2, z1,z2, cutoff) {
+plotZscoreCutoff<-function(t, w1, w2, z1,z2, cutoff) {
   ##########
   # Get Z scoresmn/.,mnb,.,..,m.,
   maxw1<-w1$getMaxAvgZscore(z1)
@@ -234,18 +235,15 @@ plotMaxAvgZscoreZ<-function(t, w1, w2, z1,z2, cutoff) {
   hsvscale=hsvscale/maxv
   hsvscale[hsvscale>1]=0.75
   id3=match(scales[scales[id2]<cutoff],scales)
-  for(i in 1:length(id1)) {
-    points(maxw1[id1][i],maxw2[id1][i],col='green')
-  }
-  for(i in 1:length(id2)) {
-    if(scales[id2][i]<cutoff) {
-      points(maxw1[id2][i],maxw2[id2][i],
-           col=hsv(hsvscale[id2][i]),
-           pch=20)
-    }
-    else points(maxw1[id2][i],maxw2[id2][i],col='red')
-  }
-  #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  
+  
+  set1=scales[id2]<cutoff
+  set2=scales[id2]>=cutoff
+  points(maxw1[set2],maxw2[set2],col='red')
+  points(maxw1[id1],maxw2[id1],col='green')
+  points(maxw1[set1],maxw2[set1],col='yellow',pch=20)
+  legend('bottomright', legend=c('Shared', 'Unique ', 'New'), fill=c('green', 'red','yellow'))
+  
   title(t)
 }
 
@@ -253,7 +251,7 @@ plotMaxAvgZscoreZ<-function(t, w1, w2, z1,z2, cutoff) {
 
 
 
-plotMaxAvgZscoreW<-function(t, w1, w2, z1,z2, cutoff) {
+plotZscoreColor<-function(t, w1, w2, z1,z2, cutoff) {
   ##########
   # Get Z scoresmn/.,mnb,.,..,m.,
   maxw1<-w1$getMaxAvgZscore(z1)
@@ -313,8 +311,10 @@ plotMaxAvgZscoreU<-function(t, w1, w2, z1,z2, cutoff) {
   title(t)
 }
 
+
+
 ## GGPlot2
-plotMaxAvgZscoreT<-function(t, w1, w2, z1,z2, cutoff) {
+plotGGPlot2<-function(t, w1, w2, z1,z2, cutoff) {
   ##########
   # Get Z scoresmn/.,mnb,.,..,m.,
   maxw1<-w1$getMaxAvgZscore(z1)
@@ -329,7 +329,61 @@ plotMaxAvgZscoreT<-function(t, w1, w2, z1,z2, cutoff) {
 
 
 
-plotMaxAvgZscoreR<-function(t, w1, w2, z1,z2, z3,z4,cutoff) {
+
+
+
+
+
+plotMAPlot2<-function(t, w1, w2, z1,z2, z3,z4,cutoff) {
+  ##########
+  # Get Z scoresmn/.,mnb,.,..,m.,
+  maxw1<-w1$getMaxAvgZscore(z1)
+  maxw2<-w2$getMaxAvgZscore(z2)
+  maxw3<-w1$getMaxAvgZscore(z3)
+  maxw4<-w2$getMaxAvgZscore(z4)
+  
+  shared=intersectBed(w1$peaks,w2$peaks)
+  unique=uniqueBed(w1$peaks,w2$peaks)
+  id1=match(shared$V4,w1$peaks$V4) 
+  id2=match(unique$V4,w1$peaks$V4)
+  M1=log2(maxw1)-log2(maxw2)
+  A1=1/2*(log2(maxw1)+log2(maxw2))
+  
+  M2=log2(maxw3)-log2(maxw4)
+  A2=1/2*(log2(maxw3)+log2(maxw4))
+  
+  plot(A1,M1,pch='*',ylim=c(-6,6))
+  points(A2,M2,pch='*')
+  
+  points(A1)
+  scales1=1-pnorm(maxw2)
+  scales2=1-pnorm(maxw3)
+  s1=-log10(scales1)
+  s2=-log10(scales2)
+  smax=4/3*max(s1,s2)
+  for(i in 1:length(maxw1)) {
+    
+    points(A1[i],M1[i],col=hsv(s1[i]/smax,alpha='0.6'))
+  }  
+  for(i in 1:length(maxw3)) {
+    
+    points(A2[i],M2[i],col=hsv(s2[i]/smax,alpha='0.6'))
+  }
+  #scales1=1-pnorm(maxw1)
+  #scales2=1-pnorm(maxw2)
+  #s1=-log10(scales1)
+  #s2=-log10(scales2)
+  #plot(s1,s2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
+  
+  #points(s1[scales2<cutoff],s2[scales2<cutoff],col='green')
+  #points(s1[scales2>=cutoff],s2[scales2>=cutoff],col='red')
+  
+  title(t)
+}
+
+
+
+plotMAPlot1<-function(t, w1, w2, z1,z2, z3,z4,cutoff) {
   ##########
   # Get Z scoresmn/.,mnb,.,..,m.,
   maxw1<-w1$getMaxAvgZscore(z1)
