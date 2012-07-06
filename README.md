@@ -107,5 +107,5 @@ points(qqnorm(datamax2, plot = FALSE), col = "red")
 qqline(rnorm(5000), col = 2)
 ```
 
-![plot of chunk test](http://i.imgur.com/XnPIl.png) 
+![plot of chunk test](http://i.imgur.com/aincq.png) 
 

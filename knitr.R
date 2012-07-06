@@ -217,6 +217,159 @@ plotMaxAvgZscore<-function(t, w1, w2, z1,z2, c1,c2) {
 
 
 
+plotMaxAvgZscoreZ<-function(t, w1, w2, z1,z2, cutoff) {
+  ##########
+  # Get Z scoresmn/.,mnb,.,..,m.,
+  maxw1<-w1$getMaxAvgZscore(z1)
+  maxw2<-w2$getMaxAvgZscore(z2)
+  shared=intersectBed(w1$peaks,w2$peaks)
+  unique=uniqueBed(w1$peaks,w2$peaks)
+  id1=match(shared$V4,w1$peaks$V4) 
+  id2=match(unique$V4,w1$peaks$V4)
+  plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
+  
+  scales=1-pnorm(maxw2)
+  hsvscale=-log10(1-pnorm(maxw2))
+  maxv=3/4*max(hsvscale)
+  hsvscale=hsvscale/maxv
+  hsvscale[hsvscale>1]=0.75
+  id3=match(scales[scales[id2]<cutoff],scales)
+  for(i in 1:length(id1)) {
+    points(maxw1[id1][i],maxw2[id1][i],col='green')
+  }
+  for(i in 1:length(id2)) {
+    if(scales[id2][i]<cutoff) {
+      points(maxw1[id2][i],maxw2[id2][i],
+           col=hsv(hsvscale[id2][i]),
+           pch=20)
+    }
+    else points(maxw1[id2][i],maxw2[id2][i],col='red')
+  }
+  #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  title(t)
+}
+
+
+
+
+
+plotMaxAvgZscoreW<-function(t, w1, w2, z1,z2, cutoff) {
+  ##########
+  # Get Z scoresmn/.,mnb,.,..,m.,
+  maxw1<-w1$getMaxAvgZscore(z1)
+  maxw2<-w2$getMaxAvgZscore(z2)
+  shared=intersectBed(w1$peaks,w2$peaks)
+  unique=uniqueBed(w1$peaks,w2$peaks)
+  id1=match(shared$V4,w1$peaks$V4) 
+  id2=match(unique$V4,w1$peaks$V4)
+  plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
+  
+  scales=1-pnorm(maxw1)
+  hsvscale=-log10(1-pnorm(maxw1))
+  maxv=4/3*max(hsvscale)
+  hsvscale=hsvscale/maxv
+  hsvscale[hsvscale>1]=0.75
+  for(i in 1:length(maxw1)) {
+    points(maxw1[i],maxw2[i],col=hsv(hsvscale[i]))
+  }
+  #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  title(t)
+}
+
+
+
+
+
+plotMaxAvgZscoreU<-function(t, w1, w2, z1,z2, cutoff) {
+  ##########
+  # Get Z scoresmn/.,mnb,.,..,m.,
+  shared=intersectBed(w1$peaks,w2$peaks)
+  unique=uniqueBed(w1$peaks,w2$peaks)
+  id1=match(shared$V4,w1$peaks$V4) 
+  id2=match(unique$V4,w1$peaks$V4)
+  plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
+  
+  
+  tab=read.table(paste(wig1$name,'/',wig1$name,'_peaks.xls'),sep='\t',skip=2)
+  pvals=as.numeric(as.character(tab$V7[2:nrow(tab)]))
+  ret=max(pvals)
+  
+  maxv=4/3*max(pvals)
+  hsvscale=pvals/maxv
+  hsvscale[hsvscale>1]=3/4
+  for(i in 1:length(maxw1)) {
+      points(maxw1[i],maxw2[i],col=hsv(hsvscale[i]))
+  }
+  #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  title(t)
+}
+
+
+
+
+plotMaxAvgZscoreW<-function(t, w1, w2, z1,z2, cutoff) {
+  ##########
+  # Get Z scoresmn/.,mnb,.,..,m.,
+  maxw1<-w1$getMaxAvgZscore(z1)
+  maxw2<-w2$getMaxAvgZscore(z2)
+  shared=intersectBed(w1$peaks,w2$peaks)
+  unique=uniqueBed(w1$peaks,w2$peaks)
+  id1=match(shared$V4,w1$peaks$V4) 
+  id2=match(unique$V4,w1$peaks$V4)
+  plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
+  
+  
+  scales=1-pnorm(maxw1)
+  hsvscale=-log10(1-pnorm(maxw1))
+  maxv=3/4*max(hsvscale)
+  hsvscale=hsvscale/maxv
+  hsvscale[hsvscale>1]=0.75
+  for(i in 1:length(maxw1)) {
+    if(scales[i]<cutoff)
+      points(maxw1[i],maxw2[i],col=hsv(hsvscale[i]))
+  }
+  #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  title(t)
+}
+
+
+
+
+plotMaxAvgZscoreZ<-function(t, w1, w2, z1,z2, cutoff) {
+  ##########
+  # Get Z scoresmn/.,mnb,.,..,m.,
+  maxw1<-w1$getMaxAvgZscore(z1)
+  maxw2<-w2$getMaxAvgZscore(z2)
+  shared=intersectBed(w1$peaks,w2$peaks)
+  unique=uniqueBed(w1$peaks,w2$peaks)
+  id1=match(shared$V4,w1$peaks$V4) 
+  id2=match(unique$V4,w1$peaks$V4)
+  plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
+  
+  scales=1-pnorm(maxw2)
+  hsvscale=-log10(1-pnorm(maxw2))
+  maxv=3/4*max(hsvscale)
+  hsvscale=hsvscale/maxv
+  hsvscale[hsvscale>1]=0.75
+  id3=match(scales[scales[id2]<cutoff],scales)
+  for(i in 1:length(id1)) {
+    points(maxw1[id1][i],maxw2[id1][i],col='green')
+  }
+  for(i in 1:length(id2)) {
+    if(scales[id2][i]<cutoff) {
+      points(maxw1[id2][i],maxw2[id2][i],
+             col=hsv(hsvscale[id2][i]),
+             pch=20)
+    }
+    else points(maxw1[id2][i],maxw2[id2][i],col='red')
+  }
+  #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
+  title(t)
+}
+
+
+
+
 
 getZcorrelation<-function(wz1,wz2) {
   apply(cbind(wz1,wz2),1,function(z){

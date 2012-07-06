@@ -22,9 +22,14 @@ polygon(d, col="#BB2222CC", border="#222244")
 
 
 ## Q-Q Plot whole genome
-clone=datasort
+clone=ren
 qqnorm(clone)
 qqline(clone,col=2)
+
+
+
+
+plot(ren,dnorm(ren))
 
 
 ## Q-Q Plot peak means
@@ -55,14 +60,11 @@ dataselmean=wzamax1[,4]
 dataselmean1=maxw1
 dataselmean2=maxw2
 clone=dataselmean
-qqnorm(clone)
+qqnorm(clone,ylim=c(-3,8))
 points(qqnorm(dataselmean1,plot=FALSE),col="blue")
 points(qqnorm(dataselmean2,plot=FALSE),col="red")
 qqline(clone,col=2)
-legend('topleft',legend=c('Whole genome','S96 peaks','HS959 peaks'),fill=c('black','blue','red'))
-
-
-
+legend('topleft',legend=c('Whole genome','S96 peaks','HS959 syntenic'),fill=c('black','blue','red'))
 
 
 ## Kernel density plot MEANS
@@ -75,7 +77,7 @@ lines(d1)
 lines(d2)
 polygon(d1, col="#BB222288", border="#222244")
 polygon(d2, col="#22BB2288", border="#222244")
-legend('topright',legend=c('Whole genome','S96 peaks','HS959 peaks'),fill=c('blue','green','red'))
+legend('topright',legend=c('Whole genome','S96 peaks','HS959 syntenic'),fill=c('blue','green','red'))
 
 
 
