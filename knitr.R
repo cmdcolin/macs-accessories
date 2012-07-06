@@ -207,20 +207,13 @@ plotMaxAvgZscore<-function(t, w1, w2, z1,z2, c1,c2) {
   points(maxw1[id2],maxw2[id2],col=c2)
   legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
   title(t)
-  ret=list()
-  ret[['1shared']]=maxw1[id1]
-  ret[['1unique']]=maxw1[id2]
-  ret[['2shared']]=maxw2[id1]
-  ret[['2unique']]=maxw2[id2]
-  ret
 }
 
 
 
 
 plotZscoreCutoff<-function(t, w1, w2, z1,z2, cutoff) {
-  ##########
-  # Get Z scoresmn/.,mnb,.,..,m.,
+
   maxw1<-w1$getMaxAvgZscore(z1)
   maxw2<-w2$getMaxAvgZscore(z2)
   shared=intersectBed(w1$peaks,w2$peaks)
@@ -229,20 +222,15 @@ plotZscoreCutoff<-function(t, w1, w2, z1,z2, cutoff) {
   id2=match(unique$V4,w1$peaks$V4)
   plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
   
-  scales=1-pnorm(maxw2)
-  hsvscale=-log10(1-pnorm(maxw2))
-  maxv=3/4*max(hsvscale)
-  hsvscale=hsvscale/maxv
-  hsvscale[hsvscale>1]=0.75
-  id3=match(scales[scales[id2]<cutoff],scales)
-  
-  
-  set1=scales[id2]<cutoff
-  set2=scales[id2]>=cutoff
-  points(maxw1[set2],maxw2[set2],col='red')
+  # get subsets
+  scales=1-pnorm(maxw2)  
+  set1=(scales[id2]<cutoff)
+  set2=(scales[id2]>=cutoff)
+  # plot colors
   points(maxw1[id1],maxw2[id1],col='green')
-  points(maxw1[set1],maxw2[set1],col='yellow',pch=20)
-  legend('bottomright', legend=c('Shared', 'Unique ', 'New'), fill=c('green', 'red','yellow'))
+  points(maxw1[id2][set2],maxw2[id2][set2],col='red')
+  points(maxw1[id2][set1],maxw2[id2][set1],col='yellow',pch=20)
+  legend('bottomright', legend=c('shared', 'unique ', 'new'), fill=c('green', 'red','yellow'))
   
   title(t)
 }
@@ -252,8 +240,7 @@ plotZscoreCutoff<-function(t, w1, w2, z1,z2, cutoff) {
 
 
 plotZscoreColor<-function(t, w1, w2, z1,z2, cutoff) {
-  ##########
-  # Get Z scoresmn/.,mnb,.,..,m.,
+
   maxw1<-w1$getMaxAvgZscore(z1)
   maxw2<-w2$getMaxAvgZscore(z2)
   shared=intersectBed(w1$peaks,w2$peaks)
@@ -278,11 +265,8 @@ plotZscoreColor<-function(t, w1, w2, z1,z2, cutoff) {
 
 
 
-plotMaxAvgZscoreU<-function(t, w1, w2, z1,z2, cutoff) {
-  ##########
-  # Get Z scoresmn/.,mnb,.,..,m.,
-  ##########
-  # Get Z scoresmn/.,mnb,.,..,m.,
+plotZscoreMACS<-function(t, w1, w2, z1,z2, cutoff) {
+
   maxw1<-w1$getMaxAvgZscore(z1)
   maxw2<-w2$getMaxAvgZscore(z2)
   shared=intersectBed(w1$peaks,w2$peaks)
@@ -294,14 +278,16 @@ plotMaxAvgZscoreU<-function(t, w1, w2, z1,z2, cutoff) {
   
   scales=1-pnorm(maxw1)
   hsvscale=-log10(1-pnorm(maxw1))
-  maxv=4/3*max(hsvscale)
+  #maxv=4/3*max(hsvscale)
   hsvscale=hsvscale/maxv
   hsvscale[hsvscale>1]=0.75
   
+  # Get MACS pvalues
   tab=read.table(paste(wig1$name,'/',wig1$name,'_peaks.xls',sep=''),sep='\t',skip=2)
   pvals=as.numeric(as.character(tab$V7[2:nrow(tab)]))
 
-  #maxv=4/3*max(pvals)
+  # Use MACS pavvls
+  maxv=4/3*max(pvals)
   hsvscale=pvals/maxv
   hsvscale[hsvscale>1]=3/4
   for(i in 1:length(maxw1)) {
@@ -335,48 +321,35 @@ plotGGPlot2<-function(t, w1, w2, z1,z2, cutoff) {
 
 
 plotMAPlot2<-function(t, w1, w2, z1,z2, z3,z4,cutoff) {
-  ##########
-  # Get Z scoresmn/.,mnb,.,..,m.,
+
   maxw1<-w1$getMaxAvgZscore(z1)
   maxw2<-w2$getMaxAvgZscore(z2)
   maxw3<-w1$getMaxAvgZscore(z3)
   maxw4<-w2$getMaxAvgZscore(z4)
   
+  # shared /unique
   shared=intersectBed(w1$peaks,w2$peaks)
   unique=uniqueBed(w1$peaks,w2$peaks)
   id1=match(shared$V4,w1$peaks$V4) 
   id2=match(unique$V4,w1$peaks$V4)
+  shared=intersectBed(w2$peaks,w1$peaks)
+  unique=uniqueBed(w2$peaks,w1$peaks)
+  id3=match(shared$V4,w2$peaks$V4) 
+  id4=match(unique$V4,w2$peaks$V4)
+  
+  # MA plot scores
   M1=log2(maxw1)-log2(maxw2)
   A1=1/2*(log2(maxw1)+log2(maxw2))
-  
   M2=log2(maxw3)-log2(maxw4)
   A2=1/2*(log2(maxw3)+log2(maxw4))
   
   plot(A1,M1,pch='*',ylim=c(-6,6))
   points(A2,M2,pch='*')
   
-  points(A1)
-  scales1=1-pnorm(maxw2)
-  scales2=1-pnorm(maxw3)
-  s1=-log10(scales1)
-  s2=-log10(scales2)
-  smax=4/3*max(s1,s2)
-  for(i in 1:length(maxw1)) {
-    
-    points(A1[i],M1[i],col=hsv(s1[i]/smax,alpha='0.6'))
-  }  
-  for(i in 1:length(maxw3)) {
-    
-    points(A2[i],M2[i],col=hsv(s2[i]/smax,alpha='0.6'))
-  }
-  #scales1=1-pnorm(maxw1)
-  #scales2=1-pnorm(maxw2)
-  #s1=-log10(scales1)
-  #s2=-log10(scales2)
-  #plot(s1,s2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
-  
-  #points(s1[scales2<cutoff],s2[scales2<cutoff],col='green')
-  #points(s1[scales2>=cutoff],s2[scales2>=cutoff],col='red')
+  points(M1[id1],A1[id1],col='blue')
+  points(M1[id2],A1[id2],col='green')
+  points(M2[id3],A2[id3],col='blue')
+  points(M2[id4],A2[id4],col='red')
   
   title(t)
 }

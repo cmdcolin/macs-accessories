@@ -126,7 +126,7 @@ ret=plotMaxAvgZscoreW('S96 peaks vs HS959 synteny',wig1,wig2,wz1,wz2,0.05)
 ret=plotMaxAvgZscoreR('S96 peaks vs HS959 synteny',wig1,wig2,wz1,wz2,wz3,wz4,0.05)
 
 #
-plotZscoreCutoff('test',wig1,wig2,wz1,wz2,0.05)
+plotZscoreCutoff('S96 peaks vs HS959 synteny (New peaks)',wig1,wig2,wz1,wz2,0.05)
 
 
 #### Scrap code
