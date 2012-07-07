@@ -7,7 +7,7 @@
 
 
 ## Setup data
-datasort=as.numeric(wza1[[3]][,4])  
+datasort=as.numeric(wza1[[1]][,4])  
 
 
 
@@ -125,8 +125,11 @@ ret=plotMaxAvgZscoreW('S96 peaks vs HS959 synteny',wig1,wig2,wz1,wz2,0.05)
 # MA plot
 ret=plotMaxAvgZscoreR('S96 peaks vs HS959 synteny',wig1,wig2,wz1,wz2,wz3,wz4,0.05)
 
-#
-plotZscoreCutoff('S96 peaks vs HS959 synteny (New peaks)',wig1,wig2,wz1,wz2,0.05)
+# Get peaks cutoff
+ret=plotZscoreCutoff('S96 peaks vs HS959 synteny (New peaks)',wig1,wig2,wz1,wz2,0.01)
+
+# select peaks cutoff
+wig1$peaks[ret,]
 
 
 #### Scrap code

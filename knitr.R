@@ -79,7 +79,7 @@ plotMaxAvgZscore<-function(t, w1, w2, wz1,wz2, c1,c2) {
   ret
 }
 
-plotSortedMaxAvgZscore<-function(t, w1, w2, r, c1,c2,c3,c4) {
+plotSortedZscoreLines<-function(t, w1, w2, r, c1,c2,c3,c4) {
   wz1sort=sort(c(r[['2shared']],r[['2unique']]))
   wz2sort=sort(c(r[['1shared']],r[['1unique']]))
   xs1=1:length(wz1sort)
@@ -101,21 +101,6 @@ plotSortedMaxAvgZscore<-function(t, w1, w2, r, c1,c2,c3,c4) {
   legend('bottomright', legend=c('shared', 'unique'), fill=c(c3, c4))
   title(t)
 }
-
-plotSortedMaxAvgZscoreX<-function(t, w1, w2, r, c1,c2) {
-  wz1sort=sort(r[['2shared']])
-  wz2sort=sort(r[['2unique']])
-  xs1=1:length(wz1sort)
-  xs2=1:length(wz2sort)
-  plot(xs1,wz1sort,pch='.',xlab='Rank',ylab='Avg NormDiff')
-  points(xs1,wz1sort,col=c1,pch='.')
-  points(xs2,wz2sort,col=c2,pch='.')
-  #polygon(c(xs1,rev(xs)),c(wz1sort,rev(wz2sort)),col='lightyellow',border=FALSE)
-  legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
-  title(t)
-}
-
-
 
 plotSortedMaxAvgZscoreX<-function(t, w1, w2, r, c1,c2) {
   wz1sort=sort(r[['2shared']])
@@ -227,19 +212,22 @@ plotZscoreCutoff<-function(t, w1, w2, z1,z2, cutoff) {
   set1=(scales[id2]<cutoff)
   set2=(scales[id2]>=cutoff)
   # plot colors
-  points(maxw1[id1],maxw2[id1],col='green')
+  points(maxw1[id1],maxw2[id1],col='blue')
   points(maxw1[id2][set2],maxw2[id2][set2],col='red')
   points(maxw1[id2][set1],maxw2[id2][set1],col='yellow',pch=20)
-  legend('bottomright', legend=c('shared', 'unique ', 'new'), fill=c('green', 'red','yellow'))
+  legend('bottomright', legend=c('shared', 'unique ', 'new'), fill=c('blue', 'red','yellow'))
   
   title(t)
+  ret=scales<cutoff
+  ret[id1]=FALSE
+  ret
 }
 
 
 
 
 
-plotZscoreColor<-function(t, w1, w2, z1,z2, cutoff) {
+plotZscoreColor<-function(t, w1, w2, z1,z2) {
 
   maxw1<-w1$getMaxAvgZscore(z1)
   maxw2<-w2$getMaxAvgZscore(z2)
@@ -249,12 +237,12 @@ plotZscoreColor<-function(t, w1, w2, z1,z2, cutoff) {
   id2=match(unique$V4,w1$peaks$V4)
   plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
   
-  scales=1-pnorm(maxw1)
-  hsvscale=-log10(1-pnorm(maxw1))
+  scales=1-pnorm(maxw2)
+  hsvscale=-log10(1-pnorm(maxw2))
   maxv=4/3*max(hsvscale)
   hsvscale=hsvscale/maxv
   hsvscale[hsvscale>1]=0.75
-  for(i in 1:length(maxw1)) {
+  for(i in 1:length(maxw2)) {
     points(maxw1[i],maxw2[i],col=hsv(hsvscale[i]))
   }
   #legend('bottomright', legend=c('shared', 'unique'), fill=c(c1, c2))
@@ -346,10 +334,10 @@ plotMAPlot2<-function(t, w1, w2, z1,z2, z3,z4,cutoff) {
   plot(A1,M1,pch='*',ylim=c(-6,6))
   points(A2,M2,pch='*')
   
-  points(M1[id1],A1[id1],col='blue')
-  points(M1[id2],A1[id2],col='green')
-  points(M2[id3],A2[id3],col='blue')
-  points(M2[id4],A2[id4],col='red')
+  points(A1[id1],M1[id1],col='blue')
+  points(A1[id2],M1[id2],col='green')
+  points(A2[id3],M2[id3],col='blue')
+  points(A2[id4],M2[id4],col='red')
   
   title(t)
 }

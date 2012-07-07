@@ -15,7 +15,6 @@ wig1 = WiggleClass("S96")
 wig2 = WiggleClass("HS959")
 wig1$loadWiggles()
 wig2$loadWiggles()
-####
 ```
 
 
@@ -76,12 +75,12 @@ We can observe the distribution of NormDiff scores
 
 ```r
 datasort = as.numeric(wza1[[1]][, 4])
-d <- density(datasort, adjust = 1.2)  # returns the density data
+d <- density(datasort, adjust = 1.4)  # returns the density data
 plot(d, main = "Kernel density of NormDiff scores")  # plots the results
 polygon(d, col = "#BB2222CC", border = "#222244")
 ```
 
-![plot of chunk zall](http://i.imgur.com/xJz4N.png) 
+![plot of chunk zall](http://i.imgur.com/Hq4Ll.png) 
 
 ```r
 clone = datasort
@@ -89,23 +88,20 @@ qqnorm(clone)
 qqline(clone, col = 2)
 ```
 
-![plot of chunk zall](http://i.imgur.com/KEQif.png) 
+![plot of chunk zall](http://i.imgur.com/xryRj.png) 
 
 
-We want to use hypothesis testingto obsereve transcriptionfactor binding sites onthetail ofthe distribution. Plotting the max average normdiff scores from peak regions shows that these are considerably different from the population.
+We want to use hypothesis testing to observe NormDiff scores that are highly different from the background. Below we plot the peaks in S96 vs syntenic regions in HS959. 
+
+The blue peaks were found to be shared by overlap of peaks found with MACS. The new yellow peaks were found tobe shared using hypothesis testing of NormDiff scores with likelihood ratio test 0.05
+
 
 
 
 ```r
-wzamax1 = wig1$getMaxAvgZscoreAll(wza1)
-wzamax2 = wig2$getMaxAvgZscoreAll(wza2)
-datamax1 = wzamax1[, 4]
-datamax2 = wzamax2[, 4]
-qqnorm(datasort)
-points(qqnorm(datamax1, plot = FALSE), col = "blue")
-points(qqnorm(datamax2, plot = FALSE), col = "red")
-qqline(rnorm(5000), col = 2)
+ret = plotZscoreCutoff("S96 peaks vs HS959 synteny (Hypothesis testing)", 
+    wig1, wig2, wz1, wz2, 0.05)
 ```
 
-![plot of chunk test](http://i.imgur.com/aincq.png) 
+![plot of chunk cutoff](http://i.imgur.com/q8tFB.png) 
 
