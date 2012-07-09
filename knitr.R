@@ -226,6 +226,34 @@ plotZscoreCutoff<-function(t, w1, w2, z1,z2, cutoff) {
 
 
 
+plotZscoreCutoffShared<-function(t, w1, w2, z1,z2, cutoff) {
+  
+  maxw1<-w1$getMaxAvgZscore(z1)
+  maxw2<-w2$getMaxAvgZscore(z2)
+  shared=intersectBed(w1$peaks,w2$peaks)
+  unique=uniqueBed(w1$peaks,w2$peaks)
+  id1=match(shared$V4,w1$peaks$V4) 
+  id2=match(unique$V4,w1$peaks$V4)
+  plot(maxw1,maxw2,pch='*',xlab=paste(w1$name,'peak'),ylab=paste(w2$name,'syntenic'))
+  
+  # get subsets
+  scales=1-pnorm(maxw1)  
+  set1=(scales[id1]<cutoff)
+  set2=(scales[id1]>=cutoff)
+  # plot colors
+  points(maxw1[id2],maxw2[id2],col='blue')
+  points(maxw1[id1][set2],maxw2[id1][set2],col='red')
+  points(maxw1[id1][set1],maxw2[id1][set1],col='yellow',pch=20)
+  legend('bottomright', legend=c('shared', 'unique ', 'new'), fill=c('blue', 'red','yellow'))
+  
+  title(t)
+  ret=scales<cutoff
+  #ret[id1]=FALSE
+  ret
+}
+
+
+
 
 plotZscoreColor<-function(t, w1, w2, z1,z2) {
 

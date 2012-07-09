@@ -6,7 +6,7 @@ The package Model-based analysis for ChIP-seq (MACS) is very useful software for
 
 
 
-Typical setup preamble creates a 'wiggle class', an S3 R object and loadswiggle files based on the name parameter from MACS
+We created a 'wiggle class', an S3 R object, for loading MACS output files and doing additional data analysis. The class automatically loads peak files (bed,xls,csv) and and wiggle files (macs output format)
 
 
 
@@ -26,11 +26,13 @@ The normalized difference score gives us on average the expected value of the Ch
 $A\sim Poisson(f+g)$
 $B\sim Poisson(cg)$
 
-Then the NormDiff score is defined as
+Then the NormDiff score $Z$ is defined as
 
-$$Z=(A-B/c)/\hat\sigma$$
+$$Z(x_i)=\frac{A(x_i)-B(x_i)/c}{\hat\sigma}$$
 
-We use the data to estimate scaling factor $c$ and variance $\hat\sigma$ and then we can look at the distribution of average normalized difference scores for all peaks, and see how they correspond to syntenic regions in other datasets
+We use the data to estimate scaling factor $c$ and variance $\hat\sigma$
+
+We can look at the average normalized difference scores of the peaks, and see how this compares with the same location in other experiments, simply by comparing wig1 with wig2 Z scores for the peak.
 
 
 
@@ -80,7 +82,7 @@ plot(d, main = "Kernel density of NormDiff scores")  # plots the results
 polygon(d, col = "#BB2222CC", border = "#222244")
 ```
 
-![plot of chunk zall](http://i.imgur.com/Hq4Ll.png) 
+![plot of chunk zall](http://i.imgur.com/l69QG.png) 
 
 ```r
 clone = datasort
@@ -88,12 +90,20 @@ qqnorm(clone)
 qqline(clone, col = 2)
 ```
 
-![plot of chunk zall](http://i.imgur.com/xryRj.png) 
+![plot of chunk zall](http://i.imgur.com/gnTF7.png) 
 
 
-We want to use hypothesis testing to observe NormDiff scores that are highly different from the background. Below we plot the peaks in S96 vs syntenic regions in HS959. 
+By taking the pvalues of all Zscores we can see which ones are significant according to a p-value $P(\bar x \leq X)$
 
-The blue peaks were found to be shared by overlap of peaks found with MACS. The new yellow peaks were found tobe shared using hypothesis testing of NormDiff scores with likelihood ratio test 0.05
+
+```r
+plotZscoreColor("HS959 pvalue for S96 peaks", wig1, wig2, wz1, wz2)
+```
+
+![plot of chunk color](http://i.imgur.com/UpUZ9.png) 
+
+
+We want to use hypothesis testing to observe NormDiff scores that are highly different from the background. We used a likelihood ratio test sgnificance level of 1%. When comparing ChIP-seq experiments from different strains of yeast.
 
 
 

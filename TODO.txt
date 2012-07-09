@@ -55,3 +55,32 @@ use techniques from MACS on Z score?
  
  Random sampling needed for random testing
  Will add confirmation to results!!!!!?>????
+ 
+ Bury her in the Coulee
+ Compare results to differential binding.
+ 
+ 
+ 
+ =================
+ Outline
+ ==============
+ >Robin,
+>
+>I'm leaving tomorrow, and Colin's poster needs revising.  Are you 
+>available to meet with him to help him get it in shape?
+>
+>Here is the poster outline that we agreed upon (but I trust your 
+>judgement to change this):
+>* abstract or overview (includes description of problem and what we're 
+>doing)
+>* present normdiff (include equations)
+>* present some of the figures we saw and that were to be generated to 
+>show that there is reason to believe that there are shared peaks that 
+>are not being called as such
+>   - every figure should have an explanation of its significance (what 
+>it tells us that we might not have been sure about)
+>* show some possible equations for a modified normdiff score
+>
+>Debra
+>
+>-- 
