@@ -22,6 +22,33 @@ wz3=wig1$Z(wig2$peaks)
 
 
 
+
+
+
+
+debug=TRUE
+wigenv2=new.env()
+wig3=WiggleClass('S96')
+wig4=WiggleClass('S96rep2u')
+wig3$loadWiggles(wigenv2) 
+wig4$loadWiggles(wigenv2)
+###
+wig3$estimateScalingFactor()
+wig3$estimateVarianceAll()
+wig4$estimateScalingFactor()
+wig4$estimateVarianceAll()
+
+
+############
+# Z score peaks
+wz5=wig3$Z(wig3$peaks)
+wz6=wig4$Z(wig3$peaks)
+wz7=wig4$Z(wig4$peaks)
+wz8=wig3$Z(wig4$peaks)
+
+
+
+
 #########
 # Z score all
 wza1=wig1$Zall()

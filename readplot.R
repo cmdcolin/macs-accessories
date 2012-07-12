@@ -289,15 +289,17 @@ WiggleClass<-function(name) {
   
   nc$getMaxAvgZscore<-function(wz,ws=10) {
     sapply(wz,function(zlist){
+      
+      zlist=unlist(zlist)
       len=length(zlist)
       reads=numeric(len)
       #if(debug)
       #  print(len)
       if(is.numeric(zlist)==FALSE) {
         cat('here1 ', length(zlist), typeof(zlist),'\n')
-      print(unlist(zlist))
-        zlist=unlist(zlist)
-    }
+      #  print(unlist(zlist))
+      #  zlist=unlist(zlist)
+      }
       
       for(i in 1:len) {
         b=i

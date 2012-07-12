@@ -94,7 +94,7 @@ points(datasel1,dnorm(datasel1),col="blue")
 points(datasel2,dnorm(datasel2),col="red")
 
 
-
+plotMAPlot2('MA plotof NormDiff scores',wig1,wig2,wz1,wz2,wz3,wz4,0)
 
 
 ## Kernel density plot
@@ -112,8 +112,15 @@ legend('topright',legend=c('Whole genome','S96 peaks','HS959 peaks'),fill=c('blu
 
 
 
+# Change colors
+ret=plotMaxAvgZscore('Max Avg NormDiff S96 peaks vs HS959 synteny',wig1,wig2,wz1,wz2,'blue','red')
+ret=plotMaxAvgZscore('Max Avg NormDiff HS959 peaks vs S96 synteny',wig2,wig1,wz4,wz3,'blue','brown')
+ret=plotMaxAvgZscore('S96rep1 peaks vs S96rep2 synteny',wig3,wig4,wz5,wz6,'green','orange')
+ret=plotMaxAvgZscore('S96rep2 peaks vs S96rep1 synteny',wig4,wig3,wz7,wz8,'green','orange',my.pch=0)
 
+ret=plotSortedMaxAvgZscoreX('Sorted HS959 NormDiff Scores adjascent to S96 peaks',wig1,wig2,wz1,wz2,'blue','red')
 
+ret=plotSortedMaxAvgZscoreX('Sorted S96 NormDiff Scores adjascent to HS959 peaks',wig2,wig1,wz4,wz3,'blue','brown')
 
 
 # MACS pvalues
@@ -126,10 +133,30 @@ ret=plotMaxAvgZscoreW('S96 peaks vs HS959 synteny',wig1,wig2,wz1,wz2,0.05)
 ret=plotMaxAvgZscoreR('S96 peaks vs HS959 synteny',wig1,wig2,wz1,wz2,wz3,wz4,0.05)
 
 # Get peaks cutoff
-ret=plotZscoreCutoff('S96 peaks vs HS959 synteny (New peaks)',wig1,wig2,wz1,wz2,0.05)
+plotZscoreCutoff('S96 peaks vs HS959 synteny (New peaks)',wig2,wig1,wz4,wz3,0.01)
+plotZscoreCutoff('HS959 peaks vs S96 synteny (New peaks)',wig1,wig2,wz1,wz2,0.01)
+plotZscoreCutoff('HS959 peaks vs S96 synteny (New peaks)',wig1,wig2,wz1,wz2,0.05)
+plotZscoreCutoff('S96 peaks vs HS959 synteny (New peaks)',wig2,wig1,wz4,wz3,0.05)
+
+ret=plotZscoreCutoff('S96 peaks vs HS959 synteny (New peaks)',wig3,wig4,wz5,wz6,0.01)
+ret=plotZscoreCutoff('HS959 peaks vs S96 synteny (New peaks)',wig4,wig3,wz8,wz7,0.01)
+
+
+plotZscoreCutoffShared('test',wig2,wig1,wz4,wz3,0.05)
+# Two color plot
+ret=plotZscoreCutoff2('HS959 peaks conserved in S96',wig1,wig2,wz1,wz2,0.05,0.01,'blue','red')
+ret=plotZscoreCutoff2('S96 peaks conserved in HS959',wig2,wig1,wz4,wz3,0.05,0.01,'blue','red')
+ret=plotZscoreCutoff2('Max Avg NormDiff S96rep1 peaks vs S96rep2 synteny',wig3,wig4,wz5,wz6,0.05,0.01,'blue','red')
+ret=plotZscoreCutoff2('Max Avg NormDiff S96rep2 peaks vs S96rep1 synteny',wig4,wig3,wz8,wz7,0.05,0.01,'blue','brown')
+
+indexes=which(ret==TRUE)
+wig3$peaks[ret,]
+
+
+
 
 #Mod fix
-ret=plotZscoreCutoffShared('S96 peaks vs HS959 synteny (New peaks)',wig1,wig2,wz1,wz2,0.05)
+ret=plotZscoreCutoffShared('S96 peaks vs HS959 synteny (New peaks)',wig1,wig2,wz1,wz2,0.01)
 
 # select peaks cutoff
 wig1$peaks[ret,]
