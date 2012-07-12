@@ -162,6 +162,13 @@ ret=plotZscoreCutoffShared('S96 peaks vs HS959 synteny (New peaks)',wig1,wig2,wz
 wig1$peaks[ret,]
 
 
+
+
+
+vall1=estimateVarianceAllMod(wig1,wig2)
+Zmod(wig1$peaks, wig1,wig2,Zaddxi,vall1)
+
+
 #### Scrap code
 
 # Histogram
