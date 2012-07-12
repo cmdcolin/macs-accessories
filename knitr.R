@@ -409,7 +409,35 @@ plotMAPlot2<-function(t, w1, w2, z1,z2, z3,z4,cutoff) {
   title(t)
 }
 
-
+plotAddSubNormDiff<-function(w1,w2) {
+  shared=intersectBed(w1$peaks,w2$peaks)
+  unique=uniqueBed(w1$peaks,w2$peaks)
+  id1=match(shared$V4,w1$peaks$V4) 
+  id2=match(unique$V4,w1$peaks$V4)
+  vall1=estimateVarianceAllMod(w1,w2)
+  ret1=Zmod(w1$peaks, w1,w2,Zaddxi,vall1)
+  ret2=Zmod(w1$peaks, w1,w2,Zsubxi,vall1)
+  r1=sapply(ret1,mean)
+  r2=sapply(ret2,mean)
+  plot(r1,r2,pch='*',xlab='Additive NormDiff',ylab='Subtractive NormDiff')
+  points(r1[id1],r2[id1],col='blue')
+  points(r1[id2],r2[id2],col='red')
+  
+  
+  shared=intersectBed(w2$peaks,w1$peaks)
+  unique=uniqueBed(w2$peaks,w1$peaks)
+  id1=match(shared$V4,w2$peaks$V4) 
+  id2=match(unique$V4,w2$peaks$V4)
+  vall1=estimateVarianceAllMod(w1,w2)
+  ret1=Zmod(w2$peaks, w2,w1,Zaddxi,vall1)
+  ret2=Zmod(w2$peaks, w2,w1,Zsubxi,vall1)
+  r1=sapply(ret1,mean)
+  r2=sapply(ret2,mean)
+  points(r1,r2,pch='*')
+  points(r1[id1],r2[id1],col='yellow')
+  points(r1[id2],r2[id2],col='green')
+  title('Added NormDiff vs Subtracted NormDiff')
+}
 
 plotMAPlot1<-function(t, w1, w2, z1,z2, z3,z4,cutoff) {
   ##########

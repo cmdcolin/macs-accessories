@@ -165,10 +165,11 @@ wig1$peaks[ret,]
 
 
 
-vall1=estimateVarianceAllMod(wig1,wig2)
-Zmod(wig1$peaks, wig1,wig2,Zaddxi,vall1)
+#vall1=estimateVarianceAllMod(wig1,wig2)
+#ret1=Zmod(wig1$peaks, wig1,wig2,Zaddxi,vall1)
+#ret2=Zmod(wig1$peaks, wig1,wig2,Zsubxi,vall1)
 
-
+plotAddSubNormDiff(wig1,wig2)
 #### Scrap code
 
 # Histogram
