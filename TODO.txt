@@ -1,6 +1,11 @@
 Testing
+Compare different genomes using LIFTOVER for specific chip-seq binding sites? Leverage conservation?
+1) What is the precedent for this (not obvious from google search)
+2) What would be important for doing this in practice
 
-Analyze replicates in SOFTWARE
+
+
+✓ Analyze replicates in SOFTWARE
 
 
 parallax
@@ -12,14 +17,14 @@ new blog?
 
 Include zscores in wiggleclass member variables
 
-cash check
-Figure out better bayesian
-Figure out QQ plot
+✓ cash check
+✗ Figure out better bayesian
+✓ Figure out QQ plot
 
-Subtract control
-Use Z score
-do peak finding using Z score?
-use techniques from MACS on Z score?
+✓ Subtract control
+✓ Use Z score
+✓ do peak finding using Z score?
+✓ use techniques from MACS on Z score?
 
 
 
@@ -40,9 +45,10 @@ use techniques from MACS on Z score?
  normalize between samples
  
  
- plot P(x<=X) normdiff scores for syntenic
- -log10(pvalue)
- cutoff pvalue at same value as MACS?
+✓ plot P(x<=X) normdiff scores for syntenic
+✓ -log10(pvalue)
+✗ cutoff pvalue at same value as MACS?
+  We do not get the same pvalue as MACS (considerably less confidence values)
  
  
  
@@ -60,27 +66,3 @@ use techniques from MACS on Z score?
  Compare results to differential binding.
  
  
- 
- =================
- Outline
- ==============
- >Robin,
->
->I'm leaving tomorrow, and Colin's poster needs revising.  Are you 
->available to meet with him to help him get it in shape?
->
->Here is the poster outline that we agreed upon (but I trust your 
->judgement to change this):
->* abstract or overview (includes description of problem and what we're 
->doing)
->* present normdiff (include equations)
->* present some of the figures we saw and that were to be generated to 
->show that there is reason to believe that there are shared peaks that 
->are not being called as such
->   - every figure should have an explanation of its significance (what 
->it tells us that we might not have been sure about)
->* show some possible equations for a modified normdiff score
->
->Debra
->
->-- 
