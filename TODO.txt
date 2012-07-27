@@ -29,32 +29,20 @@ Analyze linkage maps
 Binding site specific conservation model
 Compare sequences to empirical chip-seq data comparisons
 Use scaffolding from yeast
-Data mining
 
- I am trying to detect signals in a experiment that has experiment and control data. The control data is basically 'background noise', and  I want to use a algorithm called NormDiff that subtracts the control data away and normalizes the data. When i applied that algorithm the data isn't actually normal, and those strong signals appear as outliers (see pic). Is there a good way to detect those outliers?
+
+
  
  Notes
- 
-Bayes-data derived from the same "class"?
 Poisson - number of reads centered at a tag. 
-Possible todo: read eland data manually and use MACS R script outputted
+Read eland data manually and use MACS R script outputted?
  
-Background lambda for Normal
-Compare to Negative binomial (mean, variance)
+Background lambda for Normal vs Negative Binomial?
+Compare to Negative binomial (i.e. mean, variance)
 Is the background lambda S Normal(0,1)?
  
 ****************Use hypothesis testing with MEAN and VARIANCE different from 0,1
- 
- Poster todo
-✓ plot P(x<=X) normdiff scores for syntenic
-✓ -log10(pvalue)
-✗ cutoff pvalue at same value as MACS?
-We do not get the same pvalue as MACS (considerably less confidence values)
- 
- 
- 
- 
- Since NormDiff effectively normalizes ChIP-seq data,  it is suitable for comparing ChIP-seq data from multiple experiments. 
+
  
  
  Normalize between experiments
@@ -62,9 +50,18 @@ We do not get the same pvalue as MACS (considerably less confidence values)
  Will add confirmation to results!!!!!?>????
  
  Compare results to differential binding.
+Differential binding vs variable binding region
+
+
+ Poster todo
+✓ plot P(x<=X) normdiff scores for syntenic
+✓ -log10(pvalue)
+✗ cutoff pvalue at same value as MACS?
+When done considerably less confidence values (0.01 vs 1e-5) is there an issue there?
  
+
  
- Post poster todo list
+Post-poster TODO list
  Analyze linkage
  Compare linkage map to linkage analysis
  Use of genetic markers (what is a single marker regression?)
@@ -75,6 +72,15 @@ We do not get the same pvalue as MACS (considerably less confidence values)
  - Change goals from normalization, bias correction (this work has been overdone clearly, need to answer a new question)
  - Formulate in terms of research goals
  
+MUMer alignment
+- $ mummer -mum -b -c S288cgenome-v3.fa YJM789.fsa > yeast.mums
+- $ mummerplot -postscript -m yeast yeast.mums
+- $ gnuplot yeast.gp
+- $ ps2pdf yeast.ps
 
- 
+nucmer is the MUMmer's most user-friendly alignment script for standard DNA sequence alignment. It is a robust pipeline that allows for multiple reference and multiple query sequences to be aligned in a many vs. many fashion. For instance, a very common use for nucmer is to determine the position and orientation of a set of sequence contigs in relation to a finished sequence, however it can be just as effective in comparing two finished sequences to one another.
+$ nucmer -maxmatch -c 100 -p nucmer S288c-genome-v3.fa YJM789.fsa
+$ mummerplot -postscript -p nucmer nucmer.delta
+$ ps2pdf nucmer.ps
+
  
