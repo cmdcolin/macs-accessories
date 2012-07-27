@@ -5,50 +5,51 @@ Compare different genomes using LIFTOVER for specific chip-seq binding sites? Le
 
 
 
-✓ Analyze replicates in SOFTWARE
-
-
 parallax
 size 36 mspaint
 
 post on blog more
 new blog?
+new github account
+clapping with album leaf - red eye
+
+✓ Analyze replicates in SOFTWARE
+Analyze linkage maps
 
 
-Include zscores in wiggleclass member variables
+
+✗ Include zscores in wiggleclass member variables
+✗ Figure out better bayesian
 
 ✓ cash check
-✗ Figure out better bayesian
 ✓ Figure out QQ plot
-
-✓ Subtract control
-✓ Use Z score
 ✓ do peak finding using Z score?
-✓ use techniques from MACS on Z score?
 
 
+Binding site specific conservation model
+Compare sequences to empirical chip-seq data comparisons
+Use scaffolding from yeast
+Data mining
 
  I am trying to detect signals in a experiment that has experiment and control data. The control data is basically 'background noise', and  I want to use a algorithm called NormDiff that subtracts the control data away and normalizes the data. When i applied that algorithm the data isn't actually normal, and those strong signals appear as outliers (see pic). Is there a good way to detect those outliers?
  
+ Notes
  
- Bayes-data derived from the same "class"?
+Bayes-data derived from the same "class"?
+Poisson - number of reads centered at a tag. 
+Possible todo: read eland data manually and use MACS R script outputted
  
- Poisson - number of reads centered at a tag. 
+Background lambda for Normal
+Compare to Negative binomial (mean, variance)
+Is the background lambda S Normal(0,1)?
  
- Background lambda for Normal!!!
- Use regular Z-score???
+****************Use hypothesis testing with MEAN and VARIANCE different from 0,1
  
- Is the background lambda S Normal(0,1)?
- ****************Use hypothesis testing with MEAN and VARIANCE different from 0,1
- 
- clapping with album leaf - red eye
- normalize between samples
- 
- 
+ Poster todo
 ✓ plot P(x<=X) normdiff scores for syntenic
 ✓ -log10(pvalue)
 ✗ cutoff pvalue at same value as MACS?
-  We do not get the same pvalue as MACS (considerably less confidence values)
+We do not get the same pvalue as MACS (considerably less confidence values)
  
  
  
@@ -57,12 +58,23 @@ Include zscores in wiggleclass member variables
  
  
  Normalize between experiments
- - Zheng et al do not!!
- 
  Random sampling needed for random testing
  Will add confirmation to results!!!!!?>????
  
- Bury her in the Coulee
  Compare results to differential binding.
+ 
+ 
+ Post poster todo list
+ Analyze linkage
+ Compare linkage map to linkage analysis
+ Use of genetic markers (what is a single marker regression?)
+ Statistical significance of linkage map (population variances)
+ start writing paper
+ - Include what has been done (synthesize)
+ - Include what should be done (hypothesize)
+ - Change goals from normalization, bias correction (this work has been overdone clearly, need to answer a new question)
+ - Formulate in terms of research goals
+ 
+
  
  
