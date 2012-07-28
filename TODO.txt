@@ -83,4 +83,9 @@ $ nucmer -maxmatch -c 100 -p nucmer S288c-genome-v3.fa YJM789.fsa
 $ mummerplot -postscript -p nucmer nucmer.delta
 $ ps2pdf nucmer.ps
 
- 
+
+TODO July
+Investigate Transgressive inheritance
+- Difference of parental strains divided by stddev of segregants
+- Low scores (<3) is mandelian
+Possibilities - If the difference is high, and then the variance will be high also. However, if the difference is high and the variance is low then no transgressive effect will be observed
