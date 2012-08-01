@@ -1,0 +1,32 @@
+
+Genotypes.txt
+The type column contains S for SNPs, I for insertions,
+D for deletions, and M for probe sets which interrogated
+more than one polymorphism (i.e., consecutive SNPs, or a SNP
+near an insertion or deletion).
+
+
+
+
+===============================================
+
+
+MUMer alignment
+- $ mummer -mum -b -c S288cgenome-v3.fa YJM789.fsa > yeast.mums
+- $ mummerplot -postscript -m yeast yeast.mums
+- $ gnuplot yeast.gp
+- $ ps2pdf yeast.ps
+
+nucmer is the MUMmer's most user-friendly alignment script for standard DNA sequence alignment. It is a robust pipeline that allows for multiple reference and multiple query sequences to be aligned in a many vs. many fashion. For instance, a very common use for nucmer is to determine the position and orientation of a set of sequence contigs in relation to a finished sequence, however it can be just as effective in comparing two finished sequences to one another.
+$ nucmer -maxmatch -c 100 -p nucmer S288c-genome-v3.fa YJM789.fsa
+$ mummerplot -postscript -p nucmer nucmer.delta
+$ ps2pdf nucmer.ps
+
+
+
+ARTEMIS browser - Import sequence then entries
+DNAPlot - Defaults
+SNP - ??? retrieve from Alignment ???? outputted FA file??
+
+
+perl abacas.1.3.1.pl -r ~/Desktop/Workspace/S288c-genome/Chr02.fa -q ~/Desktop/Workspace/YJM789-genome-2/chr02-1.fsa -p nucmer
