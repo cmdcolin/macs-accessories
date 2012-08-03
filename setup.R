@@ -1,50 +1,40 @@
+#Globals
+
+wigenv=NULL
+wigenv2=NULL
+debug=TRUE
+
+# Alt startup
 source('readplot.R')
-debug=TRUE
-wigenv=new.env()
-wig1=WiggleClass('S96')
-wig2=WiggleClass('HS959')
-wig1$loadWiggles(wigenv) 
-wig2$loadWiggles(wigenv)
-###
-wig1$estimateScalingFactor()
-wig1$estimateVarianceAll()
-wig2$estimateScalingFactor()
-wig2$estimateVarianceAll()
-
-
-############
-# Z score peaks
-wz1=wig1$Z(wig1$peaks)
-wz2=wig2$Z(wig1$peaks)
-wz4=wig2$Z(wig2$peaks)
-wz3=wig1$Z(wig2$peaks)
+if(!is.environment(wigenv))
+  wigenv=new.env()
 
 
 
 
+setup<-function(n1,n2) {
+  wig1=WiggleClass(n1)
+  wig2=WiggleClass(n2)
+  wig1$loadWiggles(wigenv) 
+  wig2$loadWiggles(wigenv)
+  ###
+  wig1$estimateScalingFactor()
+  wig1$estimateVarianceAll()
+  wig2$estimateScalingFactor()
+  wig2$estimateVarianceAll()
+  
+  
+  ############
+  # Z score peaks
+  wz1=wig1$Z(wig1$peaks)
+  wz2=wig2$Z(wig1$peaks)
+  wz4=wig2$Z(wig2$peaks)
+  wz3=wig1$Z(wig2$peaks)
+}
 
 
+setup('S96','HS959')
 
-
-debug=TRUE
-wigenv2=new.env()
-wig3=WiggleClass('S96')
-wig4=WiggleClass('S96rep2u')
-wig3$loadWiggles(wigenv2) 
-wig4$loadWiggles(wigenv2)
-###
-wig3$estimateScalingFactor()
-wig3$estimateVarianceAll()
-wig4$estimateScalingFactor()
-wig4$estimateVarianceAll()
-
-
-############
-# Z score peaks
-wz5=wig3$Z(wig3$peaks)
-wz6=wig4$Z(wig3$peaks)
-wz7=wig4$Z(wig4$peaks)
-wz8=wig3$Z(wig4$peaks)
 
 
 

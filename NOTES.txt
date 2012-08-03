@@ -30,3 +30,7 @@ SNP - ??? retrieve from Alignment ???? outputted FA file??
 
 
 perl abacas.1.3.1.pl -r ~/Desktop/Workspace/S288c-genome/Chr02.fa -q ~/Desktop/Workspace/YJM789-genome-2/chr02-1.fsa -p nucmer
+
+
+===================================
+
