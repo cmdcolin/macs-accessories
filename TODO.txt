@@ -12,7 +12,6 @@ Compare different genomes using LIFTOVER for specific chip-seq binding sites? Le
 ✓ Figure out QQ plot
 ✓ do peak finding using Z score?
 
-
 Binding site specific conservation model
 Compare sequences to empirical chip-seq data comparisons
 Use scaffolding from yeast
@@ -48,17 +47,13 @@ When done considerably less confidence values (0.01 vs 1e-5) is there an issue t
  
 
  
+Create tdd framework?
 Post-poster TODO list
  Analyze linkage
  Compare linkage map to linkage analysis
  Use of genetic markers (what is a single marker regression?)
  Statistical significance of linkage map (population variances)
- start writing paper
- - Include what has been done (synthesize)
- - Include what should be done (hypothesize)
- - Change goals from normalization, bias correction (this work has been overdone clearly, need to answer a new question)
- - Formulate in terms of research goals
- 
+
 
 
 
@@ -66,13 +61,11 @@ Post-poster TODO list
 
 
 TODO July
-Investigate Transgressive inheritance
-- Difference of parental strains divided by stddev of segregants
-- Low scores (<3) is mandelian
-Possibilities - If the difference is high, and then the variance will be high also. However, if the difference is high and the variance is low then no transgressive effect will be observed
+Investigate Transgressive inheritance score from Zheng et al.
+- stddev of segregants divided by the difference of scores in parental strains
+
 
 IMPLEMENT VARIABLE REGIONS
 IMPLEMENT CONSERVED REGIONS
-THIS IS NECESSARY
 
 Start writing!

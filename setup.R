@@ -5,7 +5,7 @@ wigenv2=NULL
 debug=TRUE
 
 # Alt startup
-source('readplot.R')
+source('wiggle')
 if(!is.environment(wigenv))
   wigenv=new.env()
 

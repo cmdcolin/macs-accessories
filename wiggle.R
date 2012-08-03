@@ -20,26 +20,27 @@ WiggleClass<-function(name) {
   ########################
   # Read wiggle files from path into memory and assign filesnames
   nc$loadWiggles=function(e=environment()) {
-    loadWiggle<-function(wigpath,env) {
-      files=list.files(path=wigpath,pattern="*.fsa.wig.gz")
-      for (filename in files) {
-        fn<-paste(wigpath,filename,sep='')
-        if(debug)
-          cat(filename, '\n')
-        if(exists(filename,env))
-          wig<-get(filename,env)
-        else {
-          wig<-read.table(fn, skip=2)
-          assign(filename,wig,env)
-        }
-        nc$wiglist[[filename]]=wig
-      }
-    }
     
     loadWiggle(nc$treatpath,e)
     loadWiggle(nc$controlpath,e)
   }
   
+  
+  nc$loadWiggle<-function(wigpath,env) {
+    files=list.files(path=wigpath,pattern="*.fsa.wig.gz")
+    for (filename in files) {
+      fn<-paste(wigpath,filename,sep='')
+      if(debug)
+        cat(filename, '\n')
+      if(exists(filename,env))
+        wig<-get(filename,env)
+      else {
+        wig<-read.table(fn, skip=2)
+        assign(filename,wig,env)
+      }
+      nc$wiglist[[filename]]=wig
+    }
+  }
 
   
   
