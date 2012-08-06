@@ -1,0 +1,106 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.54cm
+\topmargin 2.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+First semester final report
+\end_layout
+
+\begin_layout Author
+Colin Diesh
+\end_layout
+
+\begin_layout Date
+Senior Thesis Project, Fall 2012
+\end_layout
+
+\begin_layout Abstract
+Transcription factors are proteins which recognize short DNA sequences and
+ bind to the DNA which can affect transcription both positively and negatively.
+ Using chromatin immunoprecipitation and high throughput sequencing (ChIP-seq)
+ we can identify transcription factor binding sites by finding peaks in
+ the data, or where there is an excess of DNA reads from immunoprecipitation.
+ Comparing ChIP-seq data from multiple experiments presents many logistic
+ challenges -- different ChIP-seq experiments have may have different signal/noi
+se ratios and using control experiments and normalization is important.
+ In order to analyze data from differentComparing data from different genomes
+ 
+\end_layout
+
+\begin_layout Abstract
+We investigated methods for comparing transcription factor binding from
+ multiple Chip-Seq experiments.
+ Previous methods to identify conserved transcription factor binding sites
+ from different experiments analyze different genomes separately, then look
+ for binding sites in conserved locations.
+ Transcription factor binding is We investigated methods for comparing transcrip
+tion factor binding from multiple Chip-Seq experiments.
+ We evaluated several existing techniques for ChIP-seq data analysis, and
+ we propose a method for finding ChIP-seq data similarity using a normalized
+ difference score to leverage conservation between related experiments.
+\end_layout
+
+\end_body
+\end_document
