@@ -9,10 +9,10 @@
 \language_package default
 \inputencoding auto
 \fontencoding global
-\font_roman default
-\font_sans default
-\font_typewriter default
-\font_default_family default
+\font_roman times
+\font_sans helvet
+\font_typewriter courier
+\font_default_family rmdefault
 \use_non_tex_fonts false
 \font_sc false
 \font_osf false
@@ -78,28 +78,174 @@ Senior Thesis Project, Fall 2012
 
 \begin_layout Abstract
 Transcription factors are proteins which recognize short DNA sequences and
- bind to the DNA which can affect transcription both positively and negatively.
+ they can regulate gene expression by binding to DNA.
  Using chromatin immunoprecipitation and high throughput sequencing (ChIP-seq)
  we can identify transcription factor binding sites by finding peaks in
- the data, or where there is an excess of DNA reads from immunoprecipitation.
- Comparing ChIP-seq data from multiple experiments presents many logistic
+ the data: places where there is are many DNA reads from immunoprecipitation.
+ Comparing ChIP-seq data from multiple experiments presents many logistical
  challenges -- different ChIP-seq experiments have may have different signal/noi
 se ratios and using control experiments and normalization is important.
- In order to analyze data from differentComparing data from different genomes
- 
+ Comparing transcription factor binding sites from different genomes also
+ presents challenges because binding sites can vary significantly due to
+ modifications of DNA binding sites, etc.
 \end_layout
 
 \begin_layout Abstract
-We investigated methods for comparing transcription factor binding from
- multiple Chip-Seq experiments.
- Previous methods to identify conserved transcription factor binding sites
- from different experiments analyze different genomes separately, then look
- for binding sites in conserved locations.
- Transcription factor binding is We investigated methods for comparing transcrip
-tion factor binding from multiple Chip-Seq experiments.
- We evaluated several existing techniques for ChIP-seq data analysis, and
- we propose a method for finding ChIP-seq data similarity using a normalized
- difference score to leverage conservation between related experiments.
+Previous methods to identify conserved transcription factor binding sites
+ analyze different genomes separately, then look for binding sites in conserved
+ and aligned locations [1].
+ We use a model for comparing transcription factor binding from multiple
+ genomes by analyzing a normalized difference score that uses information
+ from multiple ChIP-seq experiments.
+ We propose that this method can help find conserved binding sites across
+ multiple experiments.
+ We evaluated several existing techniques for analyzing ChIP-seq data analysis
+ and propose our method for comparing of ChIP-seq data.
+\end_layout
+
+\begin_layout Section
+Background
+\end_layout
+
+\begin_layout Standard
+ChIP-seq is a high throughput sequencing method for chromatin immunoprecipitatio
+n (ChIP) for analyzing protein-DNA interactions.
+ ChIP-seq protocols have been developed to analyze transcription factors
+ and histone modifications as well as DNA methylation [citation].
+ Other ChIP protocols also use oligonucleotide arrays for tiling the genome
+ (ChIP-chip).
+ ChIP-seq does not require construction of tiling arrays and so, instead,
+ the analysis of high throughput sequence data is the main focus.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Previous methods to identify conserved transcription factor binding sites
+ in related genomes analyze different genomes separately, and then look
+ for binding sites in conserved alignments from each genome.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Describe method by Odom, Dowell et al.
+ – they use ChIP-chip to analyze binding site differences between human
+ and mouse.
+ 
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+They compared human and mouse genomes separately by characterizing orthologous
+ genes in each
+\end_layout
+
+\begin_layout Enumerate
+Used tiling arrays from gene promoter regions for orthologous gene pairs
+\end_layout
+
+\begin_layout Enumerate
+Proposed two approaches for data anlysis
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+- Gene centric approach for ChIP
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Classify binding as true/false for each gene (tiling array as a whole)
+\end_layout
+
+\begin_layout Enumerate
+Similar to Zheng et al.
+ by identifying target genes 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+- Peak centric approach for analysis
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Classify peaks within tiling array
+\end_layout
+
+\begin_layout Enumerate
+Find peaks relative to the aligned regions
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Open question: still unsure how this was done
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Classify peaks as conserved, turnover, gain/loss, or unaligned
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Graphics
+	filename peak_classification.JPG
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Odom, Dowell results Fig 2c.
+ (Shared binding site patterns)
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+(1) Alignment in humans/mouse exists and binding sites are aligned ~30%
+\end_layout
+
+\begin_layout Enumerate
+(2) Alignment in human/mouse exists but binding site are not aligned ~30%
+\end_layout
+
+\begin_layout Enumerate
+(3) No alignment in human/mouse exists but binding site still shared ~30%
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Conclusion: many shared binding sites are not aligned (60%+) 
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Enumerate
+Questions about Odom, Dowell
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+How can we use their results to answer questions about ChIP-seq where sequence
+ comparison is important for ChIP-seq sequence similarity?
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Enumerate
+Describe methods from Zheng et al.
+ – Genetic analysis of transcription factor binding variation in yeast
 \end_layout
 
 \end_body
