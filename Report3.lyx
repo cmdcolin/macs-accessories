@@ -107,6 +107,10 @@ Previous methods to identify conserved transcription factor binding sites
 Background
 \end_layout
 
+\begin_layout Subsection
+ChIP-seq basics
+\end_layout
+
 \begin_layout Standard
 ChIP-seq is a high throughput sequencing method for chromatin immunoprecipitatio
 n (ChIP) for analyzing protein-DNA interactions.
@@ -122,39 +126,26 @@ n (ChIP) for analyzing protein-DNA interactions.
 
 \end_layout
 
-\begin_layout Standard
-Previous methods to identify conserved transcription factor binding sites
- in related genomes analyze different genomes separately, and then look
- for binding sites in conserved alignments from each genome.
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
+\begin_layout Subsection
+Odom, Dowell et al.
+ - Tissue specific transcriptional regulation has diverged significantly
+ between human and mouse
 \end_layout
 
 \begin_layout Enumerate
-Describe method by Odom, Dowell et al.
- – they use ChIP-chip to analyze binding site differences between human
- and mouse.
+Odom, Dowell et al.
+ used ChIP-chip tiling arrays to analyze binding site differences between
+ human and mouse.
  
 \end_layout
 
-\begin_deeper
 \begin_layout Enumerate
-They compared human and mouse genomes separately by characterizing orthologous
- genes in each
+They found orthologous genes in human and mouse and created tiling arrays
+ from the gene promoter regions
 \end_layout
 
 \begin_layout Enumerate
-Used tiling arrays from gene promoter regions for orthologous gene pairs
-\end_layout
-
-\begin_layout Enumerate
-Proposed two approaches for data anlysis
+They proposed two approaches for data anlysis
 \end_layout
 
 \begin_deeper
@@ -183,15 +174,9 @@ Classify peaks within tiling array
 \end_layout
 
 \begin_layout Enumerate
-Find peaks relative to the aligned regions
+Find 'peaks' using ChIP-chip and compare aligned sites
 \end_layout
 
-\begin_deeper
-\begin_layout Enumerate
-Open question: still unsure how this was done
-\end_layout
-
-\end_deeper
 \begin_layout Enumerate
 Classify peaks as conserved, turnover, gain/loss, or unaligned
 \begin_inset Newline newline
@@ -200,6 +185,7 @@ Classify peaks as conserved, turnover, gain/loss, or unaligned
 
 \begin_inset Graphics
 	filename peak_classification.JPG
+	scale 60
 
 \end_inset
 
@@ -242,10 +228,65 @@ How can we use their results to answer questions about ChIP-seq where sequence
 \end_layout
 
 \end_deeper
+\begin_layout Subsection
+Zheng et al.
+ – Genetic analysis of transcription factor binding variation in yeast
+\end_layout
+
+\begin_layout Enumerate
+Zheng et al.
+ analyzed binding sites from many yeast ChIP-experiments using and found
+ potential sources of binding site differences
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+They first calculated a normalized difference score for ChIP-seq which does
+ background subtraction and normalization for the ChIP-seq data
+\end_layout
+
+\begin_layout Enumerate
+Then second they analyzed the variation of normdiff scores across all experiment
+s to identify cis- and trans- factors contributing to binding site variations
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+They found that cis-factors, which are DNA changes identified using genetic
+ markers and alignments, were the main source of binding variations across
+ genomes
+\end_layout
+
+\begin_layout Enumerate
+They also found trans-factors, defined by genetic markers far away from
+ the binding sites, that were associated with binding variations (AMN1,
+ FLO8)
+\end_layout
+
 \end_deeper
 \begin_layout Enumerate
-Describe methods from Zheng et al.
- – Genetic analysis of transcription factor binding variation in yeast
+They also analyzed linkage and transgressive inheritance
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+One of the main results tools from Zheng et al.
+ for finding binding site variation is the normalized difference (NormDiff)
+ score
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+NormDiff uses a simple random
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Method and approach
+\end_layout
+
+\begin_layout Standard
+We approached the problem using the normalized difference score
 \end_layout
 
 \end_body

@@ -47,6 +47,9 @@ for comparing of ChIP-seq data.
 
 \section{Background}
 
+
+\subsection{ChIP-seq basics}
+
 ChIP-seq is a high throughput sequencing method for chromatin immunoprecipitation
 (ChIP) for analyzing protein-DNA interactions. ChIP-seq protocols
 have been developed to analyze transcription factors and histone modifications
@@ -56,21 +59,15 @@ does not require construction of tiling arrays and so, instead, the
 analysis of high throughput sequence data is the main focus.\\
 
 
-Previous methods to identify conserved transcription factor binding
-sites in related genomes analyze different genomes separately, and
-then look for binding sites in conserved alignments from each genome.\\
-\\
 
+\subsection{Odom, Dowell et al. - Tissue specific transcriptional regulation
+has diverged significantly between human and mouse}
 \begin{enumerate}
-\item Describe method by Odom, Dowell et al. \textendash{} they use ChIP-chip
-to analyze binding site differences between human and mouse. 
-
-\begin{enumerate}
-\item They compared human and mouse genomes separately by characterizing
-orthologous genes in each
-\item Used tiling arrays from gene promoter regions for orthologous gene
-pairs
-\item Proposed two approaches for data anlysis
+\item Odom, Dowell et al. used ChIP-chip tiling arrays to analyze binding
+site differences between human and mouse. 
+\item They found orthologous genes in human and mouse and created tiling
+arrays from the gene promoter regions
+\item They proposed two approaches for data anlysis
 
 \begin{enumerate}
 \item - Gene centric approach for ChIP
@@ -83,13 +80,9 @@ pairs
 
 \begin{enumerate}
 \item Classify peaks within tiling array
-\item Find peaks relative to the aligned regions
-
-\begin{enumerate}
-\item Open question: still unsure how this was done
-\end{enumerate}
+\item Find 'peaks' using ChIP-chip and compare aligned sites
 \item Classify peaks as conserved, turnover, gain/loss, or unaligned\\
-\includegraphics{peak_classification}
+\includegraphics[scale=0.6]{peak_classification}
 \item Odom, Dowell results Fig 2c. (Shared binding site patterns)
 
 \begin{enumerate}
@@ -110,7 +103,39 @@ pairs
 sequence comparison is important for ChIP-seq sequence similarity?
 \end{enumerate}
 \end{enumerate}
-\item Describe methods from Zheng et al. \textendash{} Genetic analysis
-of transcription factor binding variation in yeast\end{enumerate}
 
+\subsection{Zheng et al. \textendash{} Genetic analysis of transcription factor
+binding variation in yeast}
+\begin{enumerate}
+\item Zheng et al. analyzed binding sites from many yeast ChIP-experiments
+using and found potential sources of binding site differences
+
+\begin{enumerate}
+\item They first calculated a normalized difference score for ChIP-seq which
+does background subtraction and normalization for the ChIP-seq data
+\item Then second they analyzed the variation of normdiff scores across
+all experiments to identify cis- and trans- factors contributing to
+binding site variations
+
+\begin{enumerate}
+\item They found that cis-factors, which are DNA changes identified using
+genetic markers and alignments, were the main source of binding variations
+across genomes
+\item They also found trans-factors, defined by genetic markers far away
+from the binding sites, that were associated with binding variations
+(AMN1, FLO8)
+\end{enumerate}
+\item They also analyzed linkage and transgressive inheritance
+\end{enumerate}
+\item One of the main results tools from Zheng et al. for finding binding
+site variation is the normalized difference (NormDiff) score
+
+\begin{enumerate}
+\item NormDiff uses a simple random
+\end{enumerate}
+\end{enumerate}
+
+\section{Method and approach}
+
+We approached the problem using the normalized difference score
 \end{document}
