@@ -16,39 +16,40 @@
 \title{Comparison and analysis of transcription factor binding sites}
 
 
-\title{First semester final report}
-
-
 \author{Colin Diesh}
 
 
-\date{Senior Thesis Project, Fall 2012}
+\date{Senior Thesis Project, Fall 2012\\
+$\,$\\
+First semester final report - Outline}
 \maketitle
 \begin{abstract}
 Transcription factors are proteins which recognize and bind to short
 DNA sequences, and they can play an important role in regulating DNA
 transcription in a gene regulatory network. Comparing transcription
-factor binding sites from different related species can show important
-functional similarities and differences, however transcription factor
-binding sites have also been shown to vary significantly across related
-species and strains. Zheng et al characterized transcription factor
-binding variations by using a normalized difference score to find
-'variable binding regions' across different experiments. We use statistical
-comparison of normalized difference score to find conserved binding
-sites. We also use the DNA alignment from different genomes in order
-to classify binding sites. 
+factor binding sites from different related species can show functional
+differences, however even functionally conserved binding sites have
+been shown to vary significantly. Zheng et al. characterized transcription
+factor binding variations by using a normalized difference score to
+find 'variable binding regions' across different experiments. We use
+statistical comparison of normalized difference score to find conserved
+binding sites and we also use the alignment from different genomes
+in order to classify binding sites. 
 \end{abstract}
 
 \section{Background}
 
-Chromatin immunoprecipitation is a methodology for analyzing protein-DNA
-interactions. Antibodies that bind protein-DNA complexes have been
-developed to do ChIP with transcription factors, histones, and DNA
-methylation (meDIPSeq). Using chromatin immunoprecipitation and high
-throughput sequencing (ChIP-seq) or oligonucleotide arrays for tiling
-the genome (ChIP-chip) we can identify transcription factor binding
-sites. by finding peaks in the data we can analyze transcription factor
-binding. Here we will look at some background papers in the field\\
+Protein-DNA interactions play an important role in gene regulation,
+and chromatin immunoprecipitation (ChIP) is a methodology for analyzing
+these interactions. Antibodies that bind to transcription factors
+or histone modifiers are used to immunoprecipitate the protein-DNA
+complexes. Using chromatin immunoprecipitation and high throughput
+sequencing (ChIP-seq) or oligonucleotide tiling arrays (ChIP-chip)
+we can identify transcription factor binding sites. We search for
+peaks in the data that correspond to an enrichment of ChIP in the
+sequence, which are called binding sites. Comparing ChIP data from
+multiple experiments is important to identify functional differences
+Here we will look at some background papers in the field\\
 
 
 
@@ -56,8 +57,8 @@ binding. Here we will look at some background papers in the field\\
 between human and mouse (Odom, Dowell et al.)}
 \begin{enumerate}
 \item Odom, Dowell et al. used ChIP-chip tiling arrays to analyze binding
-site differences between human and mouse. 
-\item They found orthologous genes in human and mouse and created tiling
+site differences in human and mouse hapetocytes (liver tissue). 
+\item They used orthologous genes in human and mouse, and they created tiling
 arrays from the gene promoter regions
 \item They proposed two approaches for data anlysis
 
