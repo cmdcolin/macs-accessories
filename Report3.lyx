@@ -112,12 +112,12 @@ ChIP-seq basics
 \end_layout
 
 \begin_layout Standard
-ChIP-seq is a high throughput sequencing method for chromatin immunoprecipitatio
-n (ChIP) for analyzing protein-DNA interactions.
- ChIP-seq protocols have been developed to analyze transcription factors
- and histone modifications as well as DNA methylation [citation].
- Other ChIP protocols also use oligonucleotide arrays for tiling the genome
- (ChIP-chip).
+The ChIP-seq protocol uses high throughput sequencing and chromatin immunoprecip
+itation (ChIP) to analyze protein-DNA interactions.
+ Antibodies for immunoprecipitation have been developed to analyze transcription
+ factors, histones, and DNA methylation (meDIPSeq).
+ Another ChIP method uses oligonucleotide arrays for tiling the genome (ChIP-chi
+p) instead of high throughput sequencing.
  ChIP-seq does not require construction of tiling arrays and so, instead,
  the analysis of high throughput sequence data is the main focus.
 \begin_inset Newline newline
@@ -242,32 +242,52 @@ Zheng et al.
 \begin_deeper
 \begin_layout Enumerate
 They first calculated a normalized difference score for ChIP-seq which does
- background subtraction and normalization for the ChIP-seq data
+ background subtraction and normalization to get the 'binding signal'
 \end_layout
 
 \begin_layout Enumerate
-Then second they analyzed the variation of normdiff scores across all experiment
-s to identify cis- and trans- factors contributing to binding site variations
+Then they analyzed the variation of normdiff across all experiments to identify
+ cis- and trans- factors contributing to binding site variations
 \end_layout
 
 \begin_deeper
 \begin_layout Enumerate
-They found that cis-factors, which are DNA changes identified using genetic
- markers and alignments, were the main source of binding variations across
- genomes
+They found that cis-factors, which are DNA changes that were identified
+ using genetic markers and alignments, were the main source of binding variation
+s across genomes
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Graphics
+	filename consensus3.PNG
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Quantitatively, 85% of variable binding regions in a genetic marker regression
+ laid cis to a genetic marker, and the effect size was greater for cis-factors
+ than trans-factors
 \end_layout
 
 \begin_layout Enumerate
-They also found trans-factors, defined by genetic markers far away from
- the binding sites, that were associated with binding variations (AMN1,
- FLO8)
+Note: see methods/approach for how the marker regression is important for
+ our goals
 \end_layout
 
 \end_deeper
 \begin_layout Enumerate
-They also analyzed linkage and transgressive inheritance
+Zheng et al.
+ also found trans-factors, defined by genetic markers far away from the
+ binding sites, that were associated with binding variations (AMN1, FLO8)
 \end_layout
 
+\end_deeper
 \end_deeper
 \begin_layout Enumerate
 One of the main results tools from Zheng et al.
@@ -286,7 +306,59 @@ Method and approach
 \end_layout
 
 \begin_layout Standard
-We approached the problem using the normalized difference score
+Our method uses ChIP-seq data from multiple genomes and it leverages the
+ conservation of DNA sequences to find conserved transcription factor binding
+ sites.
+ We compared ChIP-seq data from two different yeast strains, S96 and HS959
+ (Zheng et al 2010), and demonstrate the need for our proposed method.
+ We used a normalized difference score to identify additional conserved
+ binding sites, and propose modifications to consider multiple genomes concurren
+tly.
+\end_layout
+
+\begin_layout Standard
+Identifying conserved binding sites is important for several reasons
+\end_layout
+
+\begin_layout Standard
+One is that variable regions are of interest for identifying functional
+ differences.
+ Zhenge et al.
+ identified about 900 variable binding regions using their method, and they
+ only confirmed two of the markers using 
+\end_layout
+
+\begin_layout Standard
+The normalized difference (NormDiff) score is a useful statistic for comparing
+ ChIP-seq data that uses background subtraction and normalization.
+ NormDiff uses a simple random model for ChIP-seq and control is defined
+ as: A~Poisson(f+g), B~Poisson(cg) resp.
+ Here, f represents the binding signal, and g represents the background
+ signal, and c is a scaling factor between A,B Then NormDiff is defined
+ for each genome position xi as Z(xi)=(A(xi)-B(xi)/c)/σ The scaling factor
+ c is estimated as the median ratio of A/B, and the variance σ is estimated
+ as √A+B/c² Then the background distribution Z ~Normal(0,1), and deviations
+ from the norm are caused by the binding signal.
+ 
+\end_layout
+
+\begin_layout Standard
+We approached the problem using the normalized difference score.
+ Zheng et al use the normalized difference score primarily to find binding
+ site variability
+\end_layout
+
+\begin_layout Enumerate
+Marker regression is used here to analyze variable binding traits as QTL,
+ however, analyzing binding site alignments and binding site conservation
+ is considered by Odom, Dowell et al to be functional
+\end_layout
+
+\begin_layout Enumerate
+In order to characterize these effects, I have to understand QTL mapping
+ (somewhat difficult) and also develop the algorithm for scoring alignment
+ of binding sites, and whether these effects in yeast can be characterized
+ similar to Odom, Dowell et al.
 \end_layout
 
 \end_body
