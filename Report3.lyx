@@ -77,17 +77,23 @@ Senior Thesis Project, Fall 2012
 \end_layout
 
 \begin_layout Abstract
-Transcription factors are proteins which recognize short DNA sequences and
- they can regulate gene expression by binding to DNA.
+Transcription factors are proteins which recognize and bind to short DNA
+ sequences, and they can play an important role in regulating DNA transcription
+ in a gene regulatory network.
+ Comparing transcription factor binding sites from different related species
+ can show important functional similarities and differences, however transcripti
+on factor binding sites have also been shown to vary significantly across
+ related species and strains.
  Using chromatin immunoprecipitation and high throughput sequencing (ChIP-seq)
- we can identify transcription factor binding sites by finding peaks in
- the data: places where there is are many DNA reads from immunoprecipitation.
- Comparing ChIP-seq data from multiple experiments presents many logistical
- challenges -- different ChIP-seq experiments have may have different signal/noi
-se ratios and using control experiments and normalization is important.
- Comparing transcription factor binding sites from different genomes also
- presents challenges because binding sites can vary significantly due to
- modifications of DNA binding sites, etc.
+ data we can analyze transcription factor binding sites de novo with high
+ precision.
+ However, comparing ChIP-seq data from multiple experiments presents many
+ logistical challenges -- different ChIP-seq experiments have may have different
+ signal/noise ratios, so using control experiments and data normalization
+ is important.
+ Comparing binding sites from different genomes also presents challenges
+ because binding sites can vary significantly due to modifications of DNA
+ binding sites, etc.
 \end_layout
 
 \begin_layout Abstract
@@ -107,19 +113,16 @@ Previous methods to identify conserved transcription factor binding sites
 Background
 \end_layout
 
-\begin_layout Subsection
-ChIP-seq basics
-\end_layout
-
 \begin_layout Standard
-The ChIP-seq protocol uses high throughput sequencing and chromatin immunoprecip
-itation (ChIP) to analyze protein-DNA interactions.
- Antibodies for immunoprecipitation have been developed to analyze transcription
- factors, histones, and DNA methylation (meDIPSeq).
- Another ChIP method uses oligonucleotide arrays for tiling the genome (ChIP-chi
-p) instead of high throughput sequencing.
- ChIP-seq does not require construction of tiling arrays and so, instead,
- the analysis of high throughput sequence data is the main focus.
+Chromatin immunoprecipitation is a methodology for analyzing protein-DNA
+ interactions.
+ Antibodies that bind protein-DNA complexes have been developed to do ChIP
+ with transcription factors, histones, and DNA methylation (meDIPSeq).
+ Using chromatin immunoprecipitation and high throughput sequencing (ChIP-seq)
+ or oligonucleotide arrays for tiling the genome (ChIP-chip) we can identify
+ transcription factor binding sites.
+ by finding peaks in the data we can analyze transcription factor binding.
+ Here we will look at some background papers in the field
 \begin_inset Newline newline
 \end_inset
 
@@ -127,9 +130,8 @@ p) instead of high throughput sequencing.
 \end_layout
 
 \begin_layout Subsection
-Odom, Dowell et al.
- - Tissue specific transcriptional regulation has diverged significantly
- between human and mouse
+Tissue specific transcriptional regulation has diverged significantly between
+ human and mouse (Odom, Dowell et al.)
 \end_layout
 
 \begin_layout Enumerate
@@ -306,46 +308,142 @@ Method and approach
 \end_layout
 
 \begin_layout Standard
-Our method uses ChIP-seq data from multiple genomes and it leverages the
- conservation of DNA sequences to find conserved transcription factor binding
- sites.
+Our method uses ChIP-seq data from different genomes and it uses the alignment
+ of DNA sequences to classify conserved transcription factor binding sites.
  We compared ChIP-seq data from two different yeast strains, S96 and HS959
- (Zheng et al 2010), and demonstrate the need for our proposed method.
+ (Zheng et al 2010), and .
  We used a normalized difference score to identify additional conserved
  binding sites, and propose modifications to consider multiple genomes concurren
 tly.
 \end_layout
 
-\begin_layout Standard
-Identifying conserved binding sites is important for several reasons
-\end_layout
-
-\begin_layout Standard
-One is that variable regions are of interest for identifying functional
- differences.
- Zhenge et al.
- identified about 900 variable binding regions using their method, and they
- only confirmed two of the markers using 
+\begin_layout Subsection
+Normalized difference scores
 \end_layout
 
 \begin_layout Standard
 The normalized difference (NormDiff) score is a useful statistic for comparing
  ChIP-seq data that uses background subtraction and normalization.
- NormDiff uses a simple random model for ChIP-seq and control is defined
- as: A~Poisson(f+g), B~Poisson(cg) resp.
- Here, f represents the binding signal, and g represents the background
- signal, and c is a scaling factor between A,B Then NormDiff is defined
- for each genome position xi as Z(xi)=(A(xi)-B(xi)/c)/σ The scaling factor
- c is estimated as the median ratio of A/B, and the variance σ is estimated
- as √A+B/c² Then the background distribution Z ~Normal(0,1), and deviations
- from the norm are caused by the binding signal.
+ NormDiff uses a simple random model for ChIP-seq (
+\begin_inset Formula $A$
+\end_inset
+
+) and control (
+\begin_inset Formula $B$
+\end_inset
+
+) is defined as
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $A\sim Poisson(f+g)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $B\sim Poisson(cg)$
+\end_inset
+
  
 \end_layout
 
 \begin_layout Standard
-We approached the problem using the normalized difference score.
- Zheng et al use the normalized difference score primarily to find binding
- site variability
+Where- 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $f$
+\end_inset
+
+ represents the binding signal
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g$
+\end_inset
+
+ represents the background signal
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $c$
+\end_inset
+
+ is a scaling factor between 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Then, NormDiff is defined for each genome position 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ as 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Z(x_{i})=\frac{A(x_{i})-B(x_{i})/c}{\sigma}
+\]
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Then the scaling factor 
+\begin_inset Formula $c$
+\end_inset
+
+ is estimated as the median ratio of 
+\begin_inset Formula $A/B$
+\end_inset
+
+ and the variance 
+\begin_inset Formula $\sigma$
+\end_inset
+
+ is estimated from the maximum variance of 
+\begin_inset Formula $\sqrt{A+B/c^{2}}$
+\end_inset
+
+ in a local window.
+ Then, the background score is where 
+\begin_inset Formula $Z~Normal(0,1)$
+\end_inset
+
+ and deviations from the norm are caused by the strong ChIP-seq binding
+ signals.
+ 
+\end_layout
+
+\begin_layout Section
+Problem statement
+\end_layout
+
+\begin_layout Standard
+Zheng et al use the normalized difference score primarily to find binding
+ site variability.
+ This approach is useful in finding quantitative differences in binding
+ using a QTL analysis.
+ We wanted to perform a more detailed analysis of Their approach for applying
+ QTL analysis to transcription factor binding using NormDiff was very useful.
+ However, they generated over 900 variable binding regions with their parameters.
 \end_layout
 
 \begin_layout Enumerate
@@ -361,5 +459,19 @@ In order to characterize these effects, I have to understand QTL mapping
  similar to Odom, Dowell et al.
 \end_layout
 
+\begin_layout Enumerate
+Identifying conserved binding sites is important for several reasons
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+One is that variable regions are of interest for identifying functional
+ differences.
+ Zhenge et al.
+ identified about 900 variable binding regions using their method, and they
+ only confirmed two of the markers using 
+\end_layout
+
+\end_deeper
 \end_body
 \end_document
