@@ -84,29 +84,13 @@ Transcription factors are proteins which recognize and bind to short DNA
  can show important functional similarities and differences, however transcripti
 on factor binding sites have also been shown to vary significantly across
  related species and strains.
- Using chromatin immunoprecipitation and high throughput sequencing (ChIP-seq)
- data we can analyze transcription factor binding sites de novo with high
- precision.
- However, comparing ChIP-seq data from multiple experiments presents many
- logistical challenges -- different ChIP-seq experiments have may have different
- signal/noise ratios, so using control experiments and data normalization
- is important.
- Comparing binding sites from different genomes also presents challenges
- because binding sites can vary significantly due to modifications of DNA
- binding sites, etc.
-\end_layout
-
-\begin_layout Abstract
-Previous methods to identify conserved transcription factor binding sites
- analyze different genomes separately, then look for binding sites in conserved
- and aligned locations [1].
- We use a model for comparing transcription factor binding from multiple
- genomes by analyzing a normalized difference score that uses information
- from multiple ChIP-seq experiments.
- We propose that this method can help find conserved binding sites across
- multiple experiments.
- We evaluated several existing techniques for analyzing ChIP-seq data analysis
- and propose our method for comparing of ChIP-seq data.
+ Zheng et al characterized transcription factor binding variations by using
+ a normalized difference score to find 'variable binding regions' across
+ different experiments.
+ We use the normalized difference score to find conserved binding sites.
+ We also address issues of DNA alignment from different genomes in order
+ to classify binding sites similar to Odom, Dowell et al 2007.
+ 
 \end_layout
 
 \begin_layout Section
@@ -272,9 +256,10 @@ s across genomes
 
 \begin_deeper
 \begin_layout Enumerate
-Quantitatively, 85% of variable binding regions in a genetic marker regression
- laid cis to a genetic marker, and the effect size was greater for cis-factors
- than trans-factors
+They used a 'single marker regression' to associate variable binding regions
+ with genetic markers and found that 85% of variable binding regions in
+ a genetic marker regression laid cis to a genetic marker, and the effect
+ size was greater for cis-factors than trans-factors
 \end_layout
 
 \begin_layout Enumerate
@@ -293,24 +278,47 @@ Zheng et al.
 \end_deeper
 \begin_layout Enumerate
 One of the main results tools from Zheng et al.
- for finding binding site variation is the normalized difference (NormDiff)
- score
+ is the use of NormDiff
 \end_layout
 
 \begin_deeper
 \begin_layout Enumerate
-NormDiff uses a simple random
+NormDiff is used to find 'variable binding regions', and these are linked
+ with genetic markers using 'single marker regression'
 \end_layout
 
+\begin_deeper
+\begin_layout Enumerate
+This technique is adopted from QTL analysis, which I don't fully understand,
+ but as far as i can tell, it does not address which sites are conserved,
+ or which sites are aligned, but relies on genetic markers for this.
+\end_layout
+
+\begin_layout Enumerate
+Can we address these issues systematically to find--
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Conserved binding sites?
+\end_layout
+
+\begin_layout Enumerate
+Aligned binding sites?
+\end_layout
+
+\end_deeper
+\end_deeper
 \end_deeper
 \begin_layout Section
 Method and approach
 \end_layout
 
 \begin_layout Standard
-Our method uses ChIP-seq data from different genomes and it uses the alignment
- of DNA sequences to classify conserved transcription factor binding sites.
- We compared ChIP-seq data from two different yeast strains, S96 and HS959
+We use ChIP-seq data gathered from different genomes and the alignment of
+ DNA sequences to classify conserved transcription factor binding sites
+ similar to Odom, Dowell et al 2007.
+ We compared ChIP-seq data from two different yeast strains, S288c and YJM789,
  (Zheng et al 2010), and .
  We used a normalized difference score to identify additional conserved
  binding sites, and propose modifications to consider multiple genomes concurren
@@ -336,17 +344,15 @@ The normalized difference (NormDiff) score is a useful statistic for comparing
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $A\sim Poisson(f+g)$
+\begin_inset Formula 
+\begin{eqnarray*}
+A & \sim & Poisson(f+g)\\
+B & \sim & Poisson(cg)
+\end{eqnarray*}
+
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $B\sim Poisson(cg)$
-\end_inset
-
- 
 \end_layout
 
 \begin_layout Standard
@@ -436,40 +442,61 @@ Then the scaling factor
 Problem statement
 \end_layout
 
-\begin_layout Standard
+\begin_layout Itemize
 Zheng et al use the normalized difference score primarily to find binding
  site variability.
  This approach is useful in finding quantitative differences in binding
  using a QTL analysis.
- We wanted to perform a more detailed analysis of Their approach for applying
- QTL analysis to transcription factor binding using NormDiff was very useful.
- However, they generated over 900 variable binding regions with their parameters.
+ 
+\end_layout
+
+\begin_layout Itemize
+We wanted to perform a more detailed analysis of their approach for applying
+ QTL analysis to transcription factor binding using NormDiff.
+ 
+\end_layout
+
+\begin_layout Itemize
+We want to characterize conserved binding sites using peak centric and alignment
+s Odom, Dowell et al's.
+ What will this get us? It will classify the 900+ 'variable binding sites'
+ that Zheng et al found for example.
+ 
+\end_layout
+
+\begin_layout Itemize
+The only 'classification' that is made is whether cis-factors or trans-factors
+ are associated via QTL and their effect
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Graphics
+	filename midnight.PNG
+	scale 60
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
-Marker regression is used here to analyze variable binding traits as QTL,
- however, analyzing binding site alignments and binding site conservation
- is considered by Odom, Dowell et al to be functional
-\end_layout
-
-\begin_layout Enumerate
-In order to characterize these effects, I have to understand QTL mapping
- (somewhat difficult) and also develop the algorithm for scoring alignment
- of binding sites, and whether these effects in yeast can be characterized
- similar to Odom, Dowell et al.
-\end_layout
-
-\begin_layout Enumerate
-Identifying conserved binding sites is important for several reasons
+They use marker regression is to analyze variable binding traits as cis-
+ and trans- factors as QTL
 \end_layout
 
 \begin_deeper
 \begin_layout Enumerate
-One is that variable regions are of interest for identifying functional
- differences.
- Zhenge et al.
- identified about 900 variable binding regions using their method, and they
- only confirmed two of the markers using 
+In order to characterize marker regression, we have to understand QTL mapping
+\end_layout
+
+\begin_layout Enumerate
+Then we have to develop the algorithm for scoring alignment of binding sites
+ similar to Odom, Dowell et al.
 \end_layout
 
 \end_deeper
