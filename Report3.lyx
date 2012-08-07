@@ -65,6 +65,10 @@
 \begin_body
 
 \begin_layout Title
+Comparison and analysis of transcription factor binding sites
+\end_layout
+
+\begin_layout Title
 First semester final report
 \end_layout
 
@@ -87,9 +91,10 @@ on factor binding sites have also been shown to vary significantly across
  Zheng et al characterized transcription factor binding variations by using
  a normalized difference score to find 'variable binding regions' across
  different experiments.
- We use the normalized difference score to find conserved binding sites.
- We also address issues of DNA alignment from different genomes in order
- to classify binding sites similar to Odom, Dowell et al 2007.
+ We use statistical comparison of normalized difference score to find conserved
+ binding sites.
+ We also use the DNA alignment from different genomes in order to classify
+ binding sites.
  
 \end_layout
 
