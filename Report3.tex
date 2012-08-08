@@ -10,6 +10,15 @@
 \usepackage{geometry}
 \geometry{verbose,tmargin=2.54cm,bmargin=2.54cm,lmargin=2.54cm,rmargin=2.54cm}
 \usepackage{graphicx}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+
+\makeatother
+
 \usepackage{babel}
 \begin{document}
 
@@ -75,7 +84,9 @@ arrays from the gene promoter regions
 \item Classify peaks within tiling array
 \item Find 'peaks' using ChIP-chip and compare aligned sites
 \item Classify peaks as conserved, turnover, gain/loss, or unaligned\\
-\includegraphics[scale=0.6]{peak_classification}
+\includegraphics[scale=0.6]{peak_classification}\\
+Figure 1. Peak classifications from Odom, Dowell et al.\\
+
 \item Odom, Dowell results Fig 2c. (Shared binding site patterns)
 
 \begin{enumerate}
@@ -86,7 +97,20 @@ arrays from the gene promoter regions
 \item (3) No alignment in human/mouse exists but binding site still shared
 \textasciitilde{}30\%
 \end{enumerate}
-\item Conclusion: many shared binding sites are not aligned (60\%+) 
+\item Conclusion: many shared binding sites are not aligned (60\%+) \\
+\\
+\begin{tabular}{|c|c|c|c|c|}
+\hline 
+ & FOXA2  & HNF1A & HNF4A & HNF6\tabularnewline
+\hline 
+\hline 
+Binding sites aligns & 34\% & 41\%  & 23\% & 30\%\tabularnewline
+\hline 
+Binding sites do not align & 39\% & 31\% & 38\%  & 41\%\tabularnewline
+\hline 
+No shared alignment & 28\% & 28\% & 38\%  & 30\%\tabularnewline
+\hline 
+\end{tabular}
 \end{enumerate}
 \end{enumerate}
 \item Questions about Odom, Dowell
@@ -114,7 +138,10 @@ to identify cis- and trans- factors contributing to binding site variations
 \item They found that cis-factors, which are DNA changes that were identified
 using genetic markers and alignments, were the main source of binding
 variations across genomes\\
-\includegraphics[scale=0.6]{consensus3}
+\\
+\includegraphics[scale=0.6]{consensus3}\\
+Figure 2. cis-factor correlated with variable binding is a modified
+transcription factor binding motif
 
 \begin{enumerate}
 \item They used a 'single marker regression' to associate variable binding
@@ -132,13 +159,17 @@ variations (AMN1, FLO8)
 \item One of the main results tools from Zheng et al. is the use of NormDiff
 
 \begin{enumerate}
-\item NormDiff is used to find 'variable binding regions', and these are
-linked with genetic markers using 'single marker regression'
+\item NormDiff is used to find 'variable binding regions' by finding regions
+where normdiff scores have a high degree of variability across experiments
 
 \begin{enumerate}
-\item This technique is adopted from QTL analysis, which I don't fully understand,
-but as far as i can tell, it does not address which sites are conserved,
-or which sites are aligned, but relies on genetic markers for this.
+\item Then, variable binding regions are linked with genetic markers using
+'single marker regression', a technique used to analyze quantitative
+trait loci (QTL)
+\item The genetic markers indicate SNP and indel, but this method does not
+explicitely address the alignment of binding sites.
+\item Furthermore, they found many variable binding regions, on the order
+of 900, so classifying them using an alignment would be useful
 \item Can we address these issues systematically to find--
 
 \begin{enumerate}
@@ -151,21 +182,20 @@ or which sites are aligned, but relies on genetic markers for this.
 
 \section{Method and approach}
 
-We use ChIP-seq data gathered from different genomes and the alignment
-of DNA sequences to classify conserved transcription factor binding
-sites similar to Odom, Dowell et al 2007. We compared ChIP-seq data
-from two different yeast strains, S288c and YJM789, (Zheng et al 2010),
-and . We used a normalized difference score to identify additional
-conserved binding sites, and propose modifications to consider multiple
-genomes concurrently.
+We use ChIP-seq data gathered from two seperate yeast strains (S288c
+and YJM789) and then we used alignment of DNA sequences to classify
+conserved transcription factor binding sites similar to Odom, Dowell
+et al 2007. We used a normalized difference score that was defined
+by Zheng et al. to identify conserved binding sites, and propose modifications
+to consider multiple genomes concurrently.
 
 
 \subsection{Normalized difference scores}
 
 The normalized difference (NormDiff) score is a useful statistic for
-comparing ChIP-seq data that uses background subtraction and normalization.
-NormDiff uses a simple random model for ChIP-seq ($A$) and control
-($B$) is defined as
+comparing ChIP-seq data that uses background subtraction and normalization
+to obtain the ChIP-seq binding signal. NormDiff uses a simple random
+model for ChIP-seq ($A$) and control ($B$) which is defined as
 
 \begin{eqnarray*}
 A & \sim & Poisson(f+g)\\
@@ -177,7 +207,7 @@ Where-
 
 $f$ represents the binding signal
 
-$g$ represents the background signal
+$g$ represents the background noise
 
 $c$ is a scaling factor between $A$ and $B$\\
 
@@ -199,27 +229,71 @@ by the strong ChIP-seq binding signals.
 \section{Problem statement}
 \begin{itemize}
 \item Zheng et al use the normalized difference score primarily to find
-binding site variability. This approach is useful in finding quantitative
-differences in binding using a QTL analysis. 
-\item We wanted to perform a more detailed analysis of their approach for
-applying QTL analysis to transcription factor binding using NormDiff. 
-\item We want to characterize conserved binding sites using peak centric
-and alignments Odom, Dowell et al's. What will this get us? It will
-classify the 900+ 'variable binding sites' that Zheng et al found
-for example. 
-\item The only 'classification' that is made is whether cis-factors or trans-factors
-are associated via QTL and their effect\\
-\\
-\includegraphics[scale=0.6]{midnight}\end{itemize}
-\begin{enumerate}
-\item They use marker regression is to analyze variable binding traits as
-cis- and trans- factors as QTL
+binding site variations. This approach is useful in finding quantitative
+binding differences, and they use their technique for QTL mapping. 
+\item We wanted to perform a more detailed analysis of their approach by
+evaluating the alignment of binding sites transcription factor binding
+using NormDiff. 
+\item We want to classify binding sites using their alignment as being conserved,
+gain/loss, turnover, or even unaligned
 
-\begin{enumerate}
-\item In order to characterize marker regression, we have to understand
-QTL mapping
-\item Then we have to develop the algorithm for scoring alignment of binding
-sites similar to Odom, Dowell et al.\end{enumerate}
-\end{enumerate}
+\begin{itemize}
+\item This can help in analyzing the many (900+) 'variable binding sites'
+that Zheng et al found in their analysis.
+\item The classification made by Zheng et al is linking variable binding
+with genetic markers
+\item This is a technique from QTL analysis to associate cis-factors or
+trans-factors with their effects (binding variation)\\
+\\
+\includegraphics[scale=0.6]{midnight}\\
+Figure 3. The cis-factors explain a larger proportion of variable
+binding than trans-factors
+\end{itemize}
+\end{itemize}
+
+\section{Previous work and application}
+
+We were interested in finding conserved binding sites by looking for
+evidence of binding sites even where binding sites were not called
+by MACS. We used an algorithm that reanalyzes binding sites using
+the normalized difference score.
+
+
+\subsection{Experimental approach}
+\begin{itemize}
+\item We identified a set of high confidence peaks in ChIP-seq data using
+MACS 
+\item Then we used a sliding window to examine the maximum average NormDiff
+peak score overlapping the peaks and the syntenic regions of each
+ChIP-seq experiment 
+\item Based on the background distribution $Z\sim Normal(0,1)$ we used
+the maximum average NormDiff score of our scanning window to calculate
+the probability of observing a peak as $P(z\leq Z)$ 
+\item Conserved binding sites were identified as samples where NormDiff
+scores were highly different from the background distribution. \\
+\\
+\includegraphics[scale=0.3]{untitled1}\\
+Figure 4. The HS959 normdiff score of shared peaks with S96 are higher
+than the HS959 normdiff scores for peaks unique to S96. However, there
+is significant overlap between the normdiff scores from each
+\end{itemize}
+
+\subsection{Results}
+\begin{itemize}
+\item We found 42 new binding sites in HS959 with P<0.05 that were conserved
+in S96 that were not identified by MACS. Also 4 of these binding sites
+were conserved with P<0.01
+\item We found 76 binding sites in S96 with P<0.05 that were conserved in
+HS959, and 13 of these binding sites were conserved with P<0.01 
+\item To evaluate the significance of these findings, we evaluated peaks
+in S96 using normalized difference scores and identified 98\% (885/897)
+of the binding sites that MACS identifies at P<0.05 confidence level,
+and 60\% (563/897) binding sites at a P<0.01. 
+\item In HS959 we identified 85\% (729/824) of the same peaks that MACS
+identifies at a 0.05 confidence level and 46\% (365/824) peaks at
+P<0.01\\
+\includegraphics[scale=0.3]{untitled3}\\
+Figure 5. The maximum average NormDiff score is used to identify additional
+binding sites that are conserved in each experiment. \end{itemize}
 
 \end{document}

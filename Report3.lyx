@@ -192,6 +192,15 @@ Classify peaks as conserved, turnover, gain/loss, or unaligned
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+Figure 1.
+ Peak classifications from Odom, Dowell et al.
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
@@ -215,6 +224,215 @@ Odom, Dowell results Fig 2c.
 \end_deeper
 \begin_layout Enumerate
 Conclusion: many shared binding sites are not aligned (60%+) 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="5">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+FOXA2 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+HNF1A
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+HNF4A
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+HNF6
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Binding sites aligns
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+34%
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+41% 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+23%
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+30%
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Binding sites do not align
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+39%
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+31%
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+38% 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+41%
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+No shared alignment
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+28%
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+28%
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+38% 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+30%
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
 \end_layout
 
 \end_deeper
@@ -261,6 +479,10 @@ s across genomes
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Graphics
 	filename consensus3.PNG
 	scale 60
@@ -268,6 +490,12 @@ s across genomes
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+Figure 2.
+ cis-factor correlated with variable binding is a modified transcription
+ factor binding motif
 \end_layout
 
 \begin_deeper
@@ -299,15 +527,25 @@ One of the main results tools from Zheng et al.
 
 \begin_deeper
 \begin_layout Enumerate
-NormDiff is used to find 'variable binding regions', and these are linked
- with genetic markers using 'single marker regression'
+NormDiff is used to find 'variable binding regions' by finding regions where
+ normdiff scores have a high degree of variability across experiments
 \end_layout
 
 \begin_deeper
 \begin_layout Enumerate
-This technique is adopted from QTL analysis, which I don't fully understand,
- but as far as i can tell, it does not address which sites are conserved,
- or which sites are aligned, but relies on genetic markers for this.
+Then, variable binding regions are linked with genetic markers using 'single
+ marker regression', a technique used to analyze quantitative trait loci
+ (QTL)
+\end_layout
+
+\begin_layout Enumerate
+The genetic markers indicate SNP and indel, but this method does not explicitely
+ address the alignment of binding sites.
+\end_layout
+
+\begin_layout Enumerate
+Furthermore, they found many variable binding regions, on the order of 900,
+ so classifying them using an alignment would be useful
 \end_layout
 
 \begin_layout Enumerate
@@ -331,14 +569,12 @@ Method and approach
 \end_layout
 
 \begin_layout Standard
-We use ChIP-seq data gathered from different genomes and the alignment of
- DNA sequences to classify conserved transcription factor binding sites
- similar to Odom, Dowell et al 2007.
- We compared ChIP-seq data from two different yeast strains, S288c and YJM789,
- (Zheng et al 2010), and .
- We used a normalized difference score to identify additional conserved
- binding sites, and propose modifications to consider multiple genomes concurren
-tly.
+We use ChIP-seq data gathered from two seperate yeast strains (S288c and
+ YJM789) and then we used alignment of DNA sequences to classify conserved
+ transcription factor binding sites similar to Odom, Dowell et al 2007.
+ We used a normalized difference score that was defined by Zheng et al.
+ to identify conserved binding sites, and propose modifications to consider
+ multiple genomes concurrently.
 \end_layout
 
 \begin_layout Subsection
@@ -347,7 +583,8 @@ Normalized difference scores
 
 \begin_layout Standard
 The normalized difference (NormDiff) score is a useful statistic for comparing
- ChIP-seq data that uses background subtraction and normalization.
+ ChIP-seq data that uses background subtraction and normalization to obtain
+ the ChIP-seq binding signal.
  NormDiff uses a simple random model for ChIP-seq (
 \begin_inset Formula $A$
 \end_inset
@@ -356,7 +593,7 @@ The normalized difference (NormDiff) score is a useful statistic for comparing
 \begin_inset Formula $B$
 \end_inset
 
-) is defined as
+) which is defined as
 \end_layout
 
 \begin_layout Standard
@@ -386,7 +623,7 @@ Where-
 \begin_inset Formula $g$
 \end_inset
 
- represents the background signal
+ represents the background noise
 \end_layout
 
 \begin_layout Standard
@@ -460,29 +697,37 @@ Problem statement
 
 \begin_layout Itemize
 Zheng et al use the normalized difference score primarily to find binding
- site variability.
- This approach is useful in finding quantitative differences in binding
- using a QTL analysis.
+ site variations.
+ This approach is useful in finding quantitative binding differences, and
+ they use their technique for QTL mapping.
  
 \end_layout
 
 \begin_layout Itemize
-We wanted to perform a more detailed analysis of their approach for applying
- QTL analysis to transcription factor binding using NormDiff.
+We wanted to perform a more detailed analysis of their approach by evaluating
+ the alignment of binding sites transcription factor binding using NormDiff.
  
 \end_layout
 
 \begin_layout Itemize
-We want to characterize conserved binding sites using peak centric and alignment
-s Odom, Dowell et al's.
- What will this get us? It will classify the 900+ 'variable binding sites'
- that Zheng et al found for example.
- 
+We want to classify binding sites using their alignment as being conserved,
+ gain/loss, turnover, or even unaligned
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+This can help in analyzing the many (900+) 'variable binding sites' that
+ Zheng et al found in their analysis.
 \end_layout
 
 \begin_layout Itemize
-The only 'classification' that is made is whether cis-factors or trans-factors
- are associated via QTL and their effect
+The classification made by Zheng et al is linking variable binding with
+ genetic markers
+\end_layout
+
+\begin_layout Itemize
+This is a technique from QTL analysis to associate cis-factors or trans-factors
+ with their effects (binding variation)
 \begin_inset Newline newline
 \end_inset
 
@@ -498,23 +743,128 @@ The only 'classification' that is made is whether cis-factors or trans-factors
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Enumerate
-They use marker regression is to analyze variable binding traits as cis-
- and trans- factors as QTL
-\end_layout
-
-\begin_deeper
-\begin_layout Enumerate
-In order to characterize marker regression, we have to understand QTL mapping
-\end_layout
-
-\begin_layout Enumerate
-Then we have to develop the algorithm for scoring alignment of binding sites
- similar to Odom, Dowell et al.
+Figure 3.
+ The cis-factors explain a larger proportion of variable binding than trans-fact
+ors
 \end_layout
 
 \end_deeper
+\begin_layout Section
+Previous work and application
+\end_layout
+
+\begin_layout Standard
+We were interested in finding conserved binding sites by looking for evidence
+ of binding sites even where binding sites were not called by MACS.
+ We used an algorithm that reanalyzes binding sites using the normalized
+ difference score.
+\end_layout
+
+\begin_layout Subsection
+Experimental approach
+\end_layout
+
+\begin_layout Itemize
+We identified a set of high confidence peaks in ChIP-seq data using MACS
+ 
+\end_layout
+
+\begin_layout Itemize
+Then we used a sliding window to examine the maximum average NormDiff peak
+ score overlapping the peaks and the syntenic regions of each ChIP-seq experimen
+t 
+\end_layout
+
+\begin_layout Itemize
+Based on the background distribution 
+\begin_inset Formula $Z\sim Normal(0,1)$
+\end_inset
+
+ we used the maximum average NormDiff score of our scanning window to calculate
+ the probability of observing a peak as 
+\begin_inset Formula $P(z\leq Z)$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+Conserved binding sites were identified as samples where NormDiff scores
+ were highly different from the background distribution.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Graphics
+	filename untitled1.PNG
+	scale 30
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Figure 4.
+ The HS959 normdiff score of shared peaks with S96 are higher than the HS959
+ normdiff scores for peaks unique to S96.
+ However, there is significant overlap between the normdiff scores from
+ each
+\end_layout
+
+\begin_layout Subsection
+Results
+\end_layout
+
+\begin_layout Itemize
+We found 42 new binding sites in HS959 with P<0.05 that were conserved in
+ S96 that were not identified by MACS.
+ Also 4 of these binding sites were conserved with P<0.01
+\end_layout
+
+\begin_layout Itemize
+We found 76 binding sites in S96 with P<0.05 that were conserved in HS959,
+ and 13 of these binding sites were conserved with P<0.01 
+\end_layout
+
+\begin_layout Itemize
+To evaluate the significance of these findings, we evaluated peaks in S96
+ using normalized difference scores and identified 98% (885/897) of the
+ binding sites that MACS identifies at P<0.05 confidence level, and 60% (563/897)
+ binding sites at a P<0.01.
+ 
+\end_layout
+
+\begin_layout Itemize
+In HS959 we identified 85% (729/824) of the same peaks that MACS identifies
+ at a 0.05 confidence level and 46% (365/824) peaks at P<0.01
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Graphics
+	filename untitled3.PNG
+	scale 30
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Figure 5.
+ The maximum average NormDiff score is used to identify additional binding
+ sites that are conserved in each experiment.
+ 
+\end_layout
+
 \end_body
 \end_document
