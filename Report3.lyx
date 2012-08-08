@@ -12,7 +12,7 @@
 \font_roman times
 \font_sans helvet
 \font_typewriter courier
-\font_default_family rmdefault
+\font_default_family default
 \use_non_tex_fonts false
 \font_sc false
 \font_osf false
@@ -90,18 +90,17 @@ First semester final report - Outline
 
 \begin_layout Abstract
 Transcription factors are proteins which recognize and bind to short DNA
- sequences, and they can play an important role in regulating DNA transcription
- in a gene regulatory network.
- Comparing transcription factor binding sites from different related species
- can show functional differences, however even functionally conserved binding
- sites have been shown to vary significantly.
+ sequences, and they can play an important role in regulating DNA transcription.
+ Comparing transcription factor binding sites from different experiments
+ can show functional differences and similarities, however binding sites
+ have been shown to vary significantly even from closely related individuals.
  Zheng et al.
  characterized transcription factor binding variations by using a normalized
  difference score to find 'variable binding regions' across different experiment
 s.
- We use statistical comparison of normalized difference score to find conserved
- binding sites and we also use the alignment from different genomes in order
- to classify binding sites.
+ We use the normalized difference score from multiple experiments and we
+ also use the DNA alignment from different genomes in order to classify
+ binding sites.
  
 \end_layout
 
@@ -118,11 +117,11 @@ Protein-DNA interactions play an important role in gene regulation, and
  Using chromatin immunoprecipitation and high throughput sequencing (ChIP-seq)
  or oligonucleotide tiling arrays (ChIP-chip) we can identify transcription
  factor binding sites.
- We search for peaks in the data that correspond to an enrichment of ChIP
- in the sequence, which are called binding sites.
+ We search for peaks in the data which corresponds to an enrichment of ChIP
+ in the sequences.
  Comparing ChIP data from multiple experiments is important to identify
- functional differences Here we will look at some background papers in the
- field
+ functional similarities and differences.
+ Here we will look at some background papers in the field
 \begin_inset Newline newline
 \end_inset
 
@@ -167,7 +166,7 @@ Similar to Zheng et al.
 
 \end_deeper
 \begin_layout Enumerate
-- Peak centric approach for analysis
+- Peak centric approach
 \end_layout
 
 \begin_deeper
@@ -196,7 +195,8 @@ Classify peaks as conserved, turnover, gain/loss, or unaligned
 \end_inset
 
 Figure 1.
- Peak classifications from Odom, Dowell et al.
+ Peak classifications in terms of DNA alignment (Odom, Dowell et al.
+ 2007)
 \begin_inset Newline newline
 \end_inset
 
@@ -204,26 +204,7 @@ Figure 1.
 \end_layout
 
 \begin_layout Enumerate
-Odom, Dowell results Fig 2c.
- (Shared binding site patterns)
-\end_layout
-
-\begin_deeper
-\begin_layout Enumerate
-(1) Alignment in humans/mouse exists and binding sites are aligned ~30%
-\end_layout
-
-\begin_layout Enumerate
-(2) Alignment in human/mouse exists but binding site are not aligned ~30%
-\end_layout
-
-\begin_layout Enumerate
-(3) No alignment in human/mouse exists but binding site still shared ~30%
-\end_layout
-
-\end_deeper
-\begin_layout Enumerate
-Conclusion: many shared binding sites are not aligned (60%+) 
+Odom, Dowell results many shared binding sites are not aligned (60%+)
 \begin_inset Newline newline
 \end_inset
 
@@ -245,7 +226,7 @@ Conclusion: many shared binding sites are not aligned (60%+)
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+Shared binding sites
 \end_layout
 
 \end_inset
@@ -386,7 +367,7 @@ Binding sites do not align
 \begin_inset Text
 
 \begin_layout Plain Layout
-No shared alignment
+No alignment
 \end_layout
 
 \end_inset
@@ -433,6 +414,16 @@ No shared alignment
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Table 1.
+ Percent of binding sites that align from different transcription factors
+ in human and mouse hepatocytes
 \end_layout
 
 \end_deeper
@@ -443,8 +434,10 @@ Questions about Odom, Dowell
 
 \begin_deeper
 \begin_layout Enumerate
-How can we use their results to answer questions about ChIP-seq where sequence
- comparison is important for ChIP-seq sequence similarity?
+How can we use their results to answer questions about more similar functional
+ comparisons.
+ ChIP-seq where sequence comparison is important for ChIP-seq sequence similarit
+y?
 \end_layout
 
 \end_deeper
@@ -520,60 +513,68 @@ Zheng et al.
 
 \end_deeper
 \end_deeper
+\begin_layout Section
+Problem statement
+\end_layout
+
 \begin_layout Enumerate
 One of the main results tools from Zheng et al.
  is the use of NormDiff
 \end_layout
 
-\begin_deeper
 \begin_layout Enumerate
-NormDiff is used to find 'variable binding regions' by finding regions where
- normdiff scores have a high degree of variability across experiments
+NormDiff is used to find 'variable binding regions', where normdiff scores
+ have a high degree of variability across experiments
 \end_layout
 
-\begin_deeper
 \begin_layout Enumerate
 Then, variable binding regions are linked with genetic markers using 'single
- marker regression', a technique used to analyze quantitative trait loci
- (QTL)
-\end_layout
-
-\begin_layout Enumerate
-The genetic markers indicate SNP and indel, but this method does not explicitely
- address the alignment of binding sites.
-\end_layout
-
-\begin_layout Enumerate
-Furthermore, they found many variable binding regions, on the order of 900,
- so classifying them using an alignment would be useful
-\end_layout
-
-\begin_layout Enumerate
-Can we address these issues systematically to find--
+ marker regression'
 \end_layout
 
 \begin_deeper
 \begin_layout Enumerate
-Conserved binding sites?
+This marker technique is used to analyze quantitative trait loci (QTL) and
+ to identify cis-factors and trans-factors
 \end_layout
 
 \begin_layout Enumerate
-Aligned binding sites?
+The genetic markers indicate SNP and indel modifications, but the marker
+ regression does not explicitely address the alignment of binding sites
 \end_layout
 
 \end_deeper
-\end_deeper
-\end_deeper
+\begin_layout Enumerate
+We want to classify binding sites as being having conserved, gain/loss,
+ turnover, and unaligned alignments similar to Odom, Dowell et al.
+\end_layout
+
+\begin_layout Enumerate
+Furthermore, Zheng et al say that 84% of variable binding regions overlap
+ the binding sites, so this our classification would also characterize many
+ of the variable binding regions.
+\end_layout
+
+\begin_layout Standard
+This new problem of classifying binding sites can help quantify binding
+ site similarity and differences.
+ However, our problem that we addressed in our previous application was
+ for finding conserved binding sites.
+ Therefore, we used only aligned ChIP-seq data to look for additional signal
+ in the noise to find binding sites that weren't called by other algorithms.
+ My problem statement here is meant to show a broader perspective however.
+\end_layout
+
 \begin_layout Section
 Method and approach
 \end_layout
 
 \begin_layout Standard
 We use ChIP-seq data gathered from two seperate yeast strains (S288c and
- YJM789) and then we used alignment of DNA sequences to classify conserved
- transcription factor binding sites similar to Odom, Dowell et al 2007.
+ YJM789) and then we used alignment of DNA sequences to try to find conserved
+ transcription factor binding sites that other algorithms did not identify.
  We used a normalized difference score that was defined by Zheng et al.
- to identify conserved binding sites, and propose modifications to consider
+ to identify conserved binding sites, and we proposed modifications to consider
  multiple genomes concurrently.
 \end_layout
 
@@ -691,91 +692,19 @@ Then the scaling factor
  
 \end_layout
 
-\begin_layout Section
-Problem statement
-\end_layout
-
-\begin_layout Itemize
-Zheng et al use the normalized difference score primarily to find binding
- site variations.
- This approach is useful in finding quantitative binding differences, and
- they use their technique for QTL mapping.
- 
-\end_layout
-
-\begin_layout Itemize
-We wanted to perform a more detailed analysis of their approach by evaluating
- the alignment of binding sites transcription factor binding using NormDiff.
- 
-\end_layout
-
-\begin_layout Itemize
-We want to classify binding sites using their alignment as being conserved,
- gain/loss, turnover, or even unaligned
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-This can help in analyzing the many (900+) 'variable binding sites' that
- Zheng et al found in their analysis.
-\end_layout
-
-\begin_layout Itemize
-The classification made by Zheng et al is linking variable binding with
- genetic markers
-\end_layout
-
-\begin_layout Itemize
-This is a technique from QTL analysis to associate cis-factors or trans-factors
- with their effects (binding variation)
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Graphics
-	filename midnight.PNG
-	scale 60
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-Figure 3.
- The cis-factors explain a larger proportion of variable binding than trans-fact
-ors
-\end_layout
-
-\end_deeper
-\begin_layout Section
-Previous work and application
-\end_layout
-
-\begin_layout Standard
-We were interested in finding conserved binding sites by looking for evidence
- of binding sites even where binding sites were not called by MACS.
- We used an algorithm that reanalyzes binding sites using the normalized
- difference score.
-\end_layout
-
 \begin_layout Subsection
 Experimental approach
 \end_layout
 
 \begin_layout Itemize
-We identified a set of high confidence peaks in ChIP-seq data using MACS
- 
+We identified a set of high confidence binding sites in ChIP-seq data using
+ MACS (Zhang et al, 2008)
 \end_layout
 
 \begin_layout Itemize
 Then we used a sliding window to examine the maximum average NormDiff peak
- score overlapping the peaks and the syntenic regions of each ChIP-seq experimen
-t 
+ score overlapping the peaks and the syntenic regions of each binding site
+ from each ChIP-seq experiment 
 \end_layout
 
 \begin_layout Itemize
@@ -871,13 +800,11 @@ Discussion
 \end_layout
 
 \begin_layout Standard
-We identified conserved binding sites from multiple ChIP-seq by using a
- normalized difference score.
- We identified a number of binding sites that were shared with a high probabilit
-y that were not identified by peak finding algorithms.
+We identified some additional conserved binding sites using the normalized
+ difference score that were not identified by peak finding algorithms.
  Our work could be extended to use more sophisticated statistical models.
- We considered modifying NormDiff scores to use data from multiple experiments
- in order to find conserved binding sites.
+ For example, we considered modifying NormDiff scores to use data from multiple
+ experiments in order to find conserved binding sites.
  The additive and subtractive NormDiff scores find conserved and differential
  expression.
  
@@ -1004,7 +931,7 @@ Figure 7.
 \end_layout
 
 \begin_layout Subsection
-Drawbacks of NormDiff
+Drawbacks of our approach
 \end_layout
 
 \begin_layout Standard
@@ -1029,8 +956,9 @@ One of the reasons for having less confidence in P-values is because NormDiff
  Because of this, finding high confidence peaks relies on using the FDR
  in MACS, and it is actually possible to use FDR to adjust the P-value from
  MACS to be more leniant.
- Because of the weakness, using NormDiff to re-analyze ChIP-seq data that
- MACS already did not call seems unproductive.
+ So, because the weakness of NormDiff to find conserved binding sites in
+ ChIP-seq data with confidence, it seems unproductive to do this analysis.
+ 
 \end_layout
 
 \begin_layout Subsection
@@ -1038,18 +966,23 @@ Applications of NormDiff
 \end_layout
 
 \begin_layout Standard
-NormDiff score does have interesting applications for finding conserved
- and differential binding sites.
- For example, Zheng et al.
- defined what they call a 'transgressive score
+NormDiff scores have interesting applications for finding conserved and
+ differential binding sites besides our method.
+ One marked example was the use of the NormDiff score to find variable binding
+ regions across many ChIP-seq experiments by Zheng et al.
+ Another example is what Zheng et al.
+ describe as a 
+\begin_inset Quotes eld
+\end_inset
+
+transgressive score
 \begin_inset Quotes erd
 \end_inset
 
- to evaluate whether binding sites from yeast cross strains were inherited
- from their parents.
+ which is used to evaluate whether binding sites from yeast cross strains
+ were inherited from their parents.
  The transgressive score analyzes the variance of normdiff scores across
- all children versus the normdiff scores from the parents -- it is defined
- as: 
+ all children versus the difference of the parents -- it is defined as 
 \begin_inset Formula 
 \[
 \frac{var(Z)}{Z_{parent1}-Z_{parent2}}
@@ -1065,9 +998,9 @@ They say that if the transgressive score is low, then the binding site is
  inherited from one of the parents, and so in some sense it was conserved.
  However, if the transgressive score is high then the binding site was an
  extreme phenotype not found in either parent.
- Their analysis shows in yeast children that some even lowly expressed peaks
- might be called transgressive because they are not conserved with the parents
- at an expected value.
+ Their analysis shows in yeast that some even lowly expressed peaks might
+ be called transgressive because they are not conserved with the same strength
+ of the parents' binding sites.
  
 \end_layout
 
@@ -1098,18 +1031,27 @@ ChIP-Seq signal tracks showing Ste12-binding sites that segregate in a Mendelian
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
-Conclusions
+Next steps
 \end_layout
 
 \begin_layout Standard
-Normalized difference scores have a wide variety of applications for comparing
+Normalized difference scores have a variety of applications for comparing
  ChIP-seq experiments.
- Extending our analysis to classify binding sites according to their alignment
- will improve our ability to analyze functional binding site similarities
- and differences.
+ We used normalized difference scores to find conserved binding sites in
+ multiple experiments.
+ However, there are some significant challenges in this analysis.
+ We will extend our methods to classify binding sites according to their
+ alignment similar to Odom, Dowell et al and this will improve our ability
+ to characterize 'variable binding regions' also.
+ Overall, these methods will be able to better identify binding site differences
+ an similarities.
  
 \end_layout
 
