@@ -272,7 +272,7 @@ the probability of observing a peak as $P(z\leq Z)$
 \item Conserved binding sites were identified as samples where NormDiff
 scores were highly different from the background distribution. \\
 \\
-\includegraphics[scale=0.3]{untitled1}\\
+\includegraphics[scale=0.4]{Rplot20}\\
 Figure 4. The HS959 normdiff score of shared peaks with S96 are higher
 than the HS959 normdiff scores for peaks unique to S96. However, there
 is significant overlap between the normdiff scores from each
@@ -292,8 +292,125 @@ and 60\% (563/897) binding sites at a P<0.01.
 \item In HS959 we identified 85\% (729/824) of the same peaks that MACS
 identifies at a 0.05 confidence level and 46\% (365/824) peaks at
 P<0.01\\
-\includegraphics[scale=0.3]{untitled3}\\
+\includegraphics[scale=0.4]{Rplot25}\\
 Figure 5. The maximum average NormDiff score is used to identify additional
-binding sites that are conserved in each experiment. \end{itemize}
+binding sites that are conserved in each experiment. 
+\end{itemize}
 
+\section{Discussion}
+
+We identified conserved binding sites from multiple ChIP-seq by using
+a normalized difference score. We identified a number of binding sites
+that were shared with a high probability that were not identified
+by peak finding algorithms. Our work could be extended to use more
+sophisticated statistical models. We considered modifying NormDiff
+scores to use data from multiple experiments in order to find conserved
+binding sites. The additive and subtractive NormDiff scores find conserved
+and differential expression. 
+
+
+\subsection{Modified normdiff score}
+
+We propose using a modified NormDiff score that uses data from multiple
+experiments. A NormDiff score that adds data from two experiments,
+A1,B1,A2, and B2 can be defined as \\
+\[
+Z_{add}(x_{i})=\frac{(A_{1}-B_{1}/c_{1})+(A_{2}-B_{2}/c_{2})}{\sigma}
+\]
+
+
+Then the scaling factors $c_{1}$and $c_{2}$ are estimated from data,
+and the variance is $\sigma=\sqrt{A_{1}+B_{1}/c_{1}^{2}+A_{2}+B_{2}/c{}_{2}^{2}}$ 
+
+A NormDiff score that subtracts data from two experiments could also
+be defined as
+\[
+Z_{sub}(x_{i})=\frac{(A_{1}-B_{1}/c_{1})-(A_{2}-B_{2}/c_{2})}{\sigma}
+\]
+
+
+The variance for $Z_{sub}$ would be the same as the variance for
+$Z_{add}$. It is possible that adding and subtracting NormDiff scores
+might be able to help in identifying conserved and differential binding.
+For example, if the subtractive score is small but the additive score
+is large, then the binding site is likely to be conserved in both
+experiments.\\
+
+
+\includegraphics[scale=0.4]{Rplot28}
+
+Figure 6. $Z_{add}$ vs. $Z_{sub}$ for S96 and HS959. This plot is
+similar to a MA plot because log product and log ratio are similar
+to adding and subtracting the scores. The unique and shared binding
+sites are colored
+
+\includegraphics[scale=0.4]{Rplot05}
+
+Figure 7. MA-plot of shared and unique peaks from S96 and HS959. Unique
+peaks to S96 colored green, unique peaks to HS959 colored red, shared
+peaks from both colored blue.
+
+.
+
+
+\subsection{Drawbacks of NormDiff}
+
+Our approach tries to find evidence for conserved binding sites by
+analyzing data using normalized difference scores. Our approach gives
+some evidence of peaks with high confidence P-values, such as our
+results of finding new peaks with P<0.01. However, these findings
+have much less confidence than thresholds set by MACS (P<1e-5). Given
+that our technique for calculating P-value is similar to MACS, by
+finding large deviations from the background distribution, our results
+are not very strong. 
+
+One of the reasons for having less confidence in P-values is because
+NormDiff uses control data for background subtraction. MACS on the
+other hand uses only ChIP-seq data to calculate P-values, and does
+not subtract control data. Instead MACS uses control data for filtering
+and empirical FDR. Because of this, finding high confidence peaks
+relies on using the FDR in MACS, and it is actually possible to use
+FDR to adjust the P-value from MACS to be more leniant. Because of
+the weakness, using NormDiff to re-analyze ChIP-seq data that MACS
+already did not call seems unproductive.
+
+
+\subsection{Applications of NormDiff}
+
+NormDiff score does have interesting applications for finding conserved
+and differential binding sites. For example, Zheng et al. defined
+what they call a 'transgressive score'' to evaluate whether binding
+sites from yeast cross strains were inherited from their parents.
+The transgressive score analyzes the variance of normdiff scores across
+all children versus the normdiff scores from the parents -- it is
+defined as: 
+\[
+\frac{var(Z)}{Z_{parent1}-Z_{parent2}}
+\]
+
+
+They say that if the transgressive score is low, then the binding
+site is inherited from one of the parents, and so in some sense it
+was conserved. However, if the transgressive score is high then the
+binding site was an extreme phenotype not found in either parent.
+Their analysis shows in yeast children that some even lowly expressed
+peaks might be called transgressive because they are not conserved
+with the parents at an expected value. 
+
+\includegraphics[scale=0.6]{untitled4}
+
+Figure 8. Comparison of the signal tracks from different ChIP-seq
+scores shows that some experiments. ``ChIP-Seq signal tracks showing
+Ste12-binding sites that segregate in a Mendelian (left) or transgressive
+(middle and right) fashion. The colour indicates genotype background
+in the depicted regions: red (S96), green (HS959). Asterisks indicate
+peaks of interest''
+
+
+\section{Conclusions}
+
+Normalized difference scores have a wide variety of applications for
+comparing ChIP-seq experiments. Extending our analysis to classify
+binding sites according to their alignment will improve our ability
+to analyze functional binding site similarities and differences. 
 \end{document}
