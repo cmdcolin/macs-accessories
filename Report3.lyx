@@ -179,7 +179,7 @@ Find 'peaks' using ChIP-chip and compare aligned sites
 \end_layout
 
 \begin_layout Enumerate
-Classify peaks as conserved, turnover, gain/loss, or unaligned
+Peaks as conserved, turnover, gain/loss, or unaligned
 \begin_inset Newline newline
 \end_inset
 
@@ -195,7 +195,8 @@ Classify peaks as conserved, turnover, gain/loss, or unaligned
 \end_inset
 
 Figure 1.
- Peak classifications in terms of DNA alignment (Odom, Dowell et al.
+ Transcription factor binding sites are classified in terms of DNA alignment
+ (Odom, Dowell et al.
  2007)
 \begin_inset Newline newline
 \end_inset
@@ -487,8 +488,8 @@ s across genomes
 \end_inset
 
 Figure 2.
- cis-factor correlated with variable binding is a modified transcription
- factor binding motif
+ Modifications to DNA motifs in the yeast population correlated with variable
+ transcription factor binding (Zheng et al, 2010)
 \end_layout
 
 \begin_deeper
@@ -514,58 +515,6 @@ Zheng et al.
 \end_deeper
 \end_deeper
 \begin_layout Section
-Problem statement
-\end_layout
-
-\begin_layout Enumerate
-One of the main results tools from Zheng et al.
- is the use of NormDiff
-\end_layout
-
-\begin_layout Enumerate
-NormDiff is used to find 'variable binding regions', where normdiff scores
- have a high degree of variability across experiments
-\end_layout
-
-\begin_layout Enumerate
-Then, variable binding regions are linked with genetic markers using 'single
- marker regression'
-\end_layout
-
-\begin_deeper
-\begin_layout Enumerate
-This marker technique is used to analyze quantitative trait loci (QTL) and
- to identify cis-factors and trans-factors
-\end_layout
-
-\begin_layout Enumerate
-The genetic markers indicate SNP and indel modifications, but the marker
- regression does not explicitely address the alignment of binding sites
-\end_layout
-
-\end_deeper
-\begin_layout Enumerate
-We want to classify binding sites as being having conserved, gain/loss,
- turnover, and unaligned alignments similar to Odom, Dowell et al.
-\end_layout
-
-\begin_layout Enumerate
-Furthermore, Zheng et al say that 84% of variable binding regions overlap
- the binding sites, so this our classification would also characterize many
- of the variable binding regions.
-\end_layout
-
-\begin_layout Standard
-This new problem of classifying binding sites can help quantify binding
- site similarity and differences.
- However, our problem that we addressed in our previous application was
- for finding conserved binding sites.
- Therefore, we used only aligned ChIP-seq data to look for additional signal
- in the noise to find binding sites that weren't called by other algorithms.
- My problem statement here is meant to show a broader perspective however.
-\end_layout
-
-\begin_layout Section
 Method and approach
 \end_layout
 
@@ -586,7 +535,8 @@ Normalized difference scores
 The normalized difference (NormDiff) score is a useful statistic for comparing
  ChIP-seq data that uses background subtraction and normalization to obtain
  the ChIP-seq binding signal.
- NormDiff uses a simple random model for ChIP-seq (
+ The NormDiff score from Zheng et al.
+ uses a simple random model for ChIP-seq (
 \begin_inset Formula $A$
 \end_inset
 
@@ -594,7 +544,7 @@ The normalized difference (NormDiff) score is a useful statistic for comparing
 \begin_inset Formula $B$
 \end_inset
 
-) which is defined as
+) defined as
 \end_layout
 
 \begin_layout Standard
@@ -647,7 +597,11 @@ Where-
 \end_layout
 
 \begin_layout Standard
-Then, NormDiff is defined for each genome position 
+Then, the NormDiff 
+\begin_inset Formula $Z$
+\end_inset
+
+ is defined for each genome position 
 \begin_inset Formula $x_{i}$
 \end_inset
 
@@ -692,61 +646,63 @@ Then the scaling factor
  
 \end_layout
 
-\begin_layout Subsection
-Experimental approach
-\end_layout
+\begin_layout Standard
+\begin_inset Graphics
+	filename Rplot08.png
+	scale 30
 
-\begin_layout Itemize
-We identified a set of high confidence binding sites in ChIP-seq data using
- MACS (Zhang et al, 2008)
-\end_layout
-
-\begin_layout Itemize
-Then we used a sliding window to examine the maximum average NormDiff peak
- score overlapping the peaks and the syntenic regions of each binding site
- from each ChIP-seq experiment 
-\end_layout
-
-\begin_layout Itemize
-Based on the background distribution 
-\begin_inset Formula $Z\sim Normal(0,1)$
-\end_inset
-
- we used the maximum average NormDiff score of our scanning window to calculate
- the probability of observing a peak as 
-\begin_inset Formula $P(z\leq Z)$
-\end_inset
-
- 
-\end_layout
-
-\begin_layout Itemize
-Conserved binding sites were identified as samples where NormDiff scores
- were highly different from the background distribution.
- 
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
 \end_inset
 
 
 \begin_inset Graphics
-	filename Rplot20.png
+	filename Rplot05_2.png
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 3.
+ (left) Kernel density plot of NormDiff for whole genome shows approx.
+ normal distribution of background reads.
+ (right) Q-Q Plot shows that NormDiff scores ChIP-seq binding signals are
+ highly different from the background 
+\end_layout
+
+\begin_layout Subsection
+Finding conserved binding sites
+\end_layout
+
+\begin_layout Standard
+We identified a set of high confidence binding sites in ChIP-seq data using
+ MACS (Zhang et al, 2008).
+ However, we found that there was evidence for shared binding sites from
+ both parents at this threshold.
+ We compared the NormDiff scores from binding sites in one experiment with
+ the syntenic regions of the other experiments, and we found that there
+ was considerable overlap between the NormDiff scores of the shared binding
+ sites with the sites that were not called by MACS (Figure 4)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename image7.png
 	scale 40
 
 \end_inset
 
 
-\begin_inset Newline newline
-\end_inset
+\end_layout
 
+\begin_layout Standard
 Figure 4.
- The HS959 normdiff score of shared peaks with S96 are higher than the HS959
- normdiff scores for peaks unique to S96.
- However, there is significant overlap between the normdiff scores from
- each
+ The NormDiff scores from binding sites found in one ChIP-seq experiment
+ compared with the NormDiff score of the syntenic region from a different
+ experiment.
+ Shared binding sites are identified as orange, and binding sites specific
+ to S96 and HS959 are blue and purple respectively.
 \end_layout
 
 \begin_layout Subsection
@@ -800,8 +756,9 @@ Discussion
 \end_layout
 
 \begin_layout Standard
-We identified some additional conserved binding sites using the normalized
- difference score that were not identified by peak finding algorithms.
+We identified some additional evidence for conserved binding sites by using
+ the normalized difference score that were not identified by peak finding
+ algorithms.
  Our work could be extended to use more sophisticated statistical models.
  For example, we considered modifying NormDiff scores to use data from multiple
  experiments in order to find conserved binding sites.
@@ -1039,6 +996,62 @@ ChIP-Seq signal tracks showing Ste12-binding sites that segregate in a Mendelian
 
 \begin_layout Section
 Next steps
+\end_layout
+
+\begin_layout Subsection
+Problem statement
+\end_layout
+
+\begin_layout Enumerate
+One of the main results tools from Zheng et al.
+ is the use of NormDiff
+\end_layout
+
+\begin_layout Enumerate
+NormDiff is used to find 'variable binding regions', where normdiff scores
+ have a high degree of variability across experiments
+\end_layout
+
+\begin_layout Enumerate
+Then, variable binding regions are linked with genetic markers using 'single
+ marker regression'
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+This marker technique is used to analyze quantitative trait loci (QTL) and
+ to identify cis-factors and trans-factors
+\end_layout
+
+\begin_layout Enumerate
+The genetic markers indicate SNP and indel modifications, but the marker
+ regression does not explicitely address the alignment of binding sites
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+We want to classify binding sites as being having conserved, gain/loss,
+ turnover, and unaligned alignments similar to Odom, Dowell et al.
+\end_layout
+
+\begin_layout Enumerate
+Furthermore, Zheng et al say that 84% of variable binding regions overlap
+ the binding sites, so this our classification would also characterize many
+ of the variable binding regions.
+\end_layout
+
+\begin_layout Standard
+This new problem of classifying binding sites can help quantify binding
+ site similarity and differences.
+ However, our problem that we addressed in our previous application was
+ for finding conserved binding sites.
+ Therefore, we used only aligned ChIP-seq data to look for additional signal
+ in the noise to find binding sites that weren't called by other algorithms.
+ My problem statement here is meant to show a broader perspective however.
+\end_layout
+
+\begin_layout Section
+Conclusion
 \end_layout
 
 \begin_layout Standard
