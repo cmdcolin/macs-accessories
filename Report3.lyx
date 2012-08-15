@@ -995,7 +995,38 @@ ChIP-Seq signal tracks showing Ste12-binding sites that segregate in a Mendelian
 \end_layout
 
 \begin_layout Section
-Next steps
+Conservation analysis
+\end_layout
+
+\begin_layout Standard
+The problem of finding conserved binding sites is important for ChIP-seq.
+ Our approach analyzes high confidence peaks that are identified by MACS,
+ however, our results do not return the same high probability or conserved
+ binding sites.
+ We could use a less strict threshold for identifying binding sites using
+ MACS, but then we would have to analyze more binding sites, and potentially,
+ more false positives.
+ In this situation, using the empirical false discovery rate (FDR) to guide
+ analysis is important because the P-values reported by MACS do not necessarily
+ incorporate control data.
+ Using FDR values less than 1% is recommended by some analysis pipelines
+ for peak calling and conservation analysis (Bardet, 2012).
+\end_layout
+
+\begin_layout Standard
+Other methods for identifying conserved binding sites have been developed
+ using other normalization models.
+ One application of note is MANorm: a robust model for quantitative comparison
+ of ChIP-seq datasets (Shao et al, 2012).
+ MANorm compares the shared binding sites identified using MACS, and then
+ it normalizes the read counts using a linear regression.
+ Then the normalization is extrapolated to all peaks, and they are able
+ to identify new conserved peaks by comparing the normalized read counts
+ from both experiments using a bayesian Poisson model.
+ This model is accurate by using a discrete distribution, and  compare with
+ our approach, which is only approximately normal.
+ The model helps identify conserved binding sites are calculatede by comparing
+ the normalized read counts from both experiments.
 \end_layout
 
 \begin_layout Subsection
