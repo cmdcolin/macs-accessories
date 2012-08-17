@@ -146,25 +146,17 @@ Tissue specific transcriptional regulation has diverged significantly between
  2007)
 \end_layout
 
-\begin_layout Enumerate
+\begin_layout Standard
 Odom, Dowell et al.
  used ChIP-chip tiling arrays to analyze binding site differences in human
  and mouse hapetocytes (liver tissue).
- 
+ They used orthologous genes in human and mouse, and they created tiling
+ arrays from the gene promoter regions and they proposed two approaches
+ for data anlysis
 \end_layout
 
 \begin_layout Enumerate
-They used orthologous genes in human and mouse, and they created tiling
- arrays from the gene promoter regions
-\end_layout
-
-\begin_layout Enumerate
-They proposed two approaches for data anlysis
-\end_layout
-
-\begin_deeper
-\begin_layout Enumerate
-- Gene centric approach for ChIP
+Gene centric approach for ChIP
 \end_layout
 
 \begin_deeper
@@ -172,6 +164,7 @@ They proposed two approaches for data anlysis
 Classify binding as true/false for each gene (tiling array as a whole)
 \end_layout
 
+\begin_deeper
 \begin_layout Enumerate
 Similar to Zheng et al.
  by identifying target genes 
@@ -442,70 +435,52 @@ Table 1.
 
 \end_deeper
 \end_deeper
-\begin_layout Enumerate
-Questions about Odom, Dowell
-\end_layout
-
-\begin_deeper
-\begin_layout Enumerate
-How can we use their results to answer questions about more similar functional
- comparisons.
- ChIP-seq where sequence comparison is important for ChIP-seq sequence similarit
-y?
-\end_layout
-
-\end_deeper
 \begin_layout Subsection
 Genetic analysis of transcription factor binding variation in yeast (Zheng
  et al.
  2010)
 \end_layout
 
-\begin_layout Enumerate
+\begin_layout Standard
 Zheng et al.
- analyzed binding sites from ChIP-seq experiments using crosses from two
- yeast strains and found potential causes of transcription factor binding
- variation
-\end_layout
-
-\begin_deeper
-\begin_layout Enumerate
-They first calculated the normalized difference score (NormDiff) for each
- experiment to get the ChIP-seq 'binding signal' (see section 2.1) 
+ analyzed ChIP-seq data for transcription factor Ste12 using crosses from
+ two yeast strains and they found potential causes of transcription factor
+ binding variation.
+ 
 \end_layout
 
 \begin_layout Enumerate
-Then they analyzed the variation of NormDiff scores to identify 'variable
- binding regions' across all experiments, and they identified cis- and trans-
- factors that contribute to these variations
+They calculated a normalized difference score to get the ChIP-seq 'binding
+ signal' (see section 2.1) and they analyzed the variation of NormDiff scores
+ to identify 'variable binding regions'.
 \end_layout
 
-\begin_deeper
 \begin_layout Enumerate
-They used a 'single marker regression' to associate 'variable binding regions'
+They identified cis- and trans- factors that contribute to binding variation
+ using a genetic marker regression to associate 'variable binding regions'
  with genetic markers
 \end_layout
 
+\begin_deeper
 \begin_layout Enumerate
-They found cis-factors which are genetic markers that are close to the variable
- binding regions that were identified as the main source of binding variation
- (Figure 2)
+cis-factors were identified as genetic markers that are close to the variable
+ binding regions that were associated with binding variation (Figure 2)
 \end_layout
 
 \begin_layout Enumerate
-They also found trans-factors, defined by 'variable binding regions' associated
- with genetic markers far away from the binding sites
+trans-factors were identified as genetic markers that are far away from
+ the binding sites that were associated with binding variation
 \end_layout
 
 \begin_deeper
 \begin_layout Enumerate
-This analysis also identified trans-clusters which were variable binding
- regions associated with a distinct class of genes
+They identified trans-clusters, which were trans-factors that were associated
+ with a distinct class of genes (GO-enrichment)
 \end_layout
 
 \begin_layout Enumerate
-This analysis also tested for the trans-acting genes responsible for the
- binding variation using knockout methods
+Then they tested for trans-acting genes responsible for the binding variation
+ using knockout methods
 \begin_inset Newline newline
 \end_inset
 
@@ -531,45 +506,88 @@ Figure 2.
 
 \end_deeper
 \end_deeper
-\end_deeper
 \begin_layout Subsection
-Conservation of ChIP-seq binding sites, techniques
+Conservation of ChIP-seq binding sites
 \end_layout
 
 \begin_layout Standard
-The problem of finding conserved binding sites is important for analyzing
- ChIP-seq.
+While finding causes of binding variation is important for comparing biological
+ differences, the problem of finding conserved binding sites is important
+ for analyzing ChIP-seq also.
  ChIP-seq experiments are subject to many variables including noise, bias,
- and normalization issues (Citation).
- To find shared binding sites, we want to identify a threshold for peak
- finding that can be shared by both experiments.
- If we set a low threshold, we may have to analyze many more binding sites,
- and potentially, more false positives.
- In this situation, using the empirical false discovery rate (FDR) to guide
- analysis is important.
- The P-values reported by MACS do not necessarily tell us anything about
- control data, however the FDR uses a data swap.
- Therefore, using FDR values less than 1% is recommended for peak calling
- and conservation analysis (Bardet, 2012).
+ and normalization issues (Shao et al.
+ 2012).
+ 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Enumerate
+To find conserved binding sites, we want to identify a threshold for peak
+ finding that can be shared by both experiments.
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+If we set a low threshold, we may have to analyze many more binding sites,
+ and potentially, more false positives.
+ 
+\end_layout
+
+\begin_layout Enumerate
+In this situation, using the empirical false discovery rate (FDR) to guide
+ analysis is important.
+ 
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+The P-values reported by MACS do not necessarily tell us anything about
+ control data, however the FDR uses a data swap.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Using FDR values less than 1% is recommended for peak calling and conservation
+ analysis (Bardet, 2012).
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Enumerate
 Other methods for identifying conserved binding sites have been developed
- using a normalization model.
- One application of note MANorm: a robust model for quantitative comparison
+ to model normalization
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+One application of note MANorm: a robust model for quantitative comparison
  of ChIP-seq datasets
 \shape italic
  
 \shape default
 (Shao et al, 2012).
- MANorm normalizes the read counts using a linear regression for the tag
+ 
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+MANorm normalizes the read counts using a linear regression for the tag
  counts that are identified from shared binding sites.
- The normalization model is extrapolated to all peaks, and they use the
- normalized read counts to find conserved binding sites.
- Additionally a bayesian Poisson model is used to consider data from both
+ 
+\end_layout
+
+\begin_layout Enumerate
+The normalization model is extrapolated to all peaks, and the normalized
+ read count is used to find conserved binding sites.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Additionally a bayesian Poisson model is used to consider data from both
  experiments concurrently.
 \end_layout
 
+\end_deeper
+\end_deeper
 \begin_layout Section
 Method and approach
 \end_layout
@@ -1061,6 +1079,22 @@ Normalized difference scores have a variety of applications for comparing
  Overall, these methods will be able to better identify binding site differences
  an similarities.
  
+\end_layout
+
+\begin_layout Section
+Bibliography
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+btprint "btPrintAll"
+bibfiles "Exported Items/Exported Items"
+options "plain"
+
+\end_inset
+
+
 \end_layout
 
 \end_body
