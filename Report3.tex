@@ -148,9 +148,11 @@ with variable transcription factor binding (Zheng et al, 2010)
 
 While finding causes of binding variation is important for comparing
 biological differences, the problem of finding conserved binding sites
-is important for analyzing ChIP-seq also. ChIP-seq experiments are
-subject to many variables including noise, bias, and normalization
-issues (Shao et al. 2012). 
+also is important for measuring data integrety and for assessing biological
+invariates. However, ChIP-seq experiments are subject to many variables
+including noise, bias, and normalization issues (Shao et al. 2012).
+Therefore, developing a good model for finding data similarity is
+important.
 \begin{enumerate}
 \item To find conserved binding sites, we want to identify a threshold for
 peak finding that can be shared by both experiments.
@@ -177,12 +179,16 @@ of ChIP-seq datasets\textit{ }(Shao et al, 2012).
 
 \begin{enumerate}
 \item MANorm normalizes the read counts using a linear regression for the
-tag counts that are identified from shared binding sites. 
+tag counts that are identified from shared binding sites. (Figure)
 \item The normalization model is extrapolated to all peaks, and the normalized
 read count is used to find conserved binding sites. 
 \item Additionally a bayesian Poisson model is used to consider data from
 both experiments concurrently.
 \end{enumerate}
+\item Another method for normalization was the normalized difference score
+from Zheng et al. which we use for our studies.\\
+\\
+\includegraphics[scale=0.5]{\string"MAnorm_ a robust model for quantitative  - Zhen Shao\string".eps}
 \end{enumerate}
 \end{enumerate}
 
@@ -250,8 +256,7 @@ for shared binding sites from both parents at this threshold. We compared
 the NormDiff scores from binding sites in one experiment with the
 syntenic regions of the other experiments, and we found that there
 was considerable overlap between the NormDiff scores of the shared
-binding sites with the sites that were not called by MACS (Figure
-4)
+binding sites with the sites that were not called by MACS.
 
 
 \subsection{Results}
