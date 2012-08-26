@@ -1110,7 +1110,7 @@ Bibliography
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
 btprint "btPrintAll"
-bibfiles "Exported Items/Exported Items"
+bibfiles "References"
 options "plain"
 
 \end_inset
