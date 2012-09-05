@@ -166,29 +166,39 @@ We did a source-code study of MACS, a popular free and open source software
 on and processing.
  The published description of the program is quite thorough, but we found
  additional info that helped us understand the details of ChIP-seq processing.
+ MACS is a command line program that has a number of configurability options
+ and understanding the processing that MACS does is important for understanding
+ these options.
  
 \end_layout
 
 \begin_layout Standard
-MACS is a command line program that has a number of configurability options.
- To understand these options it is important to understand the processing
- that MACS does.
- First MACS loads ChIP-seq tags and builds an internal representation in
- a standard Python hash data structure called a dictionary.
+MACS loads aligned ChIP-seq reads and it builds an internal representation
+ in a Python hash data structure called a dictionary.
  The dictionary associates the chromosome as the key and the position and
- orientation as the value.
- It does not keep the details about mismatches in alignment or any sequence
- data that, for example, is stored with ELAND file inputs.
- 
+ orientation of the tags as the value.
+ MACS does not use any other the details about the sequence data or any
+ mismatches in alignment for peak calling*.
 \end_layout
 
 \begin_layout Standard
-After reading in the ChIP-seq data, MACS calculates what the so called 'shift-mo
-del' for paired-end reads.
- The shift mode calculates the offset from sequencing the 5' ends of the
- fragments on +/- strands, and shifts them toward the 3' end in order to
- compensate.
- To calculate the shiftsize 'd' MACS uses a 
+Then after reading in the ChIP-seq data, MACS calculates a 
+\begin_inset Quotes eld
+\end_inset
+
+shift model
+\begin_inset Quotes erd
+\end_inset
+
+ to center the reads from each DNA strand.
+ The shift model calculates the offset between +/- strands caused by sequencing
+ the 5' ends of the fragments, and shifts all tags toward the 3' end by
+ the shiftsize in order to compensate.
+ To calculate the offset 
+\begin_inset Formula $d$
+\end_inset
+
+ a 
 \begin_inset Quotes eld
 \end_inset
 
@@ -196,14 +206,107 @@ naive
 \begin_inset Quotes erd
 \end_inset
 
- peak finder to get peaks that are at least MFOLD greater than the background.
- Then the median of the distance between the top of the peaks is called
- 'd' and reads are shifted by d/2 in the 3' direction.
+ peak finder uses a scanning window to find candidate peaks -- where the
+ number of tags is at least MFOLD greater than the background.
+ Then the offset 
+\begin_inset Formula $d$
+\end_inset
+
+ is calculated as the median of the distance between the candidate peaks
+ and all reads are shifted by 
+\begin_inset Formula $d/2$
+\end_inset
+
+ in the 3' direction.
 \end_layout
 
 \begin_layout Standard
-*It is possible that additional analysis could reveal additional information
- about mismatch alignments that correlate with data features
+To do peak finding, MACS evaluates candidate peaks using the offset corrected
+ reads using using the statistical distribution of reads compared with control
+ data.
+ The distribution is characterized as a Poisson with a rate parameter calculated
+ as the expected number of background reads is simply the total number of
+ reads.
+ The 
+\begin_inset Formula $\lambda_{BG}$
+\end_inset
+
+ is calculated as the epected number of reads in a given scan window, and
+ the min tags is calculated as the number of reads that would expect if
+ there is a large event like a TFBS.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+lambda_bg0 = float(self.scan_window)*trackI.total/self.gsize 
+\end_layout
+
+\begin_layout Plain Layout
+
+min_tags = poisson_cdf_inv(1-pow(10,self.pvalue/-10),lambda_bg0)+1 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Then all candidate peaks are processed to determine if they pass the mark.
+ The total number of reads in a given window is compared with the rate parameter
+ is also estimated for local windows around the scanning window for 5k and
+ 10k windows.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+window_size_4_lambda = max(peak_length,self.scan_window)                
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+lambda_bg = lambda_bg0/self.scan_window*window_size_4_lambda*t_ratio 
+\end_layout
+
+\begin_layout Plain Layout
+
+p_tmp = poisson_cdf(tlambda_peak,local_lambda,lower=False) 
+\end_layout
+
+\begin_layout Plain Layout
+
+peak_pvalue = mathlog(p_tmp,10) * -10 
+\end_layout
+
+\begin_layout Plain Layout
+
+if(peak_pvalue > self.pvalue)      
+\end_layout
+
+\begin_layout Plain Layout
+
+     final_peaks.append candidate_peak 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+*It is possible that analysis could reveal that mismatch alignments somehow
+ correlate with ChIP-seq data features
 \end_layout
 
 \begin_layout Standard

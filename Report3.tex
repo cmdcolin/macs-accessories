@@ -6,6 +6,7 @@
 \usepackage{courier}
 \usepackage[T1]{fontenc}
 \usepackage[latin9]{inputenc}
+\usepackage{listings}
 \usepackage{geometry}
 \geometry{verbose,tmargin=2.54cm,bmargin=2.54cm,lmargin=2.54cm,rmargin=2.54cm}
 \usepackage{graphicx}
@@ -82,28 +83,60 @@ We did a source-code study of MACS, a popular free and open source
 software program for analyzing ChIP-seq data, to find out details
 about its implementation and processing. The published description
 of the program is quite thorough, but we found additional info that
-helped us understand the details of ChIP-seq processing. 
+helped us understand the details of ChIP-seq processing. MACS is a
+command line program that has a number of configurability options
+and understanding the processing that MACS does is important for understanding
+these options. 
 
-MACS is a command line program that has a number of configurability
-options. To understand these options it is important to understand
-the processing that MACS does. First MACS loads ChIP-seq tags and
-builds an internal representation in a standard Python hash data structure
-called a dictionary. The dictionary associates the chromosome as the
-key and the position and orientation as the value. It does not keep
-the details about mismatches in alignment or any sequence data that,
-for example, is stored with ELAND file inputs. 
+MACS loads aligned ChIP-seq reads and it builds an internal representation
+in a Python hash data structure called a dictionary. The dictionary
+associates the chromosome as the key and the position and orientation
+of the tags as the value. MACS does not use any other the details
+about the sequence data or any mismatches in alignment for peak calling{*}.
 
-After reading in the ChIP-seq data, MACS calculates what the so called
-'shift-model' for paired-end reads. The shift mode calculates the
-offset from sequencing the 5' ends of the fragments on +/- strands,
-and shifts them toward the 3' end in order to compensate. To calculate
-the shiftsize 'd' MACS uses a ``naive'' peak finder to get peaks
-that are at least MFOLD greater than the background. Then the median
-of the distance between the top of the peaks is called 'd' and reads
-are shifted by d/2 in the 3' direction.
+Then after reading in the ChIP-seq data, MACS calculates a ``shift
+model'' to center the reads from each DNA strand. The shift model
+calculates the offset between +/- strands caused by sequencing the
+5' ends of the fragments, and shifts all tags toward the 3' end by
+the shiftsize in order to compensate. To calculate the offset $d$
+a ``naive'' peak finder uses a scanning window to find candidate
+peaks -- where the number of tags is at least MFOLD greater than the
+background. Then the offset $d$ is calculated as the median of the
+distance between the candidate peaks and all reads are shifted by
+$d/2$ in the 3' direction.
 
-{*}It is possible that additional analysis could reveal additional
-information about mismatch alignments that correlate with data features
+To do peak finding, MACS evaluates candidate peaks using the offset
+corrected reads using using the statistical distribution of reads
+compared with control data. The distribution is characterized as a
+Poisson with a rate parameter calculated as the expected number of
+background reads is simply the total number of reads. The $\lambda_{BG}$
+is calculated as the epected number of reads in a given scan window,
+and the min tags is calculated as the number of reads that would expect
+if there is a large event like a TFBS.
+
+\begin{lstlisting}
+lambda_bg0 = float(self.scan_window)*trackI.total/self.gsize 
+min_tags = poisson_cdf_inv(1-pow(10,self.pvalue/-10),lambda_bg0)+1 
+\end{lstlisting}
+
+
+Then all candidate peaks are processed to determine if they pass the
+mark. The total number of reads in a given window is compared with
+the rate parameter is also estimated for local windows around the
+scanning window for 5k and 10k windows.
+
+\begin{lstlisting}
+window_size_4_lambda = max(peak_length,self.scan_window)                 
+lambda_bg = lambda_bg0/self.scan_window*window_size_4_lambda*t_ratio 
+p_tmp = poisson_cdf(tlambda_peak,local_lambda,lower=False) 
+peak_pvalue = mathlog(p_tmp,10) * -10 
+if(peak_pvalue > self.pvalue)      
+     final_peaks.append candidate_peak 
+\end{lstlisting}
+
+
+{*}It is possible that analysis could reveal that mismatch alignments
+somehow correlate with ChIP-seq data features
 
 {*}{*} What is relationship between Mfold background and Poisson background
 
