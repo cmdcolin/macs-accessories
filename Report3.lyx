@@ -112,30 +112,19 @@ Introduction
 The genes in our DNA are regulated by a variety of proteins that interact
  with the DNA .
  Transcription factors are proteins which recognize and bind to short DNA
- sequences, and they regulate nearby genes by interacting with other TF
+ sequences, and they regulate nearby genes by interacting with other proteins
  including RNA polymerase.
- Chromatin immunoprecipitation (ChIP) can be used to find transcription
- factor binding sites experimentally.
- ChIP uses antibodies that crosslink transcription factors or other proteins
- with DNA to immunoprecipitate protein-DNA complexes.
- ChIP with high throughput sequencing (ChIP-seq) or oligonucleotide tiling
- arrays (ChIP-chip) can identify transcription factor binding sites using
+ Transcription factor binding sites can be analyzed using chromatin immunoprecip
+itation (ChIP), which uses antibodies that crosslink the transcription factors
+ with DNA, followed by high throughput sequencing of the DNA fragments.
+ Then transcription factor binding sites can be identified as peaks in the
+ data -- a significant enrichment of ChIP-seq reads over the background.
+ We looked at the methods for peak finding, methods for normalizing and
+ comparing ChIP-seq data, and for finding genetic factors that contribute
+ to binding site variations as a survey of the state of affairs.
+ We propose methods for identifying variations in ChIP-seq binding using
+ normalized difference scores.
  
-\begin_inset Quotes eld
-\end_inset
-
-peak calling
-\begin_inset Quotes erd
-\end_inset
-
-.
- We can also compare the patterns of transcription factor binding across
- individuals and show genetic differences that underlie the causes of the
- variations.
- Zheng et al.
- characterized genetic differences in yeast that caused transcription factor
- binding variations by using a normalized difference score to find 'variable
- binding regions'.
 \end_layout
 
 \begin_layout Section
@@ -143,19 +132,27 @@ Background
 \end_layout
 
 \begin_layout Standard
-The platform we use from Illumina uses some proprietary technology for their
- Genome Analyzer and Solexa Sequencing.
- In their process the libraryHere the ChIP seq fragments are attached to
- adapters and go through bridge PCR to construct a fragment library.
- The 5' ends of the fragments are sequenced and base-calls are done using
- image analysis.
- Since many reactions are done in paralell we call it high-throughput sequencing.
- Since only the ends of the reads are sequenced, the position of the binding
- sites is estimated by extending fragments in the 3' direction.
- Reads are sequenced to the genome using alignment algorithms that sequence
- a large number of reads.
- Then peak calling algorithms to find ChIP-seq enriched genomic regions
- over the background distribution.
+The platform we use for ChIP-seq is from Illumina and it uses some proprietary
+ technology for their Genome Analyzer and Solexa Sequencing.
+ In their process the library the DNA prep library is attached to adapters
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+bridge PCR
+\begin_inset Quotes erd
+\end_inset
+
+ is used to build a cluster on the cell.
+ Then the 5' ends of the are sequenced and base-calls are done using image
+ analysis.
+ Since many reactions are done in parallel we call this process high-throughput
+ sequencing.
+ Then in the Illumina pipline reads are aligned to the genome using a fast
+ alignment algorithm called ELAND.
+ Once this work has been completed, then we can proceed to analyzing the
+ data to find transcription factor binding sites.
+ 
 \end_layout
 
 \begin_layout Subsection
@@ -164,15 +161,53 @@ Model based analysis of ChIP-seq (Zhang et al.
 \end_layout
 
 \begin_layout Standard
-ChIP-seq machines such as Illumina data gives us many short read sequences
- that are fragments from the end of ChIP-seq reads.
- program identifies transcription factor binding sites in ChIP-seq data
- by using peak finding.
- It takes a large number of ChIP-seq reads and analyzes over-enriched areas
- according to the distribution of over the background.
- We also use computational methods in order to compensate and for the offset
- from the ends of fragments to find the true binding site positions.
- (Continued)
+We did a source-code study of MACS, a popular free and open source software
+ program for analyzing ChIP-seq data, to find out details about its implementati
+on and processing.
+ The published description of the program is quite thorough, but we found
+ additional info that helped us understand the details of ChIP-seq processing.
+ 
+\end_layout
+
+\begin_layout Standard
+MACS is a command line program that has a number of configurability options.
+ To understand these options it is important to understand the processing
+ that MACS does.
+ First MACS loads ChIP-seq tags and builds an internal representation in
+ a standard Python hash data structure called a dictionary.
+ The dictionary associates the chromosome as the key and the position and
+ orientation as the value.
+ It does not keep the details about mismatches in alignment or any sequence
+ data that, for example, is stored with ELAND file inputs.
+ 
+\end_layout
+
+\begin_layout Standard
+After reading in the ChIP-seq data, MACS calculates what the so called 'shift-mo
+del' for paired-end reads.
+ The shift mode calculates the offset from sequencing the 5' ends of the
+ fragments on +/- strands, and shifts them toward the 3' end in order to
+ compensate.
+ To calculate the shiftsize 'd' MACS uses a 
+\begin_inset Quotes eld
+\end_inset
+
+naive
+\begin_inset Quotes erd
+\end_inset
+
+ peak finder to get peaks that are at least MFOLD greater than the background.
+ Then the median of the distance between the top of the peaks is called
+ 'd' and reads are shifted by d/2 in the 3' direction.
+\end_layout
+
+\begin_layout Standard
+*It is possible that additional analysis could reveal additional information
+ about mismatch alignments that correlate with data features
+\end_layout
+
+\begin_layout Standard
+** What is relationship between Mfold background and Poisson background
 \end_layout
 
 \begin_layout Subsection
