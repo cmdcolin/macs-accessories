@@ -46,33 +46,36 @@ in order to classify binding sites.
 
 \section{Introduction}
 
-The genetic code in our DNA is augmented by a variety of proteins
-that regulate . Transcription factors are proteins which recognize
-and bind to short DNA sequences, and they are important for regulating
-DNA transcription. Chromatin immunoprecipitation (ChIP) can be used
-to analyze transcription factor binding sites and identify genetic
-variations by comparing binding sites from different individuals.
+The genes in our DNA are regulated by a variety of proteins that interact
+with the DNA . Transcription factors are proteins which recognize
+and bind to short DNA sequences, and they regulate nearby genes by
+interacting with other TF including RNA polymerase. Chromatin immunoprecipitation
+(ChIP) can be used to find transcription factor binding sites experimentally.
 ChIP uses antibodies that crosslink transcription factors or other
 proteins with DNA to immunoprecipitate protein-DNA complexes. ChIP
 with high throughput sequencing (ChIP-seq) or oligonucleotide tiling
 arrays (ChIP-chip) can identify transcription factor binding sites
-using ``peak calling''. Zheng et al. characterized genetic differences
-in yeast that caused transcription factor binding variations by using
-a normalized difference score to find 'variable binding regions'.
+using ``peak calling''. We can also compare the patterns of transcription
+factor binding across individuals and show genetic differences that
+underlie the causes of the variations. Zheng et al. characterized
+genetic differences in yeast that caused transcription factor binding
+variations by using a normalized difference score to find 'variable
+binding regions'.
 
 
 \section{Background}
 
-Here we will look at some background papers for analyzing transcription
-factor binding sites and methods for finding conserved binding sites
-and differential sites. ChIP-seq on the Illumina platform is done
-using bridge PCR. For this method, ChIP-seq fragments are attached
-to adapters and bridged on a bead array. The resulting 5' ends of
-the fragments are sequenced. Since only the ends of the fragments
-are sequenced and base-calls are done using image analysis. Reads
-are sequenced to the genome using alignment algorithms that sequence
-a large number of reads. Then we perform peak calling algorithms to
-process reads and find binding sites
+The platform we use from Illumina uses some proprietary technology
+for their Genome Analyzer and Solexa Sequencing. In their process
+the libraryHere the ChIP seq fragments are attached to adapters and
+go through bridge PCR to construct a fragment library. The 5' ends
+of the fragments are sequenced and base-calls are done using image
+analysis. Since many reactions are done in paralell we call it high-throughput
+sequencing. Since only the ends of the reads are sequenced, the position
+of the binding sites is estimated by extending fragments in the 3'
+direction. Reads are sequenced to the genome using alignment algorithms
+that sequence a large number of reads. Then peak calling algorithms
+to find ChIP-seq enriched genomic regions over the background distribution.
 
 
 \subsection{Model based analysis of ChIP-seq (Zhang et al. 2007)}
