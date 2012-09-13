@@ -180,7 +180,7 @@ MACS loads aligned ChIP-seq reads and it builds an internal representation
 \end_layout
 
 \begin_layout Standard
-Then after reading in the ChIP-seq data, MACS calculates a 
+After reading in the datafiles, MACS calculates a 
 \begin_inset Quotes eld
 \end_inset
 
@@ -189,14 +189,9 @@ shift model
 \end_inset
 
  to center the reads from each DNA strand.
- The shift model calculates the offset between +/- strands caused by sequencing
- the 5' ends of the fragments, and shifts all tags toward the 3' end by
- the shiftsize in order to compensate.
- To calculate the offset 
-\begin_inset Formula $d$
-\end_inset
-
- a 
+ The shift model calculates the offset between +/- strands to compensate
+ the sequencing of the 5' ends of the fragments.
+ To calculate the offset, a 
 \begin_inset Quotes eld
 \end_inset
 
@@ -204,9 +199,39 @@ naive
 \begin_inset Quotes erd
 \end_inset
 
- peak finder uses a scanning window to find candidate peaks -- where the
- number of tags is at least MFOLD greater than the background.
- Then the offset 
+ peak finder that quickly scans the is used to find candidate peaks where
+ the number of tags in a scanning window is at least MFOLD greater than
+ the background.
+ The background is calculated as the number of reads we would expect in
+ a window size given the genome size and total number of reads.a minimum
+ deviation what would be expected according to a random distribution
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+background=total_reads*bandwidth/gsize
+\end_layout
+
+\begin_layout Plain Layout
+
+min_tags=mfold*background
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Then the algorithm uses the dictionary to grab all tags from each chromosome.
+ It loops over all tags and adds tags to a list if they are within a inputted
+ window size (bandwidth) and calls peaks when the added tags exceeds min_tags.
+ Then using offset 
 \begin_inset Formula $d$
 \end_inset
 
@@ -246,7 +271,7 @@ lambda_bg0 = float(self.scan_window)*trackI.total/self.gsize
 \end_layout
 
 \begin_layout Standard
-Then the tpta; number of tags to be called a peak is calculated as the poisson
+Then the total number of tags to be called a peak is calculated as the poisson
  CDF according to the likelihood of receiving a low probability number of
  reads.Then all candidate peaks are processed to determine if they pass the
  mark.
@@ -303,6 +328,7 @@ if(peak_pvalue < self.pvalue)
 
 \begin_layout Standard
 ** What is relationship between mfold background and Poisson background
+ (ie many less peaks called with large bandwidth compared with small bandwidth!)
 \end_layout
 
 \begin_layout Standard
@@ -351,11 +377,13 @@ Other methods for identifying conserved binding sites have been developed
 (Shao et al, 2012).
  MANorm normalizes the read counts using a linear regression for the tag
  counts that are identified from shared binding sites.
- (Figure).
- The normalization model is extrapolated to all peaks, and the normalized
+ (Figure 1).
+ The normalization model is then extrapolated to all reads, and the normalized
  read count is used to find conserved binding sites.
- Additionally a bayesian Poisson model is used to consider data from both
- experiments concurrently.
+ Additionally a bayesian Poisson model is used to find conserved binding
+ sites from both experiments concurrently.
+ This effectively solves the problem of using one experiment as prior informatio
+n for identifying peaks in another experiment.
 \begin_inset Newline newline
 \end_inset
 
@@ -374,9 +402,8 @@ Other methods for identifying conserved binding sites have been developed
 \end_layout
 
 \begin_layout Standard
-Finally, another normalization method was the normalized difference score
- from Zheng et al.
- We will review this model in the discussion of this paper.
+Figure 1.
+ Workflow for identifying conserved peaks with MANorm (Shao et al 2012)
 \end_layout
 
 \begin_layout Subsection
@@ -387,41 +414,27 @@ Genetic analysis of transcription factor binding variation in yeast (Zheng
 
 \begin_layout Standard
 Zheng et al.
- analyzed ChIP-seq data for transcription factor Ste12 using crosses from
- two yeast strains and they found potential causes of transcription factor
- binding variation.
+ analyzed the differences in ChIP-seq data for transcription factor Ste12
+ from two yeast strains and different cross-strains between them, and they
+ found potential causes of transcription factor binding variation.
  
 \end_layout
 
 \begin_layout Standard
 They first calculated a normalized difference score to get the ChIP-seq
- 'binding signal' (see methods section 2.1) and they analyzed the variation
- of NormDiff scores to identify 'variable binding regions'.
+ 'binding signal' (see methods section 2.1) for all experiments.
+ Then they analyzed the variation of NormDiff scores to identify 'variable
+ binding regions'.
  They identified cis- and trans- factors that contribute to binding variation
- using a QTL mapping technique called single marker regression to correlate
- 'variable binding regions' with genetic markers.
+ using QTL mapping to correlate 'variable binding regions' with genetic
+ markers.
  The cis-factors were identified as genetic markers that are close to the
  variable binding regions whereas the trans-factors were identified as genetic
  markers that are far away from the binding sites that were still correlatedd
- with binding variation
+ with binding variation (Figure 2)
 \end_layout
 
 \begin_layout Standard
-They identified trans-factors using the QTL analysis but they also aimed
- to identify the trans-acting genes responsible for the binding differences.
- They identified that markers to be closely associated with target genes
- in two cases (FLO8 and AMN1), and they found trans-clusters for different
- sets of individuals that validated the QTL results.
- They tested the genes they identified in knockout methods to test for binding
- variations.
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
 \begin_inset Graphics
 	filename consensus3.PNG
 	scale 70
@@ -435,6 +448,51 @@ They identified trans-factors using the QTL analysis but they also aimed
 Figure 2.
  Modifications to DNA motifs in the yeast population correlated with variable
  transcription factor binding (Zheng et al, 2010)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In the QTL analysis, Zheng et al.
+ also found trans-factors, defined as markers that are located far from
+ the variable binding regions that contributed to binding differences.
+ They aimed to identify trans-acting genes responsible for these 'trans-QTL'
+ and they used clustering algorithms to validate binding differences in
+ different subsets of the yeast population with the genetic linkage (Figure
+ 3).
+ Then they identified the binding differences that were closely associated
+ with target genes in two cases (FLO8 and AMN1).
+ They tested for the effects different genes on binding by using knockout
+ methods in the parent strains and found that they can be attributed to
+ the binding differences in 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Graphics
+	filename Figure 1.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 3.
+ Hierarchical clustering of variable binding traits, and association with
+ markers used to validate the trans-factor associations with binding variation
+ (Zheng et al 2010)
 \end_layout
 
 \begin_layout Subsection
@@ -465,11 +523,14 @@ Previous work
 \end_layout
 
 \begin_layout Standard
-We sought to identify conserved binding sites in order to optimize the use
- ChIP-seq data gathered from two seperate yeast strains (S288c and YJM789).
- We used a normalized difference score that was defined by Zheng et al.
- to analyze the binding sites identified using MACS from both strains, and
- we try to show evidence for shared binding sites in both experiments.
+In our previous work, we sought to identify conserved binding sites in order
+ to improve ChIP-seq data comparison.
+ We used data gathered from two seperate yeast strains (S288c and YJM789)
+ by Zheng et al and a normalized difference score to get the background
+ subtracted ChIP-seq binding signal.
+ We used MACS to find high confidence binding sitesfrom both strains, and
+ we used the normalized difference score show evidence for shared binding
+ sites in both experiments.
 \end_layout
 
 \begin_layout Subsection
