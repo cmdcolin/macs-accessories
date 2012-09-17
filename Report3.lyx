@@ -65,7 +65,7 @@
 \begin_body
 
 \begin_layout Title
-Comparison and analysis of transcription factor binding sites
+Comparison and analysis of ChIP-seq experiments
 \end_layout
 
 \begin_layout Author
@@ -91,15 +91,18 @@ First semester final report - Outline
 \begin_layout Abstract
 Transcription factors are proteins which recognize and bind to short DNA
  sequences, and they are important for regulating DNA transcription.
- Chromatin immunoprecipitation can be used to analyze transcription factor
- binding sites and identify genetic variations by comparing binding sites
- from different individuals.
+ Techniques like chromatin immunoprecipitation and high throughput sequencing
+ (ChIP-seq) can be used to analyze transcription factor binding sites using
+ .
  Zheng et al.
  characterized genetic differences in yeast that caused transcription factor
  binding variations by using a normalized difference score to find 'variable
  binding regions'.
- We used the normalized difference score to find binding regions and we
- also look at other techniques for ChIP-seq data analysis.
+ We used the normalized difference score to find conserved binding regions
+ multiple chip-seq experiments.
+ We also evaluated other methods for ChIP-seq data analysis for finding
+ conserved binding sites and variable binding sites, and how we can correlate
+ binding site differences with genome features.
 \end_layout
 
 \begin_layout Section
