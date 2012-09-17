@@ -24,18 +24,19 @@ $\,$\\
 First semester final report - Outline}
 \maketitle
 \begin{abstract}
-Transcription factors are proteins which recognize and bind to short
-DNA sequences, and they are important for regulating DNA transcription.
-Techniques like chromatin immunoprecipitation and high throughput
-sequencing (ChIP-seq) can be used to analyze transcription factor
-binding sites using . Zheng et al. characterized genetic differences
-in yeast that caused transcription factor binding variations by using
-a normalized difference score to find 'variable binding regions'.
-We used the normalized difference score to find conserved binding
-regions multiple chip-seq experiments. We also evaluated other methods
-for ChIP-seq data analysis for finding conserved binding sites and
-variable binding sites, and how we can correlate binding site differences
-with genome features.
+Transcription factors are proteins that can effectively regulate DNA
+transcription by binding to the DNA. The transcription factor binding
+sites can be detected by using chromatin immunoprecipitation and high
+throughput sequencing (ChIP-seq) and then by finding significant enrichment
+of particular DNA regions. The significance level is determined somewhat
+arbitrarily for a given dataset, but in order to compare data from
+different experiments we want to normalize the datasets and find a
+shared significant binding sites in both datasets. We used a normalized
+difference score described by Zheng et al (2010) to find evidence
+for shared binding sites from two experiments. We also evaluate other
+methods for ChIP-seq data analysis for finding conserved binding sites,
+and we also look at techniques to correlate binding sites with other
+genome features.
 \end{abstract}
 
 \section{Introduction}
