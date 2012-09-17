@@ -24,37 +24,42 @@ $\,$\\
 First semester final report - Outline}
 \maketitle
 \begin{abstract}
-Transcription factors are proteins that can effectively regulate DNA
-transcription by binding to the DNA. The transcription factor binding
-sites can be detected by using chromatin immunoprecipitation and high
-throughput sequencing (ChIP-seq) and then by finding significant enrichment
-of particular DNA regions. The significance level is determined somewhat
-arbitrarily for a given dataset, but in order to compare data from
-different experiments we want to normalize the datasets and find a
-shared significant binding sites in both datasets. We used a normalized
+DNA-protein interactions are essential for gene regulation, and these
+interactions can be detected by using chromatin immunoprecipitation
+and high throughput sequencing (ChIP-seq). In particular, transcription
+factor binding sites are identified as a significant enrichment of
+the ChIP-seq data in particular DNA regions. The significance level
+for finding these binding sites is somewhat arbitrarily, and in order
+to compare data from different experiments, we want to normalize the
+datasets to find shared significant binding sites. We use a normalized
 difference score described by Zheng et al (2010) to find evidence
-for shared binding sites from two experiments. We also evaluate other
-methods for ChIP-seq data analysis for finding conserved binding sites,
-and we also look at techniques to correlate binding sites with other
-genome features.
+for shared binding sites from different ChIP-seq experiments. We also
+evaluate other methods for finding conserved binding sites in ChIP-seq
+data, and we look at techniques to correlate the transcription factor
+binding sites with other genome features.
 \end{abstract}
 
 \section{Introduction}
 
 The genes in our DNA are regulated by a variety of proteins that interact
-with the DNA . Transcription factors are proteins which recognize
-and bind to short DNA sequences, and they regulate nearby genes by
-interacting with other proteins including RNA polymerase. Transcription
-factor binding sites can be analyzed using chromatin immunoprecipitation
-(ChIP), which uses antibodies that crosslink the transcription factors
-with DNA, followed by high throughput sequencing of the DNA fragments.
-Then transcription factor binding sites can be identified as peaks
-in the data -- a significant enrichment of ChIP-seq reads over the
-background. We looked at the methods for peak finding, methods for
-normalizing and comparing ChIP-seq data, and for finding genetic factors
-that contribute to binding site variations as a survey of the state
-of affairs. We propose methods for identifying variations in ChIP-seq
-binding using normalized difference scores. 
+with the DNA . Transcription factors in particular are proteins that
+can effectively regulate DNA transcription by binding to the DNA.
+These transcription factor binding sites can be detected by using
+chromatin immunoprecipitation and high throughput sequencing (ChIP-seq)
+by finding significant enrichment of the ChIP-seq data in particular
+DNA regions. ChIP-seq uses special antibodies that crosslink the transcription
+factors with DNA, and then high throughput sequencing is applied to
+the DNA fragments from the ChIP method. The transcription factor binding
+sites can be identified as peaks in the data -- a significant enrichment
+of ChIP-seq reads over the background. The significance level for
+finding these binding sites is somewhat arbitrarily, and in order
+to compare data from different experiments, we want to normalize the
+datasets to find shared significant binding sites. We used a normalized
+difference score described by Zheng et al (2010) to find evidence
+for shared binding sites from different ChIP-seq experiments. We also
+evaluate methods for finding conserved binding sites in ChIP-seq data,
+and we look at techniques to correlate the transcription factor binding
+sites with other genome features.
 
 
 \section{Background}
