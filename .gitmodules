@@ -1,0 +1,3 @@
+[submodule "reports/fsfr"]
+	path = reports/fsfr
+	url = ../../FirstSemesterReport/.git/

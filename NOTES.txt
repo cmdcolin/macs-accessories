@@ -34,3 +34,41 @@ perl abacas.1.3.1.pl -r ~/Desktop/Workspace/S288c-genome/Chr02.fa -q ~/Desktop/W
 
 ===================================
 
+
+Compare different genome alignment for specific chip-seq binding sites? 
+
+Q. What is the precedent this, or what is "leveraging conservation"???
+
+Alignments given by Odom,Dowell et al show many binding sites are not aligned from mouse and human.
+Zheng et al report many binding sites have conserved target genes, but can 
+we score the alignment also?
+
+
+>>and identify binding sites that are not significant enough to be found by traditional algorithms
+>>demonstrate the need for our proposed method
+
+these are weak statements that are at best conflicting and i am working on answering a real question.
+
+be highly variable recognition and can display complicated interactions with gene regulatory networks. 
+
+Score alignment...blast?
+
+
+
+
+Transcription factors are complex parts of the gene regulatory network, and comparing transcription factor binding sites from different related species has shown that many binding sites are not aligned in gene promoter regions, suggesting that binding sites are also evolutionarily flexible.
+
+
+has shown that there are many different variations in the binding site alignments (Odom, Dowell et al, 2007). 
+
+
+Things that are wrong
+- "Using the alignment" is a very vague statement
+
+
+
+
+We use a normalized difference score from Zheng et al to compare data from ChIP-seq data However, comparing ChIP-seq data from multiple experiments presents many logistical challenges -- different ChIP-seq experiments have may have different signal/noise ratios, so using control experiments and data normalization is important. Comparing binding sites from different genomes also presents challenges because binding sites can vary significantly due to modifications of DNA binding sites, etc.
+
+Abstract Previous methods to identify conserved transcription factor binding sites analyze different genomes separately, then look for binding sites in conserved and aligned locations [1]. We use a model for comparing transcription factor binding from multiple genomes by analyzing a normalized difference score that uses information from multiple ChIP-seq experiments. We propose that this method can help find conserved binding sites across multiple experiments. We evaluated several existing techniques for analyzing ChIP-seq data analysis and propose our method for comparing of ChIP-seq data. Previous methods to identify conserved transcription factor binding sites analyze different experiments separately and test for overlap of binding sites. 
+
