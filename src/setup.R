@@ -1,22 +1,13 @@
 #Globals
-
-wigenv=NULL
-wigenv2=NULL
 debug=TRUE
 
 # Alt startup
-source('wiggle')
-if(!is.environment(wigenv))
-  wigenv=new.env()
+source('src/wiggle.R')
 
 
-
-
-setup<-function(n1,n2) {
-  wig1=WiggleClass(n1)
-  wig2=WiggleClass(n2)
-  wig1$loadWiggles(wigenv) 
-  wig2$loadWiggles(wigenv)
+setup<-function(wig1,wig2) {
+  wig1$loadWiggles() 
+  wig2$loadWiggles()
   ###
   wig1$estimateScalingFactor()
   wig1$estimateVarianceAll()

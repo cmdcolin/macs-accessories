@@ -1,53 +1,48 @@
-# Regex library
+# Use regex library
 library(stringr)
+library(R.utils)
 
-#################
-#! Constructor
-WiggleClass<-function(name) {
-  nc=list(
-    name=name,
-    scaling=1,
-    variance=1,
-    spacing=10,
-    controlpath=paste(name,'/',name,'_MACS_wiggle/control/',sep=''),
-    treatpath=paste(name,'/',name,'_MACS_wiggle/treat/',sep=''),
-    controlname=paste(name,'_control_afterfiting_',sep=''),
-    treatname=paste(name,'_treat_afterfiting_',sep=''),
-    peaks=read.table(paste(name,'/',name,'_peaks.bed',sep='')),
-    wiglist=list()
-    )
-  
-  ########################
-  # Read wiggle files from path into memory and assign filesnames
-  nc$loadWiggles=function(e=environment()) {
-    
-    loadWiggle(nc$treatpath,e)
-    loadWiggle(nc$controlpath,e)
-  }
-  
-  
-  nc$loadWiggle<-function(wigpath,env) {
-    files=list.files(path=wigpath,pattern="*.fsa.wig.gz")
-    for (filename in files) {
-      fn<-paste(wigpath,filename,sep='')
-      if(debug)
-        cat(filename, '\n')
-      if(exists(filename,env))
-        wig<-get(filename,env)
-      else {
-        wig<-read.table(fn, skip=2)
-        assign(filename,wig,env)
-      }
-      nc$wiglist[[filename]]=wig
+
+loadWiggle<-function(wigpath) {
+  files=list.files(path=wigpath,pattern="*.fsa.wig.gz")
+  ret<-lapply(files,function(x){
+    fn<-paste(wigpath,filename,sep='')
+    if(debug)
+      cat(filename, '\n')
+    if(exists(filename))
+      wig<-get(filename)
+    else {
+      wig<-read.table(fn, skip=2)
+      assign(filename,wig)
     }
-  }
-
-  
-  
-  nc<-list2env(nc)
-  class(nc)<-"WiggleClass"
-  return(nc)
+  })
+  names(ret)<-files
+  ret
 }
+
+
+
+setClass("WiggleClass",
+         representation(
+           name="character", 
+           controlpath="character",
+           treatpath="character",
+           controlname="character",
+           treatname="character",
+           peaks="data.frame")
+)
+setMethod("initialize","WiggleClass",function(.Object,...,name) {
+  printf("Loading %s\n", name)
+  controlpath=sprintf("%s/%s_MACS_wiggle/control/",name,name)
+  treatpath=sprintf("%s/%s_MACS_wiggle/treat/",name,name)
+  controlname=sprintf("%s/%s_control_afterfiting_",name,name)
+  treatname=sprintf("%s/%s_treat_afterfiting_",name,name)
+  peaks=read.table(sprintf("%s/%s_peaks.bed",name,name))
+  callNextMethod(.Object,...,name=name,
+    controlpath=controlpath,treatpath=treatpath,
+    controlname=controlname,treatname=treatname,
+    peaks=peaks)
+})
 
 
 
