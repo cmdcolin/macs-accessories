@@ -50,6 +50,7 @@ setMethod("initialize","WiggleClass",function(.Object,...,name) {
 # Concatenate replicate data into one file
 # Compare results
 # Fix many roman numeral sequences
+#Figure out correct regex
 
 romanNum<-function(str) {
   if(str=="01") "I"
@@ -77,11 +78,12 @@ convertFile<-function(filename) {
   con<-file(filename)
   open(con)
   lines<-readLines(con,-1)
-  outlines<-sapply(lines[1:100], function(cline) {
-    x<-str_match(cline,"(.*)(chr)([0-9a-z]{2})(.fsa)(.*)")
+  outlines<-sapply(lines, function(cline) {
+    x<-str_match(cline,"(.*chr)([0-9a-z]{2})(.fsa)(.*)")
     if(sum(is.na(x))==0) {
-      ret<-sprintf("%s%s%s%s",x[2],x[3],romanNum(x[4]),x[6])
+      ret<-sprintf("%s%s%s",x[2],romanNum(x[3]),x[5])
       cat(ret)
+      #cline
       ret
     }
     else
@@ -92,6 +94,33 @@ convertFile<-function(filename) {
 }
 
 
+convertFile2<-function(filename) {
+  
+  filetext<-readLines(filename)
+  filetext <- paste(filetext,collapse="\n")
+  
+  for(i in 1:16) {
+    str<-sprintf("%02d",i)
+    filetext<-str_replace_all(filetext, 
+      sprintf("chr%s.fsa",str), sprintf("chr%s",romanNum(str)))
+    printf("Finished chr%02d\n", i)
+  }
+  filetext<-str_replace_all(filetext,  "chrmt.fsa", "chrM")
+  printf("Finished chrmt\n", i)
+  writeLines(filetext,filename)
+  
+}
+
+#str_replace_all(text, "(chr)([0-9a-z]{2})(.fsa)", sprintf("\\1%s","\\1",getRoman("\\2")))
+
+for(file in list.files(recursive=TRUE,pattern="*.wig$")) {
+  printf("Converting %s\n",file)
+  convertFile2(file)
+}
+for(file in list.files(recursive=TRUE,pattern="*.bed")) {
+  printf("Converting %s\n",file)
+  convertFile2(file)
+}
 
 
 intersectBed<-function(nc1,nc2) {
