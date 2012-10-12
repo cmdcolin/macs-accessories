@@ -1,0 +1,484 @@
+%% LyX 2.0.3 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{article}
+\usepackage{mathptmx}
+\usepackage{helvet}
+\usepackage{courier}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{listings}
+\usepackage{geometry}
+\geometry{verbose,tmargin=2.54cm,bmargin=2.54cm,lmargin=2.54cm,rmargin=2.54cm}
+\usepackage{graphicx}
+\usepackage{babel}
+\begin{document}
+
+\title{Comparison and analysis of ChIP-seq experiments}
+
+
+\author{Colin Diesh}
+
+
+\date{Senior Thesis Project, Fall 2012\\
+$\,$\\
+First semester final report - Outline}
+\maketitle
+\begin{abstract}
+DNA-protein interactions are essential for gene regulation, and these
+interactions can be detected by using chromatin immunoprecipitation
+and high throughput sequencing (ChIP-seq). In particular, transcription
+factor binding sites are identified as a significant enrichment of
+the ChIP-seq data in particular DNA regions. The significance level
+for finding these binding sites is somewhat arbitrarily, and in order
+to compare data from different experiments, we want to normalize the
+datasets to find shared significant binding sites. We use a normalized
+difference score described by Zheng et al (2010) to find evidence
+for shared binding sites from different ChIP-seq experiments. We also
+evaluate other methods for finding conserved binding sites in ChIP-seq
+data, and we look at techniques to correlate the transcription factor
+binding sites with other genome features.
+\end{abstract}
+
+\section{Introduction}
+
+The genes in our DNA are regulated by a variety of proteins that interact
+with the DNA . Transcription factors in particular are proteins that
+can effectively regulate DNA transcription by binding to the DNA.
+These transcription factor binding sites can be detected by using
+chromatin immunoprecipitation and high throughput sequencing (ChIP-seq)
+by finding significant enrichment of the ChIP-seq data in particular
+DNA regions. ChIP-seq uses special antibodies that crosslink the transcription
+factors with DNA, and then high throughput sequencing is applied to
+the DNA fragments from the ChIP method. The transcription factor binding
+sites can be identified as peaks in the data -- a significant enrichment
+of ChIP-seq reads over the background. The significance level for
+finding these binding sites is somewhat arbitrarily, and in order
+to compare data from different experiments, we want to normalize the
+datasets to find shared significant binding sites. We used a normalized
+difference score described by Zheng et al (2010) to find evidence
+for shared binding sites from different ChIP-seq experiments. We also
+evaluate methods for finding conserved binding sites in ChIP-seq data,
+and we look at techniques to correlate the transcription factor binding
+sites with other genome features.
+
+
+\section{Background}
+
+The platform we use for ChIP-seq is from Illumina and it uses some
+proprietary technology for their Genome Analyzer and Solexa Sequencing.
+In their process the library the DNA prep library is attached to adapters
+and ``bridge PCR'' is used to build a cluster on the cell. Then
+the 5' ends of the are sequenced and base-calls are done using image
+analysis. Since many reactions are done in parallel we call this process
+high-throughput sequencing. Then in the Illumina pipline reads are
+aligned to the genome using a fast alignment algorithm called ELAND.
+Once this work has been completed, then we can proceed to analyzing
+the data to find transcription factor binding sites. 
+
+
+\subsection{Model based analysis of ChIP-seq (Zhang et al. 2007)}
+
+We did a source-code study of MACS, a popular free and open source
+software program for analyzing ChIP-seq data, to find out details
+about its implementation and processing. The published description
+of the program is quite thorough, but we found additional info that
+helped us understand the details of ChIP-seq processing. MACS is a
+command line program that has a number of configurability options
+and understanding the processing that MACS does is important for understanding
+these options. 
+
+MACS loads aligned ChIP-seq reads and it builds an internal representation
+in a Python hash data structure called a dictionary. The dictionary
+associates the chromosome as the key and the position and orientation
+of the tags as the value. MACS does not use any other the details
+about the sequence data or any mismatches in alignment for peak calling{*}.
+
+After reading in the datafiles, MACS calculates a ``shift model''
+to center the reads from each DNA strand. The shift model calculates
+the offset between +/- strands to compensate the sequencing of the
+5' ends of the fragments. To calculate the offset, a ``naive'' peak
+finder that quickly scans the is used to find candidate peaks where
+the number of tags in a scanning window is at least MFOLD greater
+than the background. The background is calculated as the number of
+reads we would expect in a window size given the genome size and total
+number of reads.a minimum deviation what would be expected according
+to a random distribution
+
+\begin{lstlisting}
+background=total_reads*bandwidth/gsize
+min_tags=mfold*background
+\end{lstlisting}
+
+
+Then the algorithm uses the dictionary to grab all tags from each
+chromosome. It loops over all tags and adds tags to a list if they
+are within a inputted window size (bandwidth) and calls peaks when
+the added tags exceeds min\_tags. Then using offset $d$ is calculated
+as the median of the distance between the candidate peaks and all
+reads are shifted by $d/2$ in the 3' direction.
+
+To do peak finding, MACS evaluates all candidate peaks using the offset
+corrected reads compared with the statistical distribution of the
+background. The distribution is characterized as a Poisson with a
+rate parameter calculated as the expected number of background reads
+for global and local variations. Is simply the total number of reads.
+The so-called background lambda is calculated as the expected number
+of reads in a given scan window given the total number of reads and
+the genome size. 
+
+\begin{lstlisting}
+lambda_bg0 = float(self.scan_window)*trackI.total/self.gsize 
+\end{lstlisting}
+
+
+Then the total number of tags to be called a peak is calculated as
+the poisson CDF according to the likelihood of receiving a low probability
+number of reads.Then all candidate peaks are processed to determine
+if they pass the mark. The total number of reads in a given window
+is compared with the rate parameter is also estimated for local windows
+around the scanning window for 5k and 10k windows as variations in
+the control data.
+
+\begin{lstlisting}
+window_size_4_lambda = max(peak_length,self.scan_window)                 
+lambda_bg = lambda_bg0/self.scan_window*window_size_4_lambda*t_ratio 
+local_lambda = max(lambda_bg,clambda_peak,clambda_lregion,clambda_sregion)
+peak_pvalue = poisson_cdf(tlambda_peak,local_lambda,lower=False) 
+if(peak_pvalue < self.pvalue)      
+     final_peaks.append(peak)
+\end{lstlisting}
+
+
+{*}It is possible that analysis could reveal that mismatch alignments
+somehow correlate with ChIP-seq data features
+
+{*}{*} What is relationship between mfold background and Poisson background
+(ie many less peaks called with large bandwidth compared with small
+bandwidth!)
+
+{*}{*}{*} Potentially make call graph or other diagram for informational
+purposes
+
+
+\subsection{Conservation of ChIP-seq binding sites}
+
+While finding causes of binding variation is important for comparing
+biological differences, the problem of finding conserved binding sites
+is also important for measuring data integrity, reproducability, and
+for assessing biological invariates. However, ChIP-seq experiments
+are subject to many variables such as noise and bias, as well as normalization
+issues (Shao et al. 2012). Therefore, developing a model for comparing
+data similarity is important.
+
+To find conserved binding sites, we want to identify a threshold for
+peak finding that can be shared by both experiments. If we set a low
+threshold, we may have to analyze many more binding sites, and potentially,
+more false positives. In this situation, using the empirical false
+discovery rate (FDR) to guide analysis is important. The P-values
+reported by MACS do not necessarily tell us anything about control
+data, however the FDR uses a data swap. Using FDR values less than
+1\% is recommended for peak calling and conservation analysis (Bardet,
+2012). This helps control the false positive rate from the MACS algorithm
+since P-values do not assess the quality of control data and reads.
+the quality of the peaks that MACS finds 
+
+Other methods for identifying conserved binding sites have been developed
+to model normalization. One application of note MANorm: a robust model
+for quantitative comparison of ChIP-seq datasets\textit{ }(Shao et
+al, 2012). MANorm normalizes the read counts using a linear regression
+for the tag counts that are identified from shared binding sites.
+(Figure 1). The normalization model is then extrapolated to all reads,
+and the normalized read count is used to find conserved binding sites.
+Additionally a bayesian Poisson model is used to find conserved binding
+sites from both experiments concurrently. This effectively solves
+the problem of using one experiment as prior information for identifying
+peaks in another experiment.\\
+\\
+\includegraphics[scale=0.5]{\string"MAnorm_ a robust model for quantitative  - Zhen Shao\string".eps}
+
+Figure 1. Workflow for identifying conserved peaks with MANorm (Shao
+et al 2012)
+
+
+\subsection{Genetic analysis of transcription factor binding variation in yeast
+(Zheng et al. 2010)}
+
+Zheng et al. analyzed the differences in ChIP-seq data for transcription
+factor Ste12 from two yeast strains and different cross-strains between
+them, and they found potential causes of transcription factor binding
+variation. 
+
+They first calculated a normalized difference score to get the ChIP-seq
+'binding signal' (see methods section 2.1) for all experiments. Then
+they analyzed the variation of NormDiff scores to identify 'variable
+binding regions'. They identified cis- and trans- factors that contribute
+to binding variation using QTL mapping to correlate 'variable binding
+regions' with genetic markers. The cis-factors were identified as
+genetic markers that are close to the variable binding regions whereas
+the trans-factors were identified as genetic markers that are far
+away from the binding sites that were still correlatedd with binding
+variation (Figure 2)
+
+\includegraphics[scale=0.7]{consensus3}\\
+Figure 2. Modifications to DNA motifs in the yeast population correlated
+with variable transcription factor binding (Zheng et al, 2010)\\
+\\
+
+
+In the QTL analysis, Zheng et al. also found trans-factors, defined
+as markers that are located far from the variable binding regions
+that contributed to binding differences. They aimed to identify trans-acting
+genes responsible for these 'trans-QTL' and they used clustering algorithms
+to validate binding differences in different subsets of the yeast
+population with the genetic linkage (Figure 3). Then they identified
+the binding differences that were closely associated with target genes
+in two cases (FLO8 and AMN1). They tested for the effects different
+genes on binding by using knockout methods in the parent strains and
+found that they can be attributed to the binding differences in \\
+\\
+\includegraphics[scale=0.5]{\string"Figure 1\string".eps}
+
+Figure 3. Hierarchical clustering of variable binding traits, and
+association with markers used to validate the trans-factor associations
+with binding variation (Zheng et al 2010)
+
+
+\subsection{Tissue specific transcriptional regulation has diverged significantly
+between human and mouse (Odom, Dowell et al. 2007)}
+
+Odom, Dowell et al. used ChIP-chip tiling arrays to analyze binding
+site differences in human and mouse hapetocytes (liver tissue). They
+used orthologous genes in human and mouse, and they created tiling
+arrays from the gene promoter regions and they proposed two approaches
+for comparing binding sites from each species.\\
+
+
+The summary of this paper and relevance to our work is pending.
+
+
+\section{Previous work}
+
+In our previous work, we sought to identify conserved binding sites
+in order to improve ChIP-seq data comparison. We used data gathered
+from two seperate yeast strains (S288c and YJM789) by Zheng et al
+and a normalized difference score to get the background subtracted
+ChIP-seq binding signal. We used MACS to find high confidence binding
+sitesfrom both strains, and we used the normalized difference score
+show evidence for shared binding sites in both experiments.
+
+
+\subsection{Finding conserved binding sites}
+
+We identified a set of high confidence binding sites in ChIP-seq data
+using MACS (Zhang et al, 2008). However, we found that there was evidence
+for shared binding sites from both parents at this threshold. We compared
+the NormDiff scores from binding sites in one experiment with the
+syntenic regions of the other experiments, and we found that there
+was considerable overlap between the NormDiff scores of the shared
+binding sites with the sites that were not called by MACS.
+
+
+\subsection{Results}
+
+We found 42 new binding sites in HS959 with that were conserved in
+S96 that were not identified by MACS with P<0.05, and 4 of binding
+sites that were conserved with P<0.01. We also found 76 binding sites
+in S96 with P<0.05 that were conserved in HS959, and 13 of these binding
+sites were conserved with P<0.01 
+
+To evaluate the significance of these findings, we evaluated all binding
+sites from S96 and identified 98\% (885/897) using our meethod at
+P<0.05, and 60\% (563/897) binding sites at a P<0.01. In HS959 we
+identified 85\% (729/824) of the same binding sites at P<0.05 and
+46\% (365/824) at P<0.01\\
+\includegraphics[scale=0.4]{Rplot25}\\
+Figure 5. The maximum average NormDiff score is used to identify additional
+binding sites that are conserved in each experiment. 
+
+
+\section{Discussion}
+
+We identified some additional evidence for conserved binding sites
+that were not identified by other peak finding algorithms by using
+our method. Our work could be extended to use more sophisticated statistical
+models for NormDiff too. For example, we considered modifying NormDiff
+scores to use data from multiple experiments in order to find conserved
+binding sites. We also discuss some of the drawbacks of our method,
+and the other applications of NormDiff.
+
+
+\subsection{Modified normdiff score}
+
+We propose using a modified NormDiff score that uses data from multiple
+experiments. A NormDiff score that adds data from two experiments,
+A1,B1,A2, and B2 can be defined as \\
+\[
+Z_{add}(x_{i})=\frac{(A_{1}-B_{1}/c_{1})+(A_{2}-B_{2}/c_{2})}{\sigma}
+\]
+
+
+Then the scaling factors $c_{1}$and $c_{2}$ are estimated from data,
+and the variance is $\sigma=\sqrt{A_{1}+B_{1}/c_{1}^{2}+A_{2}+B_{2}/c{}_{2}^{2}}$ 
+
+A NormDiff score that subtracts data from two experiments could also
+be defined as
+\[
+Z_{sub}(x_{i})=\frac{(A_{1}-B_{1}/c_{1})-(A_{2}-B_{2}/c_{2})}{\sigma}
+\]
+
+
+The variance for $Z_{sub}$ would be the same as the variance for
+$Z_{add}$. It is possible that adding and subtracting NormDiff scores
+might be able to help in identifying conserved and differential binding.
+For example, if the subtractive score is small but the additive score
+is large, then the binding site is likely to be conserved in both
+experiments.\\
+
+
+\includegraphics[scale=0.4]{Rplot28}
+
+Figure 6. $Z_{add}$ vs. $Z_{sub}$ for S96 and HS959. This plot is
+similar to a MA plot because log product and log ratio are similar
+to adding and subtracting the scores. The unique and shared binding
+sites are colored
+
+\includegraphics[scale=0.4]{Rplot05}
+
+Figure 7. MA-plot of shared and unique peaks from S96 and HS959. Unique
+peaks to S96 colored green, unique peaks to HS959 colored red, shared
+peaks from both colored blue.
+
+.
+
+
+\subsection{Drawbacks of our approach}
+
+Our approach tries to find evidence for conserved binding sites by
+analyzing data using normalized difference scores. Our approach gives
+some evidence of peaks with high confidence P-values, such as our
+results of finding new peaks with P<0.01. However, these findings
+have much less confidence than thresholds set by MACS (P<1e-5). Given
+that our technique for calculating P-value is similar to MACS, by
+finding large deviations from the background distribution, our results
+are not very strong. 
+
+One of the reasons for having less confidence in P-values is because
+NormDiff uses control data for background subtraction. MACS on the
+other hand uses only ChIP-seq data to calculate P-values, and does
+not subtract control data. Instead MACS uses control data for filtering
+and empirical FDR. Because of this, finding high confidence peaks
+relies on using the FDR in MACS, and it is actually possible to use
+FDR to adjust the P-value from MACS to be more leniant. So, because
+the weakness of NormDiff to find conserved binding sites in ChIP-seq
+data with confidence, it seems unproductive to do this analysis. 
+
+
+\subsection{Applications of NormDiff}
+
+NormDiff scores have interesting applications for finding conserved
+and differential binding sites besides our method. One marked example
+was the use of the NormDiff score to find variable binding regions
+across many ChIP-seq experiments by Zheng et al. Another example is
+what Zheng et al. describe as a ``transgressive score'' which is
+used to evaluate whether binding sites from yeast cross strains were
+inherited from their parents. The transgressive score analyzes the
+variance of normdiff scores across all children compared with the
+the difference of the parents: 
+\[
+transgressive=\frac{var(Z)}{Z_{parent1}-Z_{parent2}}
+\]
+
+
+They say that if the transgressive score is low, then the binding
+site is ``inherited'' in a Mandelian fashion from one of the parents,
+and so in some sense, it was conserved. However, if the transgressive
+score is high, then the binding site is considered an extreme phenotype
+that is transgressive. Their analysis shows in yeast that some even
+lowly expressed peaks might be called transgressive because they are
+not conserved with the same strength of the parents' binding sites. 
+
+\includegraphics[scale=0.6]{untitled4}
+
+Figure 8. ``ChIP-Seq signal tracks showing Ste12-binding sites that
+segregate in a Mendelian (left) or transgressive (middle and right)
+fashion. The colour indicates genotype background in the depicted
+regions: red (S96), green (HS959). Asterisks indicate peaks of interest''
+(Zheng et al. 2010)
+
+
+\section{Proposed new direction}
+
+
+\subsection{Problem statement}
+\begin{enumerate}
+\item Todo
+\end{enumerate}
+
+\section{Methods}
+
+
+\subsection{Normalized difference scores}
+
+The normalized difference (NormDiff) score is a useful statistic for
+comparing ChIP-seq data that uses background subtraction and normalization
+to obtain the ChIP-seq binding signal. The NormDiff score from Zheng
+et al. uses a simple random model for ChIP-seq ($A$) and control
+($B$) defined as
+
+\begin{eqnarray*}
+A & \sim & Poisson(f+g)\\
+B & \sim & Poisson(cg)
+\end{eqnarray*}
+
+
+Where- 
+
+$f$ represents the binding signal
+
+$g$ represents the background noise
+
+$c$ is a scaling factor between $A$ and $B$\\
+
+
+Then, the NormDiff $Z$ is defined for each genome position $x_{i}$
+as 
+
+\[
+Z(x_{i})=\frac{A(x_{i})-B(x_{i})/c}{\sigma}
+\]
+ 
+
+Then the scaling factor $c$ is estimated as the median ratio of $A/B$
+and the variance $\sigma$ is estimated from the maximum variance
+of $\sqrt{A+B/c^{2}}$ in a local window. Then, the background score
+is where $Z~Normal(0,1)$ and deviations from the norm are caused
+by the strong ChIP-seq binding signals. \\
+
+
+\includegraphics[scale=0.3]{Rplot08}\includegraphics[scale=0.3]{Rplot05_2}
+
+Figure 3. (left) Kernel density plot of NormDiff for whole genome
+shows a approximately normal distribution of the background reads.
+(right) Q-Q Plot shows that NormDiff scores that represent strong
+ChIP-seq binding signals are highly different from the background.
+
+
+\section{Conclusion}
+
+Normalized difference scores have a variety of applications for comparing
+ChIP-seq experiments. We used normalized difference scores to find
+conserved binding sites in multiple experiments. However, there are
+some significant challenges in this analysis. We will extend our methods
+to classify binding sites according to their alignment similar to
+Odom, Dowell et al and this will improve our ability to characterize
+'variable binding regions' also. Overall, these methods will be able
+to better identify binding site differences an similarities. 
+
+
+\section{Bibliography}
+
+\bibliographystyle{plain}
+\nocite{*}
+\bibliography{References}
+
+\end{document}
