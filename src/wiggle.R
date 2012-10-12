@@ -2,7 +2,6 @@
 library(stringr)
 library(R.utils)
 
-
 loadWiggle<-function(wigpath) {
   files=list.files(path=wigpath,pattern="*.fsa.wig.gz")
   ret<-lapply(files,function(x){
@@ -74,27 +73,9 @@ romanNum<-function(str) {
 }
 
 
-convertFile<-function(filename) {
-  con<-file(filename)
-  open(con)
-  lines<-readLines(con,-1)
-  outlines<-sapply(lines, function(cline) {
-    x<-str_match(cline,"(.*chr)([0-9a-z]{2})(.fsa)(.*)")
-    if(sum(is.na(x))==0) {
-      ret<-sprintf("%s%s%s",x[2],romanNum(x[3]),x[5])
-      cat(ret)
-      #cline
-      ret
-    }
-    else
-      cline
-  })
-  writeLines(outlines,filename)
-  close(con)
-}
 
-
-convertFile2<-function(filename) {
+# Uses roman numerals
+convertFileSacCer3<-function(filename) {
   
   filetext<-readLines(filename)
   filetext <- paste(filetext,collapse="\n")
@@ -111,15 +92,47 @@ convertFile2<-function(filename) {
   
 }
 
-#str_replace_all(text, "(chr)([0-9a-z]{2})(.fsa)", sprintf("\\1%s","\\1",getRoman("\\2")))
-
-for(file in list.files(recursive=TRUE,pattern="*.wig$")) {
-  printf("Converting %s\n",file)
-  convertFile2(file)
+convertFileS288C<-function(file) {
+  
+  filetext<-readLines(file)
+  filetext <- paste(filetext,collapse="\n")
+  
+  for(i in 1:16) {
+    str<-sprintf("%02d",i)
+    filetext<-str_replace_all(filetext, 
+      sprintf("chr%s.fsa",str), sprintf("Chr%s",str))
+    printf("Finished chr%02d\n", i)
+  }
+  filetext<-str_replace_all(filetext,  "chrmt.fsa", "Chrmt")
+  printf("Finished chrmt\n", i)
+  writeLines(filetext,file)
+  
 }
-for(file in list.files(recursive=TRUE,pattern="*.bed")) {
+
+
+
+for(file in c(list.files(recursive=TRUE,pattern="*.wig$"),
+              list.files(recursive=TRUE,pattern="*.bed$"))) 
+{
   printf("Converting %s\n",file)
-  convertFile2(file)
+  # Uses sacCer3 chromosome
+  if(saccer==TRUE)
+    convertFileSacCer(file)
+  # Uses S288c chromosome
+  else if(s288c==TRUE)
+    convertFileS288C(file)
+}
+
+
+##! Unused
+files<-list.files(pattern="*.wig$",recursive=TRUE)
+unlink(files)
+for(d in list.dirs(recursive=TRUE)) {
+  for(f in list.files(path=d,pattern="*.gz$")) {
+    rfile<-paste(d,'/',f,sep='')
+    cat(rfile,'\n')
+    unzip(rfile, exdir=d)
+  }
 }
 
 
@@ -200,3 +213,24 @@ uniqueBed<-function(nc1,nc2) {
 #  
 #}
 
+    
+    
+###! Unused
+
+    #extended regex
+    #str_replace_all(text, "(chr)([0-9a-z]{2})(.fsa)", sprintf("\\1%s","\\1",getRoman("\\2")))
+convertFileOld<-function(filename) {
+  con<-file(filename)
+  open(con)
+  lines<-readLines(con,-1)
+  outlines<-sapply(lines, function(cline) {
+    x<-str_match(cline,"(.*chr)([0-9a-z]{2})(.fsa)(.*)")
+    if(sum(is.na(x))==0) {
+      sprintf("%s%s%s",x[2],romanNum(x[3]),x[5])
+    }
+    else
+      cline
+  })
+  writeLines(outlines,filename)
+  close(con)
+}
