@@ -44,6 +44,54 @@ setMethod("initialize","WiggleClass",function(.Object,...,name) {
     peaks=peaks)
 })
 
+# Where are my ROMAN NUMERAL FUNCTIONS??
+# Can't upload anything to RESEARCH COMPUTING??
+# Evaluate MANORM pairwise on replicates
+# Concatenate replicate data into one file
+# Compare results
+# Fix many roman numeral sequences
+
+romanNum<-function(str) {
+  if(str=="01") "I"
+  else if(str=="02") "II"
+  else if(str=="03") "III"
+  else if(str=="04") "IV"
+  else if(str=="05") "V"
+  else if(str=="06") "VI"
+  else if(str=="07") "VII"
+  else if(str=="08") "VIII"
+  else if(str=="09") "IX"
+  else if(str=="10") "X"
+  else if(str=="11") "XI"
+  else if(str=="12") "XII"
+  else if(str=="13") "XIII"
+  else if(str=="14") "XIV"
+  else if(str=="15") "XV"
+  else if(str=="16") "XVI"
+  else if(str=="mt") "M"
+  else "Error"
+}
+
+
+convertFile<-function(filename) {
+  con<-file(filename)
+  open(con)
+  lines<-readLines(con,-1)
+  outlines<-sapply(lines[1:100], function(cline) {
+    x<-str_match(cline,"(.*)(chr)([0-9a-z]{2})(.fsa)(.*)")
+    if(sum(is.na(x))==0) {
+      ret<-sprintf("%s%s%s%s",x[2],x[3],romanNum(x[4]),x[6])
+      cat(ret)
+      ret
+    }
+    else
+      cline
+  })
+  writeLines(outlines,filename)
+  close(con)
+}
+
+
 
 
 intersectBed<-function(nc1,nc2) {
