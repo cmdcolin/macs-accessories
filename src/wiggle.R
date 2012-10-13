@@ -101,10 +101,13 @@ convertFileS288C<-function(file) {
     str<-sprintf("%02d",i)
     filetext<-str_replace_all(filetext, 
       sprintf("chr%s.fsa",str), sprintf("Chr%s",str))
-    printf("Finished chr%02d\n", i)
+    if(debug==TRUE)
+      printf("Finished chr%02d\n", i)
   }
   filetext<-str_replace_all(filetext,  "chrmt.fsa", "Chrmt")
-  printf("Finished chrmt\n", i)
+  if(debug==TRUE)
+    printf("Finished chrmt\n", i)
+  
   writeLines(filetext,file)
   
 }
@@ -124,56 +127,89 @@ for(file in c(list.files(recursive=TRUE,pattern="*.wig$"),
 }
 
 
-##! Unused
-files<-list.files(pattern="*.wig$",recursive=TRUE)
-unlink(files)
-for(d in list.dirs(recursive=TRUE)) {
-  for(f in list.files(path=d,pattern="*.gz$")) {
-    rfile<-paste(d,'/',f,sep='')
-    cat(rfile,'\n')
-    unzip(rfile, exdir=d)
-  }
+##! Delete wig files
+#files<-list.files(pattern="*.wig$",recursive=TRUE)
+#unlink(files)
+
+##! Unzip all gz files recursively in directory (e.g. for all MACS wiggle files)
+#gzip -d -r .
+renameBed<-function(bedfile) {
+  names(bedfile)<-c("chromosome","start","end","name","value")
+  bedfile
 }
+
+x1=read.table('HS959combined/HS959combined_peaks.bed')
+x1<-renameBed(x1)
+sapply(x1, class)
+transform(x1, {
+  start = as.numeric(as.character(start))
+  end = as.numeric(as.character(end))
+} )
+
+loadBed<-function(path) {
+  bedfile<-read.table('S96combined/S96combined_peaks.bed')
+  
+  # rename columns
+  names(bedfile)<-c("chromosome","start","end","name","value")
+  
+  #make numeric columns
+  transform(bedfile, {
+    start = as.numeric(as.character(start))
+    end = as.numeric(as.character(end))
+  })
+}
+x1<-loadBed('HS959combined/HS959combined_peaks.bed')
+x2<-loadBed('S96combined/S96combined_peaks.bed')
+x3<-loadBed('S96rep1/S96rep1_peaks.bed')
+x4<-loadBed('S96rep2/S96rep2_peaks.bed')
+l=c(x1,x2,x3,x4)
+# Make a venn diagram from all intersect overlap!!
 
 
 intersectBed<-function(nc1,nc2) {
   selectrows=apply(nc1,1,function(x){
-    chr1=x[1]
-    start1=as.integer(x[2])
-    end1=as.integer(x[3])
-    sublist=nc2[nc2$V1==chr1,]
+    
+    sublist=nc2[nc2$chromosome==x['chromosome'],]
     ret=apply(sublist,1,function(y){
-      chr2=y[1]
-      start2=as.integer(y[2])
-      end2=as.integer(y[3])
-      pn2=y[4]
-      (start2<=end1)&&(start1<=end2)
+      #  overlap AR < BL || BR < AL
+      (y['start']<=x['end'])&&(x['start']<=y['end'])
     })
+    
+    ##! Get overlap peaks where intersect>0
     sum(ret)>0
   })
-  
   nc1[selectrows,]
 }
+
+
+
+
 uniqueBed<-function(nc1,nc2) {
   selectrows=apply(nc1,1,function(x){
-    chr1=x[1]
-    start1=as.integer(x[2])
-    end1=as.integer(x[3])
-    pn1=x[4]
-    sublist=nc2[nc2$V1==chr1,]
+    
+    sublist=nc2[nc2$chromosome==x['chromosome'],]
     ret=apply(sublist,1,function(y){
-      chr2=y[1]
-      start2=as.integer(y[2])
-      end2=as.integer(y[3])
-      pn2=y[4]
-      #AR < BL || BR < AL
-      (start2<=end1)&&(start1<=end2)
+      # Linear overlap AR < BL || BR < AL
+      (y['start']<=x['end'])&&(x['start']<=y['end'])
     })
+    
+    ##! Get unique peaks with no overlap
     sum(ret)==0
   })
-  
   nc1[selectrows,]
 }
+
+
+
+
+
+ret<-intersectBed(x1,x2)
+ret2<-uniqueBed(x1,x2)
+ret3<-uniqueBed(x2,x1)
+
+printf("Found %d overlapping peaks\n", nrow(ret))
+printf("Found %d unique peaks in x1\n", nrow(ret2))
+printf("Also found %d unique peaks in x2\n", nrow(ret3))
 
 ###########
 
