@@ -114,40 +114,17 @@ convertFileS288C<-function(file) {
 
 
 
-for(file in c(list.files(recursive=TRUE,pattern="*.wig$"),
-              list.files(recursive=TRUE,pattern="*.bed$"))) 
-{
-  printf("Converting %s\n",file)
-  # Uses sacCer3 chromosome
-  if(saccer==TRUE)
-    convertFileSacCer(file)
-  # Uses S288c chromosome
-  else if(s288c==TRUE)
-    convertFileS288C(file)
-}
-
-
 ##! Delete wig files
 #files<-list.files(pattern="*.wig$",recursive=TRUE)
 #unlink(files)
 
 ##! Unzip all gz files recursively in directory (e.g. for all MACS wiggle files)
 #gzip -d -r .
-renameBed<-function(bedfile) {
-  names(bedfile)<-c("chromosome","start","end","name","value")
-  bedfile
-}
 
-x1=read.table('HS959combined/HS959combined_peaks.bed')
-x1<-renameBed(x1)
-sapply(x1, class)
-transform(x1, {
-  start = as.numeric(as.character(start))
-  end = as.numeric(as.character(end))
-} )
+
 
 loadBed<-function(path) {
-  bedfile<-read.table('S96combined/S96combined_peaks.bed')
+  bedfile<-read.table(path)
   
   # rename columns
   names(bedfile)<-c("chromosome","start","end","name","value")
@@ -158,12 +135,7 @@ loadBed<-function(path) {
     end = as.numeric(as.character(end))
   })
 }
-x1<-loadBed('HS959combined/HS959combined_peaks.bed')
-x2<-loadBed('S96combined/S96combined_peaks.bed')
-x3<-loadBed('S96rep1/S96rep1_peaks.bed')
-x4<-loadBed('S96rep2/S96rep2_peaks.bed')
-l=c(x1,x2,x3,x4)
-# Make a venn diagram from all intersect overlap!!
+
 
 
 intersectBed<-function(nc1,nc2) {
@@ -182,6 +154,21 @@ intersectBed<-function(nc1,nc2) {
 }
 
 
+
+intersectBedLimma<-function(nc1,nc2) {
+  selectrows=apply(nc1,1,function(x){
+    
+    sublist=nc2[nc2$chromosome==x['chromosome'],]
+    ret=apply(sublist,1,function(y){
+      #  overlap AR < BL || BR < AL
+      (y['start']<=x['end'])&&(x['start']<=y['end'])
+    })
+    
+    ##! Get overlap peaks where intersect>0
+    sum(ret)>0
+  })
+  selectrows
+}
 
 
 uniqueBed<-function(nc1,nc2) {
@@ -202,14 +189,6 @@ uniqueBed<-function(nc1,nc2) {
 
 
 
-
-ret<-intersectBed(x1,x2)
-ret2<-uniqueBed(x1,x2)
-ret3<-uniqueBed(x2,x1)
-
-printf("Found %d overlapping peaks\n", nrow(ret))
-printf("Found %d unique peaks in x1\n", nrow(ret2))
-printf("Also found %d unique peaks in x2\n", nrow(ret3))
 
 ###########
 
