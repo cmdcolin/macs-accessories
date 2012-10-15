@@ -28,7 +28,7 @@ source('src/wiggle.R')
 #     convertFileS288C(file)
 # }
 
-
+library(gtools)
 x1<-loadBed('data/HS959rep1_peaks.bed')
 x2<-loadBed('data/HS959rep2_peaks.bed')
 x3<-loadBed('data/S96rep1_peaks.bed')
@@ -40,19 +40,18 @@ l[[3]]=x3
 l[[4]]=x4
 ind<-permutations(4,2,1:4)
 ret<-apply(ind,1,function(x) {
-  print(x[1])
+  printf("Combining %s\n",str(x))
   first=l[[x[1]]]
   second=l[[x[2]]]
-  inter=intersectBedLimma(first,second)
-  nrow(inter)
+  intersectBedLimma(first,second)
 })
 # Make a venn diagram from all intersect overlap!!
 
 
-ret<-intersectBed(x1,x2)
-ret2<-uniqueBed(x1,x2)
-ret3<-uniqueBed(x2,x1)
-
-printf("Found %d overlapping peaks\n", nrow(ret))
-printf("Found %d unique peaks in x1\n", nrow(ret2))
-printf("Also found %d unique peaks in x2\n", nrow(ret3))
+# ret<-intersectBed(x1,x2)
+# ret2<-uniqueBed(x1,x2)
+# ret3<-uniqueBed(x2,x1)
+# 
+# printf("Found %d overlapping peaks\n", nrow(ret))
+# printf("Found %d unique peaks in x1\n", nrow(ret2))
+# printf("Also found %d unique peaks in x2\n", nrow(ret3))
