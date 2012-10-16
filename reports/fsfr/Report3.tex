@@ -186,7 +186,7 @@ ChIP-seq binding signal (Figure 3). Using the normal distribution,
 we calculated shared binding sites from NormDiff scores as a statistical
 likelihood that they are shared.
 
-\includegraphics[scale=0.3]{Rplot02_2}\includegraphics[scale=0.3]{Rplot03}
+\includegraphics[scale=0.4]{Rplot02_2}\includegraphics[scale=0.4]{Rplot03}
 
 Figure 3. The maximum average NormDiff score of peaks shared binding
 sites is colored red but unique binding sites identified in only one
@@ -206,20 +206,39 @@ sites from S96 and identified 98\% (885/897) using our meethod at
 P<0.05, and 60\% (563/897) binding sites at a P<0.01. In HS959 we
 identified 85\% (729/824) of the same binding sites at P<0.05 and
 46\% (365/824) at P<0.01\\
-\includegraphics[scale=0.3]{Rplot23}\includegraphics[scale=0.3]{Rplot25_2}\\
+\includegraphics[scale=0.4]{Rplot23}\includegraphics[scale=0.4]{Rplot25_2}\\
 Figure 5. The maximum average NormDiff score is used to identify additional
 binding sites that are conserved in each experiment. 
 
 
 \section{Discussion}
 
-We identified some additional evidence for conserved binding sites
-that were not identified by other peak finding algorithms by using
-our method. Our work could be extended to use more sophisticated statistical
-models for NormDiff too. For example, we considered modifying NormDiff
-scores to use data from multiple experiments in order to find conserved
-binding sites. We also discuss some of the drawbacks of our method,
-and the other applications of NormDiff.
+Using our method there appeared to be evidence for conserved binding
+sites that were not identified by other peak finding algorithms. We
+see a significant overlap of NormDiff scores for many binding sites,
+which represents strong binding signals, even for binding sites that
+were were not identified as shared by MACS. We call this area of overlap
+the \textquotedblleft{}twilight zone\textquotedblright{} which represents
+potentially shared binding sites at a level not identified by peak
+finders at high confidence levels.
+
+\includegraphics[scale=0.3]{untitled1}\includegraphics[scale=0.3]{untitled2}
+
+Figure 5. The twilight zone in yellow shows where the normalized difference
+scores from each experiment overlap significantly \\
+
+
+\includegraphics[scale=0.3]{\string"hgt_genome_249b_9588c0 poster\string".eps}
+
+Figure 6. A shared binding sites that we identified using our algorithm
+has the above distribution.\\
+
+
+Our work could be extended to use more sophisticated statistical models
+for NormDiff too. For example, we considered modifying NormDiff scores
+to use data from multiple experiments in order to find conserved binding
+sites. We also discuss some of the drawbacks of our method, and the
+other applications of NormDiff. 
 
 
 \subsection{Modified normdiff score}
@@ -277,28 +296,44 @@ that our technique for calculating P-value is similar to MACS, by
 finding large deviations from the background distribution, our results
 are not very strong. 
 
-One of the reasons for having less confidence in P-values is because
-NormDiff uses control data for background subtraction. MACS on the
-other hand uses only ChIP-seq data to calculate P-values, and does
-not subtract control data. Instead MACS uses control data for filtering
-and empirical FDR. Because of this, finding high confidence peaks
-relies on using the FDR in MACS, and it is actually possible to use
-FDR to adjust the P-value from MACS to be more leniant. So, because
-the weakness of NormDiff to find conserved binding sites in ChIP-seq
-data with confidence, it seems unproductive to do this analysis. 
+Since NormDiff has much less confidence in finding conserved binding
+sites, it may be unproductive to use our method. One of the reasons
+for having less confidence in P-values is because NormDiff uses control
+data for background subtraction. MACS on the other hand uses only
+control data to calculate FDR, and only ChIP-seq data to calculate
+P-values. Additionally, we use a statistical distribution which is
+less characteristic of our data, the normal distribution, and since
+our data is not continuous it does not behave well on small datasets
+such the NormDiff scanning window. While our method is not productive
+for finding conserved binding sites in the way we describe, it can
+be used for other applications. 
 
 
 \subsection{Applications of NormDiff}
 
-NormDiff scores have interesting applications for finding conserved
-and differential binding sites besides our method. One marked example
-was the use of the NormDiff score to find variable binding regions
-across many ChIP-seq experiments by Zheng et al. Another example is
-what Zheng et al. describe as a ``transgressive score'' which is
-used to evaluate whether binding sites from yeast cross strains were
-inherited from their parents. The transgressive score analyzes the
-variance of normdiff scores across all children compared with the
-the difference of the parents: 
+NormDiff scores has other interesting applications besides our method.
+One example from Zheng et al. is for finding variable binding regions
+across many ChIP-seq experiments. This looks at the variability of
+the NormDiff score and finds regions of high variability as variable
+binding regions. These variable binding regions were correlated with
+genetic features using quantitative trait loci and validated using
+hierarchial Bayesian clustering algorithms.\\
+
+
+\includegraphics[scale=0.5]{\string"Figure 1\string".eps}
+
+Figure 2. Hierarchical clustering of variable binding traits identified
+using NormDiff associated with genetic markers using QTL (Zheng et
+al 2010) \\
+
+
+Another example of normalized difference scores application is the
+\textquotedblleft{}transgressive score\textquotedblright{} which is
+used by Zheng et al. to evaluate whether binding sites from yeast
+cross strains were inherited from their parents. The transgressive
+score analyzes the variance of normdiff scores across all children
+compared with the the difference of the parents: 
+
 \[
 transgressive=\frac{var(Z)}{Z_{parent1}-Z_{parent2}}
 \]
@@ -321,13 +356,20 @@ regions: red (S96), green (HS959). Asterisks indicate peaks of interest''
 (Zheng et al. 2010)
 
 
-\section{Proposed new direction}
+\section{Conclusion}
 
+We found a method for comparing binding sites from different ChIP-seq
+experiments by using a normalized difference score. This gave us evidence
+for shared binding sites that were not called by other peak finding
+algorithms. While it was able to produce some evidence, the confidence
+levels were much less than MACS which presented a challenge to the
+conclusions we could make. Despite these issues, NormDiff is a powerful
+tool for analyzing ChIP-seq data in other ways. NormDiff effectively
+models the ChIP-seq binding signal and it can be compared across multiple
+ChIP-seq experiments. The NormDiff score can also be analyzed as a
+quantitative trait in QTL analysis to give us insight into transcription
+factor binding. 
 
-\subsection{Problem statement}
-\begin{enumerate}
-\item Todo
-\end{enumerate}
 
 \section{Methods}
 
@@ -376,22 +418,6 @@ Figure 3. (left) Kernel density plot of NormDiff for whole genome
 shows a approximately normal distribution of the background reads.
 (right) Q-Q Plot shows that NormDiff scores that represent strong
 ChIP-seq binding signals are highly different from the background.
-
-
-\section{Conclusion}
-
-Significant challenges
-
-Also 
-
-Normalized difference scores have a variety of applications for comparing
-ChIP-seq experiments. We used normalized difference scores to find
-conserved binding sites in multiple experiments. However, there are
-some significant challenges in this analysis. We will extend our methods
-to classify binding sites according to their alignment similar to
-Odom, Dowell et al and this will improve our ability to characterize
-'variable binding regions' also. Overall, these methods will be able
-to better identify binding site differences an similarities. 
 
 
 \section{Bibliography}

@@ -404,14 +404,71 @@ Discussion
 \end_layout
 
 \begin_layout Standard
-We identified some additional evidence for conserved binding sites that
- were not identified by other peak finding algorithms by using our method.
- Our work could be extended to use more sophisticated statistical models
+Using our method there appeared to be evidence for conserved binding sites
+ that were not identified by other peak finding algorithms.
+ We see a significant overlap of NormDiff scores for many binding sites,
+ which represents strong binding signals, even for binding sites that were
+ were not identified as shared by MACS.
+ We call this area of overlap the “twilight zone” which represents potentially
+ shared binding sites at a level not identified by peak finders at high
+ confidence levels.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename untitled1.PNG
+	scale 30
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename untitled2.PNG
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 5.
+ The twilight zone in yellow shows where the normalized difference scores
+ from each experiment overlap significantly 
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename hgt_genome_249b_9588c0 poster.PNG
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 6.
+ A shared binding sites that we identified using our algorithm has the above
+ distribution.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Our work could be extended to use more sophisticated statistical models
  for NormDiff too.
  For example, we considered modifying NormDiff scores to use data from multiple
  experiments in order to find conserved binding sites.
  We also discuss some of the drawbacks of our method, and the other applications
  of NormDiff.
+ 
 \end_layout
 
 \begin_layout Subsection
@@ -552,16 +609,17 @@ Our approach tries to find evidence for conserved binding sites by analyzing
 \end_layout
 
 \begin_layout Standard
-One of the reasons for having less confidence in P-values is because NormDiff
+Since NormDiff has much less confidence in finding conserved binding sites,
+ it may be unproductive to use our method.
+ One of the reasons for having less confidence in P-values is because NormDiff
  uses control data for background subtraction.
- MACS on the other hand uses only ChIP-seq data to calculate P-values, and
- does not subtract control data.
- Instead MACS uses control data for filtering and empirical FDR.
- Because of this, finding high confidence peaks relies on using the FDR
- in MACS, and it is actually possible to use FDR to adjust the P-value from
- MACS to be more leniant.
- So, because the weakness of NormDiff to find conserved binding sites in
- ChIP-seq data with confidence, it seems unproductive to do this analysis.
+ MACS on the other hand uses only control data to calculate FDR, and only
+ ChIP-seq data to calculate P-values.
+ Additionally, we use a statistical distribution which is less characteristic
+ of our data, the normal distribution, and since our data is not continuous
+ it does not behave well on small datasets such the NormDiff scanning window.
+ While our method is not productive for finding conserved binding sites
+ in the way we describe, it can be used for other applications.
  
 \end_layout
 
@@ -570,23 +628,50 @@ Applications of NormDiff
 \end_layout
 
 \begin_layout Standard
-NormDiff scores have interesting applications for finding conserved and
- differential binding sites besides our method.
- One marked example was the use of the NormDiff score to find variable binding
- regions across many ChIP-seq experiments by Zheng et al.
- Another example is what Zheng et al.
- describe as a 
-\begin_inset Quotes eld
+NormDiff scores has other interesting applications besides our method.
+ One example from Zheng et al.
+ is for finding variable binding regions across many ChIP-seq experiments.
+ This looks at the variability of the NormDiff score and finds regions of
+ high variability as variable binding regions.
+ These variable binding regions were correlated with genetic features using
+ quantitative trait loci and validated using hierarchial Bayesian clustering
+ algorithms.
+\begin_inset Newline newline
 \end_inset
 
-transgressive score
-\begin_inset Quotes erd
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figure 1.png
+	scale 50
+
 \end_inset
 
- which is used to evaluate whether binding sites from yeast cross strains
- were inherited from their parents.
+
+\end_layout
+
+\begin_layout Standard
+Figure 2.
+ Hierarchical clustering of variable binding traits identified using NormDiff
+ associated with genetic markers using QTL (Zheng et al 2010) 
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Another example of normalized difference scores application is the “transgressiv
+e score” which is used by Zheng et al.
+ to evaluate whether binding sites from yeast cross strains were inherited
+ from their parents.
  The transgressive score analyzes the variance of normdiff scores across
  all children compared with the the difference of the parents: 
+\end_layout
+
+\begin_layout Standard
 \begin_inset Formula 
 \[
 transgressive=\frac{var(Z)}{Z_{parent1}-Z_{parent2}}
@@ -646,15 +731,24 @@ ChIP-Seq signal tracks showing Ste12-binding sites that segregate in a Mendelian
 \end_layout
 
 \begin_layout Section
-Proposed new direction
+Conclusion
 \end_layout
 
-\begin_layout Subsection
-Problem statement
-\end_layout
-
-\begin_layout Enumerate
-Todo
+\begin_layout Standard
+We found a method for comparing binding sites from different ChIP-seq experiment
+s by using a normalized difference score.
+ This gave us evidence for shared binding sites that were not called by
+ other peak finding algorithms.
+ While it was able to produce some evidence, the confidence levels were
+ much less than MACS which presented a challenge to the conclusions we could
+ make.
+ Despite these issues, NormDiff is a powerful tool for analyzing ChIP-seq
+ data in other ways.
+ NormDiff effectively models the ChIP-seq binding signal and it can be compared
+ across multiple ChIP-seq experiments.
+ The NormDiff score can also be analyzed as a quantitative trait in QTL
+ analysis to give us insight into transcription factor binding.
+ 
 \end_layout
 
 \begin_layout Section
@@ -807,32 +901,6 @@ Figure 3.
  normal distribution of the background reads.
  (right) Q-Q Plot shows that NormDiff scores that represent strong ChIP-seq
  binding signals are highly different from the background.
-\end_layout
-
-\begin_layout Section
-Conclusion
-\end_layout
-
-\begin_layout Standard
-Significant challenges
-\end_layout
-
-\begin_layout Standard
-Also 
-\end_layout
-
-\begin_layout Standard
-Normalized difference scores have a variety of applications for comparing
- ChIP-seq experiments.
- We used normalized difference scores to find conserved binding sites in
- multiple experiments.
- However, there are some significant challenges in this analysis.
- We will extend our methods to classify binding sites according to their
- alignment similar to Odom, Dowell et al and this will improve our ability
- to characterize 'variable binding regions' also.
- Overall, these methods will be able to better identify binding site differences
- an similarities.
- 
 \end_layout
 
 \begin_layout Section
