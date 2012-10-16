@@ -89,40 +89,33 @@ into a Python hash data structure called a dictionary. The dictionary
 associates the chromosome of each ChIP-seq tag as the hash-key, and
 append the position and orientation of the tags into a list. MACS
 does not use store or use any other the details of the reads, such
-as the sequence of the number of mismatches.
+as the sequence of the number of mismatches{*}.
 
-After reading in the datafiles, MACS calculates a ``shift model''
-to center the reads from each DNA strand. The shift model calculates
-the offset between +/- strands to compensate the sequencing of the
-5' ends of the fragments. To calculate the offset, a ``naive'' peak
-finder that quickly scans the is used to find candidate peaks where
-the number of tags in a scanning window is at least MFOLD greater
-than the background. The background is calculated as the number of
-reads we would expect in a window size given the genome size and total
-number of reads.a minimum deviation what would be expected according
-to a random distribution
+The MACS calculates a \textquotedblleft{}shift model\textquotedblright{}
+to find the offset between +/- strands. This step is necessary to
+compensate for the fact that only part of the 5\textquoteright{} ends
+of the ChIP-seq fragments are sequenced. The fragments are assumed
+to be distributed randomly on each strand, so MACS uses a \textquotedblleft{}naïve\textquotedblright{}
+peak finder to find pairs of peaks on each strand, and calculates
+the median distance between each pair to estimate the DNA fragment
+size. Then MACS extends each read towards the 3\textquoteright{} end
+to represent the true length of the ChIP-seq fragment.
 
-Then the algorithm uses the dictionary to grab all tags from each
-chromosome. It loops over all tags and adds tags to a list if they
-are within a inputted window size (bandwidth) and calls peaks when
-the added tags exceeds min\_tags. Then using offset $d$ is calculated
-as the median of the distance between the candidate peaks and all
-reads are shifted by $d/2$ in the 3' direction.
+Then MACS does peak finding for all shifted reads by using Poisson
+distribution model. The rate parameter of the Poisson is calculated
+from the expected number of reads in our scan window given the total
+number of reads and the whole genome size. Then peaks are identified
+as the Poisson CDF likelihood of receiving a large number of reads
+in our scan window given the Poisson rate of the background. The Poisson
+rate parameter is also estimated for local windows surrounding the
+scanning window for 5k and 10k windows to local capture variations
+in the data. 
 
-To do peak finding, MACS evaluates all candidate peaks using the shift-corrected
-tags using a Poisson distribution with a rate parameter calculated
-as the expected number of background reads for global and local variations.
-Is simply the total number of reads. The so-called background lambda
-is calculated as the expected number of reads in a given scan window
-given the total number of reads and the genome size. 
+\includegraphics[scale=0.5]{Poisson_cdf}
 
-Then the total number of tags to be called a peak is calculated as
-the poisson CDF according to the likelihood of receiving a low probability
-number of reads.Then all candidate peaks are processed to determine
-if they pass the mark. The total number of reads in a given window
-is compared with the rate parameter is also estimated for local windows
-around the scanning window for 5k and 10k windows as variations in
-the control data.
+Figure 1. The Poisson cumulative distribution function (CDF) outputs
+a probability for observing a given number of events.\\
+
 
 {*}It is possible that analysis could reveal that mismatch alignments
 somehow correlate with ChIP-seq data features
@@ -130,102 +123,74 @@ somehow correlate with ChIP-seq data features
 
 \subsection{Finding conserved transcription factor binding sites}
 
-Finding conserved binding sites is important for measuring data integrity,
-reproducability, and for finding biological invariates. However, ChIP-seq
-experiments are subject to many variables such as noise and bias,
-as well as normalization issues (Shao et al. 2012). Therefore, developing
-a model for comparing data similarity is important.
+Finding conserved binding sites from different experiments is important
+for measuring data integrity, reproducibility, and for finding biological
+invariants. However, ChIP-seq experiments are subject to many variables
+such as noise, bias, and differences in sequencing depth (Shao et
+al. 2012). These variables can make comparing different ChIP-seq experiments
+difficult, so it is important to find a good model for comparing the
+datasets.
 
-To find conserved binding sites, we want to identify a threshold for
-peak finding that can be shared by both experiments. If we set a low
-threshold, we may have to analyze many more binding sites, and potentially,
-more false positives. In this situation, using the empirical false
-discovery rate (FDR) to guide analysis is important. The P-values
-reported by MACS do not necessarily tell us anything about control
-data, however the FDR uses a data swap. Using FDR values less than
-1\% is recommended for peak calling and conservation analysis (Bardet,
-2012). This helps control the false positive rate from the MACS algorithm
-since P-values do not assess the quality of control data and reads.
-the quality of the peaks that MACS finds 
+One method for comparing data is to control look at the empirical
+false discovery rate given by MACS software. This method can help
+identify a shared significant binding level, since if we use a low
+significance threshold to find shared binding sites, we may get too
+many false positives. In this situation, we can use the empirical
+false discovery rate (FDR) calculated by MACS to guide our analysis.
+The FDR is calculated for each peak as the ratio of the number of
+peaks that MACS finds in the control dataset vs the number of peaks
+found in the ChIP-seq dataset for the p-value that is measured at
+that peak. Using a FDR less than 1\% is recommended for peak calling
+and conservation analysis (Bardet, 2012). Controlling for FDR from
+MACS algorithm helps find shared significant peaks without setting
+a strict p-value threshold for peak finding.
 
-Other methods for identifying conserved binding sites have been developed
-to model normalization. One application of note MANorm: a robust model
-for quantitative comparison of ChIP-seq datasets\textit{ }(Shao et
-al, 2012). MANorm normalizes the read counts using a linear regression
-for the tag counts that are identified from shared binding sites.
-(Figure 1). The normalization model is then extrapolated to all reads,
-and the normalized read count is used to find conserved binding sites.
-Additionally, they used a bayesian Poisson model to find conserved
-binding sites from both experiments concurrently. This effectively
-solves the problem of using one experiment as prior information for
-identifying peaks in another experiment.
+Another method for identifying conserved binding sites is \textquotedblleft{}MANorm:
+a robust model for quantitative comparison of ChIP-seq datasets\textquotedblright{}
+(Shao et al, 2012). MANorm uses the total number of reads that are
+found in an initial finding of the shared binding sites from two ChIP-seq
+datasets. Assuming the read count from shared binding sites should
+be similar, it uses a linear model to fit these peaks, and then it
+extrapolates the model to all reads in order to find additional shared
+binding sites. MANorm also uses the binding sites identified in one
+experiment as prior evidence for finding shared binding sites by used
+a Bayesian Poisson model. 
 
-Nevertheless, we developed our own model for assessing binding site
-conservation which is described below.
+MANorm effectively solves the problem of using one experiment as prior
+information for finding shared binding sites. Nevertheless, we developed
+our own model for assessing binding site similarity using the normalized
+difference score that is described in our approach. 
 
+\includegraphics[scale=0.4]{\string"MAnorm_ a robust model for quantitative  - Zhen Shao\string".eps}
 
-\subsection{Genetic analysis of transcription factor binding variation in yeast
-(Zheng et al. 2010)}
-
-Zheng et al. analyzed the differences in ChIP-seq data for transcription
-factor Ste12 from two yeast strains and different cross-strains between
-them, and they found potential causes of transcription factor binding
-variation. 
-
-They first calculated a normalized difference score to get the ChIP-seq
-'binding signal' (see Methods) for all their experiments. Then they
-analyzed the variation of NormDiff scores to identify 'variable binding
-regions'. They identified cis- and trans- factors that contribute
-to binding variation using QTL mapping to correlate 'variable binding
-regions' with genetic markers. The cis-factors were identified as
-genetic markers that are close to the variable binding regions whereas
-the trans-factors were identified as genetic markers that are far
-away from the binding sites that were still correlatedd with binding
-variation (Figure 2)
-
-\includegraphics[scale=0.7]{consensus3}\\
-Figure 2. Modifications to DNA motifs in the yeast population correlated
-with variable transcription factor binding (Zheng et al, 2010)\\
-\\
-
-
-In the QTL analysis, Zheng et al. also found trans-factors, defined
-as markers that are located far from the variable binding regions
-that contributed to binding differences. They aimed to identify trans-acting
-genes responsible for these 'trans-QTL' and they used clustering algorithms
-to validate binding differences in different subsets of the yeast
-population with the genetic linkage (Figure 3). Then they identified
-the binding differences that were closely associated with target genes
-in two cases (FLO8 and AMN1). They tested for the effects different
-genes on binding by using knockout methods in the parent strains and
-found that they can be attributed to the binding differences in \\
-\\
-\includegraphics[scale=0.5]{\string"Figure 1\string".eps}
-
-Figure 3. Hierarchical clustering of variable binding traits, and
-association with markers used to validate the trans-factor associations
-with binding variation (Zheng et al 2010)
+Figure 2. MANorm workflow for normalizing ChIP-seq data and finding
+conserved binding sites
 
 
 \section{Approach}
 
-We identified conserved binding sites in the data gathered from two
-seperate yeast strains (S288c and YJM789) from Zheng et al and we
-used a normalized difference score to get the background subtracted
-ChIP-seq binding signal. We used MACS to find high confidence binding
-sites from both strains, and we used the normalized difference score
-get evidence for shared binding sites in both experiments.
+In our study we found that MACS found many peaks that were not shared
+from ChIP-seq experiments from closely related yeast strains by Zheng
+et al. In order to compare ChIP-seq data and find conserved binding
+sites, we use a normalized difference (NormDiff) score to calculate
+the \textquotedblleft{}background subtracted\textquotedblright{} ChIP-seq
+binding signal. We used MACS to find high confidence peaks from both
+ChIP-seq datasets, and we then we used the normalized difference score
+get evidence for shared binding sites that were not found by MACS. 
 
+To find evidence for the shared binding sites, we compared the NormDiff
+scores from binding sites in one experiment with the syntenic regions
+of the binding sites in the other experiment. This analysis showed
+enriched NormDiff scores in the syntenic regions which indicates enriched
+ChIP-seq binding signal (Figure 3). Using the normal distribution,
+we calculated shared binding sites from NormDiff scores as a statistical
+likelihood that they are shared.
 
-\subsection{Finding conserved binding sites}
+\includegraphics[scale=0.3]{Rplot02_2}\includegraphics[scale=0.3]{Rplot03}
 
-We identified a set of high confidence binding sites in ChIP-seq data
-using MACS (Zhang et al, 2008). However, we found that there was evidence
-for shared binding sites from both parents at this threshold. We compared
-the NormDiff scores from binding sites in one experiment with the
-syntenic regions of the other experiments, and we found that there
-was considerable overlap between the NormDiff scores of the shared
-binding sites with the sites that were not called by MACS.
+Figure 3. The maximum average NormDiff score of peaks shared binding
+sites is colored red but unique binding sites identified in only one
+experiment are colored blue/green
 
 
 \subsection{Results}
@@ -241,7 +206,7 @@ sites from S96 and identified 98\% (885/897) using our meethod at
 P<0.05, and 60\% (563/897) binding sites at a P<0.01. In HS959 we
 identified 85\% (729/824) of the same binding sites at P<0.05 and
 46\% (365/824) at P<0.01\\
-\includegraphics[scale=0.4]{Rplot25}\\
+\includegraphics[scale=0.3]{Rplot23}\includegraphics[scale=0.3]{Rplot25_2}\\
 Figure 5. The maximum average NormDiff score is used to identify additional
 binding sites that are conserved in each experiment. 
 
