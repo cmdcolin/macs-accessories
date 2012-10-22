@@ -2,24 +2,6 @@
 library(stringr)
 library(R.utils)
 
-loadWiggle<-function(wigpath) {
-  files=list.files(path=wigpath,pattern="*.fsa.wig.gz")
-  ret<-lapply(files,function(x){
-    fn<-paste(wigpath,filename,sep='')
-    if(debug)
-      cat(filename, '\n')
-    if(exists(filename))
-      wig<-get(filename)
-    else {
-      wig<-read.table(fn, skip=2)
-      assign(filename,wig)
-    }
-  })
-  names(ret)<-files
-  ret
-}
-
-
 
 setClass("WiggleClass",
          representation(
@@ -28,20 +10,59 @@ setClass("WiggleClass",
            treatpath="character",
            controlname="character",
            treatname="character",
-           peaks="data.frame")
+           peaks="data.frame",
+           controlwig="list",
+           treatwig="list")
 )
+
+
 setMethod("initialize","WiggleClass",function(.Object,...,name) {
   printf("Loading %s\n", name)
-  controlpath=sprintf("%s/%s_MACS_wiggle/control/",name,name)
-  treatpath=sprintf("%s/%s_MACS_wiggle/treat/",name,name)
-  controlname=sprintf("%s/%s_control_afterfiting_",name,name)
-  treatname=sprintf("%s/%s_treat_afterfiting_",name,name)
-  peaks=read.table(sprintf("%s/%s_peaks.bed",name,name))
+  controlpath=sprintf("%s_MACS_wiggle/control/",name,name)
+  treatpath=sprintf("%s_MACS_wiggle/treat/",name,name)
+  controlname=sprintf("%s_control_afterfiting_",name,name)
+  treatname=sprintf("%s_treat_afterfiting_",name,name)
+  peaks=read.table(sprintf("%s_peaks.bed",name,name))
   callNextMethod(.Object,...,name=name,
-    controlpath=controlpath,treatpath=treatpath,
-    controlname=controlname,treatname=treatname,
-    peaks=peaks)
+                 controlpath=controlpath,treatpath=treatpath,
+                 controlname=controlname,treatname=treatname,
+                 peaks=peaks)
 })
+
+WiggleClass.loadWiggle<-function(.Object, wigpath, bigwig=TRUE) {
+  if(bigwig) {
+    lines<-readLines(file)
+    ntable<-grep("variableStep",lines)
+    
+    lapply(1:length(n), function(i) {
+      
+      if(debug)
+        printf("%s\n", ntable[i])
+      
+      begin=ntable[i]+1
+      end=ntable[i+1]-1
+      con<-textConnection(lines[begin:end])
+      chr<-read.table(con, skip=1, header=TRUE)
+      close(con)
+      
+      chr
+    })
+  }
+  else {
+    files=list.files(path=wigpath,pattern="*.fsa.wig")
+    ret<-lapply(files,function(x){
+      filename<-paste(wigpath,filename,sep='')
+      if(debug)
+        cat(filename, '\n')
+      wig<-read.table(filename, skip=2, header=TRUE)
+    })
+    ret
+  }
+}
+
+setMethod("loadWiggle","WiggleClass", WiggleClass.loadWiggle)
+
+
 
 # Where are my ROMAN NUMERAL FUNCTIONS??
 # Can't upload anything to RESEARCH COMPUTING??
