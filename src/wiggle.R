@@ -18,20 +18,30 @@ setClass("WiggleClass",
 
 setMethod("initialize","WiggleClass",function(.Object,...,name) {
   printf("Loading %s\n", name)
-  controlpath=sprintf("%s_MACS_wiggle/control/",name,name)
-  treatpath=sprintf("%s_MACS_wiggle/treat/",name,name)
-  controlname=sprintf("%s_control_afterfiting_",name,name)
-  treatname=sprintf("%s_treat_afterfiting_",name,name)
-  peaks=read.table(sprintf("%s_peaks.bed",name,name))
+  controlpath=sprintf("%s_MACS_wiggle/control/",name)
+  treatpath=sprintf("%s_MACS_wiggle/treat/",name)
+  controlname=sprintf("%s_control_afterfiting_",name)
+  treatname=sprintf("%s_treat_afterfiting_",name)
+  peaks=read.table(sprintf("%s_peaks.bed",name))
   callNextMethod(.Object,...,name=name,
                  controlpath=controlpath,treatpath=treatpath,
                  controlname=controlname,treatname=treatname,
                  peaks=peaks)
 })
 
-WiggleClass.loadWiggle<-function(.Object, wigpath, bigwig=TRUE) {
+
+
+
+setGeneric("loadWiggle",  
+function(this,wigpath,bigwig) standardGeneric("loadWiggle"))
+
+setMethod("loadWiggle","WiggleClass", 
+function(this, wigpath, bigwig=TRUE) {
   if(bigwig) {
-    lines<-readLines(file)
+    files=list.files(path=wigpath,pattern="*.fsa.wig")
+    
+    #Insertfix or design
+    lines<-readLines(files[1])
     ntable<-grep("variableStep",lines)
     
     lapply(1:length(n), function(i) {
@@ -58,9 +68,21 @@ WiggleClass.loadWiggle<-function(.Object, wigpath, bigwig=TRUE) {
     })
     ret
   }
-}
+})
 
-setMethod("loadWiggle","WiggleClass", WiggleClass.loadWiggle)
+
+
+
+setGeneric("loadControlWiggle",  function(this) standardGeneric("loadControlWiggle"))
+setMethod("loadControlWiggle", "WiggleClass", 
+function(this) {
+  this@controlwig=this@loadWiggle(this@controlpath,bigwig)
+})
+setGeneric("loadTreatWiggle",  function(this) standardGeneric("loadTreatWiggle"))
+setMethod("loadTreatWiggle","WiggleClass",
+function(this) {
+  this@treatwig=this@loadWiggle(this@treatpath,bigwig)
+})
 
 
 

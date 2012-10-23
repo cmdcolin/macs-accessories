@@ -4,10 +4,17 @@ source('src/wiggle.R')
 
 f<-getwd()
 setwd('data')
-dataset=list()
-for(filename in list.files()) {
-  dataset[filename]=new("WiggleClass",name=filename)
-}
+dirs<-list.files(pattern="*_MACS_wiggle")
+names<-str_replace_all(dirs,"_MACS_wiggle","")
+wiggles<-lapply(names,function(name) {
+  printf("Processing %s\n",name)
+  wig=new("WiggleClass",name=name)
+  wig@loadControlWiggle()
+  wig@loadTreatWiggle()
+  wig
+})
+
+
 setwd(f)
 
 #--kkkkkkk,,,,kkkj.;/;/;;''''''''''''''''''''
