@@ -23,17 +23,7 @@ setwd(f)
 
 # Convert wiggle file chr names
 # 
-# for(file in c(list.files(recursive=TRUE,pattern="*.wig$"),
-#               list.files(recursive=TRUE,pattern="*.bed$"))) 
-# {
-#   printf("Converting %s\n",file)
-#   # Uses sacCer3 chromosome
-#   if(saccer==TRUE)
-#     convertFileSacCer(file)
-#   # Uses S288c chromosome
-#   else if(s288c==TRUE)
-#     convertFileS288C(file)
-# }
+
 
 # ret<-intersectBed(x1,x2)
 # ret2<-uniqueBed(x1,x2)

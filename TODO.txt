@@ -73,3 +73,17 @@ Done list
 ✓ plot P(x<=X) normdiff scores for syntenic
 ✓ -log10(pvalue)
 ✗ cutoff pvalue at same value as MACS?
+
+
+
+
+
+
+
+
+# Can't upload anything to RESEARCH COMPUTING?? (2gb limit)
+# Evaluate MANORM pairwise on replicates  (new paper?)
+# Concatenate replicate data into one file (done)
+# Compare results (galaxy)
+# Fix many roman numeral sequences (fixed)
+# Figure out correct regex
