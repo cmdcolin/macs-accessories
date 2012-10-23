@@ -87,3 +87,8 @@ Done list
 # Compare results (galaxy)
 # Fix many roman numeral sequences (fixed)
 # Figure out correct regex
+TODO
+Galaxy workflow
+Fix normdiff (including window sizes)
+Generate new plots
+Fix S4????

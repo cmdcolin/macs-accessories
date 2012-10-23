@@ -2,29 +2,30 @@
 
 ####
 # Use all chromosomes for scaling factor
+
 estimateScalingFactor <- function(wig) {
   sfactor<-function(x) {
     if(debug) {
-      cat(x[1], '\t', x[2], '\n')
+      print(names(x))
     }
-    treat=wig$wiglist[[x[1]]]
-    control=wig$wiglist[[x[2]]]
+    treat=x[1]
+    control=x[2]
     corr=findInterval(treat[,1],control[,1])
     control[corr,2]/treat[corr,2]
   }
-  files1=list.files(wig$treatpath,pattern="*.fsa.wig.gz")
-  files2=list.files(wig$controlpath,pattern="*.fsa.wig.gz")
-  ratio_data=apply(cbind(files1,files2),1,sfactor)
+  treat=wig@wiggles[["treat"]]
+  control=wig@wiggles[["control"]]
+  ratio_data=apply(cbind(treat,control),1,sfactor)
   median(unlist(ratio_data),na.rm=TRUE)
 }
 
 # Sqrt(Aw+Bw/c), w=all
 estimateVarianceAll<-function(wig,scaling) {
-  files1=list.files(wig$treatpath,pattern="*.fsa.wig.gz")
-  files2=list.files(wig$controlpath,pattern="*.fsa.wig.gz")
-  getSignal<-function(file){wig$wiglist[[file]]$V2}
-  chip_signal=unlist(lapply(files1,getSignal))
-  control_signal=unlist(lapply(files2,getSignal))
+  getSignal<-function(file) {
+    wig$wiglist[[file]]$V2
+  }
+  chip_signal=sapply(wig@wiggles[["treat"]],getSignal)
+  control_signal=sapply(wig@wiggles[["control"]],getSignal)
   #Average signal
   average_chip=mean(chip_signal)
   average_control=mean(control_signal)

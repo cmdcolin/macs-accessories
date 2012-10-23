@@ -5,13 +5,12 @@ source('src/wiggle.R')
 f<-getwd()
 setwd('data')
 dirs<-list.files(pattern="*_MACS_wiggle")
-names<-str_replace_all(dirs,"_MACS_wiggle","")
-wiggles<-lapply(names,function(name) {
+store<-list()
+macswiggle<-lapply(dirs,function(dir) {
+  name<-str_replace(dir,"_MACS_wiggle","")
   printf("Processing %s\n",name)
   wig=new("WiggleClass",name=name)
-  wig@loadControlWiggle()
-  wig@loadTreatWiggle()
-  wig
+  loadWiggles(wig)
 })
 
 
