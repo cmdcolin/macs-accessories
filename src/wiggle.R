@@ -54,10 +54,10 @@ function(this)
       attr(chr, 'name') <- chrom  # save the name
       chr
     })
-    names(rep)<-sapply(rep,attr,'name')
+    #names(rep)<-sapply(rep,attr,'name')
     rep
   })
-  names(ret)<-c("control","treat")
+  #names(ret)<-c("control","treat")
   ret
 })
 

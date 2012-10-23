@@ -6,26 +6,26 @@
 estimateScalingFactor <- function(wig) {
   sfactor<-function(x) {
     if(debug) {
-      print(names(x))
+      #print(str(x))
     }
-    treat=x[1]
-    control=x[2]
-    corr=findInterval(treat[,1],control[,1])
-    control[corr,2]/treat[corr,2]
+    t=wig$treat[[x[1]]]
+    c=wig$control[[x[2]]]
+    pos=findInterval(t[,1],c[,1])
+    c[pos,2]/t[pos,2]
   }
-  treat=wig@wiggles[["treat"]]
-  control=wig@wiggles[["control"]]
-  ratio_data=apply(cbind(treat,control),1,sfactor)
+  
+  ratio_data=apply(cbind(ls(wig$treat),ls(wig$control)),1,sfactor)
   median(unlist(ratio_data),na.rm=TRUE)
 }
 
 # Sqrt(Aw+Bw/c), w=all
 estimateVarianceAll<-function(wig,scaling) {
-  getSignal<-function(file) {
-    wig$wiglist[[file]]$V2
+  getSignal<-function(file,curr) {
+    curr[[file]][,2]
   }
-  chip_signal=sapply(wig@wiggles[["treat"]],getSignal)
-  control_signal=sapply(wig@wiggles[["control"]],getSignal)
+  chip_signal=unlist(lapply(ls(wig$treat),getSignal,wig$treat))
+  control_signal=unlist(lapply(ls(wig$control),getSignal,wig$control))
+  
   #Average signal
   average_chip=mean(chip_signal)
   average_control=mean(control_signal)
