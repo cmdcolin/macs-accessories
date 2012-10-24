@@ -1,7 +1,7 @@
 # Test
 
 # Calculate Z scores over all wiggle files
-Zmod<-function(bedfile, wig1, wig2, func, vall, window=c(1,10)) {
+Zmod<-function(bedfile, wig1, wig2, func, vall, s1,s2,window=c(1,10)) {
   # Get max average reads over window size
   getZscore<-function(x,wig1,wig2){
     chr=x[1];
@@ -10,25 +10,21 @@ Zmod<-function(bedfile, wig1, wig2, func, vall, window=c(1,10)) {
     mw=max(window)
     
     # Get wig1 corr
-    tf=paste(wig1$treatname,chr,'.wig.gz',sep='')
-    cf=paste(wig1$controlname,chr,'.wig.gz',sep='')
-    treat1=wig1$wiglist[[tf]]
-    control1=wig1$wiglist[[cf]]
-    corr1=findInterval(seq(start-mw,end+mw,by=wig1$spacing),treat1$V1)
-    corr2=findInterval(seq(start-mw,end+mw,by=wig1$spacing),control1$V1)
+    treat1=wig1$treat[[chr]]
+    control1=wig1$control[[chr]]
+    corr1=findInterval(seq(start-mw,end+mw,by=spacing),treat1$V1)
+    corr2=findInterval(seq(start-mw,end+mw,by=spacing),control1$V1)
     
     # Get wig2 corr
-    tf=paste(wig2$treatname,chr,'.wig.gz',sep='')
-    cf=paste(wig2$controlname,chr,'.wig.gz',sep='')
-    treat2=wig2$wiglist[[tf]]
-    control2=wig2$wiglist[[cf]]
-    corr3=findInterval(seq(start-mw,end+mw,by=wig2$spacing),treat2$V1)
-    corr4=findInterval(seq(start-mw,end+mw,by=wig2$spacing),control2$V1)
+    treat2=wig2$treat[[chr]]
+    control2=wig2$control[[chr]]
+    corr3=findInterval(seq(start-mw,end+mw,by=spacing),treat2$V1)
+    corr4=findInterval(seq(start-mw,end+mw,by=spacing),control2$V1)
 
     if(debug==TRUE)
       cat(chr,'-\t(',start,',',end, ')\n')
     app=cbind(corr1,corr2,corr3,corr4)
-    apply(app,1,func,treat1,treat2,control1,control2,window,corr1,corr2,corr3,corr4,vall,wig1$scaling,wig2$scaling)
+    apply(app,1,func,treat1,treat2,control1,control2,window,corr1,corr2,corr3,corr4,vall,s1,s2)
   }
   
   apply(bedfile,1,getZscore,wig1,wig2)
@@ -68,8 +64,8 @@ Zsubxi<-function(x,t1,t2,c1,c2,window,corr1,corr2,corr3,corr4,vall,s1,s2) {
   B1=c1[pos2,2]
   A2=t2[pos3,2]
   B2=c2[pos4,2]
-  c1=wig1$scaling
-  c2=wig2$scaling
+  c1=s1
+  c2=s2
   sigma=max(ma,vall)
   ret=((A1-B2/c1)-(A2-B2/c2))/sigma
   ret

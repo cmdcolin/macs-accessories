@@ -1,4 +1,4 @@
-
+spacing=10
 
 ####
 # Use all chromosomes for scaling factor
@@ -84,17 +84,15 @@ Z<-function(wig, bedfile, scaling, variance, window=c(1,10)) {
     chr=x[1];
     start=as.integer(x[2])
     end=as.integer(x[3])
-    tf=paste(wig$treatname,chr,'.wig.gz',sep='')
-    cf=paste(wig$controlname,chr,'.wig.gz',sep='')
-    treat=wig$wiglist[[tf]]
-    control=wig$wiglist[[cf]]
+    treat=wig$treat[[chr]]
+    control=wig$control[[chr]]
     mw=max(window)
-    corr1=findInterval(seq(start-mw,end+mw,by=nc$spacing),treat$V1)
-    corr2=findInterval(seq(start-mw,end+mw,by=nc$spacing),control$V1)
+    corr1=findInterval(seq(start-mw,end+mw,by=spacing),treat$V1)
+    corr2=findInterval(seq(start-mw,end+mw,by=spacing),control$V1)
     if(debug==TRUE)
       cat(chr,'-\t(',start,',',end, ')\n')
     app=cbind(corr1,corr2)
-    apply(app,1,Zxi,treat,control,window,corr1,corr2)
+    apply(app,1,Zxi,treat,control,window,corr1,corr2,scaling,variance)
   }
   
   apply(bedfile,1,getZscore,window)
@@ -105,28 +103,25 @@ Z<-function(wig, bedfile, scaling, variance, window=c(1,10)) {
 
 
 # Calculate Z scores over all wiggle files
-Zall<-function(wig, window=c(1,10)) {
-  files1=list.files(path=nc$treatpath,pattern="*.fsa.wig.gz")
-  files2=list.files(path=nc$controlpath,pattern="*.fsa.wig.gz")
+Zall<-function(wig, scaling, variance, window=c(1,10)) {
+  files1=ls(wig$treat)
+  files2=ls(wig$control)
   ret=apply(cbind(files1,files2),1,function(f){
-    treat<-wig$wiglist[[f[1]]]
-    control<-wig$wiglist[[f[2]]]
+    t<-wig$treat[[f[1]]]
+    c<-wig$control[[f[2]]]
     if(debug==TRUE)
       cat(f[1],'\t',f[2],'\n')
     
-    corr1=1:length(treat$V1)
-    corr2=findInterval(treat$V1,control$V1,all.inside=TRUE)
+    corr1=1:length(t$V1)
+    corr2=findInterval(t$V1,c$V1,all.inside=TRUE)
     app=cbind(corr1,corr2)
     
-    listret=apply(app, 1, function(x){nc$Zxi(x,treat,control,window,corr1,corr2)})
+    listret=apply(app, 1, function(x){Zxi(x,t,c,window,corr1,corr2,scaling,variance)})
     
     # first column chr.fsa
-    a=character(length(corr1))
-    chr=str_extract(f[1],"chr[0-9a-z]{2}.fsa")
-    for(i in 1:length(corr1)) {
-      a[i]=chr
-    }
-    cbind(a,treat$V1[corr1],control$V1[corr2],listret)
+    chr=f[1]
+    cbind(rep(chr,length(corr1)),t$V1[corr1],c$V1[corr2],listret)
+
   })
   
   # get chr w/ regex
@@ -141,52 +136,3 @@ Zall<-function(wig, window=c(1,10)) {
 
 
 
-
-
-getMaxAvgZscoreAll<-function(wza,ws=100) {
-  ret=data.frame(chr=character(0),start=numeric(0),end=numeric(0),normdiff=numeric(0))
-  for(z in wza) {
-    print
-    chr=z[,1]
-    tpos=z[,2]
-    cpos=z[,3]
-    scores=z[,4]
-    if(debug)
-      cat(length(scores),'\n')
-    for(i in seq(1,length(scores)-1,by=ws)) {
-      start=i
-      end=i+ws
-      mchr=chr[start]
-      mscore=mean(as.numeric(scores[start:end]))
-      row=data.frame(mchr,start,end,mscore)
-      ret<-rbind(ret,row)
-    }
-    if(debug)
-      cat(length(scores),' ',nrow(ret),'\n')
-  }
-  ret
-}
-
-
-getMaxAvgZscore<-function(wz,ws=10) {
-  sapply(wz,function(zlist){
-    
-    zlist=unlist(zlist)
-    len=length(zlist)
-    reads=numeric(len)
-    #if(debug)
-    #  print(len)
-    if(is.numeric(zlist)==FALSE) {
-      cat('here1 ', length(zlist), typeof(zlist),'\n')
-      #  print(unlist(zlist))
-      #  zlist=unlist(zlist)
-    }
-    
-    for(i in 1:len) {
-      b=i
-      e=i+ws
-      reads[i]=mean(zlist[b:e],na.rm=TRUE)
-    }
-    max(reads)
-  })
-}

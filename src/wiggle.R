@@ -51,13 +51,13 @@ function(this)
       con<-textConnection(lines[begin:end])
       chr<-read.table(con)
       close(con)
-      attr(chr, 'name') <- chrom  # save the name
+      attr(chr, 'name') <- chrom  # save the nfame
       chr
     })
-    #names(rep)<-sapply(rep,attr,'name')
+    names(rep)<-sapply(rep,attr,'name')
     rep
   })
-  #names(ret)<-c("control","treat")
+  names(ret)<-c("control","treat")
   ret
 })
 
