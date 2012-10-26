@@ -110,7 +110,7 @@ Zall<-function(wig, scaling, variance, window=c(1,10)) {
     t<-wig$treat[[f[1]]]
     c<-wig$control[[f[2]]]
     if(debug==TRUE)
-      cat(f[1],'\t',f[2],'\n')
+      printf("Processing %s\n",f[1])
     
     corr1=1:length(t$V1)
     corr2=findInterval(t$V1,c$V1,all.inside=TRUE)
@@ -121,8 +121,8 @@ Zall<-function(wig, scaling, variance, window=c(1,10)) {
     # first column chr.fsa
     chr=f[1]
     cbind(rep(chr,length(corr1)),t$V1[corr1],c$V1[corr2],listret)
-
   })
+  names(ret)<-ls(wig$treat)
   
   # get chr w/ regex
   #todo get chr from filename
@@ -131,7 +131,7 @@ Zall<-function(wig, scaling, variance, window=c(1,10)) {
   #  chr=str_extract(name,"chr[0-9a-z]{2}.fsa")
   #  ret[i][['chr']]=chr
   #}
-  #ret
+  ret
 }
 
 

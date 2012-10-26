@@ -1,23 +1,35 @@
 # Example preprocessing script.
 
 source('src/wiggle.R')
+source('src/zscore.R')
 
 f<-getwd()
 setwd('data')
+
 dirs<-list.files(pattern="*_MACS_wiggle")
-store<-list()
-x<-list()
-macswiggle<-lapply(dirs,function(dir) {
-  name<-str_replace(dir,"_MACS_wiggle","")
-  printf("Processing %s\n",name)
-  wig=new("WiggleClass",name=name)
+dirnames<-str_replace_all(dirs,"_MACS_wiggle","")
+macswiggle<-lapply(dirnames,function(dirname) {
+  printf("Processing %s\n",dirname)
+  wig=new("WiggleClass",name=dirname)
   loadWiggles(wig)
-  x<-wig
+  
+})
+
+for(i in 1:length(macswiggle)) {
+  wig=macswiggle[[i]]
+  name=
   scaling<-estimateScalingFactor(wig)
   variance<-estimateVarianceAll(wig,scaling)
   ret<-Zall(wig,scaling,variance)
-  write.table(ret,sprintf("%s_normdiff.txt",name))
-})
+  
+  outtable<-NULL
+  for(chr in ret) {
+    outtable<-rbind(outtable,chr)
+  }
+  filename<-sprintf("%s_normdiff.txt",name)
+  write.table(outtable,filename,quote=FALSE)
+}
+
 
 #plot(as.vector(ret[[1]][,4]),type="l")
 setwd(f)

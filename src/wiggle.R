@@ -42,13 +42,14 @@ function(this)
     # Extract each table in bigwig file
     rep<-lapply(1:ltable, function(i) {
       varline<-lines[ntable[i]]
-      chrom<-unlist(str_extract_all(varline,"chr[0-9a-z]*"))[2]
+      chrom<-unlist(str_extract_all(varline,"[Cc]hr[0-9a-z]*"))[2]
       if(debug)
         printf("Processing %s\n", chrom)
       
       begin=ntable[i]+1
       end=ntable[i+1]-1
-      con<-textConnection(lines[begin:end])
+      data<-lines[begin:end]
+      con<-textConnection(data)
       chr<-read.table(con)
       close(con)
       attr(chr, 'name') <- chrom  # save the nfame
