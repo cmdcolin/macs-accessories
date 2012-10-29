@@ -92,3 +92,14 @@ Galaxy workflow
 Fix normdiff (including window sizes)
 Generate new plots
 Fix S4????
+
+
+
+
+
+10/28
+todo
+- get max avg normdiff score WORKING
+- get mod diff score WORKING
+- output max avg normdiff score for peaks into FILE
+- quick & dirty is to output syntenic regions of a given peak list

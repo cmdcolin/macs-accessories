@@ -17,7 +17,7 @@ macswiggle<-lapply(dirnames,function(dirname) {
 
 for(i in 1:length(macswiggle)) {
   wig=macswiggle[[i]]
-  name=
+  name=dirnames[i]
   scaling<-estimateScalingFactor(wig)
   variance<-estimateVarianceAll(wig,scaling)
   ret<-Zall(wig,scaling,variance)
