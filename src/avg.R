@@ -1,7 +1,13 @@
-getMaxAvgZscoreAll2<-function(normdiff,bedfile,ws=100) {  
-  wza<-read.table(normdiff)
+# Sample average normdiff score from bedfile
+#Make sure chromosome names match (i.e. see convert.R)
+#segments_intersect<-function(x1, x2, y1, y2) {
+#  x2 >= y1 && y2 >= x1
+#}
+
+
+getMaxAvgZscoreAll2<-function(normfile,bedfile,ws=100) {  
+  normdiff<-read.table(normfile,skip=1)
   bed<-read.table(bedfile)
-  
   
   apply(bed,1,function(row) {
     chr=row[1]
@@ -9,14 +15,14 @@ getMaxAvgZscoreAll2<-function(normdiff,bedfile,ws=100) {
     end=row[3]
     name=row[4]
     score=row[5]
-    select<-wza[wza[,1]==chr && wza[,2]>=start && wza[,3]<=end,]
+    select_temp<-normdiff[normdiff[,2]==chr&&normdiff[,3]<end&&normdiff[,4]>start,]
+    select<-select_temp[apply(select_temp,1,function(x){x[3]<end&&x[4]>start}),]
     
-    
-    ret<-lapply(seq(1,nrow(select),by=ws),function(i) {
+    print(nrow(select))
+    ret<-sapply(seq(1,nrow(select),by=ws),function(i) {
       start=i
       end=i+ws
-      mchr=chr[start]
-      mscore=mean(wza[start:end,4])
+      mean(select[start:end,4])
     })
     max(ret)
   })
@@ -28,10 +34,30 @@ setwd('data')
 files=list.files(pattern="_normdiff.txt")
 names=str_replace_all(files,"_normdiff.txt","")
 print(names)
+peaks="S96rep1_peaks.bed"
 ret<-lapply(names,function(name) {
-  getMaxAvgZscoreAll2(sprintf("%s_normdiff.txt",name),sprintf("%s_peaks.bed",name))
+  getMaxAvgZscoreAll2(sprintf("%s_normdiff.txt",name),peaks)
 })
+
+
+#Write output file
+bed<-read.table(peaks)
+x<-data.frame(name=bed$V4)
+for(i in ret) {
+  x<-cbind(x,i)
+}
+outfile<-x
+write.table(outfile,"test_output.txt",quote=FALSE,sep='\t')
 setwd(f)
+
+
+
+
+
+
+
+################
+# Old code
 
 
 getMaxAvgZscoreAll<-function(wza,ws=100) {
