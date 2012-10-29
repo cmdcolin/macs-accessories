@@ -1,3 +1,37 @@
+getMaxAvgZscoreAll2<-function(normdiff,bedfile,ws=100) {  
+  wza<-read.table(normdiff)
+  bed<-read.table(bedfile)
+  
+  
+  apply(bed,1,function(row) {
+    chr=row[1]
+    start=row[2]
+    end=row[3]
+    name=row[4]
+    score=row[5]
+    select<-wza[wza[,1]==chr && wza[,2]>=start && wza[,3]<=end,]
+    
+    
+    ret<-lapply(seq(1,nrow(select),by=ws),function(i) {
+      start=i
+      end=i+ws
+      mchr=chr[start]
+      mscore=mean(wza[start:end,4])
+    })
+    max(ret)
+  })
+}
+
+
+f<-getwd()
+setwd('data')
+files=list.files(pattern="_normdiff.txt")
+names=str_replace_all(files,"_normdiff.txt","")
+print(names)
+ret<-lapply(names,function(name) {
+  getMaxAvgZscoreAll2(sprintf("%s_normdiff.txt",name),sprintf("%s_peaks.bed",name))
+})
+setwd(f)
 
 
 getMaxAvgZscoreAll<-function(wza,ws=100) {
