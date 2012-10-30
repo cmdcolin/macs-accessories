@@ -1,30 +1,36 @@
 # Sample average normdiff score from bedfile
 #Make sure chromosome names match (i.e. see convert.R)
-#segments_intersect<-function(x1, x2, y1, y2) {
-#  x2 >= y1 && y2 >= x1
-#}
 
 
 getMaxAvgZscoreAll2<-function(normfile,bedfile,ws=100) {  
-  normdiff<-read.table(normfile,skip=1)
+  nd<-read.table(normfile,skip=1)
   bed<-read.table(bedfile)
   
-  apply(bed,1,function(row) {
-    chr=row[1]
-    start=row[2]
-    end=row[3]
-    name=row[4]
-    score=row[5]
-    select_temp<-normdiff[normdiff[,2]==chr&&normdiff[,3]<end&&normdiff[,4]>start,]
-    select<-select_temp[apply(select_temp,1,function(x){x[3]<end&&x[4]>start}),]
-    
-    print(nrow(select))
-    ret<-sapply(seq(1,nrow(select),by=ws),function(i) {
-      start=i
-      end=i+ws
-      mean(select[start:end,4])
-    })
-    max(ret)
+  print(str(nd))
+  print(str(bed))
+  
+  apply(bed,1,function(y) {
+    chr=y[1]
+    start=y[2]
+    end=y[3]
+    name=y[4]
+    score=y[5]
+    select_temp<-nd[y[1]==nd$V2,]
+    test<-apply(select_temp,1,function(x){x[3]<=y[3]&&x[4]>=y[2]})
+    #print(test)
+    select<-select_temp[test,]
+    mean(select$V5)
+    #if(nrow(select)>0) {
+    #  ret<-sapply(seq(1,nrow(select),by=ws),function(i) {
+    #    start=i
+    #    end=i+ws
+    #    mean(select[start:end,4])
+    #  })
+    #  max(ret)
+    #}
+    #else {
+    #  0
+    #}
   })
 }
 
@@ -32,10 +38,10 @@ getMaxAvgZscoreAll2<-function(normfile,bedfile,ws=100) {
 f<-getwd()
 setwd('data')
 files=list.files(pattern="_normdiff.txt")
-names=str_replace_all(files,"_normdiff.txt","")
-print(names)
+exp_names=str_replace_all(files,"_normdiff.txt","")
+print(exp_names)
 peaks="S96rep1_peaks.bed"
-ret<-lapply(names,function(name) {
+ret<-lapply(exp_names,function(name) {
   getMaxAvgZscoreAll2(sprintf("%s_normdiff.txt",name),peaks)
 })
 
@@ -47,7 +53,9 @@ for(i in ret) {
   x<-cbind(x,i)
 }
 outfile<-x
-write.table(outfile,"test_output.txt",quote=FALSE,sep='\t')
+names(outfile)<-c('YORF',exp_names)
+names(outfile)
+write.table(outfile,"test_output.txt",quote=FALSE,sep='\t',row.names=FALSE)
 setwd(f)
 
 

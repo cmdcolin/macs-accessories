@@ -1,7 +1,11 @@
 # Test
+spacing=10
+
 
 # Calculate Z scores over all wiggle files
 Zmod<-function(bedfile, wig1, wig2, func, vall, s1,s2,window=c(1,10)) {
+  bed<-read.table(bedfile)
+  
   # Get max average reads over window size
   getZscore<-function(x,wig1,wig2){
     chr=x[1];
@@ -100,6 +104,7 @@ estimateVarianceWindowMod<-function(xpos, t1,t2,c1,c2,ws,corr1,corr2,corr3,corr4
   e3=if(e3>nrow(t2)) nrow(t2) else e3
   e4=if(e4>nrow(c2)) nrow(c2) else e4
   
+  
   chip_signal=t1$V2[b1:e1]
   control_signal=c1$V2[b2:e2]
   chip_signal2=t2$V2[b3:e3]
@@ -112,20 +117,38 @@ estimateVarianceWindowMod<-function(xpos, t1,t2,c1,c2,ws,corr1,corr2,corr3,corr4
 }
 
 
-estimateVarianceAllMod<-function(wig1,wig2) {
-  files1=list.files(wig1$treatpath,pattern="*.fsa.wig.gz")
-  files2=list.files(wig1$controlpath,pattern="*.fsa.wig.gz")
-  files3=list.files(wig2$treatpath,pattern="*.fsa.wig.gz")
-  files4=list.files(wig2$controlpath,pattern="*.fsa.wig.gz")
-  getSignal<-function(file,wig){wig$wiglist[[file]]$V2}
-  sig1=unlist(lapply(files1,getSignal,wig1))
-  sig2=unlist(lapply(files2,getSignal,wig1))
-  sig3=unlist(lapply(files3,getSignal,wig2))
-  sig4=unlist(lapply(files4,getSignal,wig2))
+estimateVarianceAllMod<-function(wig1,wig2,s1,s2) {
+  files1=ls(wig1$treat)
+  files2=ls(wig1$control)
+  files3=ls(wig2$treat)
+  files4=ls(wig2$control)
+  getSignal<-function(file,curr) {
+    curr[[file]][,2]
+  }
+  sig1=unlist(lapply(files1,getSignal,wig1$treat))
+  sig2=unlist(lapply(files2,getSignal,wig1$control))
+  sig3=unlist(lapply(files3,getSignal,wig2$treat))
+  sig4=unlist(lapply(files4,getSignal,wig2$control))
   #Average signal
   average_chip=mean(sig1)
   average_control=mean(sig2)
   average_chip2=mean(sig3)
   average_control2=mean(sig4)
-  sqrt(average_chip+average_control/wig1$scaling^2+average_chip2+average_control2/wig2$scaling^2)
+  sqrt(average_chip+average_control/s1^2+average_chip2+average_control2/s2^2)
+}
+
+
+estimateScalingFactor <- function(wig) {
+  sfactor<-function(x) {
+    if(debug) {
+      #print(str(x))
+    }
+    t=wig$treat[[x[1]]]
+    c=wig$control[[x[2]]]
+    pos=findInterval(t[,1],c[,1])
+    c[pos,2]/t[pos,2]
+  }
+  
+  ratio_data=apply(cbind(ls(wig$treat),ls(wig$control)),1,sfactor)
+  median(unlist(ratio_data),na.rm=TRUE)
 }
