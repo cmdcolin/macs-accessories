@@ -4,8 +4,7 @@ spacing=10
 
 # Calculate Z scores over all wiggle files
 Zmod<-function(bedfile, wig1, wig2, func, vall, s1,s2,window=c(1,10)) {
-  bed<-read.table(bedfile)
-  
+
   # Get max average reads over window size
   getZscore<-function(x,wig1,wig2){
     chr=x[1];
@@ -151,4 +150,55 @@ estimateScalingFactor <- function(wig) {
   
   ratio_data=apply(cbind(ls(wig$treat),ls(wig$control)),1,sfactor)
   median(unlist(ratio_data),na.rm=TRUE)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+plotAddSubNormDiffV2<-function(w1,w2,peakfile1,peakfile2) {
+  peak1=loadBed(peakfile1)
+  peak2=loadBed(peakfile2)
+  shared=intersectBed(peak1,peak2)
+  unique=uniqueBed(peak1,peak2)
+  id1=match(shared$name,peak1$name) 
+  id2=match(unique$name,peak1$name)
+  s1=estimateScalingFactor(w1)
+  s2=estimateScalingFactor(w2)
+  vall1=estimateVarianceAllMod(w1,w2,s1,s2)
+  ret1=Zmod(peak1, w1,w2,Zaddxi,vall1,s1,s2)
+  ret2=Zmod(peak1, w1,w2,Zsubxi,vall1,s1,s2)
+
+  ms1<-lapply(ret1,function(l) { 
+    max(sapply(seq(1,length(l)-1,by=10),function(i) {
+      start=i
+      end=i+10
+      mean(l[start:end],na.rm=TRUE)
+    }))
+    })
+  
+  ms2<-lapply(ret2,function(l) { 
+    max(sapply(seq(1,length(l)-1,by=10),function(i) {
+      start=i
+      end=i+10
+      mean(l[start:end],na.rm=TRUE)
+    }))
+  })
+  r1=sapply(ret1,mean)
+  r2=sapply(ret2,mean)
+  #plot(r1,r2,pch='*',xlab='Additive NormDiff',ylab='Subtractive NormDiff')
+  #points(r1[id1],r2[id1],col='blue')
+  #points(r1[id2],r2[id2],col='red')
+  
+  
+  plot(ms1,ms2,pch='*',xlab='Additive NormDiff',ylab='Subtractive NormDiff')
+  points(ms1[id1],ms2[id1],col='blue')
+  points(ms1[id2],ms2[id2],col='orange')
 }

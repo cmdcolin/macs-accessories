@@ -103,3 +103,7 @@ todo
 - get mod diff score WORKING
 - output max avg normdiff score for peaks into FILE
 - quick & dirty is to output syntenic regions of a given peak list
+10/29
+- validate low levels of expression in replicates??
+chrXV 274,000 XV 275,500
+
