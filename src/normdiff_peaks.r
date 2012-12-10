@@ -56,16 +56,14 @@ results=lapply(chrs,function(name) {
   
   intervals=findInterval(as.integer(exchr1$start),as.integer(exchr2$start),all.inside=TRUE)
   len=length(intervals)
-  points=seq(1,len-10,by=10)
   print(len)
-  x=sapply(intervals[points],function(i) {
+  x=sapply(intervals[seq(1,len-10,by=10)],function(i) {
     pos=findInterval(i,intervals)
     sel=intervals[pos:(pos+10)]
     
     m1=mean(exchr1[sel,]$score)
     m2=mean(exchr2[sel,]$score)
-    points(m1,m2)
-    c(m1,m2,i)
+    c(m1,m2)
   })
   t(x)
 })
@@ -96,19 +94,44 @@ for(i in 1:16) {
   chr=results[[i]]
   list1=unlist(apply(exbed1,1,function(x){seq(as.integer(x[2]),as.integer(x[3]),10)}))
   list2=unlist(apply(exbed2,1,function(x){seq(as.integer(x[2]),as.integer(x[3]),10)}))
-  intervals1=findInterval(list1,chr[,3],all.inside=TRUE)
-  intervals2=findInterval(list2,chr[,3],all.inside=TRUE)
-  print(str(exbed1$start))
-  print(str(exbed2$start))
-  print(str(chr[intervals1,3]))
-  print(str(chr[intervals2,3]))
-  print(str(intervals1))
-  print(str(intervals2))
+  intervals1=findInterval(list1,exchr1[,2])
+  intervals2=findInterval(list1,exchr2[,2])
+  intervals3=findInterval(list2,exchr1[,2])
+  intervals4=findInterval(list2,exchr2[,2])
+  int=intervals1
+  r1=sapply(1:length(intervals1),function(i) {
+    sel=int[int[i]:(int[i]+10)]
+    mean(exchr1[sel,]$score)
+  })
+  int=intervals2
+  r2=sapply(1:length(intervals2),function(i) {
+    sel=int[int[i]:(int[i]+10)]
+    mean(exchr1[sel,]$score)
+  })
+  points(r1,r2,pch=20,col=rgb(1,0,0,0.5))
   
-  printf("\n\n\n")
+  int=intervals3
+  r3=sapply(1:length(intervals3),function(i) {
+    sel=int[int[i]:(int[i]+10)]
+    mean(exchr2[sel,]$score)
+  })
+  int=intervals4
+  r4=sapply(1:length(intervals4),function(i) {
+    sel=int[int[i]:(int[i]+10)]
+    mean(exchr2[sel,]$score)
+  })
+  points(r3,r4=20,col=rgb(0,0,1,0.5))
+  #print(str(exbed1$start))
+  #print(str(exbed2$start))
+  ##print(str(chr[intervals1,3]))
+  #print(str(chr[intervals2,3]))
+  #print(str(intervals1))
+  #print(str(intervals2))
+  
+  #printf("\n\n\n")
   
   
-  points(chr[intervals1,1],chr[intervals1,2],pch=20,col=rgb(1,0,0,0.5))
-  points(chr[intervals2,1],chr[intervals2,2],pch=20,col=rgb(0,0,1,0.5))
+  #points(chr[intervals1,1],chr[intervals1,2],pch=20,col=rgb(1,0,0,0.5))
+  #points(chr[intervals2,1],chr[intervals2,2],pch=20,col=rgb(0,0,1,0.5))
 }
 
