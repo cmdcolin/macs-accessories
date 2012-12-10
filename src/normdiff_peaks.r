@@ -44,7 +44,7 @@ densitynd(normdiff=hrep1$V4)
 #plot pair on plot
 ##
 nd1=ret[[1]]
-nd2=ret[[2]]
+nd2=ret[[4]]
 str=c('chr','start','end','score')
 names(nd1)<-str
 names(nd2)<-str
@@ -57,7 +57,7 @@ results=lapply(chrs,function(name) {
   intervals=findInterval(as.integer(exchr1$start),as.integer(exchr2$start),all.inside=TRUE)
   len=length(intervals)
   print(len)
-  x=sapply(intervals,function(i) {
+  x=sapply(intervals[seq(0,len-10,by=10)],function(i) {
     pos=findInterval(i,intervals)
     sel=intervals[pos:(pos+10)]
     
@@ -70,17 +70,17 @@ results=lapply(chrs,function(name) {
 
 # gen all points
 chr1=results[[1]]
-plot(chr1[,1],chr1[,2],pch='.',xlab='Ex1',ylab='Ex2')
+plot(chr1[,1],chr1[,2],pch='.',xlab='HS959rep1',ylab='S96rep1')
 for(i in 1:16) {
   chr=results[[i]]
-  points(chr[,1],chr[,2],pch=20,cex=0.9,col=(0,0,0,0.1))
+  points(chr[,1],chr[,2],pch=20,cex=0.9,col=rgb(0,0,0,0.1))
 }
 
 
 
 # find intersections
 bed1=ret2[[1]]
-bed2=ret2[[2]]
+bed2=ret2[[4]]
 str=c('chr','start','end','name','score')
 names(bed1)<-str
 names(bed2)<-str
@@ -92,8 +92,35 @@ for(i in 1:16) {
   exbed1=bed1[bed1$chr==name,]
   exbed2=bed2[bed2$chr==name,] 
   chr=results[[i]]
-  list1=unlist(apply(exbed1,1,function(x){seq(as.integer(x[2]),as.integer(x[3]),10)}))
-  list2=unlist(apply(exbed2,1,function(x){seq(as.integer(x[2]),as.integer(x[3]),10)}))
+  list1=apply(exbed1,1,function(x){
+    max(sapply(seq(as.integer(x[2]),as.integer(x[3]),10),function(p) {
+      
+      sel=int[int[p]:(int[p]+10)]
+      mean(exchr1[sel,]$score)
+    }
+    ))})
+  list2=apply(exbed2,1,function(x){
+    max(sapply(seq(as.integer(x[2]),as.integer(x[3]),10),function(p) {
+      
+      sel=int[int[p]:(int[p]+10)]
+      mean(exchr1[sel,]$score)
+    }
+    ))})
+
+list3=apply(exbed1,1,function(x){
+  max(sapply(seq(as.integer(x[2]),as.integer(x[3]),10),function(p) {
+    
+    sel=int[int[p]:(int[p]+10)]
+    mean(exchr2[sel,]$score)
+  }
+  ))})
+list4=apply(exbed2,1,function(x){
+  max(sapply(seq(as.integer(x[2]),as.integer(x[3]),10),function(p) {
+    
+    sel=int[int[p]:(int[p]+10)]
+    mean(exchr2[sel,]$score)
+  }
+  ))})
   intervals1=findInterval(list1,exchr1[,2])
   intervals2=findInterval(list1,exchr2[,2])
   intervals3=findInterval(list2,exchr1[,2])
@@ -108,7 +135,7 @@ for(i in 1:16) {
     sel=int[int[i]:(int[i]+10)]
     mean(exchr1[sel,]$score)
   })
-  points(r1,r2,pch=20,cex=0.9,col=rgb(1,0,0,0.2))
+  points(max(r1),max(r2),pch=20,cex=0.9,col=rgb(1,0,0,0.2))
   
   int=intervals3
   r1=sapply(1:length(intervals3),function(i) {
