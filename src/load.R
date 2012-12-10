@@ -1,5 +1,5 @@
 debug=TRUE
 
 
-library('ProjectTemplate')
+require('ProjectTemplate')
 load.project()

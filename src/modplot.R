@@ -198,7 +198,7 @@ plotAddSubNormDiffV2<-function(w1,w2,peakfile1,peakfile2) {
   #points(r1[id2],r2[id2],col='red')
   
   
-  plot(ms1,ms2,pch='*',xlab='Additive NormDiff',ylab='Subtractive NormDiff')
+  plot(ms1,ms2,pch='*',xlab='Additive NormDiff',ylab='Subtractive NormDiff',ylim=c(-5,10))
   points(ms1[id1],ms2[id1],col='blue')
   points(ms1[id2],ms2[id2],col='orange')
 }
