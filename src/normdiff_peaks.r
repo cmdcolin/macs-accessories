@@ -57,6 +57,7 @@ results=lapply(chrs,function(name) {
   intervals=findInterval(as.integer(exchr1$start),as.integer(exchr2$start),all.inside=TRUE)
   len=length(intervals)
   points=seq(1,len-10,by=10)
+  print(len)
   x=sapply(intervals[points],function(i) {
     pos=findInterval(i,intervals)
     sel=intervals[pos:(pos+10)]
@@ -64,16 +65,17 @@ results=lapply(chrs,function(name) {
     m1=mean(exchr1[sel,]$score)
     m2=mean(exchr2[sel,]$score)
     points(m1,m2)
-    c(m1,m2,pos)
-  }) 
+    c(m1,m2,i)
+  })
+  t(x)
 })
 
 # gen all points
 chr1=results[[1]]
-plot(chr1[1,],chr1[2,],pch='.')
+plot(chr1[,1],chr1[,2],pch='.',xlab='Ex1',ylab='Ex2')
 for(i in 1:16) {
   chr=results[[i]]
-  points(chr[1,],chr[2,],pch='.')
+  points(chr[,1],chr[,2],pch='.')
 }
 
 
@@ -94,18 +96,19 @@ for(i in 1:16) {
   chr=results[[i]]
   list1=unlist(apply(exbed1,1,function(x){seq(as.integer(x[2]),as.integer(x[3]),10)}))
   list2=unlist(apply(exbed2,1,function(x){seq(as.integer(x[2]),as.integer(x[3]),10)}))
-  intervals1=findInterval(list1,chr[3,],all.inside=TRUE)
-  intervals2=findInterval(list2,chr[3,],all.inside=TRUE)
+  intervals1=findInterval(list1,chr[,3],all.inside=TRUE)
+  intervals2=findInterval(list2,chr[,3],all.inside=TRUE)
   print(str(exbed1$start))
   print(str(exbed2$start))
-  print(str(chr[3,intervals1]))
-  print(str(chr[3,intervals2]))
+  print(str(chr[intervals1,3]))
+  print(str(chr[intervals2,3]))
   print(str(intervals1))
   print(str(intervals2))
+  
   printf("\n\n\n")
   
   
-  points(chr[1,intervals1],chr[2,intervals1],pch=20,col=rgb(1,0,0,0.5))
-  points(chr[1,intervals2],chr[2,intervals2],pch=20,col=rgb(0,0,1,0.5))
+  points(chr[intervals1,1],chr[intervals1,2],pch=20,col=rgb(1,0,0,0.5))
+  points(chr[intervals2,1],chr[intervals2,2],pch=20,col=rgb(0,0,1,0.5))
 }
 
