@@ -57,7 +57,7 @@ results=lapply(chrs,function(name) {
   intervals=findInterval(as.integer(exchr1$start),as.integer(exchr2$start),all.inside=TRUE)
   len=length(intervals)
   print(len)
-  x=sapply(intervals[seq(1,len-10,by=10)],function(i) {
+  x=sapply(intervals,function(i) {
     pos=findInterval(i,intervals)
     sel=intervals[pos:(pos+10)]
     
@@ -73,7 +73,7 @@ chr1=results[[1]]
 plot(chr1[,1],chr1[,2],pch='.',xlab='Ex1',ylab='Ex2')
 for(i in 1:16) {
   chr=results[[i]]
-  points(chr[,1],chr[,2],pch='.')
+  points(chr[,1],chr[,2],pch=20,cex=0.9,col=(0,0,0,0.1))
 }
 
 
@@ -108,30 +108,19 @@ for(i in 1:16) {
     sel=int[int[i]:(int[i]+10)]
     mean(exchr1[sel,]$score)
   })
-  points(r1,r2,pch=20,col=rgb(1,0,0,0.5))
+  points(r1,r2,pch=20,cex=0.9,col=rgb(1,0,0,0.2))
   
   int=intervals3
-  r3=sapply(1:length(intervals3),function(i) {
+  r1=sapply(1:length(intervals3),function(i) {
     sel=int[int[i]:(int[i]+10)]
     mean(exchr2[sel,]$score)
   })
   int=intervals4
-  r4=sapply(1:length(intervals4),function(i) {
+  r2=sapply(1:length(intervals4),function(i) {
     sel=int[int[i]:(int[i]+10)]
     mean(exchr2[sel,]$score)
   })
-  points(r3,r4=20,col=rgb(0,0,1,0.5))
-  #print(str(exbed1$start))
-  #print(str(exbed2$start))
-  ##print(str(chr[intervals1,3]))
-  #print(str(chr[intervals2,3]))
-  #print(str(intervals1))
-  #print(str(intervals2))
-  
-  #printf("\n\n\n")
-  
-  
-  #points(chr[intervals1,1],chr[intervals1,2],pch=20,col=rgb(1,0,0,0.5))
-  #points(chr[intervals2,1],chr[intervals2,2],pch=20,col=rgb(0,0,1,0.5))
+  points(r1,r2,pch=20,cex=0.9,col=rgb(0,0,1,0.2))
+
 }
 
