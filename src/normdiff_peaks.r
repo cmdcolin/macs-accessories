@@ -48,15 +48,64 @@ nd2=ret[[2]]
 str=c('chr','start','end','score')
 names(nd1)<-str
 names(nd2)<-str
+plot(0,0,xlim=c(-3,15),ylim=c(-3,15))
 chrs=levels(nd1$chr)
-results=lapply(chrs,function(name){
-  sel1=nd1[nd1$chr==name,]
-  sel2=nd2[nd2$chr==name,]
-  x=sapply(seq(1,max(sel1$start),by=100),function(i) {
-    x1=sel1$start[i:(i+100)]
-    x2=findInterval(x1,sel2$start,all.inside=TRUE)
-    m1=mean(sel1[x1,]$score)
-    m2=mean(sel2[x2,]$score)
-    cbind(m1,m2)
+results=lapply(chrs,function(name) {
+  exchr1=nd1[nd1$chr==name,]
+  exchr2=nd2[nd2$chr==name,]
+  
+  intervals=findInterval(as.integer(exchr1$start),as.integer(exchr2$start),all.inside=TRUE)
+  len=length(intervals)
+  points=seq(1,len-10,by=10)
+  x=sapply(intervals[points],function(i) {
+    pos=findInterval(i,intervals)
+    sel=intervals[pos:(pos+10)]
+    
+    m1=mean(exchr1[sel,]$score)
+    m2=mean(exchr2[sel,]$score)
+    points(m1,m2)
+    c(m1,m2,pos)
   }) 
 })
+
+# gen all points
+chr1=results[[1]]
+plot(chr1[1,],chr1[2,],pch='.')
+for(i in 1:16) {
+  chr=results[[i]]
+  points(chr[1,],chr[2,],pch='.')
+}
+
+
+
+# find intersections
+bed1=ret2[[1]]
+bed2=ret2[[2]]
+str=c('chr','start','end','name','score')
+names(bed1)<-str
+names(bed2)<-str
+
+for(i in 1:16) {
+  name=chrs[i]
+  exchr1=nd1[nd1$chr==name,]
+  exchr2=nd2[nd2$chr==name,]
+  exbed1=bed1[bed1$chr==name,]
+  exbed2=bed2[bed2$chr==name,] 
+  chr=results[[i]]
+  list1=unlist(apply(exbed1,1,function(x){seq(as.integer(x[2]),as.integer(x[3]),10)}))
+  list2=unlist(apply(exbed2,1,function(x){seq(as.integer(x[2]),as.integer(x[3]),10)}))
+  intervals1=findInterval(list1,chr[3,],all.inside=TRUE)
+  intervals2=findInterval(list2,chr[3,],all.inside=TRUE)
+  print(str(exbed1$start))
+  print(str(exbed2$start))
+  print(str(chr[3,intervals1]))
+  print(str(chr[3,intervals2]))
+  print(str(intervals1))
+  print(str(intervals2))
+  printf("\n\n\n")
+  
+  
+  points(chr[1,intervals1],chr[2,intervals1],pch=20,col=rgb(1,0,0,0.5))
+  points(chr[1,intervals2],chr[2,intervals2],pch=20,col=rgb(0,0,1,0.5))
+}
+
