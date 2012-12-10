@@ -6,11 +6,10 @@ hrep1=ret[[1]]
 hrep1_peaks=ret2[[1]]
 chr1=hrep1[hrep1$V1=='chr01',]
 chr1_peaks=hrep1_peaks[hrep1_peaks$V1=='chr01',]
-plot.new()
+plot(chr1$V2,chr1$V4,type='l')
 ret=apply(chr1_peaks,1,function(x){
   rect(x[2],-100,x[3],100,col=rgb(1,0,0,0.5))
 })
-lines(chr1$V2,chr1$V4)
 
 
 
@@ -37,12 +36,27 @@ densitynd(normdiff=hrep1$V4)
 
 
 
-
-
+#################
+#get all chr names
+#loop from seq 0 to maxchr length by window size
+#match intervals in samples for samples in location
+#average normdiff scores
+#plot pair on plot
+##
 nd1=ret[[1]]
 nd2=ret[[2]]
-names(nd1)<-c('chr','start','end','score')
-names(nd2)<-c('chr','start','end','score')
-for(i in seq(1,max(nd1$start),by=100)) {
-  findInterval
-}
+str=c('chr','start','end','score')
+names(nd1)<-str
+names(nd2)<-str
+chrs=levels(nd1$chr)
+results=lapply(chrs,function(name){
+  sel1=nd1[nd1$chr==name,]
+  sel2=nd2[nd2$chr==name,]
+  x=sapply(seq(1,max(sel1$start),by=100),function(i) {
+    x1=sel1$start[i:(i+100)]
+    x2=findInterval(x1,sel2$start,all.inside=TRUE)
+    m1=mean(sel1[x1,]$score)
+    m2=mean(sel2[x2,]$score)
+    cbind(m1,m2)
+  }) 
+})
