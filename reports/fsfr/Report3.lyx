@@ -65,7 +65,8 @@
 \begin_body
 
 \begin_layout Title
-Comparison and analysis of ChIP-seq experiments
+Finding conserved transcription factor binding sites by comparing ChIP-seq
+ experiments
 \end_layout
 
 \begin_layout Author
@@ -85,18 +86,26 @@ Senior Thesis Project, Fall 2012
 \begin_inset Newline newline
 \end_inset
 
-First semester final report - Outline
+First semester final report
 \end_layout
 
 \begin_layout Abstract
 DNA-protein interactions are essential for gene regulation, and these interactio
 ns can be detected by using chromatin immunoprecipitation and high throughput
  sequencing (ChIP-seq).
- In order to compare ChIP-seq data from different experiments, we used peak
- finding tools to find binding sites in each experiment.
- We also use a normalized difference score described by Zheng et al (2010)
- to find evidence for shared binding sites from different ChIP-seq experiments
- that aren’t found by other peak finding algorithms.
+ Transcription factors in particular are proteins that bind to specific
+ sequences on the DNA, thereby promoting or suppressing the transcription
+ of nearby genes.
+ Using ChIP-seq, transcription factor binding sites are identified as peaks
+ in the data that represents a ‘tag pileup’ of DNA sequences.
+ Some binding sites have too weak of a signal to confidently identify, but
+ evidence from comparing ChIP-seq experiments from the genomes of related
+ strains may provide the additional support needed to identify these.
+ We found substantial evidence for weak binding sites that are conserved
+ but aren’t found by other peak finding algorithms, and we use a normalized
+ difference score described by Zheng et al (2010) to find some of these.
+ We also introduce a modified normalized difference score that uses data
+ from multiple genomes concurrently.
 \end_layout
 
 \begin_layout Section
@@ -104,38 +113,106 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-The genes in our DNA are regulated by a variety of epigenetic factors.
+The genes in our DNA are regulated by a variety of proteins that interact
+ and bind with the DNA.
  Transcription factors in particular are proteins that can affect DNA transcript
-ion by binding to the DNA.
- Transcription factors also have a specific DNA binding domain, which is
- a short DNA sequence that they are attracted to.
- These transcription factor binding sites play an important role in regulating
- DNA transcription.
+ion by binding to the DNA, thereby regulating nearby genes.
+ Transcription factors bind to a particular DNA motif, which is a short
+ DNA sequence that they are attracted to.
+ Identifying the transcription factor binding sites has become an important
+ problem for understanding gene regulation.
+ However, comparisons of different related species have shown a high degree
+ of variability of binding sites in human and mouse and in different strains
+ of yeast (Odom et al.
+ 2003, Zheng et al.
+ 2010).
  
 \end_layout
 
 \begin_layout Standard
-ChIP-seq is a next-generation sequencing method used for finding transcription
- factor binding sites.
- ChIP-seq uses chromatin immunoprecipitation and uses high throughput sequencing
- to find DNA sequences that have transcription factor binding sites.
- ChIP-seq data is made up of many of these short DNA sequences and after
- they aligned to a reference genome, transcription factor binding sites
- appear as ‘peaks’ in the ChIP-seq data.
- We use peak finding algorithms to find the binding sites, however, the
- significance level for finding peaks can be somewhat arbitrary based on
- a significance threshold.
+ChIP-seq is a next-generation sequencing method for detecting DNA-protein
+ interactions.
+ ChIP-seq uses chromatin immunoprecipitation followed by high throughput
+ sequencing to find DNA sequences to which transcription factors bind.
+ ChIP-seq data is made up of many short DNA sequences, and after the sequences
+ are aligned to a reference genome, the transcription factor binding sites
+ appear as ‘peaks’ in the data.
+ Peak finding algorithms use a significance level that is based on a somewhat
+ arbitrary threshold.
  
 \end_layout
 
 \begin_layout Standard
-We used the normalized difference (NormDiff) score described by Zheng et
- al (2010) to get the background subtracted and normalized ChIP-seq binding
- signal.
- Then we use the binding sites identified from peak finding software and
- calculate the NormDiff score from the syntenic regions of each binding
- sites to find evidence for shared binding sites.
- 
+In order to compare ChIP-seq data, typically, the binding sites from different
+ experiments are identified from each experiment individually, and if the
+ location of a binding sites overlap at the same genome position in each
+ experiment, then they are shared.
+ If the comparison involves comparing different genomes, then we can either
+ compare nearby genes of the binding sites if there exist homologous genes
+ to compare.
+ Other techniques for comparing binding sites from different genomes use
+ a DNA alignment of each genome to find overlapping binding sites.
+ Odom et al.
+ (2007) developed a peak classification that uses DNA alignment and the
+ ChIP signal to compare human and mouse binding sites which illustrates
+ how binding sites can vary from comparing different genomes.
+\end_layout
+
+\begin_layout Standard
+Using the peak classification, conserved binding sites are defined as binding
+ sites that have the same target gene which also have conserved DNA alignments.
+ The conserved DNA alignment is typically characterized using motif finding
+ (Odom et al.
+ 2007) but they can also use multiple sequence alignments (Moses et al.
+ 2004).
+ A gained or lost peak will have conserved sequences, but they will not
+ have similar peak characteristics.
+ The unaligned and turnover classes of peaks will not have a matching the
+ sequence alignment, “so they can not be classified definitely” (Odom et
+ al.
+ 2007).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename image1.jpeg
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Peak classification uses a DNA alignment to classify identified binding
+ sites (Odom, Dowell et al, 2007)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section

@@ -27,13 +27,21 @@ densitynd<-function(normdiff) {
   clt=sapply(1:10000,function(x){mean(sample(normdiff,50))})
   nd.mu=mean(clt)
   nd.sd=sd(clt)
-  plot(function(x){dnorm(x,mean=nd.mu,sd=nd.sd)},-3,3)
-  lines(density(clt))
+  plot(function(x){dnorm(x,mean=nd.mu,sd=nd.sd)},-2,2,xlab='Standard deviations',ylab='Proportion')
+  lines(density(clt),col='red')
+
+  legend('topright',legend=c('NormDiff',sprintf("N(%.01f,%.01f)",nd.mu,nd.sd)),lty=c(1,1), lwd=c(2.5,2.5),col=c("black","red"))
   printf("%f\t%f",nd.mu,nd.sd)
+  title('Sampling distribution of NormDiff scores')
   #lines(density(rnorm(1000,nd.mu,nd.sd)))
 }
 densitynd(normdiff=hrep1$V4)
 
+clt=normdiff
+plot(function(x){dnorm(x)},-5,5,xlab='Standard deviations',ylab='Proportion')
+lines(density(clt),col='red')
+legend('topright',legend=c('NormDiff','N(0,1)'),lty=c(1,1), lwd=c(2.5,2.5),col=c("black","red"))
+title('N(0,1) vs NormDiff')
 
 
 #################
