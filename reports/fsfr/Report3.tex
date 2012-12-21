@@ -128,12 +128,12 @@ their analysis (Figure 2).
 \begin{figure}
 
 
-\includegraphics{consensus4}
+\includegraphics[scale=0.5]{consensus4}
 
-\caption{Figure 2. A Venn diagram showing the number of identified Ste12 binding
-sites in S96 (left) and HS959 (right). Binding sites are identified
-as conserved (blue intersecting region) if they target the same gene
-for different yeast strains S96 and HS959 (Zheng et al. 2010).}
+\caption{A Venn diagram showing the number of identified Ste12 binding sites
+in S96 (left) and HS959 (right). Binding sites are identified as conserved
+(blue intersecting region) if they target the same gene for different
+yeast strains S96 and HS959 (Zheng et al. 2010).}
 \end{figure}
 
 
@@ -216,13 +216,13 @@ sites, it was not consistent and exhibited too much noise to shown
 a clear correlation.
 
 \begin{figure}
-\includegraphics[scale=0.5]{image3_2}\includegraphics[scale=0.5]{image4_2}
+\includegraphics[scale=0.35]{image3_2}\includegraphics[scale=0.35]{image4_2}
 
-\caption{Figure 3. (left) The correlation score from peaks in HS959 and S96
-does not show a strong positive correlation, with most correlations
-near zero. (right) The shared peaks from replicate experiments have
-more of a strong positive correlation, with many more peaks showing
-high positive correlations.}
+\caption{(left) The correlation score from peaks in HS959 and S96 does not
+show a strong positive correlation, with most correlations near zero.
+(right) The shared peaks from replicate experiments have more of a
+strong positive correlation, with many more peaks showing high positive
+correlations.}
 
 
 \end{figure}
@@ -252,31 +252,55 @@ to normalize the data and to find additional conserved binding sites.}
 
 \section{Approach}
 
-In order to compare different ChIP-seq experiments and find conserved
-binding sites, we use a normalized difference (NormDiff) score to
-calculate the \textquotedblleft{}background subtracted\textquotedblright{}
-and normalized ChIP-seq binding signal. We used MACS to find high
-confidence peaks from both ChIP-seq datasets, and we then we used
-the normalized difference score to compare the peaks identified in
-one experiment with the same region from another experiment (the syntenic
-region). 
-
-We used the number of ChIP-seq tags that overlap each genome position
-to calculate the normalized difference score for each genome position
+To determine the scope or the problem of unidentified conserved binding
+sites, we calculated the normalized difference score of Zheng et al.
+using the number of ChIP-seq tags that overlap each genome position
 (see Methods). Then we used a sliding window to calculate the maximum
-average NormDiff score for the region syntenic to each peak. We found
-that many peaks NormDiff overlap in the syntenic regions, corresponding
-with enriched ChIP-seq binding signal (Figure 3). Using the normal
-distribution of the NormDiff scores, we calculated shared binding
-sites from NormDiff scores as a statistical likelihood that the peak
-is different from the background.\\
+average NormDiff score for the peaks that are found using MACS as
+well as the syntenic region for comparison. We found in many cases
+that syntenic regions are enriched with ChIP-seq reads even when it
+is not called a binding site by MACS (Figure 4a). To look at both
+experiments concurrently, we analyzed a MA plot of the NormDiff scores
+that uses the log-product and log-ratio of the maximum average NormDiff
+scores overlapping the peaks from both experiments (Figure 4b). The
+MA plot shows many binding sites that are unique to one experiment
+overlap the same region as the shared binding sites in the figure. 
+
+\begin{figure}
+\includegraphics[scale=0.35]{image6_2}\includegraphics[scale=0.35]{image7_2}
+
+\caption{Comparing the NormDiff score of peaks found using MACS with the syntenic
+region of another experiment shows that even sites that aren\textquoteright{}t
+called shared have significant NormDiff scores. Note how often there
+are red or green points (representing binding sites called in only
+one strain) overlapping the region of blue points (which represent
+binding sites considered shared by MACS).}
 
 
-\includegraphics[scale=0.3]{Rplot02_2}\includegraphics[scale=0.3]{Rplot03}
+\end{figure}
 
-Figure 2. The maximum average NormDiff score of peaks shared binding
-sites is colored red but unique binding sites identified in only one
-experiment are colored blue/green
+
+Peaks that were not identified by MACS but for which there might still
+be a shared peak are in what is referred to as the \textquotedblleft{}twilight
+zone\textquotedblright{} (Figure 5). Since NormDiff is normalized,
+it allows for simple and direct comparison of data. The \textquotedblleft{}twilight
+zone\textquotedblright{} represents the overlap of the NormDiff scores
+from shared peaks that are at least as big as the syntenic region.
+We sorted the the syntenic region\textquoteright{}s max average NormDiff
+score for the shared and unique peaks separately (Figure 5). This
+shows that some of the strongest NormDiff scores were not called shared
+when other weaker signals were called. 
+
+\begin{figure}
+\includegraphics[scale=0.35]{image9_2}\includegraphics[scale=0.35]{image10_2}
+
+\caption{The \textquotedblleft{}twilight zone\textquotedblright{} in yellow
+shows the NormDiff scores of peaks found to be shared overlap with
+NormDiff scores of peaks that were not identified}
+
+
+\end{figure}
+
 
 
 \subsection{Results}
