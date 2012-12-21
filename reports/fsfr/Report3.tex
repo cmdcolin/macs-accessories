@@ -119,78 +119,135 @@ score that use the data from multiple genomes concurrently.
 (Zheng et al. 2010)}
 
 In 2010, Zheng et al. analyzed transcription factor binding sites
-for Ste12, a transcription factor important in mating, for different
-strains of yeast using ChIP-seq. They used a peak finding software
-called MACS \textendash{} Model based analysis of ChIP-seq and they
-also used a normalized difference score (see Methods) to calculate
-the ChIP-seq binding signal. Then they used correlations of the binding
-signal with genotypes to find the genetic factors that caused the
-variations in transcription factor binding site. 
+in two strains of yeast, S96 and HS959, by using ChIP-seq for a transcription
+factor called Ste12. They found transcription factor binding sites
+using MACS software (section 2.2, appendix A). About 40\% of the binding
+sites are found to vary across different yeast strains according to
+their analysis (Figure 2).
+
+\begin{figure}
+
+
+\includegraphics{consensus4}
+
+\caption{Figure 2. A Venn diagram showing the number of identified Ste12 binding
+sites in S96 (left) and HS959 (right). Binding sites are identified
+as conserved (blue intersecting region) if they target the same gene
+for different yeast strains S96 and HS959 (Zheng et al. 2010).}
+\end{figure}
+
+
+In order to get a comprehensive picture of the changes associated
+with transcription factor binding variations, Zheng et al. created
+NormDiff to find the background subtracted and normalized ChIP-seq
+binding signal (see Methods). They found variable binding regions
+by analyzing the variation of the binding signal across different
+experiments. 
+
+Their analysis was very informative, but instead of analyzing the
+variable binding sites, we wanted to find additional conserved binding
+sites. In order to do this, we looked at the binding sites found by
+MACS and looked at the distribution of the NormDiff scores to find
+patterns of conserved binding sites.
 
 
 \subsection{Model based analysis of ChIP-seq (Zhang et al. 2007)}
 
-MACS is a popular and open source software tool that is used for peak
-finding ChIP-seq data. We discuss some of the details of MACS analysis
-and the use of command line options for processing. MACS associates
-a list of tuples corresponding to the position and orientation of
-each ChIP-seq tag with each chromosome. MACS does not use any other
-parts of the ChIP-seq data such as the DNA sequence or alignment quality
-for processing.
+Peak finding is an important part of finding transcription factor
+binding sites. Model-based analysis of ChIP-seq (MACS) is a popular
+and open source software tool for peak finding in ChIP-seq data. We
+performed a source code study of MACS (see Appendix A) in order to
+understand it\textquoteright{}s functionality in detail. We discuss
+some of the details here.
 
-To account for paired-end reads, MACS calculates a shift model that
-compensates for the fact that only a part of the 5\textquoteright{}
-end of the ChIP-seq fragments are sequenced. For this step, MACS uses
-a \textquotedblleft{}naïve\textquotedblright{} peak finder to find
-pairs of peaks on each strand within a scanning window, and then calculates
-the median distance between each pair to estimate the total ChIP-seq
-fragment size. Then MACS extends each read towards the 3\textquoteright{}
-end to represent the true length of the ChIP-seq fragments for downstream
-analysis.
+Internally, MACS uses a list of tuples corresponding to the position
+and orientation of each ChIP-seq tag. The length of the ChIP-seq fragments
+is unknown because only a small part of the 5\textquoteright{} ends
+are sequenced. To compensate, MACS calculates a shift model to estimate
+the length of the ChIP-seq fragments. MACS uses a \textquoteleft{}naïve\textquoteright{}
+peak to find pairs of peaks using the paired-end reads. Then the median
+distance between each pair estimates the total ChIP-seq fragment size.
+Then MACS extends the length of each read towards the 3\textquoteright{}
+end to represent the true length of the ChIP-seq fragments.
 
 For finding peaks, MACS uses a Poisson distribution model to find
 data that is highly different from the background distribution. The
-rate parameter of the Poisson is calculated as the expected number
-of reads in the scanning window given the total number of reads and
-the whole genome size. Then peaks are identified as the Poisson CDF
-likelihood of receiving a large number of reads in our scan window
-given the Poisson rate of the background. Poisson rate parameters
-are also estimated for local 5k and 10k windows surrounding the scanning
-window in order to capture local variations in the data that might
-affect peak finding. 
-
-Finally, MACS gives us the list of high quality potential transcription
-factor binding sites. In the next sections, we show our methods for
-comparing the data from multiple experiments to find conserved transcription
-factor binding sites.
-
-\includegraphics[scale=0.5]{Poisson_cdf}
-
-Figure 1. The Poisson cumulative distribution function (CDF) outputs
-a probability for observing a given number of events.\\
-
+background is calculated as the expected number of reads in the scanning
+window given the total number of reads and the whole genome size.
+Then peaks are identified as the likelihood of receiving a large number
+of reads in our scan window compared with the background. The result
+is a list of high confidence ChIP-seq peaks that represent potential
+transcription factor binding sites. 
 
 
 \subsection{Finding conserved transcription factor binding sites}
 
-Finding conserved binding sites from different experiments is important
-for measuring data similarity, experimental reproducibility, and finding
-biological invariants in different experiments. However, ChIP-seq
-experiments are subject to many variables such as noise, bias, and
-differences in sequencing depth (Shao et al. 2012). These variables
-can make comparing different ChIP-seq experiments difficult, so it
-is important to find a good model for comparing the datasets. 
+Comparing data from multiple experiments to find conserved binding
+sites is important for understanding evolution, measuring data similarity,
+experimental reproducibility, and finding biological invariants. However,
+ChIP-seq experiments are subject to many variables such as noise,
+bias, and differences in sequencing depth (Shao et al. 2012). These
+variables can make comparing different ChIP-seq experiments difficult,
+so it is important to find a good model to account for these variables.
 
-A conserved binding site can be identified by overlapping the peaks
-and we can compare data about the fold-enrichment of the peak over
-the background, the p-values for the distribution, and the empirical
-false discovery rate can also be used to assess the binding site similarity.
-However, if we want to find weakly conserved binding sites, then using
-a low significance threshold for MACS can result in many false positives.
-Therefore we developed a method for finding shared binding sites from
-multiple experiments by comparing the normalized difference score
-from the peaks that MACS identifies in one experiment to find peaks
-that aren\textquoteright{}t identified in other experiments.
+Methods for analyzing chromatin immunoprecipitation using microarray
+(ChIP-chip) are well studied for using normalization, scaling, and
+discretization (Zhou and Wong, 2008). Finding conserved binding sites
+involves additional analysis however. The basic method that has been
+used for finding conserved binding sites is to align the genomes and
+find overlapping peaks for common target genes. One method for finding
+conserved binding sites using the peak classification mentioned above
+for ChIP-chip was introduced by Odom, Dowell et al. (Figure 1).
+
+To assess the quality of the conserved binding site, we can also compare
+the p-values and the empirical false discovery rate to assess the
+binding site similarity. However, if we want to find conserved binding
+sites that have a weak binding signal, then MACS might not be very
+useful, because we would have to use a low significance threshold
+for MACS, which can result in many false positives. Additionally,
+using a low significance threshold for MACS results in very broad
+peaks (see Appendix A, section 3). 
+
+In our previous work (Statistics and Computation for Genomes and Metagenomes,
+Spring 2012), we tried to use the correlation of data from the binding
+sites and the syntenic region as a measure of a conserved binding
+site. While this method was able to identify some conserved binding
+sites, it was not consistent and exhibited too much noise to shown
+a clear correlation.
+
+\begin{figure}
+\includegraphics[scale=0.5]{image3_2}\includegraphics[scale=0.5]{image4_2}
+
+\caption{Figure 3. (left) The correlation score from peaks in HS959 and S96
+does not show a strong positive correlation, with most correlations
+near zero. (right) The shared peaks from replicate experiments have
+more of a strong positive correlation, with many more peaks showing
+high positive correlations.}
+
+
+\end{figure}
+
+
+A more recent technique used for finding conserved binding sites using
+ChIP-seq is MANorm (Shao et al, 2012). MANorm uses binding sites identified
+by a peak finding program and raw ChIP-seq data to fit a linear model
+for shared peaks (Figure 3). MA plots use log-product and log-ratio
+to compare two experiments, and these techniques have been historically
+used for analyzing ChIP-chip arrays but MANorm adapted it to normalize
+ChIP-seq data in MANorm. MANorm can also find conserved binding sites
+in terms of a Bayesian Poisson model.
+
+\begin{figure}
+
+
+\includegraphics[scale=0.4]{image2}
+
+\caption{MANorm uses the data and peak finding results from two experiments
+to normalize the data and to find additional conserved binding sites.}
+
+
+\end{figure}
+
 
 
 \section{Approach}
