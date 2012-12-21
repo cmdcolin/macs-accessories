@@ -250,7 +250,10 @@ to normalize the data and to find additional conserved binding sites.}
 
 
 
-\section{Approach}
+\section{Accomplishments}
+
+
+\subsection{Evidence for unidentified shared peaks}
 
 To determine the scope or the problem of unidentified conserved binding
 sites, we calculated the normalized difference score of Zheng et al.
@@ -302,25 +305,153 @@ NormDiff scores of peaks that were not identified}
 \end{figure}
 
 
+To compare the distribution of the peak NormDiff scores with the background,
+we also looked at the distribution of NormDiff across the whole genome
+(see Methods). This showed that the NormDiff scores that overlap peaks
+were visibly different from the background (Figure 6). The syntenic
+regions and the peak regions are also highly correlated even at low
+levels of expression, which indicates that something that might not
+be called a peak by a peak finder using strict cutoffs might still
+be biologically significant. There are also a number of regions for
+which the syntenic region in neither genome is called a peak that
+overlap identified conserved binding sites, giving evidence that there
+may be many conserved peaks that are not identified in either genome.
 
-\subsection{Results}
+\begin{figure}
+\includegraphics[scale=0.35]{image11_2}\includegraphics[scale=0.35]{image12_2}
 
-We found 42 new binding sites in HS959 with that were conserved in
-S96 that were not identified by MACS with P<0.05, and 4 of binding
-sites that were conserved with P<0.01. We also found 76 binding sites
-in S96 with P<0.05 that were conserved in HS959, and 13 of these binding
-sites were conserved with P<0.01 
+\caption{Figure 6. The distribution of the NormDiff scores for the whole genome
+are shown in contrast with the average NormDiff scores of the peak
+and syntenic regions, showing that even peaks that are not called
+shared are significantly elevated over the background, and more importantly,
+that there may be many conserved binding sites that are not currently
+identified in either genome (gray points that overlap the region with
+red points).}
+
+
+\end{figure}
+
+
+
+\subsection{Using the normal distribution of NormDiff to identify additional
+conserved peaks}
+
+We developed a new model for assessing conserved binding sites by
+using the normalized difference score from Zheng et al. Using the
+observed normal distribution of NormDiff scores, we identified high
+confidence binding sites as those that are statistically highly different
+from the background (see Methods). We analyzed the regions syntenic
+to peaks called in only one strain. We found 42 new binding sites
+in HS959 with that were conserved in S96 that were not identified
+by MACS with P<0.05, and 4 of these binding sites that were conserved
+with P<0.01. We also found 76 binding sites in S96 with P<0.05 that
+were conserved in HS959, and 13 of these binding sites were conserved
+with P<0.01 
+
+\begin{figure}
+\includegraphics[scale=0.35]{image13_2}
+
+\includegraphics[scale=0.35]{image14_2}
+
+\caption{The maximum average NormDiff score calculated from the syntenic region
+is used to identify additional binding sites that are conserved in
+each experiment.}
+
+
+\end{figure}
+
 
 To evaluate the significance of these findings, we evaluated all binding
-sites from S96 and identified 98\% (885/897) using our method at P<0.05,
-and 60\% (563/897) binding sites at a P<0.01. In HS959 we identified
-85\% (729/824) of the same binding sites at P<0.05 and 46\% (365/824)
-at P<0.01\\
+sites that were previously identified from S96 using our algorithm
+and we found 98\% (885/897) at P<0.05, and 60\% (563/897) binding
+sites at a P<0.01. In HS959 we identified 85\% (729/824) of the same
+binding sites at P<0.05 and 46\% (365/824) at P<0.01. This indicates
+that our algorithm is able to identify many significant binding sites
+that are found by other peak finding algorithms.
+
+We also compared our results with results about transcription factor
+binding sites from previous studies (Harbison, Gorden et al.) and
+we found many of our results overlap known yeast regulatory regions
+(see Figure 8). This shows that the normalization of the data can
+be used to identify shared binding sites that aren\textquoteright{}t
+identified by other algorithms. 
+
+\begin{figure}
+\includegraphics[scale=0.35]{image15_2}
+
+\caption{ChIP-seq peak identified by MACS (bottom) and the peak that was identified
+by our algorithm that MACS did not identify (top). Bottom track shows
+overlap with known regulatory regions. }
 
 
-\includegraphics[scale=0.3]{Rplot23}\includegraphics[scale=0.3]{Rplot25_2}\\
-Figure 3. The maximum average NormDiff score is used to identify additional
-binding sites that are conserved in each experiment. 
+\end{figure}
+
+
+
+\subsubsection{Drawbacks of this approach}
+
+Our approach tries to find evidence for conserved binding sites by
+analyzing data using normalized difference scores. Our approach gives
+some evidence of peaks with high confidence P-values, which is shown
+in our results of finding new peaks with P<0.01. However, these findings
+have much less confidence than thresholds set by MACS (P<1e-5). 
+
+One of the reasons that we have less confidence in P-values is because
+NormDiff uses control data for background subtraction. MACS does not
+use control data to calculate P-values, but it uses control data to
+calculate false discovery rates. The background subtraction used in
+NormDiff may result in higher P-values because of the loss of signal
+from background subtraction. Additionally, we use a normal approximation
+for our data, but since our data is not continuous it may not behave
+as well as Poisson distribution. 
+
+
+\subsection{Modified NormDiff scores to identify conserved binding sites simultaneously}
+
+In addition to identifying conserved binding sites that were previously
+identified in only one genome, we wish to also identify conserved
+binding sites that are too weak to identify individually in either
+genome, but for which the combined data from multiple genomes can
+together provide sufficient evidence for the binding site. As a first
+step towards this, we created modified NormDiff scores that use the
+data from two genomes concurrently (see Methods). 
+
+One modified NormDiff score calculates the added effect of two experiments
+(Zadd), and with the other calculates the subtracted effect (Zsub).
+Zadd provides information about the added effect of two experiments,
+so if Zadd is high, then if considered together the binding sites
+can be considered to be significant. Zsub provides information about
+the similarity of the peaks: if the subtractive score is small, then
+the binding sites have a small difference, and they are similar. We
+hypothesize that comparing and/or combining these two scores can be
+used to identify conserved and differential binding. (Figure 9). For
+example, if the subtractive score is small but the additive score
+is large, then the binding site is likely to be conserved in both
+experiments. 
+
+We can test our hypothesis that Zsub is small by using a hypothesis
+test: we assume the mean is 0, and test whether the observed distribution
+is different. We can also check that the sum of each random variable
+is large (setting a significance threshold) according to a hypothesis
+test also.
+
+We analyzed S96 peaks and HS959 peaks using the modified NormDiff
+score and found that the data clusters around zero on Zsub, indicating
+a high degree of similarity. The peaks that are highly different from
+each other appear far from zero on Zsub. The difference in the Zsub
+score could indicate a significant difference in the binding site. 
+
+\begin{figure}
+\includegraphics[scale=0.35]{image16_2}\includegraphics[scale=0.35]{image17_2}
+
+\caption{$Z_{add}$ vs. $Z_{sub}$ for S96 and HS959. The modified NormDiff
+scores are used to find evidence of shared binding sites in the HS959
+and S96 genomes. Both genomes are considered concurrently with the
+modified NormDiff score to find shared peaks}
+
+
+\end{figure}
+
 
 
 \section{Discussion}
@@ -332,18 +463,6 @@ sites, which represents strong binding signals, even for binding sites
 that were not identified as shared by MACS. Peaks that were not identified
 by MACS but for which there might still be shared peaks, we call the
 \textquotedblleft{}twilight zone\textquotedblright{}.\\
-
-
-\includegraphics[scale=0.3]{image11}\includegraphics[scale=0.3]{image12}
-
-Figure 4. The twilight zone in yellow shows where the normalized difference
-scores from each experiment overlap significantly \\
-
-
-\includegraphics[scale=0.3]{image16}
-
-Figure 5. A shared binding sites that we identified using our algorithm
-has the above distribution.\\
 
 
 Our work could be extended to use more sophisticated statistical models
