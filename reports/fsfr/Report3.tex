@@ -6,9 +6,22 @@
 \usepackage{courier}
 \usepackage[T1]{fontenc}
 \usepackage[latin9]{inputenc}
+\usepackage{listings}
 \usepackage{geometry}
 \geometry{verbose,tmargin=2.54cm,bmargin=2.54cm,lmargin=2.54cm,rmargin=2.54cm}
+\usepackage{float}
 \usepackage{graphicx}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\floatstyle{ruled}
+\newfloat{algorithm}{tbp}{loa}
+\providecommand{\algorithmname}{Algorithm}
+\floatname{algorithm}{\protect\algorithmname}
+
+\makeatother
+
 \usepackage{babel}
 \begin{document}
 
@@ -448,6 +461,23 @@ score could indicate a significant difference in the binding site.
 scores are used to find evidence of shared binding sites in the HS959
 and S96 genomes. Both genomes are considered concurrently with the
 modified NormDiff score to find shared peaks}
+\end{figure}
+
+
+If we wanted to do hypothesis testing on this plot, the Zsub scores
+that cluster around 0 and the Zadd scores that are highly significant
+according to our hypothesis tests might effectively show up as according
+to the bands shown in Figure 10. We could also do multiple hypothesis
+testing using Bonferroni correction or other techniques for analyzing
+the significance of both tests at the same time.
+
+\begin{figure}
+\includegraphics[scale=0.35]{image18_2}\includegraphics[scale=0.35]{image19_2}
+
+\caption{(left) Using hypothesis testing for Zsub would give a range of values
+shown as black bars, and the hypothesis testing for Zadd would give
+a significance level shown as a green bar. (right) Hypothetical range
+of conserved peaks identified by multiple hypothesis testing}
 
 
 \end{figure}
@@ -456,101 +486,112 @@ modified NormDiff score to find shared peaks}
 
 \section{Discussion}
 
-Using our method there appeared to be evidence for conserved binding
-sites that were not identified by other peak finding algorithms. We
-found a significant enrichment of NormDiff scores for many binding
-sites, which represents strong binding signals, even for binding sites
-that were not identified as shared by MACS. Peaks that were not identified
-by MACS but for which there might still be shared peaks, we call the
-\textquotedblleft{}twilight zone\textquotedblright{}.\\
+
+\subsection{Additional possible modifications for NormDiff scores}
+
+We also have considered other modifications to NormDiff to include
+log scale, analogous to the information shown in an MA plot. We observed
+that the NormDiff score is actually very similar to previous evaluations
+for oligonucleotide arrays (Bolstad et al. 2003). The AvDiff score
+commonly used for Affymetrix arrays which compares the perfect match
+(PM) to mismatch (MM) to estimate the binding strength for each probe
+set A using the following
+
+AvDiff = 1/A Sigma(PM-MM, 1\ldots{}A)
+
+AvDiff tells us the average level of expression of a probe, which
+is similar to how NormDiff tells us the average strength of the ChIP-seq
+binding signal at a genome position given the observed reads. Bolstad
+et al. argue that the log scale improves analysis in a widespread
+number of ways for oligonucleotide data, including normalization,
+bias, and model fit. They proposed using
+
+AvLog=1/A Sigma(log(PM-MM), 1\ldots{}A)
+
+Using a log-scale for NormDiff could possibly improve its performance,
+however, some issues with log-scale exist. For example, the log-scale
+exaggerates small differences and decreases larger differences. ChIP-seq
+is purported to have a higher dynamic range (Park et al. 2009) but
+using a log-scale transformation significantly alters dynamic range,
+which could decrease our ability to identify conserved and differential
+binding sites 
+
+\begin{figure}
+\includegraphics[scale=0.35]{image20_2}
+
+\caption{Peaks shown in green show highly differential Zsub scores that are
+identified as shared. Scrutinizing these binding sites for differences
+could show that they are not conserved.}
 
 
-Our work could be extended to use more sophisticated statistical models
-for NormDiff too. For example, we considered modifying NormDiff scores
-to use data from multiple experiments in order to find conserved binding
-sites. We also discuss some of the drawbacks of our method, and the
-other applications of NormDiff. 
+\end{figure}
 
 
-\subsection{Modified normdiff score}
 
-We propose using a modified NormDiff score that uses data from multiple
-experiments. A NormDiff score that adds data from two experiments,
-A1,B1,A2, and B2 can be defined as \\
-\[
-Z_{add}(x_{i})=\frac{(A_{1}-B_{1}/c_{1})+(A_{2}-B_{2}/c_{2})}{\sigma}
-\]
+\subsection{Conserved sequences}
 
+In our analysis, we do not consider the effect of the conserved sequences
+or the motif patterns of the binding sites. However the different
+genomes of yeast that we analyzed have diverged sequences so sequence
+comparisons would be informative. Additionally, for finding weakly
+conserved binding sites, assessing the degree of sequence conservation
+can indicate the biological importance of certain functions, because
+transcription factor binding sites have much higher conservation rates. 
 
-Then the scaling factors $c_{1}$and $c_{2}$ are estimated from data,
-and the variance is $\sigma=\sqrt{A_{1}+B_{1}/c_{1}^{2}+A_{2}+B_{2}/c{}_{2}^{2}}$ 
-
-A NormDiff score that subtracts data from two experiments could also
-be defined as
-\[
-Z_{sub}(x_{i})=\frac{(A_{1}-B_{1}/c_{1})-(A_{2}-B_{2}/c_{2})}{\sigma}
-\]
-
-
-The variance for $Z_{sub}$ would be the same as the variance for
-$Z_{add}$. It is possible that adding and subtracting NormDiff scores
-might be able to help in identifying conserved and differential binding.
-For example, if the subtractive score is small but the additive score
-is large, then the binding site is likely to be conserved in both
-experiments. This method is similar to an MA plot which compares the
-log-product and log-ratio of two experiments, however, our method
-does not exaggerate small changes like the log-scale does.\\
-
-
-\includegraphics[scale=0.3]{image25}\includegraphics[scale=0.3]{image26}
-
-Figure 6. $Z_{add}$ vs. $Z_{sub}$ for S96 and HS959. The modified
-NormDiff scores are used to find evidence of shared binding sites
-in the HS959 and S96 genomes. Both genomes are considered concurrently
-with the modified NormDiff score to find shared peaks
-
-\includegraphics[scale=0.3]{Rplot05}
-
-Figure 7. MA-plot of shared and unique peaks from S96 and HS959. Unique
-peaks to S96 colored green, unique peaks to HS959 colored red, shared
-peaks from both colored blue.
-
-.
-
-
-\subsection{Drawbacks of our approach}
-
-Our approach tries to find evidence for conserved binding sites by
-analyzing data using normalized difference scores. Our approach gives
-some evidence of peaks with high confidence P-values, such as our
-results of finding new peaks with P<0.01. However, these findings
-have much less confidence than thresholds set by MACS (P<1e-5). Given
-that our technique for calculating P-value is similar to MACS, i.e.
-by finding deviations from the background, our results are not very
-strong. 
-
-One of the reasons that we have less confidence in P-values is because
-NormDiff uses control data for background subtraction. MACS does not
-use control data to calculate P-values, but it uses control data to
-calculate false discovery rates. Additionally, we use a normal approximation
-for our data, but since our data is not continuous it may not behave
-as well as Poisson distribution. 
+Recent studies on human cell lines show regulatory footprints of transcription
+factor binding sites have much higher conservation rates (Neph et
+al. 2012). This study also found transcription factors that are indirectly
+bound to the DNA by finding ChIP-seq peaks that have with no regulatory
+footprint or motif underlying the ChIP-seq peaks (Neph et al. 2012).
+These results show how integrating data about sequence conservation
+can show additional info about the binding sites that are not found
+in only ChIP-seq data.
 
 
 \section{Conclusion}
 
-We found a method for comparing binding sites from different ChIP-seq
-experiments by using a normalized difference score. This gave us evidence
-for shared binding sites that were not called by other peak finding
-algorithms. While it was able to produce some evidence, the confidence
-levels were much less than MACS which presented a challenge to the
-conclusions we could make. Despite these issues, NormDiff is a powerful
-tool for analyzing ChIP-seq data in other ways. NormDiff effectively
-models the ChIP-seq binding signal and it can be used to compare ChIP-seq
-data across multiple experiments
+Finding conserved transcription factor binding sites is important
+for comparing ChIP-seq data for transcription factors that influence
+gene regulation. Some binding sites that are identified as not being
+shared have too weak of a signal to identify confidently, but by comparing
+multiple experiments there we can see that they are significant. 
+
+We found substantial evidence for shared binding sites that were not
+called by other peak finding algorithms using the normalized difference
+score, a method for finding conserved binding sites from multiple
+ChIP-seq experiments. We then applied a statistical analysis to the
+distribution of normalized difference scores to confidently identify
+additional conserved binding sites that were identified by MACS in
+one genome but not the other. However, while significant, the confidence
+levels that we obtained using Normal peak calls were not as significant
+as we\textquoteright{}d hoped. We developed modifications to NormDiff
+that may provide evidence for shared binding sites that are not called
+by other algorithms. 
 
 
 \section{Methods}
+
+
+\subsection{Matching positions in different ChIP-seq experiments}
+
+In ChIP-seq data many datapoints may be missing when no sequence aligns
+to them. Instead of filling in missing data as zero or N/A we used
+algorithm for \textquoteleft{}matching\textquoteright{} positions
+from different ChIP-seq experiments. The interval search, which matches
+a vector X to a vector Y, is efficient for matching sorted data vectors.
+It uses the expression apply(outer\_product(x,y,>=),sum).
+
+Then if we calculate interval search(\{5\}, \{1,2,3,5,6\}) then we
+take the outer product of X,Y to make all combinations of expressions
+5>=1, 5>=2, 5>=3, 5>=5 , 5>=6 
+
+Each expression is TRUE(1) or FALSE(0), and the sum gives the position
+of X in Y sum(TRUE, TRUE,TRUE, TRUE, FALSE)= 4 
+
+Performing interval search(\{4,5,6\},\{1,3,5,6\}) would result in
+a 3x4 list, however the algorithm is implemented as a binary search
+that uses each TRUE or FALSE value as branches. This algorithm has
+effective running time as O(n log N) for n=len(x) and N=len(y)
 
 
 \subsection{Normalized difference scores}
@@ -585,15 +626,73 @@ Z(x_{i})=\frac{A(x_{i})-B(x_{i})/c}{\sigma}
  
 
 Then the scaling factor $c$ is estimated as the median ratio of $A/B$
-and the variance $\sigma$ is estimated from $\sqrt{A+B/c^{2}}$.\\
+and the variance $\sigma$ is estimated from $\sqrt{A+B/c^{2}}$.
 
 
-\includegraphics[scale=0.3]{Rplot08}\includegraphics[scale=0.3]{Rplot05_2}
+\subsection{Sliding windows for NormDiff}
 
-Supplemental Figure 1. (left) Kernel density plot of NormDiff for
-entire genome shows approximately normal distribution. (right) Q-Q
-Plot shows that the binding signal deviates significantly from the
-expected normal distribution.
+For analyzing the strength of the ChIP-seq binding signal using NormDiff,
+we averaged the NormDiff score over sliding 100bp windows that are
+within or overlap each peak and syntenic region and used the maximum
+value that it obtains for comparison. Because NormDiff requires both
+control and treat data, we used the only positions that matched, or
+in the case of a missing data, the nearest matching position is used
+according to the interval search (section 6.1). 
+
+To analyze the whole genome as in Figure 6, we go through each chromosome
+from start to end and analyze non-overlapping 100bp windows. Then
+separately, we find the maximum average normdiff score overlapping
+the peak regions and color these according to whether or not the window
+overlaps a peak in one or both genomes.
+
+
+\subsection{Statistical analysis of NormDiff}
+
+The distribution of NormDiff scores uses a signal plus background
+(f+g) approximation with background subtraction. NormDiff is approximately
+normally distributed for the null hypothesis, where f=0, however the
+binding signal f causes significant deviations from the normal (Figure
+12). We can also see that the sampling distribution of NormDiff scores
+is approximately normal with significantly less variance (Figure 13).
+We use the maximum average NormDiff score overlapping peaks and compare
+that with the normal distribution to detect peaks as P(Z>= \={x}) 
+
+\begin{figure}
+\includegraphics[scale=0.35]{image24_2}\includegraphics[scale=0.35]{image26_2}
+
+\caption{(left) The distribution of NormDiff scores for the entire genome shows
+approximately normal distribution. (right) Q-Q Plot shows that the
+binding signal deviates significantly from the expected normal distribution.}
+
+
+\end{figure}
+
+
+
+\subsection{Modified normalized difference score}
+
+We considered a modified NormDiff score that combines data from multiple
+experiments concurrently to find conserved binding sites. For example,
+a NormDiff score that adds data from two experiments, with binding
+data A1 and A2, respectively, and with background (control) data B1
+and B2, respectively, can be defined as \\
+\[
+Z_{add}(x_{i})=\frac{(A_{1}-B_{1}/c_{1})+(A_{2}-B_{2}/c_{2})}{\sigma}
+\]
+
+
+Then the scaling factors $c_{1}$and $c_{2}$ are estimated from data,
+and the variance is $\sigma=\sqrt{A_{1}+B_{1}/c_{1}^{2}+A_{2}+B_{2}/c{}_{2}^{2}}$ 
+
+A NormDiff score that subtracts data from two experiments could also
+be defined as
+\[
+Z_{sub}(x_{i})=\frac{(A_{1}-B_{1}/c_{1})-(A_{2}-B_{2}/c_{2})}{\sigma}
+\]
+
+
+Note: The variance for $Z_{sub}$ would be the same as the variance
+for $Z_{add}$. 
 
 
 \section{Bibliography}
@@ -601,5 +700,167 @@ expected normal distribution.
 \bibliographystyle{plain}
 \nocite{*}
 \bibliography{References}
+
+
+\appendix
+
+\section{Source code study of MACS}
+
+We did a source-code study of MACS (Model-based analysis of ChIP-seq)
+for version 1.4.2 to find out details about its implementation and
+processing. The published description of the program is thorough,
+but we found additional info in the code that helped us understand
+the details of ChIP-seq processing. 
+
+
+\subsection{Loading ChIP-seq data}
+
+To begin MACS loads ChIP-seq tags from experiment and control files
+specified by the \textendash{}t and \textendash{}c options (macs14.py,
+load\_tag\_files\_options). This builds an internal representation
+of the tags in a key-value store known as a dictionary. The table
+is a list of tuples of the position and orientation of each tag with
+the chromosome that it is in. It then calculates max duplicate tags
+for each position (macs14.py, cal\_max\_dup\_tags) and filters duplicate
+tags according to previous step (FeatIO.py, filter\_dup)
+
+\begin{figure}
+\includegraphics[scale=0.4]{image33_2}
+
+\caption{The call graph for loading ChIP-seq data for a typical run. Percentages
+are given as a percent of whole program runtime. The main functions
+include parsing and sorting the tags by position.}
+
+
+\end{figure}
+
+
+
+\subsection{Build shift model}
+
+MACS calculates a \textquotedblleft{}shift model\textquotedblright{}
+to estimate the ChIP-seq fragment size from paired-end reads using
+the PeakModel class. PeakModel uses a method \_\_naive\_find\_peaks
+peak finder to scan for peaks on each strand that are at least \textendash{}mfold
+(default value 10) greater than the background. The background is
+calculated according to other inputted parameters \textendash{}g and
+\textendash{}bw representing the genome size (1.2e7 for yeast) and
+bandwidth (default 300).
+
+\begin{lstlisting}
+background_reads = total_reads*bandwidth/genome_size 
+min_tags = mfold*background_reads  
+\end{lstlisting}
+
+
+Then PeakModel processes all on the same strand that are within the
+window size (2{*}bandwidth) and adds them to a 'line'. It finds pairs
+of peaks for all 'lines' greater than min\_tags that are within 4{*}bandwidth
+and then the shiftsize 'd' is calculated as the median length between
+them.
+
+\begin{figure}
+\includegraphics[scale=0.4]{image34_2}
+
+\caption{The PeakModel subgraph. It shows how the paired peaks are identified
+using a naïve peak finder (right branch), and then modeled as \textquotedblleft{}lines\textquotedblright{}
+to estimate the distance between them (left branch). }
+\end{figure}
+
+
+
+\subsection{Find peaks according to Poisson distribution}
+
+To do peak finding, MACS uses candidate peak finder with a basic Poisson
+distribution model with a rate parameter calculated as the expected
+number of background reads bg0 calculated as follows where scan\_window
+is equal to 'd' and p-value is an inputted threshold from \textendash{}p
+(default value is 1e-5)
+
+\begin{lstlisting}
+lambda_bg0=scan_window*total_reads_treatment/genome_size 
+min_tags = poisson_cdf_inv(1-pow(10,self.pvalue/-10),lambda_bg0)+1 
+\end{lstlisting}
+
+
+All the candidate peaks that exceed min\_tags are merged if they overlap.
+It has been noted that merging all overlapping peaks leads to excessively
+broad peaks under normal conditions if too low of a significance threshold
+is used. Next, the filtering step looks candidate peaks to make sure
+they are significantly enriched versus the control data. 
+
+For filtering the candidate peaks, the Poisson rate is calculated
+using t\_ratio \textendash{} the scaling factor of total reads between
+the control and treatment data. We build a Poisson model using the
+number of reads we would expect using the length of the candidate
+peak given the total background and local regions around the candidate
+peak. 
+
+\begin{algorithm}
+\begin{lstlisting}
+PeakDetect.__filter_w_control(peak_candidates, treat, control, ratiotreat2control)
+
+t_ratio=total_reads_control/total_reads_treatment  
+lambda_bg = lambda_bg0/d*candidate_peak_width*t_ratio
+
+For each candidate peak {
+      //Calculate #reads in the candidate peak window
+      //Calculate #reads in small, large region (5000,10000kb window)
+      clambda_peak = total_tags_control_in_peak
+      tlambda_peak = total_tags_treatment_in_peak*t_ratio
+      ...
+} 
+\end{lstlisting}
+
+
+\caption{Code listing - pseudocode summary of peak caller}
+
+
+\end{algorithm}
+
+
+Interestingly, the peak finder uses the scaled number of tags calculated
+using t\_ratio instead of the total number of tags. Then the local
+lambda (described in MACS paper as being robust against local biases,
+possibly referring to chromatin bias, etc) is calculated as the max
+of the lambdas of the peaks found in the control data.
+
+\begin{lstlisting}
+Local_lambda=max(lambda_bg,clambda_peak,clambda_lregion,clambda_sregion)
+\end{lstlisting}
+
+
+Then to calculate final\_peaks, MACS calculates the Poisson cumulative
+distribution function for the number of reads in the window for the
+local\_lambda, which returns a probability that this is a peak. If
+the probability is greater than user defined p-value, then it is a
+final\_peak (returned to user)
+
+\begin{lstlisting}
+p_tmp = poisson_cdf(tlambda_peak,local_lambda,lower=False)
+peak_pvalue = mathlog(p_tmp,10) * -10
+if(peak_pvalue > self.pvalue)
+     final_peaks.append candidate_peak 
+\end{lstlisting}
+
+
+Finally, MACS calculates an empirical false discovery rate for each
+peak. This is calculated using a sample swap: it uses ChIP-seq data
+as control and control data as ChIP-seq and identifies the \emph{number
+of peaks in the control} / \emph{number of peaks in chip-seq} for
+each p-value that is calculated for each peak. The empirical FDR is
+important since it lets us see for each peak the number of peaks that
+would be called at each significance threshold.
+
+\begin{figure}
+\includegraphics[scale=0.4]{image36_2}
+
+\caption{The call graph for the PeakDetect subgraph shows the time spent on
+peak calling. Note that call peaks w control is performed twice: once
+for peak calling, and once for estimating the empirical false discovery
+rate.}
+
+
+\end{figure}
 
 \end{document}
