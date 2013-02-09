@@ -42,9 +42,29 @@ convertFileSacCer3_mod<-function(filename) {
 }
 
 
-convertFileS288C<-function(file) {
+# Convert to digits to roman numerals
+convertFileSacCer3_mod2<-function(filename) {
   
-  filetext<-readLines(file)
+  filetext<-readLines(filename)
+  writeLines(filetext,sprintf("%s.bak",filename))
+  filetext <- paste(filetext,collapse="\n")
+  
+  # Reverse order so that chr11-chr16 gets converted before chr1
+  for(i in 16:1) {
+    str<-sprintf("%02d",i)
+    filetext<-str_replace_all(filetext, 
+                              sprintf("chr%s",str), sprintf("chr%s",romanNum(str)))
+    printf("Finished chr%d\n", i)
+  }
+  
+  writeLines(filetext,paste(filename))
+}
+
+
+convertFileS288C<-function(filename) {
+  
+  filetext<-readLines(filename)
+  writeLines(filetext,sprintf("%s.bak",filename))
   filetext <- paste(filetext,collapse="\n")
   
   for(i in 1:16) {
@@ -58,7 +78,7 @@ convertFileS288C<-function(file) {
   if(debug==TRUE)
     printf("Finished chrmt\n", i)
   
-  writeLines(filetext,file)
+  writeLines(filetext,filename)
   
 }
 
