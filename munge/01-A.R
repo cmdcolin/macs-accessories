@@ -1,10 +1,10 @@
 # Example preprocessing script.
-
+debug=TRUE
 source('src/wiggle.R')
 source('src/zscore.R')
 
 f<-getwd()
-setwd('data')
+setwd('newdata')
 
 dirs<-list.files(pattern="*_MACS_wiggle")
 dirnames<-str_replace_all(dirs,"_MACS_wiggle","")
@@ -21,12 +21,15 @@ for(i in 1:length(macswiggle)) {
   scaling<-estimateScalingFactor(wig)
   variance<-estimateVarianceAll(wig,scaling)
   ret<-Zall(wig,scaling,variance)
-  
+  if(debug) {
+    printf("estimated scaling factor: %f", scaling)
+    printf("estimated variance: %f", variance)
+  }
   outtable<-NULL
   for(chr in ret) {
     outtable<-rbind(outtable,chr)
   }
-  filename<-sprintf("%s_normdiff.txt",name)
+  filename<-sprintf("%s_normdiff_old.txt",name)
   write.table(outtable,filename,quote=FALSE)
 }
 
