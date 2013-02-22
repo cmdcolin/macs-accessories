@@ -78,7 +78,7 @@ Zxi<-function(x, treat,control,window,corr1,corr2,scaling,variance) {
 
 
 # Calculate Z scores over all wiggle files
-Z<-function(wig, bedfile, scaling, variance, window=c(1,10)) {
+Z<-function(wig, bedfile, scaling, variance, window=c(100,1000)) {
   # Get max average reads over window size
   getZscore<-function(x,window){
     chr=x[1];
