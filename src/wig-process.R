@@ -1,3 +1,5 @@
+# newer version from february
+
 wig1=wig[1]
 wig2=wig[2]
 
@@ -18,14 +20,27 @@ s96rep2.chr01=s96rep1[s96rep2$chr=="chr01",]
 plot(s96rep1.chr01$start,s96rep1.chr01$score,type="l")
 
 
+chroms=as.character(unique(s96rep1$chr))
 
 
 
+score1<-sapply(chroms, function(chr,s1,s2) {
+  s1c<-s1[s1$chr==chr,]
+  s2c<-s2[s2$chr==chr,]
+  match<-findInterval(s1c$start, s2c$start)
+  ret<-s2[match,'score']
+  printf("%d\t%d\n",length(ret),length(s1c$score))
+},s96rep1,s96rep2)
 
-match=findInterval(s96rep1.chr01,s96rep2.chr01[,3])
-smoothScatter(x1c1[,5],x2c1[match,5],xlab="S96 rep1",ylab="S96 rep2")
+score2<-sapply(chroms, function(chr,s1) {
+  s1c<-s1[s1$chr==chr,]
+  s1c$score
+}, s96rep1)
+
+smoothScatter(unlist(score1),unlist(score2),xlab="S96rep1",ylab="S96rep2")
 title('Comparison of NormDiff scores across replicates')
 
+sapply(chroms,p23)
 
 p23<-function(chr) {
   
