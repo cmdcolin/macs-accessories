@@ -27,9 +27,8 @@ chroms=as.character(unique(s96rep1$chr))
 score1<-sapply(chroms, function(chr,s1,s2) {
   s1c<-s1[s1$chr==chr,]
   s2c<-s2[s2$chr==chr,]
-  match<-findInterval(s1c$start, s2c$start)
-  ret<-s2[match,'score']
-  printf("%d\t%d\n",length(ret),length(s1c$score))
+  match<-findInterval(s1c$start, s2c$start,all.inside=TRUE)
+  s2c[match,'score']
 },s96rep1,s96rep2)
 
 score2<-sapply(chroms, function(chr,s1) {
