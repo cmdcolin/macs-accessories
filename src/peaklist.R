@@ -19,9 +19,11 @@ macswiggle<-lapply(dirnames,function(dirname) {
 
 r1=macswiggle[[1]]$treat$chr01
 r2=macswiggle[[2]]$treat$chr01
+c1=macswiggle[[1]]$control$chr01
+c2=macswiggle[[2]]$control$chr01
+
 match=findInterval(r1$V1,r2$V1)
 match2=findInterval(r2$V1,r1$V1)
-
 
 #plot(r1$V2,r2[match,2])
 #smoothScatter(r1$V2,r2[match,2])
@@ -61,4 +63,25 @@ plot(y,x,pch=19,col=2)
 lm2<-lm(x~y)
 lines(y,lm2$fitted)
 par(old)
+
+
+#wiggle files
+rep2selection<-rep2[rep2$V1=='chr01',]
+rep1selection<-rep1[rep1$V1=='chr01',]
+
+
+
+
+
+
+#SUBTRACT BACKGROUND
+plot(r1$V2,r2[match,2],pch='.')
+cmatch=findInterval(r1$V1,c1$V1)
+cmatch2=findInterval(r2$V1,c1$V1)
+plot(r1$V2-c1[cmatch,2],(r2$V2-c2[cmatch2,2])[match],pch='.')
+
+points(rnorm(5000),rnorm(5000),pch='.',col=2)
+
+
+
 
