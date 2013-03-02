@@ -7,9 +7,74 @@ r2<-macswiggle[[2]]$treat$chr01
 c1<-macswiggle[[1]]$control$chr01
 c2<-macswiggle[[2]]$control$chr01
 
-#NormDiff
-match=findInterval(r1$V1,r2$V1)
-plot(r1$V2,r2$V2,pch='.')
+# Get chromosomes list
+chrnames<-names(macswiggle[[1]]$treat)
+
+
+## Get matching positions from genome alignments
+getmatch<-function(chr,t1,t2) {
+    findInterval(t1[[chr]]$V1,t2[[chr]]$V1,all.inside=TRUE)
+}
+
+## Apply match score to all chrom
+getMatchList<-function(chrlist,t1,t2) {
+  sapply(chrlist,getmatch,t1,t2)
+}
+
+### Get wig scores
+getscores<-function(matchList,t1,t2) {
+  ret<-lapply(names(matchList), function(chr) {
+    if(debug)
+      printf("processing %s\n", chr);
+	  
+    currmatch<-matchList[[chr]]
+    col1<-t1[[chr]]$V2
+    col2<-t2[[chr]]$V2[currmatch]
+    data.frame(chr=chr, pos=currmatch, col1=col1,col2=col2)
+  })
+  
+  # from R inferno, Burns (2011)
+  do.call('rbind', ret) 
+}
+
+
+match=getMatchList(chrnames, macswiggle[[1]]$treat,macswiggle[[2]]$treat)
+retable=getScores(match, macswiggle[[1]]$treat,macswiggle[[2]]$treat)
+plot(retable$col1,retable$col2,pch='.')
+
+
+
+
+bed1<-read.table('s96rep1-new_peaks.bed')
+bed2<-read.table('s96rep2-new_peaks.bed')
+names(bed1)<-c('chr','start','end','name','num')
+names(bed2)<-c('chr','start','end','name','num')
+bed1$start=as.numeric(bed1$start)
+bed1$end=as.numeric(bed1$end)
+
+
+
+getPeakScores<-function(bed,scores) {
+  chrmatch=""
+  chrsub=data.frame()
+  ret<-apply(bed,1,function(row) {
+    s=as.numeric(row[2])
+    e=as.numeric(row[3])
+    printf("Processing peak %s (%d,%d)\n",row[4],s,e)
+    chrselect<-strsplit(row[1],'.fsa')[[1]]
+    if(chrmatch!=chrselect) {
+      printf("Here %s %s\n",chrmatch,chrselect)
+      chrmatch<<-chrselect
+      chrsub<<-scores[scores$chr==chrselect,]
+    }
+    chrsub[chrsub$pos>as.numeric(row[2])&chrsub$pos<as.numeric(row[3]),]
+  })
+  
+  # from R inferno, Burns (2011)
+  do.call('rbind', ret) 
+}
+#match=findInterval(r1$V1,r2$V1)
+#plot(r1$V2,r2$V2,pch='.')
 
 # Background subtraction
 cmatch=findInterval(r1$V1,c1$V1)
