@@ -38,20 +38,6 @@ getscores<-function(matchList,t1,t2) {
 }
 
 
-match=getMatchList(chrnames, macswiggle[[1]]$treat,macswiggle[[2]]$treat)
-retable=getScores(match, macswiggle[[1]]$treat,macswiggle[[2]]$treat)
-plot(retable$col1,retable$col2,pch='.')
-
-
-
-
-bed1<-read.table('s96rep1-new_peaks.bed')
-bed2<-read.table('s96rep2-new_peaks.bed')
-names(bed1)<-c('chr','start','end','name','num')
-names(bed2)<-c('chr','start','end','name','num')
-bed1$start=as.numeric(bed1$start)
-bed1$end=as.numeric(bed1$end)
-
 
 
 getPeakScores<-function(bed,scores) {
@@ -73,6 +59,10 @@ getPeakScores<-function(bed,scores) {
   # from R inferno, Burns (2011)
   do.call('rbind', ret) 
 }
+
+
+
+
 #match=findInterval(r1$V1,r2$V1)
 #plot(r1$V2,r2$V2,pch='.')
 

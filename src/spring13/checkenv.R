@@ -1,0 +1,2 @@
+require(codetools)
+checkUsageEnv(globalenv())
