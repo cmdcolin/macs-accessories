@@ -37,4 +37,6 @@ plot(outg$col1,outg$col3,pch='.')
 
 rettab<-getscoresmod(chrnames,macswiggle[[1]]$treat,macswiggle[[1]]$control,macswiggle[[2]]$treat,macswiggle[[2]]$control)
 
+plot(rettab$treat1,rettab$treat2,pch='.')
+
 

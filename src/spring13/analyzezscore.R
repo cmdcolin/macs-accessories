@@ -45,24 +45,27 @@ getscoresmod<-function(chrlist,t1,c1,t2,c2) {
     tempc2=c2[[chr]]
     cmatch1=findInterval(temp1$V1,tempc1$V1,all.inside=TRUE)
     cmatch2=findInterval(temp2$V1,tempc2$V1,all.inside=TRUE)
-    match.all=findInterval(cmatch1,cmatch2,all.inside=TRUE)
+    match=findInterval(temp1$V1,temp2$V1,all.inside=TRUE)
     l1=temp1$V2
     l2=tempc1$V2[cmatch1]
     l3=temp2$V2
     l4=tempc2$V2[cmatch2]
     
     if(debug==TRUE) {
-      printf("length %d %d %d\n", length(l1),length(l2),length(match.all))
+      printf("length %d %d %d %d %d %d %d\n", length(l1),length(l2),length(l3),length(l4),length(match),length(l3[match]),length(l4[match]))
     }
     #currmatch<-matchList[[chr]]
     #col1<-t1[[chr]]$V2
     #col2<-t2[[chr]]$V2[currmatch]
-    data.frame(chr=chr, pos=match.all, treat1=l1,control1=l2, treat2=l3[match.all],control2=l4[match.all])
+    data.frame(chr=chr, pos=match, treat1=l1,control1=l2, treat2=l3[match],control2=l4[match])
   })
   
   # from R inferno, Burns (2011)
   do.call('rbind', ret) 
 }
+
+
+
 
 
 getPeakScores<-function(bed,scores) {
