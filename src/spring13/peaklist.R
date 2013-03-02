@@ -77,11 +77,51 @@ rep1selection<-rep1[rep1$V1=='chr01',]
 #SUBTRACT BACKGROUND
 plot(r1$V2,r2[match,2],pch='.')
 cmatch=findInterval(r1$V1,c1$V1)
-cmatch2=findInterval(r2$V1,c1$V1)
+cmatch2=findInterval(r2$V1,c2$V1)
 plot(r1$V2-c1[cmatch,2],(r2$V2-c2[cmatch2,2])[match],pch='.')
 
-points(rnorm(5000),rnorm(5000),pch='.',col=2)
+
+
+#nORMDIFF
+zr1<-r1$V2
+zc1<-c1[cmatch,2]
+zr2<-r2$V2
+zc2<-c2[cmatch2,2]
+m1<-median(zc1/zr1,na.rm=TRUE)
+m2<-median(zc2/zr2,na.rm=TRUE)
+#without normalization
+plot(r1$V2-c1[cmatch,2]/m1,(r2$V2-c2[cmatch2,2]/m2)[match],pch='.')
+#with normalization
+
+va1<-sqrt(zr1+zc1/(m1^2))
+va2<-sqrt(zr2+zc2/(m2^2))
+
+plot((r1$V2-c1[cmatch,2]/m1)/va1,(((r2$V2-c2[cmatch2,2]/m2))/va2)[match],pch='.')
 
 
 
+
+
+#debug=TRUE
+#source('src/wiggle.R')
+
+#r1=macswiggle[[1]]$treat$chr01
+#r2=macswiggle[[2]]$treat$chr01
+#match=findInterval(r1$V1,r2$V1)
+#plot(r1$V2,r2[match,2])
+#smoothScatter(r1$V2,r2[match,2])
+
+#diffret<-setdiff(r1[match,1],r2$V1)
+
+#//plot differences across genomes
+#plot(r1[diffret,1],r2[diffret,1],pch=19)
+
+
+#rep1<-read.table('S96rep1_peaks.bed')
+#rep1selection<-rep1[rep1$V1=='chr01',]
+#rep2<-read.table('S96rep2_peaks.bed')
+#rep2selection<-rep2[rep2$V1=='chr01',]
+#intersectBed(rep1selection,rep2selection)
+#points(rep2selection$V2-5000,rep2selection$V2+5000,col=2,pch=19)
+#points(rep1selection$V2+5000,rep1selection$V2-5000,col=4,pch=19)
 
