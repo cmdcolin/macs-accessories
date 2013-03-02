@@ -1,2 +1,2 @@
 require(codetools)
-checkUsageEnv(globalenv())
+checkUsageEnv(globalenv(),all=TRUE)
