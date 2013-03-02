@@ -55,3 +55,8 @@ outg<-getScoresMod(retable1,retable2)
 plot(outg$col1,outg$col3,pch='.')
 
 
+
+
+getscoresmod(chrnames,macswiggle[[1]]$treat,macswiggle[[1]]$control,macswiggle[[2]]$treat,macswiggle[[2]]$control)
+
+

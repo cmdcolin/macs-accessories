@@ -16,7 +16,7 @@ getMatchList<-function(chrlist,t1,t2) {
   sapply(chrlist,getmatch,t1,t2)
 }
 
-### Get wig scores
+### Get wig scores for treat only
 getscores<-function(matchList,t1,t2) {
   ret<-lapply(names(matchList), function(chr) {
     if(debug)
@@ -33,6 +33,34 @@ getscores<-function(matchList,t1,t2) {
 }
 
 
+### Get wig scores for both treat and control
+getscoresmod<-function(chrlist,t1,c1,t2,c2) {
+  ret<-lapply(chrlist, function(chr) {
+    if(debug)
+      printf("processing %s\n", chr);
+    temp1=t1[[chr]]
+    tempc1=c1[[chr]]
+    temp2=t2[[chr]]
+    tempc2=c2[[chr]]
+    cmatch1=findInterval(temp1$V1,tempc1$V1)
+    cmatch2=findInterval(temp2$V1,tempc2$V1)
+    match.all=findInterval(cmatch1,cmatch2)
+    l1=temp1$V2
+    l2=tempc1$V2[cmatch1]
+    l3=temp2$V2
+    l4=tempc2$V2[cmatch2]
+    
+    
+    printf("length %d %d %d", length(cmatch1),length(cmatch2),length(match.all))
+    #currmatch<-matchList[[chr]]
+    #col1<-t1[[chr]]$V2
+    #col2<-t2[[chr]]$V2[currmatch]
+    data.frame(chr=chr, pos=match.all, treat1=l1,control1=l2, treat2=l3[match.all],control2=l4[match.all])
+  })
+  
+  # from R inferno, Burns (2011)
+  do.call('rbind', ret) 
+}
 
 
 getPeakScores<-function(bed,scores) {
