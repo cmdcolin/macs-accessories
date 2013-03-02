@@ -1,5 +1,6 @@
-chrnames<-names(macswiggle[[1]]$treat
-                
+
+
+
 
 r1<-macswiggle[[1]]$treat$chr01
 r2<-macswiggle[[2]]$treat$chr01
@@ -54,3 +55,44 @@ plot(p1/v1,p2[match]/v2,pch='.',cex=2)
 for(i in 1:nrow(r1)) {
   
 }
+
+
+
+
+
+
+##
+# Analyze all chromosomes
+chrnames<-names(macswiggle[[1]]$treat)
+
+getmatch<-function(chr,t1,t2) {
+  findInterval(t1[[chr]]$V1,t2[[chr]]$V1,all.inside=TRUE)
+}
+
+tmatch1<-sapply(chrnames,getmatch,macswiggle[[1]]$treat,macswiggle[[2]]$treat)
+tcmatch1<-sapply(chroms, getmatch,macswiggle[[1]]$treat,macswiggle[[1]]$control)
+tcmatch2<-sapply(chroms, getmatch,macswiggle[[2]]$treat,macswiggle[[2]]$control)
+
+
+getscores<-function(matchList,t1,t2) {
+  ret<-lapply(names(matchList), function(chr) {
+    currmatch<-matchList[[chr]]
+    col1<-t1[[chr]]$V2
+    col2<-t2[[chr]]$V2[currmatch]
+    printf("length %d\t%d\n",length(col1),length(col2))
+    data.frame(chr=chr, pos=currmatch, col1=col1,col2=col2)
+  })
+  
+  # from R inferno, Burns (2011)
+  do.call('rbind', ret)
+  
+}
+scores1<-getscores(tcmatch1,macswiggle[[1]]$treat,macswiggle[[1]]$control)
+plot(scores1$col1[1:100000],scores1$col2[1:100000],pch='.')
+smoothScatter(scores1$col1,scores1$col2)
+
+scores2<-getscores(tmatch1,macswiggle[[1]]$treat,macswiggle[[2]]$treat)
+smoothScatter(scores2$col1,scores2$col2)
+plot(scores2$col1,scores2$col2,pch='.')
+lm1<-lm(scores2$col2~scores2$col1)
+lines(scores2$col1,lm1$fitted)
