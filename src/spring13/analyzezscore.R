@@ -36,22 +36,24 @@ getscores<-function(matchList,t1,t2) {
 ### Get wig scores for both treat and control
 getscoresmod<-function(chrlist,t1,c1,t2,c2) {
   ret<-lapply(chrlist, function(chr) {
-    if(debug)
+    if(debug) {
       printf("processing %s\n", chr);
+    }
     temp1=t1[[chr]]
     tempc1=c1[[chr]]
     temp2=t2[[chr]]
     tempc2=c2[[chr]]
-    cmatch1=findInterval(temp1$V1,tempc1$V1)
-    cmatch2=findInterval(temp2$V1,tempc2$V1)
-    match.all=findInterval(cmatch1,cmatch2)
+    cmatch1=findInterval(temp1$V1,tempc1$V1,all.inside=TRUE)
+    cmatch2=findInterval(temp2$V1,tempc2$V1,all.inside=TRUE)
+    match.all=findInterval(cmatch1,cmatch2,all.inside=TRUE)
     l1=temp1$V2
     l2=tempc1$V2[cmatch1]
     l3=temp2$V2
     l4=tempc2$V2[cmatch2]
     
-    
-    printf("length %d %d %d", length(cmatch1),length(cmatch2),length(match.all))
+    if(debug==TRUE) {
+      printf("length %d %d %d\n", length(l1),length(l2),length(match.all))
+    }
     #currmatch<-matchList[[chr]]
     #col1<-t1[[chr]]$V2
     #col2<-t2[[chr]]$V2[currmatch]
