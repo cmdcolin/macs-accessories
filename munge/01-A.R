@@ -20,11 +20,11 @@ for(i in 1:length(macswiggle)) {
   name=dirnames[i]
   scaling<-estimateScalingFactor(wig)
   variance<-estimateVarianceAll(wig,scaling)
-  ret<-Zall(wig,scaling,variance)
   if(debug) {
-    printf("estimated scaling factor: %f", scaling)
-    printf("estimated variance: %f", variance)
+    printf("estimated (global) scaling factor: %f\n", scaling)
+    printf("estimated (global) variance: %f\n", variance)
   }
+  ret<-Zall(wig,scaling,variance)
   outtable<-NULL
   for(chr in ret) {
     outtable<-rbind(outtable,chr)
