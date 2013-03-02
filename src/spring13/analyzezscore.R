@@ -182,7 +182,7 @@ getnormdiff<-function(chrnames,t1,t2) {
     ret2<-treat2-control2/med2
     nd1<-ret1/sqrt(mean(treat1)+mean(control1)/med1^2)
     nd2<-ret2/sqrt(mean(treat2)+mean(control2)/med2^2)
-    data.frame(chr=chr, pos=currmatch, col1=nd1,col2=nd2[currmatch])
+    data.frame(chr=chr, pos=t1$treat[[chr]]$V1[currmatch], col1=nd1,col2=nd2[currmatch])
   })
   
   # from R inferno, Burns (2011)
@@ -207,9 +207,45 @@ names(bed1)<-c('chr','start','end','name','num')
 names(bed2)<-c('chr','start','end','name','num')
 bed1$start=as.numeric(bed1$start)
 bed1$end=as.numeric(bed1$end)
-apply(bed1,1,function(row) {
-  printf("Processing peak %s (%s,%s)\n",row[4],row[2],row[3])
-  ret<-strsplit(row[1],'.fsa')[[1]]
-  selection1=scores4[scores4$chr==ret&scores4$pos>row[2]&scores4$pos<row[3],]
-  points(selection1$col1,selection1$col2,col=2,pch='.')
-})
+#system.time(apply(bed1,1,function(row) {
+#  printf("Processing peak %s (%s,%s)\n",row[4],row[2],row[3])
+#  ret<-strsplit(row[1],'.fsa')[[1]]
+#  selection1=scores4[scores4$chr==ret&scores4$pos>row[2]&scores4$pos<row[3],]
+#  points(selection1$col1,selection1$col2,col=2,pch='.')
+#}))
+
+
+getpeaknormdiff<-function(bed,scores) {
+  chrmatch=""
+  chrsub=data.frame()
+  ret<-apply(bed,1,function(row) {
+    s=as.numeric(row[2])
+    e=as.numeric(row[3])
+    printf("Processing peak %s (%d,%d)\n",row[4],s,e)
+    chrselect<-strsplit(row[1],'.fsa')[[1]]
+    if(chrmatch!=chrselect) {
+      printf("Here %s %s\n",chrmatch,chrselect)
+      chrmatch<<-chrselect
+      chrsub<<-scores[scores$chr==chrselect,]
+    }
+    chrsub[chrsub$pos>as.numeric(row[2])&chrsub$pos<as.numeric(row[3]),]
+  })
+  
+  # from R inferno, Burns (2011)
+  do.call('rbind', ret) 
+}
+ptm <- proc.time()
+ret<-getpeaknormdiff(bed1,scores4)
+proc.time() - ptm
+
+ptm <- proc.time()
+ret2<-getpeaknormdiff(bed2,scores4)
+proc.time() - ptm
+iter
+
+#ret2<-unlist(ret)
+#selection1<-scores4[ret2,]
+points(ret$col1,ret$col2,pch='.',col=rgb(1,0.5,0.5,0.3))
+points(ret2$col1,ret2$col2,pch='.',col=rgb(0.5,1,0.5,0.3))
+
+#points(selection1$col1,selection1$col2,col=2,pch='.')
