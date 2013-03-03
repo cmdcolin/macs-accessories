@@ -91,6 +91,14 @@ getPeakScores<-function(bed,scores) {
 
 
 
+slideMean<-function(x,windowsize=100,slide=1){
+  idx1<-seq(1,length(x),by=slide);
+  idx1+windowsize->idx2;
+  idx2[idx2>(length(x)+1)]<-length(x)+1;
+  c(0,cumsum(x))->cx;
+  return((cx[idx2]-cx[idx1])/windowsize);
+}
+
 
 
 # Background subtraction

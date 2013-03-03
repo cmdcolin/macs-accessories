@@ -47,8 +47,6 @@ title('S96 replicates ChIP-seq scores (no control)')
 
 
 # background subtraction
-m1=median(rettab$control1/rettab$treat1)
-m2=median(rettab$control2/rettab$treat2)
 plot(rettab$treat1-rettab$control1,rettab$treat2-rettab$control2,pch='.',xlab='S96 rep1',ylab='S96 rep2')
 title('S96 replicates ChIP-seq scores (background subtract)')
 
@@ -79,7 +77,7 @@ controlmeans<-slideMean(rettab$control2)
 vlist2<-sqrt(treatmeans+controlmeans/m2^2)
 
 
-#
+#normdiff local
 vlist1f<-sapply(vlist1,function(v,vall){max(v,vall)},v1)
 vlist2f<-sapply(vlist2,function(v,vall){max(v,vall)},v2)
 
@@ -89,4 +87,68 @@ title('S96 replicates ChIP-seq scores (normdiff w=local)')
 smoothScatter(l1/vlist1,l2/vlist2,pch='.',xlab='S96 rep1',ylab='S96 rep2',ylim=c(-5,35),xlim=c(-5,35))
 title('S96 replicates ChIP-seq scores (normdiff w=local)')
 
-#normdiff
+
+
+
+
+#no background subtraction-MA plot
+A=(rettab$treat1+rettab$treat2)*1/2
+M=(rettab$treat1-rettab$treat2)
+plot(A,M,pch='.',xlab='M',ylab='A')
+title('S96 MA plot for replicates (raw scores)')
+
+
+
+
+#no background subtraction-MA plot
+l1<-rettab$treat1-rettab$control1
+l2<-rettab$treat2-rettab$control2
+A=(l1+l2)*1/2
+M=(l1-l2)
+plot(A,M,pch='.',xlab='M',ylab='A')
+title('S96 MA plot for replicates (background subtraction)')
+
+
+
+#scaling-MA plot
+m1=median(rettab$control1/rettab$treat1)
+m2=median(rettab$control2/rettab$treat2)
+l1<-rettab$treat1-rettab$control1/m1
+l2<-rettab$treat2-rettab$control2/m2
+A=(l1+l2)*1/2
+M=(l1-l2)
+plot(A,M,pch='.',xlab='M',ylab='A')
+lm1<-lm(M~A)
+lines(A,lm1$fitted)
+title('S96 MA plot for replicates (background scaling) lm')
+
+
+#normalization MA-plot
+v1<-sqrt(mean(rettab$treat1)+mean(rettab$control1)/m1^2)
+v2<-sqrt(mean(rettab$treat2)+mean(rettab$control2)/m2^2)
+M<-(l1/v1-l2/v2)
+A<-(l1/v1+l2/v2)*1/2
+plot(A,M,pch='.',xlab='S96 rep1',ylab='S96 rep2')
+lm1<-lm(M~A)
+lines(A,lm1$fitted)
+title('S96 MA plot for replicates (normdiff w=all)')
+
+
+
+
+
+#normalization MA-plot
+M<-(l1/vlist1-l2/vlist2)
+A<-(l1/vlist1+l2/v2)*1/2
+plot(A,M,pch='.',xlab='S96 rep1',ylab='S96 rep2')
+lm1<-lm(M~A)
+lines(A,lm1$fitted)
+title('S96 MA plot for replicates (normdiff w=local)')
+
+
+M<-(l1/vlist1-l2/vlist2)
+A<-(l1/vlist1+l2/v2)*1/2
+plot(A,M,pch='.',xlab='S96 rep1',ylab='S96 rep2')
+lm1<-lm(M~A)
+lines(A,lm1$fitted)
+title('S96 MA plot for replicates (normdiff w=local)')
