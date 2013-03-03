@@ -28,15 +28,65 @@ retable1=getScores(cmatch1, macswiggle[[1]]$treat,macswiggle[[1]]$control)
 retable2=getScores(cmatch2, macswiggle[[2]]$treat,macswiggle[[2]]$control)
 
 #out<-getMatchListMod(chrnames,retable1,retable2)
-outg<-getScoresMod(retable1,retable2)
-
-plot(outg$col1,outg$col3,pch='.')
+#outg<-getScoresMod(retable1,retable2)
+#plot(outg$col1,outg$col3,pch='.')
 
 
 
 
 rettab<-getscoresmod(chrnames,macswiggle[[1]]$treat,macswiggle[[1]]$control,macswiggle[[2]]$treat,macswiggle[[2]]$control)
 
-plot(rettab$treat1,rettab$treat2,pch='.')
 
 
+#no background subtraction
+plot(rettab$treat1,rettab$treat2,pch='.',xlab='S96 rep1 treated',ylab='S96 rep2 treated')
+title('S96 replicates ChIP-seq scores (no control)')
+
+
+
+
+
+# background subtraction
+m1=median(rettab$control1/rettab$treat1)
+m2=median(rettab$control2/rettab$treat2)
+plot(rettab$treat1-rettab$control1,rettab$treat2-rettab$control2,pch='.',xlab='S96 rep1',ylab='S96 rep2')
+title('S96 replicates ChIP-seq scores (background subtract)')
+
+
+#background scaling
+m1=median(rettab$control1/rettab$treat1)
+m2=median(rettab$control2/rettab$treat2)
+l1<-rettab$treat1-rettab$control1/m1
+l2<-rettab$treat2-rettab$control2/m2
+plot(l1,l2,pch='.',xlab='S96 rep1',ylab='S96 rep2')
+title('S96 replicates ChIP-seq scores (background scaling)')
+
+
+#normalization
+v1<-sqrt(mean(rettab$treat1)+mean(rettab$control1)/m1^2)
+v2<-sqrt(mean(rettab$treat2)+mean(rettab$control2)/m2^2)
+plot(l1/v1,l2/v2,pch='.',xlab='S96 rep1',ylab='S96 rep2')
+title('S96 replicates ChIP-seq scores (normdiff w=all)')
+smoothScatter(l1/v1,l2/v2,pch='.',xlab='S96 rep1',ylab='S96 rep2')
+title('S96 replicates ChIP-seq scores (normdiff w=all)')
+
+
+treatmeans<-slideMean(rettab$treat1)
+controlmeans<-slideMean(rettab$control1)
+vlist1<-sqrt(treatmeans+controlmeans/m1^2)
+treatmeans<-slideMean(rettab$treat2)
+controlmeans<-slideMean(rettab$control2)
+vlist2<-sqrt(treatmeans+controlmeans/m2^2)
+
+
+#
+vlist1f<-sapply(vlist1,function(v,vall){max(v,vall)},v1)
+vlist2f<-sapply(vlist2,function(v,vall){max(v,vall)},v2)
+
+plot(l1/vlist1,l2/vlist2,pch='.',xlab='S96 rep1',ylab='S96 rep2')
+title('S96 replicates ChIP-seq scores (normdiff w=local)')
+
+smoothScatter(l1/vlist1,l2/vlist2,pch='.',xlab='S96 rep1',ylab='S96 rep2',ylim=c(-5,35),xlim=c(-5,35))
+title('S96 replicates ChIP-seq scores (normdiff w=local)')
+
+#normdiff
