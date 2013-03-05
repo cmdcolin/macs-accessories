@@ -40,6 +40,8 @@ vlist2f<-sapply(vlist2,function(v,vall){max(v,vall)},v2)
 normdiff1<-scale1/vlist1f
 normdiff2<-scale2/vlist2f
 
+
+
 #no background subtraction
 plot(wiggles$treat1,wiggles$treat2,pch='.',xlab='S96 rep1 treated',ylab='S96 rep2 treated')
 title('S96 replicates ChIP-seq scores (no control)')
