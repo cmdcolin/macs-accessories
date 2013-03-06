@@ -57,7 +57,7 @@ getscoresmod<-function(chrlist,t1,c1,t2,c2) {
     #currmatch<-matchList[[chr]]
     #col1<-t1[[chr]]$V2
     #col2<-t2[[chr]]$V2[currmatch]
-    data.frame(chr=chr, pos=match, treat1=l1,control1=l2, treat2=l3[match],control2=l4[match])
+    data.frame(chr=chr, pos=temp1$V1, treat1=l1,control1=l2, treat2=l3[match],control2=l4[match])
   })
   
   # from R inferno, Burns (2011)
