@@ -2,8 +2,8 @@
 #out<-getMatchListMod(chrnames,retable1,retable2)
 #outg<-getScoresMod(retable1,retable2)
 #plot(outg$col1,outg$col3,pch='.')
-
-
+require(R.utils)
+debug=TRUE
 
 
 wiggles<-getscoresmod(chrnames,macswiggle[[3]]$treat,macswiggle[[3]]$control,macswiggle[[4]]$treat,macswiggle[[4]]$control)
@@ -11,6 +11,9 @@ wiggles<-getscoresmod(chrnames,macswiggle[[3]]$treat,macswiggle[[3]]$control,mac
 wiggles<-getscoresmodappend(wiggles,chrnames,macswiggle[[1]]$treat,macswiggle[[1]]$control,3)
 
 wiggles<-getscoresmodappend(wiggles,chrnames,macswiggle[[2]]$treat,macswiggle[[2]]$control,4)
+
+
+
 
 head(wiggles)
 load('wiggledata.rda')
@@ -38,10 +41,10 @@ scale1<-treat1-control1/m1
 scale2<-treat2-control2/m2
 
 
-treatmeans1<-slideMean(treat1)
-controlmeans1<-slideMean(control1)
-treatmeans2<-slideMean(treat2)
-controlmeans2<-slideMean(control2)
+treatmeans1<-slideMean(treat1,10,1)
+controlmeans1<-slideMean(control1,10,1)
+treatmeans2<-slideMean(treat2,10,1)
+controlmeans2<-slideMean(control2,10,1)
 vlist1<-sqrt(treatmeans1+controlmeans1/m1^2)
 vlist2<-sqrt(treatmeans2+controlmeans2/m2^2)
 
@@ -57,6 +60,8 @@ gnormdiff2<-scale2/v2
 normdiff1<-scale1/vlist1f
 normdiff2<-scale2/vlist2f
 
+normdiff<-data.frame(chr=wiggles$chr,chr=wiggles$pos,normdiff1,normdiff2)
+normdiffout<-cbind(normdiff,data.frame(normdiff3=normdiff1,normdiff4=normdiff2))
 
 
 #no background subtraction
@@ -135,7 +140,8 @@ title('S96 MA plot for replicates (normdiff w=all)')
 #normalization MA-plot
 M<-(normdiff1-normdiff2)
 A<-(normdiff1+normdiff2)*1/2
-plot(A,M,pch='.',xlab='A',ylab='M')
+smoothScatter(A,M,pch='.',xlab='A',ylab='M')
 lm1<-lm(M~A)
-lines(A,lm1$fitted)
+points(A,lm1$fitted,pch='.')
 title('S96 MA plot for replicates (normdiff w=local)')
+title('HS959 MA plot for replicates (normdiff w=local)')

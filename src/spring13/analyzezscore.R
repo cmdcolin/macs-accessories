@@ -75,18 +75,20 @@ getscoresmodappend<-function(wigtab,chrlist,t1,c1,i) {
     chrpos=wigtab[wigtab$chr==chr,]$pos
     tempc1=c1[[chr]]
     tempt1=t1[[chr]]
-    match1=findInterval(chrpos,tempc1$V1,all.inside=TRUE)
+    cmatch1=findInterval(tempt1$V1,tempc1$V1,all.inside=TRUE)
+    
+    
     match2=findInterval(chrpos,tempt1$V1,all.inside=TRUE)
-    l3=tempc1$V2
-    l4=tempt1$V2
+    l3=tempt1$V2
+    l4=tempc1$V2[cmatch1]
     
     if(debug==TRUE) {
-      printf("length %d %d %d %d %d %d %d\n", length(match1),length(match2),length(l3),length(l4),length(match),length(l3[match1]),length(l4[match2]))
+      printf("length %d %d %d %d %d\n", length(match2),length(l3),length(l4),length(l3[match2]),length(l4[match2]))
     }
     #currmatch<-matchList[[chr]]
     #col1<-t1[[chr]]$V2
     #col2<-t2[[chr]]$V2[currmatch]
-    r1<-data.frame(a=l3[match1],b=l4[match2])
+    r1<-data.frame(a=l3[match2],b=l4[match2])
     colnames(r1)<-c(paste0('treat',i),paste0('control',i))
     r1
   })
@@ -133,14 +135,4 @@ getPeakScores<-function(bed,scores) {
   do.call('rbind', ret) 
 }
 
-
-
-
-slideMean<-function(x,windowsize=100,slide=1){
-  idx1<-seq(1,length(x),by=slide);
-  idx1+windowsize->idx2;
-  idx2[idx2>(length(x)+1)]<-length(x)+1;
-  c(0,cumsum(x))->cx;
-  return((cx[idx2]-cx[idx1])/windowsize);
-}
 
