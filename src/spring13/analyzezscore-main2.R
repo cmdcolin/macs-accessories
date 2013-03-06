@@ -258,5 +258,5 @@ points(ret2$col1,ret2$col2,pch='.',col=rgb(0.5,1,0.5,0.3))
 #points(selection1$col1,selection1$col2,col=2,pch='.')
 
 
-
+ret<-getscoresmodappend(wiggles,names(macswiggle[[1]]$treat),macswiggle[[1]]$treat,macswiggle[[1]]$control,3)
 
