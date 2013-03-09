@@ -6,6 +6,12 @@ source('src/zscore.R')
 f<-getwd()
 setwd('newdata')
 
+
+
+
+Rprof(tmp <- tempfile())
+
+
 dirs<-list.files(pattern="*_MACS_wiggle")
 dirnames<-str_replace_all(dirs,"_MACS_wiggle","")
 macswiggle<-lapply(dirnames,function(dirname) {
@@ -16,6 +22,9 @@ macswiggle<-lapply(dirnames,function(dirname) {
 })
 names(macswiggle)<-dirnames
 
+Rprof()
+summaryRprof(tmp)
+unlink(tmp)
 
 
 

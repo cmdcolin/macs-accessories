@@ -43,12 +43,13 @@ function(this)
     rep<-lapply(1:ltable, function(i) {
       varline<-lines[ntable[i]]
       chrom<-unlist(str_extract_all(varline,"[Cc]hr[0-9a-z]*"))[2]
-      if(debug)
-        printf("Processing %s\n", chrom)
+      if(debug) {
+        printf("Processing %s\tRows %d\n", chrom,length(data))
+      }
       
       begin=ntable[i]+1
       end=ntable[i+1]-1
-      data<-lines[begin:end]
+      data<-paste(lines[begin:end],collapse='\n')
       con<-textConnection(data)
       tab5rows <- read.table(con, nrows = 5)
       classes <- sapply(tab5rows, class)
