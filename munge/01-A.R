@@ -11,9 +11,13 @@ dirnames<-str_replace_all(dirs,"_MACS_wiggle","")
 macswiggle<-lapply(dirnames,function(dirname) {
   printf("Processing %s\n",dirname)
   wig=new("WiggleClass",name=dirname)
-  loadWiggles(wig)
-  
+  print(system.time(ret<-loadWiggles(wig)))
+  ret
 })
+names(macswiggle)<-dirnames
+
+
+
 
 for(i in 1:length(macswiggle)) {
   wig=macswiggle[[i]]

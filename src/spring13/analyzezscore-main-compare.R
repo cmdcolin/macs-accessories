@@ -36,9 +36,10 @@ getpeaknormdiffmax<-function(bed,scores) {
     x<-(apply(chrsub2[,3:6],2,function(x){
       #print(dim(chrsub2))
       if(length(x)<10) mean(x)
-      else max(slideMean(x,10,1))
+      else slideMean(x,10,10)
     }))
-    data.frame(x[[1]],x[[2]],x[[3]],x[[4]])
+    y<-data.frame(x[,1],x[,2],x[,3],x[,4])
+    #chrsub2
   })
   
   # from R inferno, Burns (2011)
@@ -54,8 +55,19 @@ plot(wiggles$treat1,wiggles$treat2,pch='.',cex=2,xlab='S96rep1',ylab='HS959rep1'
 title('Raw read counts of S96 vs HS959')
 points(ret[,1],ret[,3],col=2,pch='.',cex=3)
 points(ret2[,1],ret2[,3],col=3,pch='.',cex=3)
-points(ret3[,1],ret3[,3],col=4,pch='.',cex=3)
+points(ret3[,1],ret3[,3],col=rgb(0,0,1,0.5),pch='.',cex=3)
 legend("topleft",legend=c('Overlap','S96 unique','HS959 unique'),fill=c('blue','red','green'))
+
+####mod
+
+
+plot(wiggles$treat1,wiggles$treat2,pch='.',cex=2,xlab='S96rep1',ylab='HS959rep1')
+title('Raw read counts of S96 vs HS959')
+points(ret[,1+2],ret[,3+2],col=2,pch='.',cex=3)
+points(ret2[,1+2],ret2[,3+2],col=3,pch='.',cex=3)
+points(ret3[,1+2],ret3[,3+2],col=4,pch='.',cex=3)
+legend("topleft",legend=c('Overlap','S96 unique','HS959 unique'),fill=c('blue','red','green'))
+
 
 
 
@@ -70,7 +82,16 @@ ret3<-getpeaknormdiffmax(bed3,wiggles)
 
 plot(wiggles$treat1-wiggles$control1/m1,wiggles$treat2-wiggles$control2/m2,pch='.',cex=2,xlab='S96rep1',ylab='HS959rep1')
 title('Background scaled reads S96 vs HS959')
-points(ret[,1]-ret[,2]/m1,ret[,3]-ret[,4]/m2,col=2,pch='.',cex=3)
+points(ret[,1+]-ret[,2]/m1,ret[,3]-ret[,4]/m2,col=2,pch='.',cex=3)
 points(ret2[,1]-ret2[,2]/m1,ret2[,3]-ret2[,4]/m2,col=3,pch='.',cex=3)
 points(ret3[,1]-ret3[,2]/m1,ret3[,3]-ret3[,4]/m2,col=4,pch='.',cex=3)
+legend("topleft",legend=c('Overlap','S96 unique','HS959 unique'),fill=c('blue','red','green'))
+
+
+
+plot(wiggles$treat1-wiggles$control1/m1,wiggles$treat2-wiggles$control2/m2,pch='.',cex=2,xlab='S96rep1',ylab='HS959rep1')
+title('Background scaled reads S96 vs HS959')
+points(ret[,1+2]-ret[,2+2]/m1,ret[,3+2]-ret[,4+2]/m2,col=2,pch='.',cex=3)
+points(ret2[,1+2]-ret2[,2+2]/m1,ret2[,3+2]-ret2[,4+2]/m2,col=3,pch='.',cex=3)
+points(ret3[,1+2]-ret3[,2+2]/m1,ret3[,3+2]-ret3[,4+2]/m2,col=4,pch='.',cex=3)
 legend("topleft",legend=c('Overlap','S96 unique','HS959 unique'),fill=c('blue','red','green'))

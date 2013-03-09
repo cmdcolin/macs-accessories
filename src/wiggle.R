@@ -50,7 +50,9 @@ function(this)
       end=ntable[i+1]-1
       data<-lines[begin:end]
       con<-textConnection(data)
-      chr<-read.table(con)
+      tab5rows <- read.table(con, nrows = 5)
+      classes <- sapply(tab5rows, class)
+      chr <- read.table(con, colClasses = classes,nrows=length(lines))
       close(con)
       attr(chr, 'name') <- chrom  # save the nfame
       chr
