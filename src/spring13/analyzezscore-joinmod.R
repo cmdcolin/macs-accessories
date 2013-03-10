@@ -1,5 +1,5 @@
 library(plyr)
-library(gplot)
+library(gplots)
 
 
 
@@ -12,11 +12,13 @@ chrnames<-names(macswiggle[[1]]$treat)
 
 ### Get wig scores for treat only
 getjoinscores<-function(chrnames,t1,t2,currpos) {
+  
   ret<-lapply(chrnames, function(chr) {
     if(debug)
-      printf("processing %s\n", chr);
-    
-    colnames(t2[[chr]])[2]<-paste0("V",currpos)
+      printf("processing %s\tat V%d\n", chr,currpos);
+    str<-paste0("V",currpos)
+    print(colnames(t2[[chr]]))
+    colnames(t2[[chr]])[2]<-str
     ret<-join(t1[[chr]], t2[[chr]],by="V1")
     ret[complete.cases(ret),]
   })
@@ -39,7 +41,8 @@ flatten<-function(chrnames,ret) {
   do.call('rbind', RTE) 
 }
 
-
+docol<-function(macswig) {
+}
 ret<-getjoinscores(chrnames,macswiggle[[1]]$control,macswiggle[[1]]$treat,3)
 ret<-getjoinscores(chrnames,ret,macswiggle[[2]]$control,4)
 ret<-getjoinscores(chrnames,ret,macswiggle[[2]]$treat,5)
@@ -56,21 +59,43 @@ ret<-getjoinscores(chrnames,ret,macswiggle[[7]]$treat,15)
 ret4<-flatten(chrnames,ret)
 
 
+x<-sapply(names(macswiggle),function(x) strsplit(x,'-new')[[1]])
+n<-length(macswiggle)
+strs<-paste0(sort(rep(x,2)),'-',rep(c('c','t'),n))
+#strs2<-c('chr','pos',paste0(rep('V',n),1:(n*2)))
+#names(ret4)<-strs2
+names(ret4)<-c('chr','pos',strs)
+head(ret4)
+
+## See average read depth
+dist1<-sapply(3:ncol(ret4),function(i) mean(ret4[,i]))
+mean(dist1)
+
+
 resize.win <- function(Width=6, Height=6)
 {
   # works for windows
   dev.off(); # dev.new(width=6, height=6)
   windows(record=TRUE, width=Width, height=Height)
 }
-resize.win(10,10)
+resize.win(10,20)
 
 
-heatmap.2(as.matrix(ret4[1:10000,3:ncol(ret4)]),col=redgreen(75), scale="column",key=TRUE, symkey=FALSE,density.info='none',trace='none')
 
 
-sret<-apply(ret4[,3:ncol(ret4)],2,function(x,g){slideMean(x,g)},100)
+sret<-apply(ret4[,3:ncol(ret4)],2,function(x,g){slideMean(x,g,g)},1000)
 
-heatmap.2(as.matrix(sret[1:4000,]),col=redgreen(75), scale="none",key=TRUE, symkey=FALSE,density.info='none',trace='none')
+heatmap.2(as.matrix(sret),col=redgreen(75), scale="none",key=TRUE, density.info='none',trace='none',Rowv=NULL)
+
+
+
+
+
+
+
+
+
+
 
 # plot(ret2$V1,ret2$V2)
 # plot(ret2$V1,ret2$V2,type='l')
