@@ -65,10 +65,12 @@ resize.win <- function(Width=6, Height=6)
 resize.win(10,10)
 
 
-heatmap.2(as.matrix(ret4[1:1000,3:ncol(ret4)]),col=redgreen(75), scale="column",key=TRUE, symkey=FALSE,density.info='none',trace='none')
+heatmap.2(as.matrix(ret4[1:10000,3:ncol(ret4)]),col=redgreen(75), scale="column",key=TRUE, symkey=FALSE,density.info='none',trace='none')
 
 
+sret<-apply(ret4[,3:ncol(ret4)],2,function(x,g){slideMean(x,g)},100)
 
+heatmap.2(as.matrix(sret[1:4000,]),col=redgreen(75), scale="none",key=TRUE, symkey=FALSE,density.info='none',trace='none')
 
 # plot(ret2$V1,ret2$V2)
 # plot(ret2$V1,ret2$V2,type='l')
