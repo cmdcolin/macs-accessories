@@ -4,12 +4,11 @@ source('src/wiggle.R')
 source('src/zscore.R')
 
 f<-getwd()
-setwd('newdata')
+setwd('data-bigwigs/')
 
 
 
 
-Rprof(tmp <- tempfile())
 
 
 dirs<-list.files(pattern="*_MACS_wiggle")
@@ -17,14 +16,9 @@ dirnames<-str_replace_all(dirs,"_MACS_wiggle","")
 macswiggle<-lapply(dirnames,function(dirname) {
   printf("Processing %s\n",dirname)
   wig=new("WiggleClass",name=dirname)
-  print(system.time(ret<-loadWiggles(wig)))
-  ret
+  loadWiggles(wig)
 })
 names(macswiggle)<-dirnames
-
-Rprof()
-summaryRprof(tmp)
-unlink(tmp)
 
 
 

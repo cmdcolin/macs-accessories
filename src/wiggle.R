@@ -44,7 +44,7 @@ function(this)
       varline<-lines[ntable[i]]
       chrom<-unlist(str_extract_all(varline,"[Cc]hr[0-9a-z]*"))[2]
       if(debug) {
-        printf("Processing %s\tRows %d\n", chrom,length(data))
+        printf("Processing %s\n", chrom)
       }
       
       begin=ntable[i]+1
