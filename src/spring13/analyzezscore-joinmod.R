@@ -18,8 +18,7 @@ getjoinscores<-function(chrnames,t1,t2,currpos) {
     
     colnames(t2[[chr]])[2]<-paste0("V",currpos)
     ret<-join(t1[[chr]], t2[[chr]],by="V1")
-    ret2<-ret[complete.cases(ret),]
-    print(class(ret2))
+    ret[complete.cases(ret),]
   })
   names(ret)<-chrnames
   #print(str(ret))
@@ -56,7 +55,18 @@ ret<-getjoinscores(chrnames,ret,macswiggle[[7]]$control,14)
 ret<-getjoinscores(chrnames,ret,macswiggle[[7]]$treat,15)
 ret4<-flatten(chrnames,ret)
 
+
+resize.win <- function(Width=6, Height=6)
+{
+  # works for windows
+  dev.off(); # dev.new(width=6, height=6)
+  windows(record=TRUE, width=Width, height=Height)
+}
+resize.win(10,10)
+
+
 heatmap.2(as.matrix(ret4[1:1000,3:ncol(ret4)]),col=redgreen(75), scale="column",key=TRUE, symkey=FALSE,density.info='none',trace='none')
+
 
 
 
