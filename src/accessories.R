@@ -1,6 +1,4 @@
-#access
-
-
+#accessories
 
 nc$getChipReads <- function(bedfile) {
   getChipReadsX<-function(x,filepath){

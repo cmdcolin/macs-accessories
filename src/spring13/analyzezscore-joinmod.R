@@ -17,7 +17,6 @@ getjoinscores<-function(chrnames,t1,t2,currpos) {
     if(debug)
       printf("processing %s\tat V%d\n", chr,currpos);
     str<-paste0("V",currpos)
-    print(colnames(t2[[chr]]))
     colnames(t2[[chr]])[2]<-str
     ret<-join(t1[[chr]], t2[[chr]],by="V1")
     ret[complete.cases(ret),]
@@ -41,23 +40,20 @@ flatten<-function(chrnames,ret) {
   do.call('rbind', RTE) 
 }
 
-docol<-function(macswig) {
+joinWiggleFiles<-function(chrnames,macswig) {
+  ret<-getjoinscores(chrnames,macswig[[1]]$control,macswig[[1]]$treat,3)
+  currpos<-4
+  for(i in 2:length(macswiggle)) {
+    ret<-getjoinscores(chrnames,ret,macswig[[i]]$control,currpos)
+    ret<-getjoinscores(chrnames,ret,macswig[[i]]$treat,currpos+1)
+    currpos<-currpos+2
+  }
+  flatten(chrnames,ret)
 }
-ret<-getjoinscores(chrnames,macswiggle[[1]]$control,macswiggle[[1]]$treat,3)
-ret<-getjoinscores(chrnames,ret,macswiggle[[2]]$control,4)
-ret<-getjoinscores(chrnames,ret,macswiggle[[2]]$treat,5)
-ret<-getjoinscores(chrnames,ret,macswiggle[[3]]$control,6)
-ret<-getjoinscores(chrnames,ret,macswiggle[[3]]$treat,7)
-ret<-getjoinscores(chrnames,ret,macswiggle[[4]]$control,8)
-ret<-getjoinscores(chrnames,ret,macswiggle[[4]]$treat,9)
-ret<-getjoinscores(chrnames,ret,macswiggle[[5]]$control,10)
-ret<-getjoinscores(chrnames,ret,macswiggle[[5]]$treat,11)
-ret<-getjoinscores(chrnames,ret,macswiggle[[6]]$control,12)
-ret<-getjoinscores(chrnames,ret,macswiggle[[6]]$treat,13)
-ret<-getjoinscores(chrnames,ret,macswiggle[[7]]$control,14)
-ret<-getjoinscores(chrnames,ret,macswiggle[[7]]$treat,15)
-ret4<-flatten(chrnames,ret)
 
+
+
+ret4<-joinWiggleFiles(macswiggle)
 
 x<-sapply(names(macswiggle),function(x) strsplit(x,'-new')[[1]])
 n<-length(macswiggle)
@@ -95,6 +91,63 @@ heatmap.2(as.matrix(sret),col=redgreen(75), scale="none",key=TRUE, density.info=
 
 
 
+#########################
+# Fix plots
+
+
+
+
+# Background subtraction and scaling
+table<-ret4
+strs2<-c('chr','pos',paste0(rep('V',n),1:(n*2)))
+names(table)<-strs2
+
+
+for(i in 1:length(macswiggle)) {
+  r1<-paste0('V',i+1)
+  r2<-paste0('V',i+2)
+  ratio=median(table[[r1]]/table[[r2]])
+  if(ratio>1) {
+    printf("scale down control %f\n", ratio)
+    table[[r1]]<-table[[r1]]/ratio
+  } else {
+    printf("scale down treat %f\n", 1/ratio)
+    table[[r2]]<-table[[r2]]*ratio
+  }
+}
+
+
+dist1<-sapply(names(table)[3:ncol(table)],function(i) mean(table[[i]]))
+mean(dist1)
+tablescale<-table
+
+for(i in 1:length(dist1)) {
+  r1<-paste0('V',i)
+  printf("Scale %s by mean total read depth %f\n", r1, dist1[i])
+  
+  tablescale[[r1]]<-table[[r1]]/dist1[i]
+}
+
+
+sret<-apply(table[,3:ncol(table)],2,function(x,g){slideMean(x,g,g)},1000)
+
+heatmap.2(as.matrix(sret),col=redgreen(75), scale="none",key=TRUE, density.info='none',trace='none',Rowv=NULL)
+
+sret<-apply(tablescale[,3:ncol(tablescale)],2,function(x,g){slideMean(x,g,g)},10000)
+
+heatmap.2(as.matrix(sret),col=redgreen(75), scale="none",key=TRUE, density.info='none',trace='none',Rowv=NULL,Colv=NULL)
+
+
+
+p1<-r1$V2-c1[cmatch,2]/m1
+p2<-r2$V2-c2[cmatch2,2]/m2
+
+
+
+#Background subtraction and normalization
+v1<-mean(r1$V2)+mean(c1$V2[cmatch])/m1^2
+v2<-mean(r2$V2)+mean(c2$V2[cmatch2])/m2^2
+plot(p1/v1,p2[match]/v2,pch='.',cex=2)
 
 
 # plot(ret2$V1,ret2$V2)
