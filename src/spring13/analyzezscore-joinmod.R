@@ -53,7 +53,7 @@ joinWiggleFiles<-function(chrnames,macswig) {
 
 
 
-ret4<-joinWiggleFiles(macswiggle)
+ret4<-joinWiggleFiles(chrnames, macswiggle)
 
 x<-sapply(names(macswiggle),function(x) strsplit(x,'-new')[[1]])
 n<-length(macswiggle)
