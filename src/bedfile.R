@@ -3,16 +3,11 @@
 
 
 loadBed<-function(path) {
-  bedfile<-read.table(path)
+  bedfile<-read.table(path,sep='\t',colClasses=c("character","numeric","numeric","character","numeric"))
   
-  # rename columns
-  names(bedfile)<-c("chromosome","start","end","name","value")
+  names(bedfile)=c('chr','start','end','name','score')
   
-  #make numeric columns
-  transform(bedfile, {
-    start = as.numeric(as.character(start))
-    end = as.numeric(as.character(end))
-  })
+  bedfile
 }
 
 

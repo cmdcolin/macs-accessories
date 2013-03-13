@@ -9,6 +9,7 @@ library(gplots)
 chrnames<-names(macswiggle[[1]]$treat)
 
 
+lenmacswiggle<-length(macswiggle)
 
 ### Get wig scores for treat only
 getjoinscores<-function(chrnames,t1,t2,currpos) {
@@ -43,7 +44,7 @@ flatten<-function(chrnames,ret) {
 joinWiggleFiles<-function(chrnames,macswig) {
   ret<-getjoinscores(chrnames,macswig[[1]]$control,macswig[[1]]$treat,3)
   currpos<-4
-  for(i in 2:length(macswiggle)) {
+  for(i in 2:lenmacswiggle) {
     ret<-getjoinscores(chrnames,ret,macswig[[i]]$control,currpos)
     ret<-getjoinscores(chrnames,ret,macswig[[i]]$treat,currpos+1)
     currpos<-currpos+2
@@ -68,8 +69,35 @@ doheatmap<-function(table,granularity=1) {
   }
   
   heatmap.2(as.matrix(sret),col=redgreen(75), scale="none",key=TRUE, 
-            density.info='none',trace='none',Rowv=NULL)
+            density.info='none',trace='none',Rowv=FALSE)
 }
+
+
+
+
+getpeaknormdiffmax<-function(bed,scores) {
+  chrmatch=""
+  chrsub=data.frame()
+  ret<-apply(bed,1,function(row) {
+    s=as.numeric(row[2])
+    e=as.numeric(row[3])
+    printf("Processing peak %s (%d,%d)\n",row[4],s,e)
+    chrselect<-strsplit(row[1],'.fsa')[[1]]
+    if(chrmatch!=chrselect) {
+      printf("Here %s %s\n",chrmatch,chrselect)
+      chrmatch<<-chrselect
+      chrsub<<-scores[scores$chr==chrselect,]
+    }
+    
+    print(nrow(chrsub))
+    chrsub[chrsub$pos>as.numeric(row[2])&chrsub$pos<as.numeric(row[3]),]
+    #chrsub2
+  })
+  print(lapply(ret,nrow))
+  # from R inferno, Burns (2011)
+  do.call('rbind', ret) 
+}
+
 
 
 
@@ -77,7 +105,7 @@ doheatmap<-function(table,granularity=1) {
 ret4<-joinWiggleFiles(chrnames, macswiggle)
 
 x<-sapply(names(macswiggle),function(x) strsplit(x,'-new')[[1]])
-n<-length(macswiggle)
+n<-lenmacswiggle
 strs<-paste0(sort(rep(x,2)),'-',rep(c('c','t'),n))
 #strs2<-c('chr','pos',paste0(rep('V',n),1:(n*2)))
 #names(ret4)<-strs2
@@ -95,15 +123,12 @@ resize.win <- function(Width=6, Height=6)
   dev.off(); # dev.new(width=6, height=6)
   windows(record=TRUE, width=Width, height=Height)
 }
-resize.win(10,20)
+resize.win(10,30)
 
 
 
 
-sret<-apply(ret4[,3:ncol(ret4)],2,function(x,g){slideMean(x,g,g)},1000)
-
-heatmap.2(as.matrix(sret),col=redgreen(75), scale="none",key=TRUE, density.info='none',trace='none',Rowv=NULL)
-
+doheatmap(ret4[,3:ncol(ret4)],1000)
 
 
 
@@ -124,7 +149,7 @@ strs2<-c('chr','pos',paste0(rep('V',n),1:(n*2)))
 names(table)<-strs2
 
 
-for(i in 1:length(macswiggle)) {
+for(i in 1:lenmacswiggle) {
   r1<-paste0('V',i+1)
   r2<-paste0('V',i+2)
   ratio=median(table[[r1]]/table[[r2]])
@@ -150,29 +175,14 @@ for(i in 1:length(dist1)) {
 }
 
 
-sret<-apply(table[,3:ncol(table)],2,function(x,g){slideMean(x,g,g)},1000)
-
-heatmap.2(as.matrix(sret),col=redgreen(75), scale="none",key=TRUE, density.info='none',trace='none',Rowv=NULL)
-
-sret<-apply(tablescale[,3:ncol(tablescale)],2,function(x,g){slideMean(x,g,g)},10000)
-
-heatmap.2(as.matrix(sret),col=redgreen(75), scale="none",key=TRUE, density.info='none',trace='none',Rowv=NULL,Colv=NULL)
+doheatmap(table[,3:ncol(ret4)],1000)
+doheatmap(tablescale[,3:ncol(ret4)],10000)
 
 
-
-p1<-r1$V2-c1[cmatch,2]/m1
-p2<-r2$V2-c2[cmatch2,2]/m2
-
-
-
-#Background subtraction and normalization
-v1<-mean(r1$V2)+mean(c1$V2[cmatch])/m1^2
-v2<-mean(r2$V2)+mean(c2$V2[cmatch2])/m2^2
-plot(p1/v1,p2[match]/v2,pch='.',cex=2)
 
 
 table<-ret4
-retlist<-lapply(1:length(macswiggle),function(i) {
+retlist<-lapply(1:lenmacswiggle,function(i) {
   pos=i*2
   str1<-paste0('V',pos)
   str2<-paste0('V',pos+1)
@@ -184,11 +194,51 @@ retlist<-lapply(1:length(macswiggle),function(i) {
 })
 
 
+normdifflist<-lapply(1:lenmacswiggle,function(i) { 
+  pos=i*2
+  str1<-paste0('V',pos)
+  str2<-paste0('V',pos+1)
+  control<-table[[str1]]
+  treat<-table[[str2]]
+  getnormdiff(treat,control)
+})
+
+
+getnormdiff<-function(treat,control) {
+  
+  treatmeans<-slideMean(treat) #default params
+  controlmeans<-slideMean(control)
+  
+  
+  med1=median(control/treat)
+  v1=sqrt(mean(treat)+mean(control)/med1^2)
+  vlist1<-sqrt(treatmeans+controlmeans/med1^2)
+  
+  
+  #normdiff local
+  vlist<-sapply(vlist1,function(v,vall){max(v,vall)},v1)
+  
+  (treat-control/med1)/vlist
+}
+
+
+
 caca<-as.data.frame(do.call(cbind,retlist))
 names(caca)<-names(table)[seq(3,ncol(table),by=2)]
-
-
 doheatmap(caca,10000)
+
+caca2<-as.data.frame(do.call(cbind,normdifflist))
+names(caca2)<-names(table)[seq(3,ncol(table),by=2)]
+
+
+doheatmap(caca2,1000)
+
+
+
+
+
+bed1<-loadBed('s96rep1-high_peaks.bed')
+bed2<-loadBed('hs959rep1-new_peaks.bed')
 
 
 # plot(ret2$V1,ret2$V2)
