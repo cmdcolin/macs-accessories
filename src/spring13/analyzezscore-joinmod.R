@@ -53,6 +53,27 @@ joinWiggleFiles<-function(chrnames,macswig) {
 
 
 
+
+
+
+doheatmap<-function(table,granularity=1) {
+  
+  if(granularity!=1) {
+    sret<-apply(table[,1:ncol(table)],2,function(x,g){
+      slideMean(x,g,g)
+    },granularity)
+  }
+  else {
+    sret<-table
+  }
+  
+  heatmap.2(as.matrix(sret),col=redgreen(75), scale="none",key=TRUE, 
+            density.info='none',trace='none',Rowv=NULL)
+}
+
+
+
+
 ret4<-joinWiggleFiles(chrnames, macswiggle)
 
 x<-sapply(names(macswiggle),function(x) strsplit(x,'-new')[[1]])
@@ -148,6 +169,26 @@ p2<-r2$V2-c2[cmatch2,2]/m2
 v1<-mean(r1$V2)+mean(c1$V2[cmatch])/m1^2
 v2<-mean(r2$V2)+mean(c2$V2[cmatch2])/m2^2
 plot(p1/v1,p2[match]/v2,pch='.',cex=2)
+
+
+table<-ret4
+retlist<-lapply(1:length(macswiggle),function(i) {
+  pos=i*2
+  str1<-paste0('V',pos)
+  str2<-paste0('V',pos+1)
+  control<-table[[str1]]
+  treat<-table[[str2]]
+  
+  m1=median(control/treat)
+  treat-control/m1
+})
+
+
+caca<-as.data.frame(do.call(cbind,retlist))
+names(caca)<-names(table)[seq(3,ncol(table),by=2)]
+
+
+doheatmap(caca,10000)
 
 
 # plot(ret2$V1,ret2$V2)
