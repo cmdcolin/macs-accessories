@@ -72,29 +72,60 @@ doheatmap<-function(table,granularity=1) {
             density.info='none',trace='none',Rowv=FALSE)
 }
 
+doTreeView<-function(table,file=tempfile(),granularity=1) {
+  
+  if(granularity!=1) {
+    lemm<-seq(1,nrow(table),by=granularity)
+    coord<-paste0(table$chr[lemm],'P',table$pos[lemm])
+    
+    temp<-apply(table[,c(-1,-2)],2,function(x,g){
+      slideMean(x,g,g)
+    },granularity)
+    sret<-cbind(coord,temp)
+  }
+  else {
+    sret<-table
+  }
+  write.table(sret,file=file,row.names=FALSE,quote=FALSE,sep='\t')
+}
+
+
+getnormdiff<-function(treat,control) {
+  
+  treatSmooth<-slideMean(treat) #default params
+  controlSmooth<-slideMean(control)
+  
+  
+  scalingFactor=median(control/treat)
+  globalVariance=sqrt(mean(treat)+mean(control)/scalingFactor^2)
+  varlist<-sqrt(treatSmooth+controlSmooth/scalingFactor^2)
+  
+  
+  #normdiff local
+  normVar<-sapply(varlist,function(x){
+    max(x,globalVariance)
+  })
+  
+  (treat-control/scalingFactor)/normVar
+}
 
 
 
-getpeaknormdiffmax<-function(bed,scores) {
-  chrmatch=""
+
+getPeakNormDiff<-function(bed,scores) {
+  chrmatch="NA"
   chrsub=data.frame()
   ret<-apply(bed,1,function(row) {
-    s=as.numeric(row[2])
-    e=as.numeric(row[3])
-    printf("Processing peak %s (%d,%d)\n",row[4],s,e)
+    printf("Processing peak %s (%d,%d)\n",row[4],row[2],row[3])
     chrselect<-strsplit(row[1],'.fsa')[[1]]
     if(chrmatch!=chrselect) {
-      printf("Here %s %s\n",chrmatch,chrselect)
       chrmatch<<-chrselect
       chrsub<<-scores[scores$chr==chrselect,]
     }
-    
-    print(nrow(chrsub))
-    chrsub[chrsub$pos>as.numeric(row[2])&chrsub$pos<as.numeric(row[3]),]
-    #chrsub2
+    chrsub[chrsub$pos>row[2]&chrsub$pos<row[3],]
   })
-  print(lapply(ret,nrow))
-  # from R inferno, Burns (2011)
+  
+  # row bind dataframes. from R inferno, Burns (2011)
   do.call('rbind', ret) 
 }
 
@@ -204,23 +235,6 @@ normdifflist<-lapply(1:lenmacswiggle,function(i) {
 })
 
 
-getnormdiff<-function(treat,control) {
-  
-  treatmeans<-slideMean(treat) #default params
-  controlmeans<-slideMean(control)
-  
-  
-  med1=median(control/treat)
-  v1=sqrt(mean(treat)+mean(control)/med1^2)
-  vlist1<-sqrt(treatmeans+controlmeans/med1^2)
-  
-  
-  #normdiff local
-  vlist<-sapply(vlist1,function(v,vall){max(v,vall)},v1)
-  
-  (treat-control/med1)/vlist
-}
-
 
 
 caca<-as.data.frame(do.call(cbind,retlist))
@@ -228,6 +242,8 @@ names(caca)<-names(table)[seq(3,ncol(table),by=2)]
 doheatmap(caca,10000)
 
 caca2<-as.data.frame(do.call(cbind,normdifflist))
+caca2<-cbind(ret4$pos,caca2)
+caca2<-cbind(ret4$chr,caca2)
 names(caca2)<-names(table)[seq(3,ncol(table),by=2)]
 
 
@@ -239,6 +255,8 @@ doheatmap(caca2,1000)
 
 bed1<-loadBed('s96rep1-high_peaks.bed')
 bed2<-loadBed('hs959rep1-new_peaks.bed')
+
+nd1<-getPeakNormDiff(bed1,caca2)
 
 
 # plot(ret2$V1,ret2$V2)
