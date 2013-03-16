@@ -9,7 +9,7 @@ library(gplots)
 chrnames<-names(macswiggle[[1]]$treat)
 
 
-lenmacswiggle<-length(macswiggle)
+nsamples<-length(macswiggle)
 
 ### Get wig scores for treat only
 getjoinscores<-function(chrnames,t1,t2,currpos) {
@@ -44,7 +44,7 @@ flatten<-function(chrnames,ret) {
 joinWiggleFiles<-function(chrnames,macswig) {
   ret<-getjoinscores(chrnames,macswig[[1]]$control,macswig[[1]]$treat,3)
   currpos<-4
-  for(i in 2:lenmacswiggle) {
+  for(i in 2:length(macswiggle)) {
     ret<-getjoinscores(chrnames,ret,macswig[[i]]$control,currpos)
     ret<-getjoinscores(chrnames,ret,macswig[[i]]$treat,currpos+1)
     currpos<-currpos+2
@@ -130,158 +130,3 @@ getPeakNormDiff<-function(bed,scores) {
 }
 
 
-
-
-
-ret4<-joinWiggleFiles(chrnames, macswiggle)
-
-x<-sapply(names(macswiggle),function(x) strsplit(x,'-new')[[1]])
-n<-lenmacswiggle
-strs<-paste0(sort(rep(x,2)),'-',rep(c('c','t'),n))
-#strs2<-c('chr','pos',paste0(rep('V',n),1:(n*2)))
-#names(ret4)<-strs2
-names(ret4)<-c('chr','pos',strs)
-head(ret4)
-
-## See average read depth
-dist1<-sapply(3:ncol(ret4),function(i) mean(ret4[,i]))
-mean(dist1)
-
-
-resize.win <- function(Width=6, Height=6)
-{
-  # works for windows
-  dev.off(); # dev.new(width=6, height=6)
-  windows(record=TRUE, width=Width, height=Height)
-}
-resize.win(10,30)
-
-
-
-
-doheatmap(ret4[,3:ncol(ret4)],1000)
-
-
-
-
-
-
-
-
-#########################
-# Fix plots
-
-
-
-
-# Background subtraction and scaling
-table<-ret4
-strs2<-c('chr','pos',paste0(rep('V',n),1:(n*2)))
-names(table)<-strs2
-
-
-for(i in 1:lenmacswiggle) {
-  r1<-paste0('V',i+1)
-  r2<-paste0('V',i+2)
-  ratio=median(table[[r1]]/table[[r2]])
-  if(ratio>1) {
-    printf("scale down control %f\n", ratio)
-    table[[r1]]<-table[[r1]]/ratio
-  } else {
-    printf("scale down treat %f\n", 1/ratio)
-    table[[r2]]<-table[[r2]]*ratio
-  }
-}
-
-
-dist1<-sapply(names(table)[3:ncol(table)],function(i) mean(table[[i]]))
-mean(dist1)
-tablescale<-table
-
-for(i in 1:length(dist1)) {
-  r1<-paste0('V',i)
-  printf("Scale %s by mean total read depth %f\n", r1, dist1[i])
-  
-  tablescale[[r1]]<-table[[r1]]/dist1[i]
-}
-
-
-doheatmap(table[,3:ncol(ret4)],1000)
-doheatmap(tablescale[,3:ncol(ret4)],10000)
-
-
-
-
-table<-ret4
-retlist<-lapply(1:lenmacswiggle,function(i) {
-  pos=i*2
-  str1<-paste0('V',pos)
-  str2<-paste0('V',pos+1)
-  control<-table[[str1]]
-  treat<-table[[str2]]
-  
-  m1=median(control/treat)
-  treat-control/m1
-})
-
-
-normdifflist<-lapply(1:lenmacswiggle,function(i) { 
-  pos=i*2
-  str1<-paste0('V',pos)
-  str2<-paste0('V',pos+1)
-  control<-table[[str1]]
-  treat<-table[[str2]]
-  getnormdiff(treat,control)
-})
-
-
-
-
-caca<-as.data.frame(do.call(cbind,retlist))
-names(caca)<-names(table)[seq(3,ncol(table),by=2)]
-doheatmap(caca,10000)
-
-caca2<-as.data.frame(do.call(cbind,normdifflist))
-caca2<-cbind(ret4$pos,caca2)
-caca2<-cbind(ret4$chr,caca2)
-names(caca2)<-names(table)[seq(3,ncol(table),by=2)]
-
-
-doheatmap(caca2,1000)
-
-
-
-
-
-bed1<-loadBed('s96rep1-high_peaks.bed')
-bed2<-loadBed('hs959rep1-new_peaks.bed')
-
-nd1<-getPeakNormDiff(bed1,caca2)
-
-
-# plot(ret2$V1,ret2$V2)
-# plot(ret2$V1,ret2$V2,type='l')
-# lines(ret2$V1,ret2$V3)
-# lines(ret2$V1,ret2$V3,col=2)
-# plot(ret2$V1,ret2$V2,type='l',xlim=c(1,10000))
-# plot(ret2$V1,ret2$V2,type='l',xlim=c(1,100000))
-# plot(ret2$V1,ret2$V2,type='l',xlim=c(1,100000))
-# lines(ret2$V1,ret2$V3,col=2)
-# plot(ret2$V1,ret2$V2,type='l',xlim=c(1,100000),ylim=c(15,20))
-# plot(ret2$V1,log(ret2$V2),type='l',xlim=c(1,100000),ylim=c(15,20))
-# plot(ret2$V1,log(ret2$V2),type='l',xlim=c(1,100000))
-# lines(ret2$V1,log(ret2$V3),col=2)
-# plot(ret2$V1,log(ret2$V2),type='l',xlim=c(1,100000),ylim(0,6))
-# plot(ret2$V1,log(ret2$V2),type='l',xlim=c(1,100000),ylim=c(0,6))
-# lines(ret2$V1,log(ret2$V3),col=2)
-# qqplot(log(ret2$V3))
-# ?qqplot
-# qqplot(log(ret2$V3),rnorm(100))
-# qqplot(log(ret2$V3),rnorm(1000))
-# qqplot(log(ret2$V3),rnorm(10000))
-# qqplot(log(ret2$V3),rnorm(100000))
-# qqplot(log(ret2$V3),rnorm(100000))
-# qqplot(log(ret2$V2),rnorm(100000))
-# qqplot(log(ret2$V3),rnorm(100000))
-# qqline(rnorm(100000))
-# qqline(log(rnorm(100000)))
