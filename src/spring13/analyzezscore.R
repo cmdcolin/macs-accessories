@@ -121,10 +121,12 @@ getPeakScores<-function(bed,scores) {
   ret<-apply(bed,1,function(row) {
     s=as.numeric(row[2])
     e=as.numeric(row[3])
-    printf("Processing peak %s (%d,%d)\n",row[4],s,e)
+    if(debug) {
+      printf("Processing peak %s (%d,%d)\n",row[4],s,e)
+    }
+    
     chrselect<-strsplit(row[1],'.fsa')[[1]]
     if(chrmatch!=chrselect) {
-      printf("Here %s %s\n",chrmatch,chrselect)
       chrmatch<<-chrselect
       chrsub<<-scores[scores$chr==chrselect,]
     }

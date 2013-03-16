@@ -16,4 +16,23 @@ ret<-apply(ind,1,function(x) {
   second=l[[x[2]]]
   intersectBedLimma(first,second)
 })
+
+
+
+
+intersectBedLimma<-function(nc1,nc2) {
+  selectrows=apply(nc1,1,function(x){
+    
+    sublist=nc2[nc2$chromosome==x['chromosome'],]
+    ret=apply(sublist,1,function(y){
+      #  overlap AR < BL || BR < AL
+      (y['start']<=x['end'])&&(x['start']<=y['end'])
+    })
+    
+    ##! Get overlap peaks where intersect>0
+    sum(ret)>0
+  })
+  selectrows
+}
+
 # Make a venn diagram from all intersect overlap!!

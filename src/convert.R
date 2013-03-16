@@ -13,10 +13,10 @@ convertFileSacCer3<-function(filename) {
   for(i in 1:16) {
     str<-sprintf("%02d",i)
     filetext<-str_replace_all(filetext, 
-      sprintf("chr%s.fsa",str), sprintf("chr%s",romanNum(str)))
+      sprintf("chr%s.fs",str), sprintf("chr%s",romanNum(str)))
     printf("Finished chr%02d\n", i)
   }
-  filetext<-str_replace_all(filetext,  "chrmt.fsa", "chrM")
+  filetext<-str_replace_all(filetext,  "chrmt.fs", "chrM")
   printf("Finished chrmt\n", i)
   writeLines(filetext,filename)
   
