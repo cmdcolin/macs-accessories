@@ -20,10 +20,7 @@ plainNames<-function(wiggleTable) {
 }
 
 
-# Join wiggle files with matching positions into a table
-wiggleTable<-joinWiggleFiles(chrnames, macswiggle)
 
-head(wiggleTable)
 
 
 
@@ -98,7 +95,7 @@ doheatmap(tablescale[,3:ncol(ret4)],10000)
 
 
 table<-ret4
-retlist<-lapply(1:lenmacswiggle,function(i) {
+retlist<-lapply(1:nsamples,function(i) {
   pos=i*2
   str1<-paste0('V',pos)
   str2<-paste0('V',pos+1)
@@ -110,21 +107,21 @@ retlist<-lapply(1:lenmacswiggle,function(i) {
 })
 
 
-normdifflist<-lapply(1:lenmacswiggle,function(i) { 
+normdifflist<-lapply(1:nsamples,function(i) { 
   pos=i*2
   str1<-paste0('V',pos)
   str2<-paste0('V',pos+1)
-  control<-table[[str1]]
-  treat<-table[[str2]]
+  control<-wiggleTable[[str1]]
+  treat<-wiggleTable[[str2]]
   getnormdiff(treat,control)
 })
 
 
 
 
-caca<-as.data.frame(do.call(cbind,retlist))
-names(caca)<-names(table)[seq(3,ncol(table),by=2)]
-doheatmap(caca,10000)
+normdifftable<-as.data.frame(do.call(cbind,normdifflist))
+names(normdifftable)<-names(table)[seq(3,ncol(wiggleTable),by=2)]
+doheatmap(normdifftable,100)
 
 caca2<-as.data.frame(do.call(cbind,normdifflist))
 caca2<-cbind(ret4$pos,caca2)

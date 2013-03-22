@@ -1,6 +1,8 @@
 # Example preprocessing script.
 debug=TRUE
 source('src/wiggle.R')
+source('src/spring13/analyzezscore-joinmod.R')
+
 
 f<-getwd()
 setwd('data-bigwigs/')
@@ -15,8 +17,24 @@ macswiggle<-lapply(dirnames,function(dirname) {
 names(macswiggle)<-dirnames
 setwd(f)
 
-
+cache('dirnames')
 cache('macswiggle')
+
+# Join wiggle files with matching positions into a table
+wiggleTable<-joinWiggleFiles(chrnames, macswiggle)
+cache('wiggleTable')
+
+
+
+
+# Get chromosomes list
+chrnames<-names(macswiggle[[1]]$treat)
+nsamples<-length(macswiggle)
+
+
+cache('chrnames')
+cache('nsamples')
+
 # for(i in 1:length(macswiggle)) {
 #   wig=macswiggle[[i]]
 #   name=dirnames[i]

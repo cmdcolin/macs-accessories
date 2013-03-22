@@ -3,14 +3,6 @@ library(gplots)
 library(R.utils)
 
 
-
-
-# Get chromosomes list
-chrnames<-names(macswiggle[[1]]$treat)
-
-
-nsamples<-length(macswiggle)
-
 ### Get wig scores for treat only
 getjoinscores<-function(chrnames,t1,t2,currpos) {
   
@@ -129,4 +121,13 @@ getPeakNormDiff<-function(bed,scores) {
   do.call('rbind', ret) 
 }
 
+
+
+slideMean<-function(x,windowsize=100,slide=1){
+  idx1<-seq(1,length(x),by=slide);
+  idx1+windowsize->idx2;
+  idx2[idx2>(length(x)+1)]<-length(x)+1;
+  c(0,cumsum(x))->cx;
+  return((cx[idx2]-cx[idx1])/windowsize);
+}
 
