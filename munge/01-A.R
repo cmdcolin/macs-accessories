@@ -1,15 +1,9 @@
 # Example preprocessing script.
 debug=TRUE
 source('src/wiggle.R')
-source('src/zscore.R')
 
 f<-getwd()
 setwd('data-bigwigs/')
-
-
-
-
-
 
 dirs<-list.files(pattern="*_MACS_wiggle")
 dirnames<-str_replace_all(dirs,"_MACS_wiggle","")
@@ -19,30 +13,30 @@ macswiggle<-lapply(dirnames,function(dirname) {
   loadWiggles(wig)
 })
 names(macswiggle)<-dirnames
+setwd(f)
 
 
-
-for(i in 1:length(macswiggle)) {
-  wig=macswiggle[[i]]
-  name=dirnames[i]
-  scaling<-estimateScalingFactor(wig)
-  variance<-estimateVarianceAll(wig,scaling)
-  if(debug) {
-    printf("estimated (global) scaling factor: %f\n", scaling)
-    printf("estimated (global) variance: %f\n", variance)
-  }
-  ret<-Zall(wig,scaling,variance)
-  outtable<-NULL
-  for(chr in ret) {
-    outtable<-rbind(outtable,chr)
-  }
-  filename<-sprintf("%s_normdiff_old.txt",name)
-  write.table(outtable,filename,quote=FALSE)
-}
+cache('macswiggle')
+# for(i in 1:length(macswiggle)) {
+#   wig=macswiggle[[i]]
+#   name=dirnames[i]
+#   scaling<-estimateScalingFactor(wig)
+#   variance<-estimateVarianceAll(wig,scaling)
+#   if(debug) {
+#     printf("estimated (global) scaling factor: %f\n", scaling)
+#     printf("estimated (global) variance: %f\n", variance)
+#   }
+#   ret<-Zall(wig,scaling,variance)
+#   outtable<-NULL
+#   for(chr in ret) {
+#     outtable<-rbind(outtable,chr)
+#   }
+#   filename<-sprintf("%s_normdiff_old.txt",name)
+#   write.table(outtable,filename,quote=FALSE)
+# }
 
 
 #plot(as.vector(ret[[1]][,4]),type="l")
-setwd(f)
 
 #--kkkkkkk,,,,kkkj.;/;/;;''''''''''''''''''''
 

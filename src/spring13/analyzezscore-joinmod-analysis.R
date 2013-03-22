@@ -4,7 +4,7 @@
 
 
 # Set wiggle table names as abbreviated sample names
-function prettyNames(wiggleTable) {
+prettyNames<-function(wiggleTable) {
   
   fixNames<-sapply(names(macswiggle),function(x) strsplit(x,'-new')[[1]])
   prettyNames<-paste0(sort(rep(fixNames,2)),'-',rep(c('c','t'),nsamples))
@@ -12,23 +12,28 @@ function prettyNames(wiggleTable) {
 }
 
 ## Set wiggle table names as chr, pos, V1-Vn
-function plainNames(wiggleTable) {
+plainNames<-function(wiggleTable) {
   
-  strs2<-c('chr','pos',paste0(rep('V',nsamples),1:(nsamples*2)))
-  names(wiggleTable)<-strs2
+  fixNames<-c('chr','pos',paste0(rep('V',nsamples),1:(nsamples*2)))
+  names(wiggleTable)<-fixNameszx
+  
 }
 
+
+# Join wiggle files with matching positions into a table
 wiggleTable<-joinWiggleFiles(chrnames, macswiggle)
 
 head(wiggleTable)
 
 
 
-## See average read depth
+## See histogram of average read depth from all experiments
 dist1<-apply(wiggleTable[,c(-1,-2)],2,mean)
-mean(dist1)
+hist(dist1)
 
 
+
+# Accessory function for plotting large heatmaps
 resize.win <- function(Width=6, Height=6)
 {
   # works for windows
@@ -39,8 +44,8 @@ resize.win(10,30)
 
 
 
-
-doheatmap(ret4[,3:ncol(ret4)],1000)
+# Conduct heatmap (omit chr and pos columns)
+doheatmap(wiggleTable[,c(-1,-2)],1000)
 
 
 
@@ -56,12 +61,11 @@ doheatmap(ret4[,3:ncol(ret4)],1000)
 
 
 # Background subtraction and scaling
-table<-ret4
-strs2<-c('chr','pos',paste0(rep('V',n),1:(n*2)))
-names(table)<-strs2
+table<-wiggleTable
+table<-plainNames(table)
 
 
-for(i in 1:lenmacswiggle) {
+for(i in 1:nsamples) {
   r1<-paste0('V',i+1)
   r2<-paste0('V',i+2)
   ratio=median(table[[r1]]/table[[r2]])
