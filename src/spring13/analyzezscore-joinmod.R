@@ -103,7 +103,16 @@ getnormdiff<-function(treat,control) {
 
 
 
+ddply(bed,c('chr','start','end'),getPeakNormDiff2,wiggleTable)
 
+getPeakNormDiff2<-function(chr,start,end) {
+  chrselect<-strsplit(row[1],'.fsa')[[1]]
+  if(chrmatch!=chrselect) {
+    chrmatch<<-chrselect
+    chrsub<<-scores[scores$chr==chrselect,]
+  }
+  chrsub[chrsub$pos>row[2]&chrsub$pos<row[3],]
+}
 getPeakNormDiff<-function(bed,scores) {
   chrmatch="NA"
   chrsub=data.frame()
@@ -130,4 +139,7 @@ slideMean<-function(x,windowsize=100,slide=1){
   c(0,cumsum(x))->cx;
   return((cx[idx2]-cx[idx1])/windowsize);
 }
+
+
+
 

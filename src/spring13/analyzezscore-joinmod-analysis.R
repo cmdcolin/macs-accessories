@@ -140,6 +140,22 @@ bed2<-loadBed('hs959rep1-new_peaks.bed')
 
 nd1<-getPeakNormDiff(bed1,caca2)
 
+wt1<-getPeakNormDiff(bed1,wiggleTable)
+
+
+## QQPlot example for log data
+y=log(wiggleTable[,4])
+qqnorm(y); qqline(y, col = 2)
+
+##ddply example
+
+ddply(wiggleTable,.(chr),summarize,outm=mean(V4))
+
+
+
+ddply(wiggleTable,.(chr),summarize,outm=mean(V4))
+
+
 
 # plot(ret2$V1,ret2$V2)
 # plot(ret2$V1,ret2$V2,type='l')
