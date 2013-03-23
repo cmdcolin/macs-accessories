@@ -18,7 +18,6 @@ macswiggle<-lapply(dirnames,function(dirname) {
 names(macswiggle)<-dirnames
 setwd(f)
 
-cache('dirnames')
 cache('macswiggle')
 
 # Join wiggle files with matching positions into a table
@@ -33,8 +32,6 @@ chrnames<-names(macswiggle[[1]]$treat)
 nsamples<-length(macswiggle)
 
 
-cache('chrnames')
-cache('nsamples')
 
 # for(i in 1:length(macswiggle)) {
 #   wig=macswiggle[[i]]

@@ -3,23 +3,6 @@
 #
 
 
-# Set wiggle table names as abbreviated sample names
-prettyNames<-function(wiggleTable) {
-  
-  fixNames<-sapply(names(macswiggle),function(x) strsplit(x,'-new')[[1]])
-  prettyNames<-paste0(sort(rep(fixNames,2)),'-',rep(c('c','t'),nsamples))
-  names(wiggleTable)<-c('chr','pos',prettyNames)
-}
-
-## Set wiggle table names as chr, pos, V1-Vn
-plainNames<-function(wiggleTable) {
-  
-  fixNames<-c('chr','pos',paste0(rep('V',nsamples),1:(nsamples*2)))
-  names(wiggleTable)<-fixNameszx
-  
-}
-
-
 
 
 
@@ -30,13 +13,7 @@ hist(dist1)
 
 
 
-# Accessory function for plotting large heatmaps
-resize.win <- function(Width=6, Height=6)
-{
-  # works for windows
-  dev.off(); # dev.new(width=6, height=6)
-  windows(record=TRUE, width=Width, height=Height)
-}
+#resize for heatmap
 resize.win(10,30)
 
 
@@ -47,21 +24,7 @@ doheatmap(wiggleTable[,c(-1,-2)],1000)
 
 
 
-
-
-
-
-#########################
-# Fix plots
-
-
-
-
 # Background subtraction and scaling
-table<-wiggleTable
-table<-plainNames(table)
-
-
 for(i in 1:nsamples) {
   r1<-paste0('V',i+1)
   r2<-paste0('V',i+2)
@@ -75,9 +38,6 @@ for(i in 1:nsamples) {
   }
 }
 
-
-dist1<-sapply(names(table)[3:ncol(table)],function(i) mean(table[[i]]))
-mean(dist1)
 tablescale<-table
 
 for(i in 1:length(dist1)) {
@@ -118,29 +78,25 @@ normdifflist<-lapply(1:nsamples,function(i) {
 
 
 
-
+# combine rows into table
 normdifftable<-as.data.frame(do.call(cbind,normdifflist))
-names(normdifftable)<-names(table)[seq(3,ncol(wiggleTable),by=2)]
-doheatmap(normdifftable,100)
-
-caca2<-as.data.frame(do.call(cbind,normdifflist))
-caca2<-cbind(ret4$pos,caca2)
-caca2<-cbind(ret4$chr,caca2)
-names(caca2)<-names(table)[seq(3,ncol(table),by=2)]
+#get pos and chr columns
+normdifftable<-with(wiggleTable, cbind(pos,normdifftable))
+normdifftable<-with(wiggleTable, cbind(chr,normdifftable))
 
 
-doheatmap(caca2,1000)
+doheatmap(normdifftable,1000)
 
 
 
 
 
 bed1<-loadBed('s96rep1-high_peaks.bed')
-bed2<-loadBed('hs959rep1-new_peaks.bed')
+bed2<-loadBed('s96rep2-high_peaks.bed')
 
-nd1<-getPeakNormDiff(bed1,caca2)
-
-wt1<-getPeakNormDiff(bed1,wiggleTable)
+nd1<-getPeakScores(bed1,normdifftable)
+nd2<-getPeakScores(bed2,normdifftable)
+wt1<-getPeakScores(bed1,wiggleTable)
 
 
 ## QQPlot example for log data
@@ -149,12 +105,12 @@ qqnorm(y); qqline(y, col = 2)
 
 ##ddply example
 
-ddply(wiggleTable,.(chr),summarize,outm=mean(V4))
+ddply(wiggleTable,.(chr),summarize,)
 
 
 
 ddply(wiggleTable,.(chr),summarize,outm=mean(V4))
-
+ddply(wiggleTable,.(chr),head)
 
 
 # plot(ret2$V1,ret2$V2)

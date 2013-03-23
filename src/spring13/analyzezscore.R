@@ -116,21 +116,17 @@ slideMean<-function(x,windowsize=100,slide=1){
 
 
 getPeakScores<-function(bed,scores) {
-  chrmatch=""
-  chrsub=data.frame()
+  chrsplit<-split(wiggleTable,factor(wiggleTable$chr))
   ret<-apply(bed,1,function(row) {
     s=as.numeric(row[2])
     e=as.numeric(row[3])
-    if(debug) {
-      printf("Processing peak %s (%d,%d)\n",row[4],s,e)
-    }
     
     chrselect<-strsplit(row[1],'.fsa')[[1]]
-    if(chrmatch!=chrselect) {
-      chrmatch<<-chrselect
-      chrsub<<-scores[scores$chr==chrselect,]
+    if(debug) {
+      printf("Processing %s (%d,%d)\n",chrselect,s,e)
     }
-    chrsub[chrsub$pos>as.numeric(row[2])&chrsub$pos<as.numeric(row[3]),]
+    chrsub<-chrsplit[[chrselect]]
+    chrsub[chrsub$pos>s&chrsub$pos<e,]
   })
   
   # from R inferno, Burns (2011)

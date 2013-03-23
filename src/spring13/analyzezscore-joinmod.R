@@ -142,4 +142,29 @@ slideMean<-function(x,windowsize=100,slide=1){
 
 
 
+# Set wiggle table names as abbreviated sample names
+prettyNames<-function(wiggleTable) {
+  
+  fixNames<-sapply(names(macswiggle),function(x) strsplit(x,'-new')[[1]])
+  prettyNames<-paste0(sort(rep(fixNames,2)),'-',rep(c('c','t'),nsamples))
+  names(wiggleTable)<-c('chr','pos',prettyNames)
+}
+
+## Set wiggle table names as chr, pos, V1-Vn
+plainNames<-function(wiggleTable) {
+  
+  fixNames<-c('chr','pos',paste0(rep('V',nsamples),1:(nsamples*2)))
+  names(wiggleTable)<-fixNameszx
+  
+}
+
+
+# Accessory function for plotting large heatmaps
+resize.win <- function(Width=6, Height=6)
+{
+  # works for windows
+  dev.off(); # dev.new(width=6, height=6)
+  windows(record=TRUE, width=Width, height=Height)
+}
+
 
