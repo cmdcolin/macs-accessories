@@ -2,6 +2,7 @@
 debug=TRUE
 source('src/wiggle.R')
 source('src/bedfile.R')
+source('src/lsos.R')
 source('src/spring13/analyzezscore-joinmod.R')
 
 

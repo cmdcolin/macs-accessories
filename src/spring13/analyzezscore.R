@@ -116,7 +116,7 @@ slideMean<-function(x,windowsize=100,slide=1){
 
 
 getPeakScores<-function(bed,scores) {
-  chrsplit<-split(wiggleTable,factor(wiggleTable$chr))
+  chrsplit<-split(scores,factor(scores$chr))
   ret<-apply(bed,1,function(row) {
     s=as.numeric(row[2])
     e=as.numeric(row[3])
