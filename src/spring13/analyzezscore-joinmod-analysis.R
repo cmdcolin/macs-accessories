@@ -160,6 +160,13 @@ text(40,250,substitute(paste(rho,"=",mycor),list(mycor=mycor)))
 makeComparisonPlot(loadBed('s96vshs959overlap.bed'),loadBed('s96vshs959unique.bed'),loadBed('s96vshs959unique2.bed'),wiggleTable,4,8,'Comparison of raw read scores for S96 vs HS959 (log2)','S96', 'HS959',c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Dark2"),log=TRUE)
 mycor=cor(log2(wiggleTable[,4]),log2(wiggleTable[,8]))
 text(1,8,substitute(paste(rho,"=",mycor),list(mycor=mycor)))
+mypal<-brewer.pal(3,"Accent")
+#lines(0:8,(0:8)-0,lwd=3,col=)
+lines(1:9,(-1:7),lwd=3,col=mypal[3])
+lines(-1:7,(1:9),lwd=3,col=mypal[3])
+
+#lm1<-lm(log2(wiggleTable[,8])~log2(wiggleTable[,4]))
+#lines(log2(wiggleTable[,4]),lm1$fitted)
 #plot(wiggleTable[sample(1:nrow(wiggleTable),nrow(wiggleTable)/10),c(4,6)])
 
 

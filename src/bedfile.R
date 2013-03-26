@@ -6,48 +6,74 @@ loadBed<-function(path) {
   bedfile<-read.table(path,sep='\t',colClasses=c("character","numeric","numeric","character","numeric"))
   
   names(bedfile)=c('chr','start','end','name','score')
-  
+  #bedfile<-transform(bedfile, start=as.numeric(start), end=as.numeric(end))
   bedfile
 }
 
 
-
+#advice taken from http://stackoverflow.com/questions/5357003/get-and-process-entire-row-in-ddply-in-a-function
 intersectBed<-function(nc1,nc2) {
-  selectrows=apply(nc1,1,function(x){
-    
-    sublist=nc2[nc2$chromosome==x['chromosome'],]
-    ret=apply(sublist,1,function(y){
+  nc1$row<-1:nrow(nc1)
+  nc2$row<-1:nrow(nc2)
+  chrsplit<-split(nc2,factor(nc2$chr))
+  sel<-daply(nc1, .(row), function (row1) {
+    chrselect=chrsplit[[row1$chr]]
+    ret<-daply(chrselect, .(row),function(row2){
       #  overlap AR < BL || BR < AL
-      (y['start']<=x['end'])&&(x['start']<=y['end'])
+      #X2 >= Y1 and Y2 >= X1
+      intersect1D(row1$start,row1$end,row2$start,row2$end)
     })
-    
-    ##! Get overlap peaks where intersect>0
+    printf("%s %s %d %d --- %d,%d\n", row1$name, row1$chr, row1$start, row1$end, nrow(chrselect),sum(ret))
+
     sum(ret)>0
   })
-  nc1[selectrows,]
+  nc1[sel,]
 }
 
 
 
 
 uniqueBed<-function(nc1,nc2) {
-  selectrows=apply(nc1,1,function(x){
-    
-    sublist=nc2[nc2$chromosome==x['chromosome'],]
-    ret=apply(sublist,1,function(y){
+  
+  nc1$row<-1:nrow(nc1)
+  nc2$row<-1:nrow(nc2)
+  chrsplit<-split(nc2,factor(nc2$chr))
+  sel<-daply(nc1, .(row), function (row1) {
+    chrselect=chrsplit[[row1$chr]]
+    ret<-daply(chrselect, .(row),function(row2){
+      #  overlap AR < BL || BR < AL
       # Linear overlap AR < BL || BR < AL
-      (y['start']<=x['end'])&&(x['start']<=y['end'])
+      #X2 >= Y1 and Y2 >= X1
+      #(y['start']<=x['end'])&&(x['start']<=y['end'])
+      (row1$end<row2$start)||(row2$end<row1$start)
     })
+    printf("%s %s %d %d --- %d,%d\n", row1$name, row1$chr, row1$start, row1$end, nrow(chrselect),sum(ret))
     
-    ##! Get unique peaks with no overlap
-    sum(ret)==0
+    sum(ret)==nrow(chrselect)
   })
-  nc1[selectrows,]
+  nc1[sel,]
+  
+  
+  
+  
+#   selectrows=apply(nc1,1,function(x){
+#     
+#     sublist=nc2[nc2$chr==x['chr'],]
+#     ret=apply(sublist,1,function(y){
+#       (y['start']<=x['end'])&&(x['start']<=y['end'])
+#     })
+#     
+#     ##! Get unique peaks with no overlap
+#     sum(ret)==0
+#   })
+#   nc1[selectrows,]
 }
 
 
 
-
+intersect1D<-function(a1,a2,b1,b2) {
+  (a2>b1)&&(b2>a1)
+}
 
 ###########
 
