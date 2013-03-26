@@ -103,34 +103,24 @@ getnormdiff<-function(treat,control) {
 
 
 
-ddply(bed,c('chr','start','end'),getPeakNormDiff2,wiggleTable)
 
-getPeakNormDiff2<-function(chr,start,end) {
-  chrselect<-strsplit(row[1],'.fsa')[[1]]
-  if(chrmatch!=chrselect) {
-    chrmatch<<-chrselect
-    chrsub<<-scores[scores$chr==chrselect,]
-  }
-  chrsub[chrsub$pos>row[2]&chrsub$pos<row[3],]
-}
-getPeakNormDiff<-function(bed,scores) {
-  chrmatch="NA"
-  chrsub=data.frame()
+getPeakScores<-function(bed,scores) {
+  chrsplit<-split(scores,factor(scores$chr))
+  chrselect<-""
   ret<-apply(bed,1,function(row) {
-    printf("Processing peak %s (%d,%d)\n",row[4],row[2],row[3])
-    chrselect<-strsplit(row[1],'.fsa')[[1]]
-    if(chrmatch!=chrselect) {
-      chrmatch<<-chrselect
-      chrsub<<-scores[scores$chr==chrselect,]
+    start=as.numeric(row['start'])
+    end=as.numeric(row['end'])
+    chrselect<-strsplit(row['chr'],'.fsa')[[1]]
+    if(debug) {
+      printf("Processing %s (%d,%d)\n",chrselect,start,end)
     }
-    chrsub[chrsub$pos>row[2]&chrsub$pos<row[3],]
+    chrsub<-chrsplit[[chrselect]]
+    chrsub[chrsub$pos>start&chrsub$pos<end,]
   })
   
-  # row bind dataframes. from R inferno, Burns (2011)
+  # from R inferno, Burns (2011)
   do.call('rbind', ret) 
 }
-
-
 
 slideMean<-function(x,windowsize=100,slide=1){
   idx1<-seq(1,length(x),by=slide);
@@ -142,21 +132,6 @@ slideMean<-function(x,windowsize=100,slide=1){
 
 
 
-# Set wiggle table names as abbreviated sample names
-prettyNames<-function(wiggleTable) {
-  
-  fixNames<-sapply(names(macswiggle),function(x) strsplit(x,'-new')[[1]])
-  prettyNames<-paste0(sort(rep(fixNames,2)),'-',rep(c('c','t'),nsamples))
-  names(wiggleTable)<-c('chr','pos',prettyNames)
-}
-
-## Set wiggle table names as chr, pos, V1-Vn
-plainNames<-function(wiggleTable) {
-  
-  fixNames<-c('chr','pos',paste0(rep('V',nsamples),1:(nsamples*2)))
-  names(wiggleTable)<-fixNameszx
-  
-}
 
 
 # Accessory function for plotting large heatmaps

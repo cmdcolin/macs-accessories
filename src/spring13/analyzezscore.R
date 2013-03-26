@@ -1,11 +1,6 @@
 #File created 3/1
 
 
-
-# Get chromosomes list
-chrnames<-names(macswiggle[[1]]$treat)
-
-
 ## Get matching positions from genome alignments
 getmatch<-function(chr,t1,t2) {
     findInterval(t1[[chr]]$V1,t2[[chr]]$V1,all.inside=TRUE)
@@ -102,35 +97,8 @@ getscoresmodappend<-function(wigtab,chrlist,t1,c1,i) {
 
 
 
-slideMean<-function(x,windowsize=100,slide=1){
-  idx1<-seq(1,length(x),by=slide);
-  idx1+windowsize->idx2;
-  idx2[idx2>(length(x)+1)]<-length(x)+1;
-  c(0,cumsum(x))->cx;
-  return((cx[idx2]-cx[idx1])/windowsize);
-}
-
-
 ##############
 # Obsolete below
 
-
-getPeakScores<-function(bed,scores) {
-  chrsplit<-split(scores,factor(scores$chr))
-  ret<-apply(bed,1,function(row) {
-    s=as.numeric(row[2])
-    e=as.numeric(row[3])
-    
-    chrselect<-strsplit(row[1],'.fsa')[[1]]
-    if(debug) {
-      printf("Processing %s (%d,%d)\n",chrselect,s,e)
-    }
-    chrsub<-chrsplit[[chrselect]]
-    chrsub[chrsub$pos>s&chrsub$pos<e,]
-  })
-  
-  # from R inferno, Burns (2011)
-  do.call('rbind', ret) 
-}
 
 

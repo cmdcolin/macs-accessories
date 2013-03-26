@@ -13,17 +13,21 @@ loadBed<-function(path) {
 
 #advice taken from http://stackoverflow.com/questions/5357003/get-and-process-entire-row-in-ddply-in-a-function
 intersectBed<-function(nc1,nc2) {
-  nc1$row<-1:nrow(nc1)
-  nc2$row<-1:nrow(nc2)
-  chrsplit<-split(nc2,factor(nc2$chr))
-  sel<-daply(nc1, .(row), function (row1) {
-    chrselect=chrsplit[[row1$chr]]
-    ret<-daply(chrselect, .(row),function(row2){
-      #  overlap AR < BL || BR < AL
+  chrsplit<-split(nc2,factor(nc2[,'chr']))
+  sel<-apply(nc1, 1, function (row1) {
+    chrselect=chrsplit[[row1['chr']]]
+    ret<-apply(chrselect, 1,function(row2){
       #X2 >= Y1 and Y2 >= X1
-      intersect1D(row1$start,row1$end,row2$start,row2$end)
+      r1<-as.numeric(row1['start'])
+      r2<-as.numeric(row1['end'])
+      s1<-as.numeric(row2['start'])
+      s2<-as.numeric(row2['end'])
+      (r2>s1)&&(s2>r1)
     })
-    printf("%s %s %d %d --- %d,%d\n", row1$name, row1$chr, row1$start, row1$end, nrow(chrselect),sum(ret))
+    if(debug) {
+      printf("%s %s %s %s --- %d,%d\n", row1['name'], row1['chr'], row1['start'], 
+             row1['end'], nrow(chrselect),sum(ret))
+    }
 
     sum(ret)>0
   })
@@ -32,22 +36,26 @@ intersectBed<-function(nc1,nc2) {
 
 
 
-
+#use plyr functions because apply does not preserve type information of data.frames!
 uniqueBed<-function(nc1,nc2) {
-  
-  nc1$row<-1:nrow(nc1)
-  nc2$row<-1:nrow(nc2)
-  chrsplit<-split(nc2,factor(nc2$chr))
-  sel<-daply(nc1, .(row), function (row1) {
-    chrselect=chrsplit[[row1$chr]]
-    ret<-daply(chrselect, .(row),function(row2){
+  chrsplit<-split(nc2,factor(nc2[,'chr']))
+  sel<-apply(nc1, 1, function (row1) {
+    chrselect=chrsplit[[row1['chr']]]
+    ret<-apply(chrselect, 1,function(row2){
       #  overlap AR < BL || BR < AL
       # Linear overlap AR < BL || BR < AL
       #X2 >= Y1 and Y2 >= X1
       #(y['start']<=x['end'])&&(x['start']<=y['end'])
-      (row1$end<row2$start)||(row2$end<row1$start)
+      r1<-as.numeric(row1['start'])
+      r2<-as.numeric(row1['end'])
+      s1<-as.numeric(row2['start'])
+      s2<-as.numeric(row2['end'])
+      (r2<s1)||(s2<r1)
     })
-    printf("%s %s %d %d --- %d,%d\n", row1$name, row1$chr, row1$start, row1$end, nrow(chrselect),sum(ret))
+    if(debug) {
+      printf("%s %s %s %s --- %d,%d\n", row1['name'], row1['chr'], row1['start'], 
+             row1['end'], nrow(chrselect),sum(ret))
+    }
     
     sum(ret)==nrow(chrselect)
   })
@@ -72,7 +80,7 @@ uniqueBed<-function(nc1,nc2) {
 
 
 intersect1D<-function(a1,a2,b1,b2) {
-  (a2>b1)&&(b2>a1)
+  a2 >= b1 && b2 >= a1
 }
 
 ###########

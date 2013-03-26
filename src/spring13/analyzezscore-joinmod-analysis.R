@@ -116,12 +116,16 @@ points(jitter(wt2[,4]),jitter(wt2[,6]),pch=20,cex=0.7,col=paste0(x[3],"55"))
 
 
 
-makeComparisonPlot<-function(bedOverlap,bedUnique1,bedUnique2,table,c1,c2,titlex,xlab,ylab,legendx,fillx,log=FALSE){
+makeComparisonPlot<-function(bed1,bed2,table,c1,c2,titlex,xlab,ylab,legendx,fillx,log=FALSE){
   
-  p<-table[sample(1:nrow(table),nrow(table)/10),c(c1,c2)]
+
+  bedOverlap<-intersectBed(bed1,bed2)
+  bedUnique1<-uniqueBed(bed1,bed2)
+  bedUnique2<-uniqueBed(bed2,bed1)
   wtoverlap<-getPeakScores(bedOverlap,table)
   wtrep1<-getPeakScores(bedUnique1,table)
   wtrep2<-getPeakScores(bedUnique2,table)
+  p<-table[sample(1:nrow(table),nrow(table)/10),c(c1,c2)]
   p1<-wtoverlap[,c(c1,c2)]
   p2<-wtrep1[,c(c1,c2)]
   p3<-wtrep2[,c(c1,c2)]
@@ -131,7 +135,7 @@ makeComparisonPlot<-function(bedOverlap,bedUnique1,bedUnique2,table,c1,c2,titlex
     p2<-log2(p2)
     p3<-log2(p3)
   }
-  plot(p,pch=19,cex=0.9,col="#aaaaaa22",xlab=xlab,ylab=ylab)
+  plot(p1,pch=19,cex=0.9,col="#aaaaaa22",xlab=xlab,ylab=ylab)
   #,log=if(log)"xy"else""
   points(p1,pch=19,cex=0.9,col=paste0(fillx[1],"77"))
   points(p3,pch=19,cex=0.9,col=paste0(fillx[3],"77"))
@@ -168,6 +172,11 @@ lines(-1:7,(1:9),lwd=3,col=mypal[3])
 #lm1<-lm(log2(wiggleTable[,8])~log2(wiggleTable[,4]))
 #lines(log2(wiggleTable[,4]),lm1$fitted)
 #plot(wiggleTable[sample(1:nrow(wiggleTable),nrow(wiggleTable)/10),c(4,6)])
+
+
+makeComparisonPlot(loadBed('s96rep1-high_peaks.bed'),loadBed('s96rep2-high_peaks.bed'),wiggleTable,4,6,'Comparison of raw read scores for S96 replicates','S96rep1','S96rep2',c("Overlap","Rep1 unique","Rep2 unique"),brewer.pal(3,"Set1"))
+
+
 
 
 ex1<-loadBed('s96rep1-new_peaks.bed')

@@ -21,16 +21,19 @@ setwd(f)
 
 cache('macswiggle')
 
-# Join wiggle files with matching positions into a table
-wiggleTable<-joinWiggleFiles(chrnames, macswiggle)
-cache('wiggleTable')
-
-
-
 
 # Get chromosomes list
 chrnames<-names(macswiggle[[1]]$treat)
+
+#Global
 nsamples<-length(macswiggle)
+
+# Join wiggle files with matching positions into a table
+wiggleTable<-joinWiggleFiles(chrnames, macswiggle)
+wiggleTable<-plainNames(wiggleTable)
+cache('wiggleTable')
+
+
 
 
 

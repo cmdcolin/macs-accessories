@@ -90,6 +90,21 @@ function(this, bigwig=TRUE)
 
 
 
+# Set wiggle table names as abbreviated sample names
+prettyNames<-function(wiggleTable) {
+  
+  fixNames<-sapply(names(macswiggle),function(x) strsplit(x,'-new')[[1]])
+  prettyNames<-paste0(sort(rep(fixNames,2)),'-',rep(c('c','t'),nsamples))
+  names(wiggleTable)<-c('chr','pos',prettyNames)
+}
+
+## Set wiggle table names as chr, pos, V1-Vn
+plainNames<-function(wiggleTable) {
+  
+  fixNames<-c('chr','pos',paste0(rep('V',nsamples),1:(nsamples*2)))
+  names(wiggleTable)<-fixNames
+  wiggleTable
+}
 #setGeneric("loadWiggles", function(this, bigwig=TRUE){
 #  standardGeneric("loadWiggles")})
 #setMethod("loadWiggles", "WiggleClass", 
