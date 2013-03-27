@@ -6,8 +6,9 @@ source('src/lsos.R')
 source('src/spring13/analyzezscore-joinmod.R')
 
 
+
 f<-getwd()
-setwd('data-bigwigs/')
+setwd('data/')
 
 dirs<-list.files(pattern="*_MACS_wiggle")
 dirnames<-str_replace_all(dirs,"_MACS_wiggle","")
@@ -34,6 +35,26 @@ wiggleTable<-plainNames(wiggleTable)
 cache('wiggleTable')
 
 
+
+normDiffList<-lapply(1:nsamples,function(i) { 
+  pos=i*2
+  str1<-paste0('V',pos-1)
+  str2<-paste0('V',pos)
+  control<-wiggleTable[[str1]]
+  treat<-wiggleTable[[str2]]
+  getNormDiff(treat,control)
+})
+
+
+
+# combine rows into table
+normDiffTable<-as.data.frame(do.call(cbind,normDiffList))
+
+#get pos and chr columns
+normDiffTable<-with(wiggleTable, cbind(pos,chr,normDiffTable))
+
+
+cache('normDiffTable')
 
 
 

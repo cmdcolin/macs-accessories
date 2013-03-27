@@ -54,11 +54,11 @@ doheatmap(tablescale[,3:ncol(ret4)],10000)
 
 
 
-table<-ret4
-retlist<-lapply(1:nsamples,function(i) {
+table<-wiggleTable
+backSubList<-lapply(1:nsamples,function(i) {
   pos=i*2
-  str1<-paste0('V',pos)
-  str2<-paste0('V',pos+1)
+  str1<-paste0('V',pos-1)
+  str2<-paste0('V',pos)
   control<-table[[str1]]
   treat<-table[[str2]]
   
@@ -66,62 +66,28 @@ retlist<-lapply(1:nsamples,function(i) {
   treat-control/m1
 })
 
-
-normdifflist<-lapply(1:nsamples,function(i) { 
-  pos=i*2
-  str1<-paste0('V',pos)
-  str2<-paste0('V',pos+1)
-  control<-wiggleTable[[str1]]
-  treat<-wiggleTable[[str2]]
-  getnormdiff(treat,control)
-})
-
-
-
 # combine rows into table
-normdifftable<-as.data.frame(do.call(cbind,normdifflist))
+backSubTable<-as.data.frame(do.call(cbind,backSubList))
+
 #get pos and chr columns
-normdifftable<-with(wiggleTable, cbind(pos,normdifftable))
-normdifftable<-with(wiggleTable, cbind(chr,normdifftable))
+backSubTable<-with(wiggleTable, cbind(pos,chr,backSubTable))
+
 
 
 doheatmap(normdifftable,1000)
 
 
-
-
-
-bed1<-loadBed('s96rep1-high_peaks.bed')
-bed2<-loadBed('s96rep2-high_peaks.bed')
-
-nd1<-getPeakScores(bed1,normdifftable)
-nd2<-getPeakScores(bed2,normdifftable)
-wt1<-getPeakScores(bed1,wiggleTable)
-wt2<-getPeakScores(bed2,wiggleTable)
-
-
-
-require(RColorBrewer)
-plot(wiggleTable[,c(4,6)],pch=20,cex=0.7)
-points(wt1[,c(4,6)],pch=20,cex=0.7,col=paste0(x[2],"55"))
-points(wt2[,c(4,6)],pch=20,cex=0.7,col=paste0(x[3],"55"))
-
-plot(log(wiggleTable[,c(4,6)]),pch=20,cex=0.7)
-points(log(wt1[,c(4,6)]),pch=20,cex=0.7,col=paste0(x[2],"55"))
-points(log(wt2[,c(4,6)]),pch=20,cex=0.7,col=paste0(x[3],"55"))
-
-plot(jitter(wiggleTable[,4]),jitter(wiggleTable[,6]),pch=20,cex=0.7)
-points(jitter(wt1[,4]),jitter(wt1[,6]),pch=20,cex=0.7,col=paste0(x[2],"55"))
-points(jitter(wt2[,4]),jitter(wt2[,6]),pch=20,cex=0.7,col=paste0(x[3],"55"))
-
-
-
-makeComparisonPlot<-function(bed1,bed2,table,c1,c2,titlex,xlab,ylab,legendx,fillx,log=FALSE){
+makeComparisonPlot<-function(bed1,bed2,table,c1,c2,titlex,xlab,ylab,legendx,fillx,logscale=FALSE) {
   
-
   bedOverlap<-intersectBed(bed1,bed2)
   bedUnique1<-uniqueBed(bed1,bed2)
   bedUnique2<-uniqueBed(bed2,bed1)
+  makeComparisonPlotHelp(bedOverlap,bedUnique1,bedUnique2,c1,c2,titlex,xlab,ylab,legendx,fillx,logscale)
+}
+
+makeComparisonPlotHelp<-function(bedOverlap,bedUnique1,bedUnique2,table,c1,c2,titlex,xlab,ylab,legendx,fillx,logscale=FALSE){
+  
+
   wtoverlap<-getPeakScores(bedOverlap,table)
   wtrep1<-getPeakScores(bedUnique1,table)
   wtrep2<-getPeakScores(bedUnique2,table)
@@ -129,7 +95,7 @@ makeComparisonPlot<-function(bed1,bed2,table,c1,c2,titlex,xlab,ylab,legendx,fill
   p1<-wtoverlap[,c(c1,c2)]
   p2<-wtrep1[,c(c1,c2)]
   p3<-wtrep2[,c(c1,c2)]
-  if(log==TRUE) {
+  if(logscale==TRUE) {
     p<-log2(p)
     p1<-log2(p1)
     p2<-log2(p2)
@@ -142,51 +108,58 @@ makeComparisonPlot<-function(bed1,bed2,table,c1,c2,titlex,xlab,ylab,legendx,fill
   points(p2,pch=19,cex=0.9,col=paste0(fillx[2],"77"))
   legend("bottomright",fill=fillx,legend=legendx)
   title(titlex)
-  
+  if(logscale==TRUE){
+    
+    lines(1:9,(-1:7),lwd=3,col=fillx[3])
+    lines(-1:7,(1:9),lwd=3,col=fillx[3])
+  }
 }
 
 
 
-makeComparisonPlot(loadBed('s96overlap-unique-high-peaks.bed'),loadBed('s96rep1-unique-high-peaks.bed'),loadBed('s96rep2-unique-high-peaks.bed'),wiggleTable,4,6,'Comparison of raw read scores for S96 replicates','S96rep1','S96rep2',c("Overlap","Rep1 unique","Rep2 unique"),brewer.pal(3,"Set1"))
+
+makeComparisonPlot(loadBed('s96rep1-high_peaks.bed'),loadBed('s96rep2-high_peaks.bed'),wiggleTable,4,6,'Comparison of raw read scores for S96 replicates','S96rep1','S96rep2',c("Overlap","Rep1 unique","Rep2 unique"),brewer.pal(3,"Set1"))
 mycor=cor(wiggleTable[,4],wiggleTable[,6])
 text(50,220,substitute(paste(rho,"=",mycor),list(mycor=mycor)))
 
 
-makeComparisonPlot(loadBed('s96overlap-unique-high-peaks.bed'),loadBed('s96rep1-unique-high-peaks.bed'),loadBed('s96rep2-unique-high-peaks.bed'),wiggleTable,4,6,'Comparison of raw read scores for S96 replicates (log2)','S96rep1','S96rep2',c("Overlap","Rep1 unique","Rep2 unique"),brewer.pal(3,"Set1"),log=TRUE)
-mycor=cor(log2(wiggleTable[,4]),log2(wiggleTable[,6]))
-text(1,7,substitute(paste(rho,"=",mycor),list(mycor=mycor)))
-
-makeComparisonPlot(loadBed('s96vshs959overlap.bed'),loadBed('s96vshs959unique.bed'),loadBed('s96vshs959unique2.bed'),wiggleTable,4,8,'Comparison of raw read scores for S96 vs HS959','S96', 'HS959', c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Dark2"))
+makeComparisonPlot(loadBed('s96rep1-high_peaks.bed'),loadBed('hs959rep1-new_peaks.bed'),wiggleTable,4,8,'Comparison of raw read scores for S96 vs HS959','S96', 'HS959', c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Dark2"))
 mycor=cor(wiggleTable[,4],wiggleTable[,8])
 text(40,250,substitute(paste(rho,"=",mycor),list(mycor=mycor)))
-
-#try log scale
-makeComparisonPlot(loadBed('s96vshs959overlap.bed'),loadBed('s96vshs959unique.bed'),loadBed('s96vshs959unique2.bed'),wiggleTable,4,8,'Comparison of raw read scores for S96 vs HS959 (log2)','S96', 'HS959',c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Dark2"),log=TRUE)
-mycor=cor(log2(wiggleTable[,4]),log2(wiggleTable[,8]))
-text(1,8,substitute(paste(rho,"=",mycor),list(mycor=mycor)))
 mypal<-brewer.pal(3,"Accent")
-#lines(0:8,(0:8)-0,lwd=3,col=)
-lines(1:9,(-1:7),lwd=3,col=mypal[3])
-lines(-1:7,(1:9),lwd=3,col=mypal[3])
-
-#lm1<-lm(log2(wiggleTable[,8])~log2(wiggleTable[,4]))
-#lines(log2(wiggleTable[,4]),lm1$fitted)
-#plot(wiggleTable[sample(1:nrow(wiggleTable),nrow(wiggleTable)/10),c(4,6)])
-
-
-makeComparisonPlot(loadBed('s96rep1-high_peaks.bed'),loadBed('s96rep2-high_peaks.bed'),wiggleTable,4,6,'Comparison of raw read scores for S96 replicates','S96rep1','S96rep2',c("Overlap","Rep1 unique","Rep2 unique"),brewer.pal(3,"Set1"))
 
 
 
 
-ex1<-loadBed('s96rep1-new_peaks.bed')
-ex2<-loadBed('hs959rep1-new_peaks.bed')
 
-nd1<-getPeakScores(bed1,normdifftable)
-nd2<-getPeakScores(bed2,normdifftable)
-nd3<-getPeakScores(bed3,normdifftable)
 
-#retbin<-hexbin(wiggleTable[,c(4,6)])
+
+makeComparisonPlot(loadBed('s96rep1-high_peaks.bed'),loadBed('s96rep2-high_peaks.bed'),normDiffTable,3,4,'Comparison of NormDiff scores for S96 replicates','S96rep1','S96rep2',c("Overlap","Rep1 unique","Rep2 unique"),brewer.pal(3,"Set2"))
+mycor=cor(normDiffTable[,3],normDiffTable[,4])
+text(2,30,substitute(paste(rho,"=",mycor),list(mycor=mycor)))
+
+
+makeComparisonPlot(loadBed('s96rep1-high_peaks.bed'),loadBed('hs959rep1-new_peaks.bed'),normDiffTable,3,5,'Comparison of NormDiff scores for S96 vs HS959','S96','HS959',c("Overlap","S96","HS959"),brewer.pal(3,"BrBG"))
+mycor=cor(normDiffTable[,4],normDiffTable[,8])
+text(2,30,substitute(paste(rho,"=",mycor),list(mycor=mycor)))
+
+
+
+
+makeComparisonPlot(loadBed('s96rep1-high_peaks.bed'),loadBed('s96rep2-high_peaks.bed'),backSubTable,3,4,'Comparison of BackSub scores for S96 replicates','S96rep1','S96rep2',c("Overlap","Rep1 unique","Rep2 unique"),brewer.pal(3,"Set2"))
+
+
+makeComparisonPlotHelp(loadBed('s96overlap-high-peaks.bed'),loadBed('hs959rep1-new_peaks.bed'),backSubTable,3,5,'Comparison of BackSub scores for S96 vs HS959','S96','HS959',c("Overlap","S96","HS959"),brewer.pal(3,"Spectral"))
+
+
+
+######################3
+# MACS DIFF
+######################3
+makeComparisonPlotHelp(loadBed('s96overlap-high-peaks.bed'),loadBed('S96rep1-Diff_peaks.bed'),loadBed('S96rep2-Diff_peaks.bed'),wiggleTable,4,6,'Comparison of S96 replicates','S96rep1','S96rep2',c("Overlap","S96rep1","S96rep2"),brewer.pal(3,"Spectral"))
+
+
+makeComparisonPlotHelp(loadBed('s96vshs959overlap.bed'),loadBed('S96vsHS959-Diff_peaks.bed'),loadBed('HS959vsS96-Diff_peaks.bed'),wiggleTable,4,8,'Comparison of S96 vs HS959','S96rep1','HS959rep1',c("Overlap","S96rep1","HS959rep1"),brewer.pal(3,"Spectral"))
 #plot(retbin,main="Hexagonal binning")
 
 ## QQPlot example for log data

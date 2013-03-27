@@ -82,7 +82,7 @@ doTreeView<-function(table,file=tempfile(),granularity=1) {
 }
 
 
-getnormdiff<-function(treat,control) {
+getNormDiff<-function(treat,control) {
   
   treatSmooth<-slideMean(treat) #default params
   controlSmooth<-slideMean(control)
