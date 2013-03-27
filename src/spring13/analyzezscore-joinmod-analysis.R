@@ -201,3 +201,32 @@ ddply(wiggleTable,.(chr),head)
 # qqplot(log(ret2$V3),rnorm(100000))
 # qqline(rnorm(100000))
 # qqline(log(rnorm(100000)))
+
+getVennDiagram<-function(bed1,bed2) {
+  r1<-intersectBed(bed2,bed1)
+  r2<-uniqueBed(bed2,bed1)
+  r3<-uniqueBed(bed1,bed2)
+  s1<-c(r1$name, paste(r2$name,"unique"))
+  s2<-c(r1$name,paste(r3$name,"unique2"))
+  
+  #r3<-unlist(apply(cbind(r1,r2),1,function(x) !(r1||r2)))
+  #print(head(r3))
+  #r3<-uniqueBedLimma(bed1,bed2)
+  ret<-list(s1,s2)
+  venn(ret)
+  
+}
+bed1<-loadBed('s96rep1-high_peaks.bed')
+bed2<-loadBed('hs959rep1-new_peaks.bed')
+ret<-getVennDiagram(bed1,bed2)
+
+rr<-read.table('GSE19635_HS_peaks.txt',header=TRUE)
+rr2<-read.table('GSE19635_s96a_peaks.txt',header=TRUE)
+rr$name<-paste0('MACS_PEAK_',1:nrow(rr))
+rr2$name<-paste0('MACS_PEAK_',1:nrow(rr2))
+ret<-getVennDiagram(rr,rr2)
+
+
+
+
+getVennDiagram(rr,bed2)

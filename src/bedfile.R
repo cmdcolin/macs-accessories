@@ -1,4 +1,4 @@
-#Bed
+#Bedfile operations
 
 
 
@@ -11,11 +11,16 @@ loadBed<-function(path) {
 }
 
 
-#advice taken from http://stackoverflow.com/questions/5357003/get-and-process-entire-row-in-ddply-in-a-function
-intersectBed<-function(nc1,nc2) {
+# revert back to old apply method of intersect rows
+intersectBedLimma<-function(nc1,nc2) {
   chrsplit<-split(nc2,factor(nc2[,'chr']))
+  x<-names(chrsplit)
+  rteno<-sapply(strsplit(x,'\\.'),function(x)x[1])
+  names(chrsplit)<-rteno
+  print(names(chrsplit))
   sel<-apply(nc1, 1, function (row1) {
-    chrselect=chrsplit[[row1['chr']]]
+    rteno2<-strsplit(row1[['chr']],"\\.")[[1]][1]
+    chrselect=chrsplit[[rteno2]]
     ret<-apply(chrselect, 1,function(row2){
       #X2 >= Y1 and Y2 >= X1
       r1<-as.numeric(row1['start'])
@@ -31,16 +36,18 @@ intersectBed<-function(nc1,nc2) {
 
     sum(ret)>0
   })
-  nc1[sel,]
+  sel
 }
 
-
-
-#use plyr functions because apply does not preserve type information of data.frames!
-uniqueBed<-function(nc1,nc2) {
+uniqueBedLimma<-function(nc1,nc2) {
   chrsplit<-split(nc2,factor(nc2[,'chr']))
+  x<-names(chrsplit)
+  rteno<-sapply(strsplit(x,'\\.'),function(x)x[1])
+  print(rteno)
+  names(chrsplit)<-rteno
   sel<-apply(nc1, 1, function (row1) {
-    chrselect=chrsplit[[row1['chr']]]
+    rteno2<-strsplit(row1[['chr']],"\\.")[[1]][1]
+    chrselect=chrsplit[[rteno2]]
     ret<-apply(chrselect, 1,function(row2){
       #  overlap AR < BL || BR < AL
       # Linear overlap AR < BL || BR < AL
@@ -59,29 +66,23 @@ uniqueBed<-function(nc1,nc2) {
     
     sum(ret)==nrow(chrselect)
   })
-  nc1[sel,]
-  
-  
-  
-  
-#   selectrows=apply(nc1,1,function(x){
-#     
-#     sublist=nc2[nc2$chr==x['chr'],]
-#     ret=apply(sublist,1,function(y){
-#       (y['start']<=x['end'])&&(x['start']<=y['end'])
-#     })
-#     
-#     ##! Get unique peaks with no overlap
-#     sum(ret)==0
-#   })
-#   nc1[selectrows,]
+  sel
 }
 
 
 
-intersect1D<-function(a1,a2,b1,b2) {
-  a2 >= b1 && b2 >= a1
+
+# wrapper to return only interesting rows
+intersectBed<-function(bed1,bed2) {
+  bed1[intersectBedLimma(bed1,bed2),]
 }
+
+
+# wrapper to return only interesting rows
+uniqueBed<-function(bed1,bed2) {
+  bed1[uniqueBedLimma(bed1,bed2),]
+}
+
 
 ###########
 
