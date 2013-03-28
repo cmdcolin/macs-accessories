@@ -2,8 +2,8 @@
 
 
 
-loadBed<-function(path) {
-  bedfile<-read.table(path,sep='\t',colClasses=c("character","numeric","numeric","character","numeric"))
+loadBed<-function(path,header=FALSE) {
+  bedfile<-read.table(path,sep='\t',header=header)
   
   names(bedfile)=c('chr','start','end','name','score')
   #bedfile<-transform(bedfile, start=as.numeric(start), end=as.numeric(end))
@@ -17,7 +17,6 @@ intersectBedLimma<-function(nc1,nc2) {
   x<-names(chrsplit)
   rteno<-sapply(strsplit(x,'\\.'),function(x)x[1])
   names(chrsplit)<-rteno
-  print(names(chrsplit))
   sel<-apply(nc1, 1, function (row1) {
     rteno2<-strsplit(row1[['chr']],"\\.")[[1]][1]
     chrselect=chrsplit[[rteno2]]
@@ -43,7 +42,6 @@ uniqueBedLimma<-function(nc1,nc2) {
   chrsplit<-split(nc2,factor(nc2[,'chr']))
   x<-names(chrsplit)
   rteno<-sapply(strsplit(x,'\\.'),function(x)x[1])
-  print(rteno)
   names(chrsplit)<-rteno
   sel<-apply(nc1, 1, function (row1) {
     rteno2<-strsplit(row1[['chr']],"\\.")[[1]][1]

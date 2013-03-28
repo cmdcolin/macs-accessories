@@ -104,13 +104,14 @@ getNormDiff<-function(treat,control) {
 
 
 
-getPeakScores<-function(bed,scores) {
+getPeakScores<-function(bed,scores,do.rbind=TRUE) {
   chrsplit<-split(scores,factor(scores$chr))
   chrselect<-""
   ret<-apply(bed,1,function(row) {
     start=as.numeric(row['start'])
     end=as.numeric(row['end'])
-    chrselect<-strsplit(row['chr'],'.fsa')[[1]]
+    
+    chrselect<-strsplit(row[['chr']],"\\.")[[1]][1]
     if(debug) {
       printf("Processing %s (%d,%d)\n",chrselect,start,end)
     }
@@ -119,7 +120,10 @@ getPeakScores<-function(bed,scores) {
   })
   
   # from R inferno, Burns (2011)
-  do.call('rbind', ret) 
+  if(do.rbind)
+    do.call('rbind', ret) 
+  else
+    ret
 }
 
 slideMean<-function(x,windowsize=100,slide=1){
