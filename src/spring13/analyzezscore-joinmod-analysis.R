@@ -166,10 +166,10 @@ makeComparisonPlotHelp2<-function(uniqueTab,overlapTab,table,c1,c2,titlex,xlab,y
   }
   
   
-  plot(p,pch=19,cex=0.9,col="#77777777",xlab=xlab,ylab=ylab)
+  plot(p,pch=19,cex=0.9,col=fillx[3],xlab=xlab,ylab=ylab)
   #,log=if(log)"xy"else""
-  points(p1,pch=19,cex=0.9,col=paste0(fillx[2],"77"))
   points(p2,pch=19,cex=0.9,col=paste0(fillx[1],"77"))
+  points(p1,pch=19,cex=0.9,col=paste0(fillx[2],"77"))
   legend("bottomright",fill=fillx,legend=legendx)
   title(titlex)
 }
@@ -318,11 +318,15 @@ M=log2(wiggleTable[,c(4,6)]/wiggleTable[,c(8,10)])
 fit<-lmFit(M)
 fit<-eBayes(fit)
 
-volcanoplot(fit,coef=1,highlight=5000)
+x<-topTable(fit,number=50000)
+volcanoplot(fit,coef=1)
+points(x$logFC,x$B,col="#FF000077",pch=16,cex=0.35)
+title('Log difference vs Log odds S96vsHS959')
 
-<-topTable(fit,number=50000)
+
+
 x2<-wiggleTable[x$ID,]
-
+write.table(cbind(wiggleTable[x$ID,1],wiggleTable[x$ID,2],wiggleTable[x$ID,2]+1),col.names=FALSE,row.names=FALSE,sep='\t')
 plot(wiggleTable[,c(4,8)],pch=16,cex=.25,col=rgb(1,0,0,0.5),xlab)
 points(x2[,c(4,8)],pch=16,cex=.25,col=rgb(0,0,0,0.5))
 
@@ -331,3 +335,13 @@ makeComparisonPlotHelp2(wiggleTable[x$ID,],loadBed("s96vshs959overlap.bed")wiggl
 
 
 makeComparisonPlotHelp2(wiggleTable[x$ID,],loadBed("s96vshs959overlap.bed"),wiggleTable,4,8,'Differential positions highlighted with t-test','S96', 'HS959', c("Overlap","Differential"),brewer.pal(3,"Dark2"),FALSE,FALSE)
+
+
+x<-wiggleTable[ret$best$class==1,]
+
+makeComparisonPlotHelp2(x,loadBed("s96vshs959overlap.bed"),wiggleTable,4,8,'Differential positions highlighted with DIME classifier','S96', 'HS959', c("Overlap","Differential","Background"),c(brewer.pal(7,"Spectral")[1:2],"#77777777"),FALSE,FALSE)
+
+
+
+#write out positions?!
+write.table(cbind(wiggleTable[x$ID,1],wiggleTable[x$ID,2],wiggleTable[x$ID,2]+1),col.names=FALSE,row.names=FALSE,sep='\t')
