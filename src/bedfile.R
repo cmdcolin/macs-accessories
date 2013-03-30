@@ -46,6 +46,7 @@ uniqueBedLimma<-function(nc1,nc2) {
   sel<-apply(nc1, 1, function (row1) {
     rteno2<-strsplit(row1[['chr']],"\\.")[[1]][1]
     chrselect=chrsplit[[rteno2]]
+    
     ret<-apply(chrselect, 1,function(row2){
       #  overlap AR < BL || BR < AL
       # Linear overlap AR < BL || BR < AL

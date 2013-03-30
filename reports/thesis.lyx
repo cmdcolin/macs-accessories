@@ -4,6 +4,9 @@
 \begin_header
 \textclass article
 \use_default_options true
+\begin_modules
+knitr
+\end_modules
 \maintain_unincluded_children false
 \language english
 \language_package default
@@ -73,15 +76,50 @@ Comparison of transcription factor finding sites from related genomes using
 Colin Diesh
 \end_layout
 
-\begin_layout Date
-March 29th 2013
+\begin_layout Abstract
+The use of high throughput sequencing methods with chromatin immunoprecipitation
+ (ChIP-seq) provides a whole genome analyses of transcription factor binding
+ sites for understanding gene regulation.
+ 
 \end_layout
 
-\begin_layout Abstract
-The use of high throughput sequencing methods using ChIP-seq gives a whole
- genome analyses of transcription factor binding sites for understanding
- gene regulation.
- High throughput 
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<show-off>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+rnorm(5)
+\end_layout
+
+\begin_layout Plain Layout
+
+df=data.frame(y=rnorm(100), x=1:100)
+\end_layout
+
+\begin_layout Plain Layout
+
+summary(lm(y~x, data=df))
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(df)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_body
