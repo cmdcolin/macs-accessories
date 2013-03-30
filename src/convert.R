@@ -78,7 +78,7 @@ convertFileS288C<-function(filename) {
 }
 
 
-convert<-function() {
+convert<-function(s288c=TRUE,saccer=FALSE) {
   for(file in c(list.files(recursive=TRUE,pattern="*.wig$"),
                 list.files(recursive=TRUE,pattern="*.bed$"))) 
   {

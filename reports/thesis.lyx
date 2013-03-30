@@ -85,13 +85,13 @@ on factor binding sites.
  Recent literature has proposed that transcription factor binding sites
  have a high turnover rate between closely related organisms.
  However, the methods for identifying transcription factor binding sites
- across different experiments are not directly comparable across experiments,
- which leads to difficulties in comparing these experiments.
+ are not directly comparable across different experiments, which leads to
+ difficulties.
  We looked at yeast ChIP-seq experiments for a single transcription factor
  and found evidence for significant differential peaks using statistical
- tests.
+ testing.
  We used our algorithm to adjust for the differences that were identified
- on the basis of peak callers by for similar binding sites.
+ on the basis of peak callers.
 \end_layout
 
 \begin_layout Section
@@ -101,48 +101,85 @@ Introduction
 \begin_layout Standard
 The study of our genes, and the molecular biology therein, has uncovered
  a complex world of DNA and proteins that interact to control gene expression.
- The transcription of genes involves a variety of proteins that work together
- to initiate transcription.
- Transcription factors are proteins that bind to short sequences of the
- DNA and thereby regulate the nearby genes.
+ Gene expression involves a variety of proteins to work together to initiate
+ transcription.
+ An important type of protein are transcription factorswhich bind to short
+ sequences of the DNA and thereby regulate the nearby genes.
  Identifying the transcription factor binding sites has become an important
  problem for understanding gene regulation.
- These short s
+ New technology for high throughput technology has given us a huge amount
+ of data that provides a whole-genome perspective of this process.
+ 
 \end_layout
 
 \begin_layout Standard
-\begin_inset ERT
-status open
+Recent literature has proposed that transcription factor binding sites vary
+ significantly across different genomes.
+ These studies have comparied the transcription factor binding sites from
+ mouse to human 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "odom_tissue-specific_2007"
 
-\begin_layout Plain Layout
+\end_inset
 
-<<show-off>>=
+, from different fly species, and different strains of yeast 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "zheng_genetic_2010"
+
+\end_inset
+
+.
+ However, the methods for identifying transcription factor binding sites
+ across different experiments are not directly comparable, which leads to
+ difficulties in comparing these experiments.
+ We looked at yeast ChIP-seq experiments for a single transcription factor
+ and found evidence for significant differential peaks using statistical
+ tests.
+ We used our algorithm to adjust for the differences that were identified
+ on the basis of peak callers by for similar binding sites.
 \end_layout
 
-\begin_layout Plain Layout
-
-rnorm(5)
+\begin_layout Standard
+One primary method of studying DNA-protein interactions is chromatin immunopreci
+pitation.
+ Chromatin immunoprecipitation produces a library of DNA fragments are enriched
+ for the proteins of interest that binds with the DNA.
+ Chromatin immunoprecipitation combined with high throughput sequencing
+ is called ChIP-seq and allows us to analyze the patterns of transcription
+ factor binding sites across the whole genome.
+ The new high throughput technologies such as microarray and next generation
+ sequencing have revolutionized these techniques, allowing for whole-genome
+ sequencing and analysis.
+ Chromatin immunoprecipitation combined with high-throughput sequencing
+ (ChIP-seq) is a newest method for analyzing this data.
+ We looked at the DNA barcoding allows for multiple different experiments
+ to be sequenced at the same time.
+ Using this approach, transcriptin
 \end_layout
 
-\begin_layout Plain Layout
-
-df=data.frame(y=rnorm(100), x=1:100)
+\begin_layout Standard
+Chromatin immunoprecipitation works by fixing the DNA-protein complex and
+ then extracting it from the cell lysate by using antibodies that target
+ the protein of interest.
+ The DNA-protein complex is unlinked and then the result is a sequencing
+ library for DNA that are highly enriched for DNA binding sites.
 \end_layout
 
-\begin_layout Plain Layout
-
-summary(lm(y~x, data=df))
+\begin_layout Section
+Conclusion
 \end_layout
 
-\begin_layout Plain Layout
-
-plot(df)
+\begin_layout Standard
+We had a lot of fun
 \end_layout
 
-\begin_layout Plain Layout
-
-@
-\end_layout
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "References"
+options "bibtotoc,plain"
 
 \end_inset
 
