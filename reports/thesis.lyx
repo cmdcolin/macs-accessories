@@ -77,10 +77,37 @@ Colin Diesh
 \end_layout
 
 \begin_layout Abstract
-The use of high throughput sequencing methods with chromatin immunoprecipitation
- (ChIP-seq) provides a whole genome analyses of transcription factor binding
- sites for understanding gene regulation.
- 
+Transcription factors play an important role in gene regulation by binding
+ and interacting with DNA.
+ Chromatin immunoprecipitation (ChIP-seq) combined with high-throughput
+ sequencing can be used to analyze DNA protein interactions and find transcripti
+on factor binding sites.
+ Recent literature has proposed that transcription factor binding sites
+ have a high turnover rate between closely related organisms.
+ However, the methods for identifying transcription factor binding sites
+ across different experiments are not directly comparable across experiments,
+ which leads to difficulties in comparing these experiments.
+ We looked at yeast ChIP-seq experiments for a single transcription factor
+ and found evidence for significant differential peaks using statistical
+ tests.
+ We used our algorithm to adjust for the differences that were identified
+ on the basis of peak callers by for similar binding sites.
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+The study of our genes, and the molecular biology therein, has uncovered
+ a complex world of DNA and proteins that interact to control gene expression.
+ The transcription of genes involves a variety of proteins that work together
+ to initiate transcription.
+ Transcription factors are proteins that bind to short sequences of the
+ DNA and thereby regulate the nearby genes.
+ Identifying the transcription factor binding sites has become an important
+ problem for understanding gene regulation.
+ These short s
 \end_layout
 
 \begin_layout Standard

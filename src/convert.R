@@ -1,7 +1,3 @@
-#Convert files
-
-require(stringr)
-require(R.utils)
 
 # Convert two digit numbers to roman numerals
 convertFileSacCer3<-function(filename) {
@@ -62,7 +58,6 @@ convertFileSacCer3_mod2<-function(filename) {
 
 
 convertFileS288C<-function(filename) {
-  
   filetext<-readLines(filename)
   writeLines(filetext,sprintf("%s.bak",filename))
   filetext <- paste(filetext,collapse="\n")

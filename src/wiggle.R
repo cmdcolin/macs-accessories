@@ -1,7 +1,4 @@
-# Use regex library
-library(stringr)
-library(R.utils)
-
+# WiggleClass is a S4 object that loads Wiggle tracks
 
 setClass("WiggleClass",
          representation(
