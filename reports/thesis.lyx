@@ -27,6 +27,7 @@ knitr
 \output_sync 0
 \bibtex_command default
 \index_command default
+\float_placement h
 \paperfontsize default
 \spacing other 1.5
 \use_hyperref false
@@ -102,23 +103,17 @@ Introduction
 The study of our genes, and the molecular biology therein, has uncovered
  a complex world of DNA and proteins that interact to control gene expression.
  Gene expression involves a variety of proteins to work together to initiate
- transcription.
- An important type of protein are transcription factorswhich bind to short
- sequences of the DNA and thereby regulate the nearby genes.
- Identifying the transcription factor binding sites has become an important
- problem for understanding gene regulation.
- Gene regulation studies have benefitted massively from new high throughput
- technology, including microarray and next-generation sequencing.
- These technologies are able to provide a whole- genome persepctive on gene
- regulation.
- These new platforms have given us a huge amount of data that provides a
- whole-genome perspective of this process.
- 
+ transcription and regulate the underlying patterns of gene expression.
+ Identifying the DNA-binding activity for transcription factors and other
+ proteins has become an important problem for understanding gene regulation.
+ New high throughput sequencing technology, or next-generation sequencing,
+ has been applied to for these expanded the scope of gene regulatory study
+ by providing a whole-genome view of gene regulation.
 \end_layout
 
 \begin_layout Standard
-Recent literature has proposed that transcription factor binding sites vary
- significantly across closely related organisms.
+Recent studies have tried understand gene regulation by comparing different
+ conditions, treatments, individuals and genomes.
  These studies have compared the transcription factor binding sites from
  mouse to human 
 \begin_inset CommandInset citation
@@ -135,8 +130,9 @@ key "zheng_genetic_2010"
 \end_inset
 
 .
- These have concluded strikingly that the transcription factor binding sites
- change significantly between species.
+ The results show that transcription factor binding sites change significantly
+ between species, and even between related individuals, and even on the
+ level of developmen.
  Between human and mouse, anywhere between 41-80% of binding sites for a
  particular transcritpion factor are not conserved
 \begin_inset CommandInset citation
@@ -165,39 +161,12 @@ Chromatin immunoprecipitation combined with high throughput sequencing (ChIP-seq
  For transcription factors, the binding sites are identified as peaks in
  the number of reads covering a DNA sequence and so these peak-finding algorithm
 s have become important for analyzing this data.
- Many of the algorithms that are developed for peak finding looks only at
- one experiment and few algorithms are developed for comparing across experiment
-s.
+ Many algorithms that are developed analyze the ChIP-seq experiments individuall
+y, and few algorithms are developed for comparing across experiments.
  It is is especiallay problematic because the methods for identifying transcript
 ion factor binding sites across different experiments are not directly comparabl
 e, which leads to difficulties in comparing these experiments.
- 
-\end_layout
-
-\begin_layout Standard
-Many of the results that show an overlap in the peaks is therefore possibly
- misguided.
-\end_layout
-
-\begin_layout Standard
-We looked at yeast ChIP-seq experiments and found significant differential
- peaks using statistical tests.
- We used our algorithm to adjust for the differences that were identified
- on the basis of peak callers by for similar binding sites.
-\end_layout
-
-\begin_layout Standard
-The peak finders must be sensitive enough to find real binding sites amoungst
- a level of background 
-\begin_inset Quotes eld
-\end_inset
-
-noise
-\begin_inset Quotes erd
-\end_inset
-
- and they must also be discrimitive enough to reduce false positives.
- This is a classical statistical problem.
+ The threshold for identifying peaks is normally based
 \end_layout
 
 \begin_layout Section
@@ -205,18 +174,116 @@ Methods
 \end_layout
 
 \begin_layout Standard
-DNA-protein interactions are shown by using chromatin immunoprecipitation.
- Chromatin immunoprecipitation uses a specific antibody to target a protein
- of interest, in our case a transcription factor, and then it targets that
- protein and links it with fragments of DNA from a cell lysate.
- The DNA-protein complex is precipitated from the mixture and the proteins
- are unlinked from the DNA fragments which results in a library of DNA fragments
- that are enriched for the binding sites we are interested in.
- The short reads are typically 20-25 base pairs (bp) and they are aligned
- to a reference genome using fast alignment algorithms.
- Overall, the ChIP-seq approach provides a whole-genome view of the transcriptio
-n factors activity.
+DNA-binding proteins can be located by using chromatin immunoprecipitation
+ (ChIP) which creates a DNA library that is enriched for a particular DNA-bindin
+g protein of interest.
+ ChIP experiments have been applied to many different experimental methods,
+ including gels (ChIP-PCR), microarray hybridization (ChIP-chip), and high-throu
+ghput sequencing (ChIP-seq) 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "collas_chromatin_2009"
+
+\end_inset
+
+.
+ The scope of these studies has become increasingly larger in order to uncover
+ the gene regulatory systems and provide a whole-genome view of the transcriptio
+n factor activity.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Chromatin_immunoprecipitation_sequencing.svg.png
+	scale 40
+	rotateAngle 90
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+The main experimental workflow behind chip-seq showing the enrichment of
+ the target protein for the DNA library
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The basic idea behind chromatin immunoprecipitation is to link the proteins
+ to the DNA using a fixative and to use a specific antibody to target the
+ protein of interest.
+ Then, the DNA-protein complex is extracted from the mixture and the proteins
+ are unlinked from the DNA fragments.
+ The result is a DNA library of fragments that can be sequenced using a
+ high-throughput sequencer, which is how ChIP-seq proceeds.
+ Using high throughput sequencing, the ends of DNA fragments are sequenced
+ producing short reads that are typically 20-25 base pairs (bp).
+ These reads are aligned to a reference genome using alignment algorithms.
+ Figure 1 shows a conceptual overview of these processes.
+ In our analysis we looked ChIP-seq reads that had already been aligned
+ by a ELAND alignment algorithm which allows at most 2 mismatches in the
+ alignment to the yeast reference genome.
+\end_layout
+
+\begin_layout Standard
+We looked at a popular and open-source algorithm called MACS (for Model-based
+ analysis of ChIP-seq).
+ We did a source-code study of the application (Appendix A) but some a brief
+ overview is discussed here.
+ To find the potential binding sites from the data, MACS calculates the
+ distribution of reads in the background that are not associated with any
+ transcription factor binding.
+ MACS uses a Poisson distribution to model the expected number of in the
+ scanning window given the total number of reads and the whole genome size.
+ Then peaks are identified as the likelihood of receiving a large number
+ of reads in our scan window compared with the background.
+ The result is a list of high confidence ChIP-seq peaks that represent potential
+ transcription factor binding sites.
+ Additional features of MACS includes estimating the fragment size from
+ short reads (a 
+\begin_inset Quotes eld
+\end_inset
+
+shift-model
+\begin_inset Quotes erd
+\end_inset
+
+ calculated from the mismatch between paired-end reads) and performing backgroun
+d correction performed calculations also such as calculating scaling the
+ total number of reads across two conditions, input control and The peak
+ finders must be sensitive enough to find significant binding sites but
+ it must also be discrimitive enough to avoid false positives.
  
+\end_layout
+
+\begin_layout Standard
+of the reads and then find enhanced coverage by 
+\end_layout
+
+\begin_layout Standard
+We looked at yeast ChIP-seq experiments and found significant differential
+ peaks using statistical tests.
+ We used our algorithm to adjust for the differences that were identified
+ on the basis of peak callers by for similar binding sites.
 \end_layout
 
 \begin_layout Standard
@@ -244,8 +311,8 @@ We had a lot of fun
 \begin_layout Standard
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
-bibfiles "References"
-options "bibtotoc,plain"
+bibfiles "Zotero"
+options "plain"
 
 \end_inset
 
