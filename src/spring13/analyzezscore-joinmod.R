@@ -1,6 +1,5 @@
-library(plyr)
-library(gplots)
-library(R.utils)
+# Main analysis file new work march-april
+# Colin 
 
 
 ### Get wig scores for treat only
@@ -49,7 +48,7 @@ joinWiggleFiles<-function(chrnames,macswig) {
 
 
 
-doheatmap<-function(table,granularity=1) {
+doheatmap<-function(table,granularity=1,Rowv=FALSE,Colv=FALSE) {
   
   if(granularity!=1) {
     sret<-apply(table[,1:ncol(table)],2,function(x,g){
@@ -61,7 +60,7 @@ doheatmap<-function(table,granularity=1) {
   }
   
   heatmap.2(as.matrix(sret),col=redgreen(75), scale="none",key=TRUE, 
-            density.info='none',trace='none',Rowv=FALSE)
+            density.info='none',trace='none',Rowv=Rowv,Colv=Colv)
 }
 
 doTreeView<-function(table,file=tempfile(),granularity=1) {

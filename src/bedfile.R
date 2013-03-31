@@ -2,10 +2,10 @@
 
 
 
-loadBed<-function(path,header=FALSE) {
+loadBed<-function(path,header=FALSE,names=c('chr','start','end','name','score')) {
   bedfile<-read.table(path,sep='\t',header=header)
   
-  names(bedfile)=c('chr','start','end','name','score')
+  names(bedfile)=names
   #bedfile<-transform(bedfile, start=as.numeric(start), end=as.numeric(end))
   bedfile
 }

@@ -100,10 +100,11 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-The study of our genes, and the molecular biology therein, has uncovered
- a complex world of DNA and proteins that interact to control gene expression.
- Gene expression involves a variety of proteins to work together to initiate
- transcription and regulate the underlying patterns of gene expression.
+The study of our genes has uncovered a complex world of DNA and proteins
+ that interact to control gene expression.
+ The regulation of gene expression involves a variety of proteins to work
+ together to initiate transcription and regulate the underlying patterns
+ of gene expression.
  Identifying the DNA-binding activity for transcription factors and other
  proteins has become an important problem for understanding gene regulation.
  New high throughput sequencing technology, or next-generation sequencing,
@@ -214,7 +215,7 @@ status open
 
 \begin_layout Plain Layout
 The main experimental workflow behind chip-seq showing the enrichment of
- the target protein for the DNA library
+ the target protein for the DNA library (Wikipedia:ChIP-seq)
 \end_layout
 
 \end_inset
@@ -245,10 +246,11 @@ The basic idea behind chromatin immunoprecipitation is to link the proteins
 \end_layout
 
 \begin_layout Standard
-We looked at a popular and open-source algorithm called MACS (for Model-based
+We looked at a popular and open-source algorithm called MACS (Model-based
  analysis of ChIP-seq).
- We did a source-code study of the application (Appendix A) but some a brief
- overview is discussed here.
+ We did a source-code study of MACS to improve our understanding of the
+ code and discuss the major features of the code in our appendix.
+ A brief overview for understanding the peak calling methodology is as follows.
  To find the potential binding sites from the data, MACS calculates the
  distribution of reads in the background that are not associated with any
  transcription factor binding.
@@ -256,23 +258,34 @@ We looked at a popular and open-source algorithm called MACS (for Model-based
  scanning window given the total number of reads and the whole genome size.
  Then peaks are identified as the likelihood of receiving a large number
  of reads in our scan window compared with the background.
- The result is a list of high confidence ChIP-seq peaks that represent potential
- transcription factor binding sites.
- Additional features of MACS includes estimating the fragment size from
- short reads (a 
-\begin_inset Quotes eld
-\end_inset
-
-shift-model
-\begin_inset Quotes erd
-\end_inset
-
- calculated from the mismatch between paired-end reads) and performing backgroun
-d correction performed calculations also such as calculating scaling the
- total number of reads across two conditions, input control and The peak
- finders must be sensitive enough to find significant binding sites but
- it must also be discrimitive enough to avoid false positives.
+ The resulting output is a list of high confidence ChIP-seq peaks that represent
+ potential transcription factor binding sites.
  
+\end_layout
+
+\begin_layout Standard
+In general, the statistical problem that peak finders face is a classic
+ problem: they must be sensitive enough to find significant instances, and
+ avoid Type I errors, but it must also be discrimitive enough to avoid false
+ positives, or Type II errors.
+ MACS has been shown to have wide popularity and it shows a good ability
+ to identify peaks.
+ But the methods that have been used for comparing experiments have basically
+ reduced to finding overlaps of peaks from individual experiments, and calling
+ non-overlapping peaks unique.
+ We wanted to evaluate the peaks on the basis of whether they are have significa
+nt different values ChIP-seq differences.
+ 
+\end_layout
+
+\begin_layout Standard
+MACS does have a feature that is able to identify differential binding sites
+ by using one experiment as control and on experiment as a treatment, but
+ conceptually this method uses a sample swap.
+ For MACS to identify differential peaks, the This characterization of a
+ differential peak was by They pass a certain p-value threshold and they
+ are generally given a binary We looked at a study comparing different strains
+ of yeast for a binding factor associated with 
 \end_layout
 
 \begin_layout Standard
