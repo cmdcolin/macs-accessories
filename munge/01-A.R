@@ -9,7 +9,6 @@ source('src/spring13/analyzezscore-joinmod.R')
 
 f<-getwd()
 setwd('data/')
-
 dirs<-list.files(pattern="*_MACS_wiggle")
 dirnames<-str_replace_all(dirs,"_MACS_wiggle","")
 macswiggle<-lapply(dirnames,function(dirname) {
@@ -17,9 +16,9 @@ macswiggle<-lapply(dirnames,function(dirname) {
   wig=new("WiggleClass",name=dirname)
   loadWiggles(wig)
 })
-names(macswiggle)<-dirnames
 setwd(f)
 
+#names(macswiggle)<-dirnames
 cache('macswiggle')
 
 
@@ -42,6 +41,9 @@ normDiffList<-lapply(1:nsamples,function(i) {
   str2<-paste0('V',pos)
   control<-wiggleTable[[str1]]
   treat<-wiggleTable[[str2]]
+  if(debug) {
+    printf("Processing column%02d (%s, %s)\n",i,str1,str2)
+  }
   getNormDiff(treat,control)
 })
 
