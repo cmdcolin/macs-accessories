@@ -334,6 +334,29 @@ Gene-distal enhancers are critical for tissue-specific gene expression, but thei
 	pages = {139--156}
 },
 
+@article{taslim_comparative_2009,
+	title = {Comparative study on {ChIP-seq} data: normalization and binding pattern characterization},
+	volume = {25},
+	issn = {1367-4803, 1460-2059},
+	shorttitle = {Comparative study on {ChIP-seq} data},
+	url = {http://bioinformatics.oxfordjournals.org/content/25/18/2334},
+	doi = {10.1093/bioinformatics/btp384},
+	abstract = {Motivation: Antibody-based Chromatin Immunoprecipitation assay followed by high-throughput sequencing technology ({ChIP-seq)} is a relatively new method to study the binding patterns of specific protein molecules over the entire genome. {ChIP-seq} technology allows scientist to get more comprehensive results in shorter time. Here, we present a non-linear normalization algorithm and a mixture modeling method for comparing {ChIP-seq} data from multiple samples and characterizing genes based on their {RNA} polymerase {II} (Pol {II)} binding patterns.
+Results: We apply a two-step non-linear normalization method based on locally weighted regression ({LOESS)} approach to compare {ChIP-seq} data across multiple samples and model the difference using an Exponential-{NormalK} mixture model. Fitted model is used to identify genes associated with differential binding sites based on local false discovery rate (fdr). These genes are then standardized and hierarchically clustered to characterize their Pol {II} binding patterns. As a case study, we apply the analysis procedure comparing normal breast cancer ({MCF7)} to tamoxifen-resistant ({OHT)} cell line. We find enriched regions that are associated with cancer (P {\textless} 0.0001). Our findings also imply that there may be a dysregulation of cell cycle and gene expression control pathways in the tamoxifen-resistant cells. These results show that the non-linear normalization method can be used to analyze {ChIP-seq} data across multiple samples.
+Availability: Data are available at http://www.bmi.osu.edu/{\textasciitilde}{khuang/Data/ChIP/RNAPII/}
+Contact: taslim.2@osu.edu; khuang@bmi.osu.edu
+Supplementary information: Supplementary data are available at Bioinformatics online.},
+	language = {en},
+	number = {18},
+	urldate = {2013-04-01},
+	journal = {Bioinformatics},
+	author = {Taslim, Cenny and Wu, Jiejun and Yan, Pearlly and Singer, Greg and Parvin, Jeffrey and Huang, Tim and Lin, Shili and Huang, Kun},
+	month = sep,
+	year = {2009},
+	pages = {2334--2340},
+	file = {Full Text PDF:C:\Documents and Settings\Colin Diesh\Application Data\Mozilla\Firefox\Profiles\v9bgvjx6.default\zotero\storage\E7UHFBAF\Taslim et al. - 2009 - Comparative study on ChIP-seq data normalization .pdf:application/pdf;Snapshot:C:\Documents and Settings\Colin Diesh\Application Data\Mozilla\Firefox\Profiles\v9bgvjx6.default\zotero\storage\TT5BGRXK\2334.html:text/html}
+},
+
 @article{rhee_comprehensive_2011,
 	title = {Comprehensive Genome-wide Protein-{DNA} Interactions Detected at Single-Nucleotide Resolution},
 	volume = {147},
@@ -350,6 +373,22 @@ Chromatin immunoprecipitation ({ChIP-chip} and {ChIP-seq)} assays identify where
 	year = {2011},
 	pages = {1408--1419},
 	file = {ScienceDirect Snapshot:C:\Documents and Settings\Colin Diesh\Application Data\Mozilla\Firefox\Profiles\v9bgvjx6.default\zotero\storage\G63B863N\S0092867411013511.html:text/html}
+},
+
+@article{liang_detecting_2011,
+	title = {Detecting differential binding of transcription factors with {ChIP-seq}},
+	volume = {28},
+	issn = {1367-4803, 1460-2059},
+	url = {http://bioinformatics.oxfordjournals.org/content/28/1/121/suppl/DC1},
+	doi = {10.1093/bioinformatics/btr605},
+	number = {1},
+	urldate = {2013-04-01},
+	journal = {Bioinformatics},
+	author = {Liang, K. and Keles, S.},
+	month = nov,
+	year = {2011},
+	pages = {121--122},
+	file = {Supplementary Data:C:\Documents and Settings\Colin Diesh\Application Data\Mozilla\Firefox\Profiles\v9bgvjx6.default\zotero\storage\BGMZ7254\DC1.html:text/html}
 },
 
 @article{gaffney_dissecting_2012,
@@ -509,6 +548,20 @@ Our ability to gather genome-wide expression data has far outstripped the abilit
 {PMCID:} {PMC3486726}},
 	pages = {341--345},
 	file = {PubMed Central Full Text PDF:C:\Documents and Settings\Colin Diesh\Application Data\Mozilla\Firefox\Profiles\v9bgvjx6.default\zotero\storage\IXRU564D\Baughman et al. - 2011 - Integrative genomics identifies MCU as an essentia.pdf:application/pdf}
+},
+
+@article{smyth_linear_2004,
+	title = {Linear models and empirical bayes methods for assessing differential expression in microarray experiments},
+	volume = {3},
+	issn = {1544-6115},
+	doi = {10.2202/1544-6115.1027},
+	abstract = {The problem of identifying differentially expressed genes in designed microarray experiments is considered. Lonnstedt and Speed (2002) derived an expression for the posterior odds of differential expression in a replicated two-color experiment using a simple hierarchical parametric model. The purpose of this paper is to develop the hierarchical model of Lonnstedt and Speed (2002) into a practical approach for general microarray experiments with arbitrary numbers of treatments and {RNA} samples. The model is reset in the context of general linear models with arbitrary coefficients and contrasts of interest. The approach applies equally well to both single channel and two color microarray experiments. Consistent, closed form estimators are derived for the hyperparameters in the model. The estimators proposed have robust behavior even for small numbers of arrays and allow for incomplete data arising from spot filtering or spot quality weights. The posterior odds statistic is reformulated in terms of a moderated t-statistic in which posterior residual standard deviations are used in place of ordinary standard deviations. The empirical Bayes approach is equivalent to shrinkage of the estimated sample variances towards a pooled estimate, resulting in far more stable inference when the number of arrays is small. The use of moderated t-statistics has the advantage over the posterior odds that the number of hyperparameters which need to estimated is reduced; in particular, knowledge of the non-null prior for the fold changes are not required. The moderated t-statistic is shown to follow a t-distribution with augmented degrees of freedom. The moderated t inferential approach extends to accommodate tests of composite null hypotheses through the use of moderated F-statistics. The performance of the methods is demonstrated in a simulation study. Results are presented for two publicly available data sets.},
+	language = {eng},
+	journal = {Statistical applications in genetics and molecular biology},
+	author = {Smyth, Gordon K},
+	year = {2004},
+	note = {{PMID:} 16646809},
+	pages = {Article3}
 },
 
 @article{shao_manorm:_2012,
@@ -770,6 +823,19 @@ Supplementary Information: Supplementary data are available at Bioinformatics on
 	year = {2005},
 	pages = {22},
 	file = {Snapshot:C:\Documents and Settings\Colin Diesh\Application Data\Mozilla\Firefox\Profiles\v9bgvjx6.default\zotero\storage\BBIUS4WA\22.html:text/html}
+},
+
+@book{wit_statistics_2004,
+	title = {Statistics for Microarrays: Design, Analysis and Inference},
+	isbn = {9780470849934},
+	shorttitle = {Statistics for Microarrays},
+	abstract = {Interest in microarrays has increased considerably in the last ten years. This increase in the use of microarray technology has led to the need for good standards of microarray experimental notation, data representation, and the introduction of standard experimental controls, as well as standard data normalization and analysis techniques. Statistics for Microarrays: Design, Analysis and Inference is the first book that presents a coherent and systematic overview of statistical methods in all stages in the process of analysing microarray data – from getting good data to obtaining meaningful {results.Provides} an overview of statistics for microarrays, including experimental design, data preparation, image analysis, normalization, quality control, and statistical {inference.Features} many examples throughout using real data from microarray {experiments.Computational} techniques are integrated into the {text.Takes} a very practical approach, suitable for statistically-minded {biologists.Supported} by a Website featuring colour images, software, and data {sets.Primarily} aimed at statistically-minded biologists, bioinformaticians, biostatisticians, and computer scientists working with microarray data, the book is also suitable for postgraduate students of bioinformatics.},
+	language = {en},
+	publisher = {John Wiley \& Sons},
+	author = {Wit, Ernst},
+	month = jul,
+	year = {2004},
+	keywords = {Business \& Economics / Statistics, Mathematics / General, Mathematics / Probability \& Statistics / General, Science / Life Sciences / Biology, Science / Life Sciences / Genetics \& Genomics, Technology \& Engineering / Engineering (General)}
 },
 
 @article{thurman_accessible_2012,

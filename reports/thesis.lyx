@@ -12,10 +12,10 @@ knitr
 \language_package default
 \inputencoding auto
 \fontencoding global
-\font_roman default
+\font_roman times
 \font_sans default
 \font_typewriter default
-\font_default_family default
+\font_default_family rmdefault
 \use_non_tex_fonts false
 \font_sc false
 \font_osf false
@@ -80,8 +80,10 @@ Colin Diesh
 \begin_layout Abstract
 Transcription factors play an important role in gene regulation by binding
  and interacting with DNA.
+ Identifying the DNA-binding activity for transcription factors and other
+ proteins has become an important problem for understanding gene regulation.
  Chromatin immunoprecipitation (ChIP-seq) combined with high-throughput
- sequencing can be used to analyze DNA protein interactions and find transcripti
+ sequencing can be used to analyze DNA-protein interactions and find transcripti
 on factor binding sites.
  Recent literature has proposed that transcription factor binding sites
  have a high turnover rate between closely related organisms.
@@ -95,18 +97,41 @@ on factor binding sites.
  on the basis of peak callers.
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Introduction
 \end_layout
 
 \begin_layout Standard
-The study of our genes has uncovered a complex world of DNA and proteins
- that interact to control gene expression.
- The regulation of gene expression involves a variety of proteins to work
- together to initiate transcription and regulate the underlying patterns
- of gene expression.
- Identifying the DNA-binding activity for transcription factors and other
- proteins has become an important problem for understanding gene regulation.
+The study of our genes has uncovered a complex world of DNA binding proteins
+ that interact to control and regulate gene expression.
+ From DNA sequencing technology the genes that code for the proteins were
+ found, but the rest of the genome remained largely a mystery.
+ The regulatory functions are now being understood by profiling these DNA-protei
+n interactions such as transcription factors and histone modifications that
+ make gene transcription possible.
  New high throughput sequencing technology, or next-generation sequencing,
  has been applied to for these expanded the scope of gene regulatory study
  by providing a whole-genome view of gene regulation.
@@ -114,7 +139,7 @@ The study of our genes has uncovered a complex world of DNA and proteins
 
 \begin_layout Standard
 Recent studies have tried understand gene regulation by comparing different
- conditions, treatments, individuals and genomes.
+ experiments across related species to determine how the binding sites vary.
  These studies have compared the transcription factor binding sites from
  mouse to human 
 \begin_inset CommandInset citation
@@ -155,32 +180,17 @@ key "zheng_genetic_2010"
  
 \end_layout
 
-\begin_layout Standard
-Chromatin immunoprecipitation combined with high throughput sequencing (ChIP-seq
-) is produces millions of short sequencing reads from DNA fragments that
- are associated with a particular DNA-protein interaction.
- For transcription factors, the binding sites are identified as peaks in
- the number of reads covering a DNA sequence and so these peak-finding algorithm
-s have become important for analyzing this data.
- Many algorithms that are developed analyze the ChIP-seq experiments individuall
-y, and few algorithms are developed for comparing across experiments.
- It is is especiallay problematic because the methods for identifying transcript
-ion factor binding sites across different experiments are not directly comparabl
-e, which leads to difficulties in comparing these experiments.
- The threshold for identifying peaks is normally based
-\end_layout
-
-\begin_layout Section
-Methods
+\begin_layout Subsection
+Chromatin immunoprecipitation and ChIP-seq
 \end_layout
 
 \begin_layout Standard
-DNA-binding proteins can be located by using chromatin immunoprecipitation
- (ChIP) which creates a DNA library that is enriched for a particular DNA-bindin
-g protein of interest.
+DNA-binding proteins have been extensively studied using chromatin immunoprecipi
+tation (ChIP) which effectively creates a DNA library that is enriched for
+ a particular DNA-binding protein of interest.
  ChIP experiments have been applied to many different experimental methods,
- including gels (ChIP-PCR), microarray hybridization (ChIP-chip), and high-throu
-ghput sequencing (ChIP-seq) 
+ including electrophoresis gels (ChIP-PCR), microarray hybridization (ChIP-chip)
+, and high-throughput sequencing (ChIP-seq) 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "collas_chromatin_2009"
@@ -246,6 +256,30 @@ The basic idea behind chromatin immunoprecipitation is to link the proteins
 \end_layout
 
 \begin_layout Standard
+Chromatin immunoprecipitation combined with high throughput sequencing (ChIP-seq
+) is produces millions of short sequencing reads from DNA fragments that
+ are associated with a particular DNA-protein interaction.
+ To find transcription factor binding sites are identified, peak finding
+ algorithms are commonly used to locate significantly number of reads covering
+ a DNA sequence is significantly enriched.
+ These peak-finding algorithms have become important for analyzing this
+ data, but many peak finding algorithms only analyze ChIP-seq experiments
+ individually, and few algorithms are developed for comparing across experiments.
+ It is is especially problematic because the metrics that characterize the
+ binding sites across different experiments are generally not directly comparabl
+e.
+ 
+\end_layout
+
+\begin_layout Section
+Methods
+\end_layout
+
+\begin_layout Subsection
+Finding transcription factor binding sites
+\end_layout
+
+\begin_layout Standard
 We looked at a popular and open-source algorithm called MACS (Model-based
  analysis of ChIP-seq).
  We did a source-code study of MACS to improve our understanding of the
@@ -278,14 +312,125 @@ nt different values ChIP-seq differences.
  
 \end_layout
 
+\begin_layout Subsection
+Comparison of ChIP experiments
+\end_layout
+
 \begin_layout Standard
-MACS does have a feature that is able to identify differential binding sites
- by using one experiment as control and on experiment as a treatment, but
- conceptually this method uses a sample swap.
- For MACS to identify differential peaks, the This characterization of a
- differential peak was by They pass a certain p-value threshold and they
- are generally given a binary We looked at a study comparing different strains
- of yeast for a binding factor associated with 
+To compare the results of chromatin immunoprecipitation for transcription
+ factor binding sites, a general assessment looks at the overlapping peaks
+ (peak-centric approach) or the overlapping target-genes (gene-centric approach)
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "odom_tissue-specific_2007"
+
+\end_inset
+
+.
+ Using microarray technology, the gene-centric approach was important because
+ the microarrays were printed with oligonucleotides corresponding to genes.
+ This enabled microarray gene expression experiments to detect mRNA expression
+ levels, and so a gene to gene comparison was a clear discriminator.
+ Using chromatin immunoprecipitation microarrays (ChIP-chip) the microarrays
+ would be printed with oligonucleotides upstream of the target genes in
+ order to detect the transcription factors that are the most likely regulators.
+ The peak-centric approach was first started using high-density oligonucleotide
+ arrays 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "odom_tissue-specific_2007"
+
+\end_inset
+
+ which gives higher resolution and therefore allows detection of narrower
+ transcription factor binding site peaks.
+ Using the peak-centric approach, overlapping peaks can be detected directly,
+ and the target gene is not necessarily inferred, which has advantages for
+ comparing the sequence similarity.
+ Nevertheless, both approaches have advantages.
+\end_layout
+
+\begin_layout Subsection
+Identifying differences in transcription factor occupancy
+\end_layout
+
+\begin_layout Standard
+Methods for identifying differences in ChIP-seq data have been mostly demonstrat
+ed as differences in overlapping peaks.
+ MACS can identify differential binding sites by using setup where one experimen
+t is used as control and another as a treatment.
+ Therefore, the background is estimated from the local background that contains
+ a potential binding site from the other experiment, and the peak caller
+ has to obtain a p-value that justifies with high probability a difference.
+ Therefore the argument that the peaks are different are according to the
+ estimation of the Poisson rate that is highly different from the background.
+\end_layout
+
+\begin_layout Standard
+One approach for incorporating replicate experiments into MACS is to concatenate
+ all reads from replicates into one large file, however this is unusual
+ for an experimental design point of view.
+ Pooling reads is useful for some designs but it does not necessarily tell
+ us about reproducability.
+ Replicates have been shown to be important in measuring the reproducability
+ of high-throughput experiments and many experimental designs have been
+ considered for replicates including loop design and empirical Bayes smoothing
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "smyth_linear_2004"
+
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "wit_statistics_2004"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Another method for finding differential peaks is MANorm which uses a linear
+ model to correct for bias that may exist for differences in the reads from
+ overlapping peaks across different experiments 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "shao_manorm:_2012"
+
+\end_inset
+
+.
+ MANorm uses the overlapping peaks called on individual experiments from
+ a peak caller such as MACS as inputs and then normalizes all reads by the
+ linear model.
+ Then, the peak calls are adjusted using a Bayesian Poisson.
+ MANorm is conceptually similar to a LOESS (locally weighted scatterplot
+ smoothing) normalization which has been applied to other normalizations
+ such as DIME 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "taslim_comparative_2009"
+
+\end_inset
+
+.
+ MANorm treats overlapping peaks similar to the locally weighted points
+ from LOESS, however LOESS is a non-linear correction, and MANorm is linear.
+ 
+\end_layout
+
+\begin_layout Section
+Approach
+\end_layout
+
+\begin_layout Standard
+We looked at a study comparing different strains of yeast for a binding
+ factor associated with mating under alpha--factor stimulation using Ste12.
 \end_layout
 
 \begin_layout Standard
@@ -318,7 +463,8 @@ Conclusion
 \end_layout
 
 \begin_layout Standard
-We had a lot of fun
+We were able to find significant differences according to a t-test method
+ that is commonly used for microarray experiments in ChIP-seq data
 \end_layout
 
 \begin_layout Standard
