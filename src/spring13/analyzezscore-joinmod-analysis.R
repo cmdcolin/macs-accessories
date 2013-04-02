@@ -79,12 +79,16 @@ doheatmap(normdifftable,1000)
 
 
 source('src/spring13/makecomparisonplot.R')
-makeComparisonPlot(loadBed('s96rep1-high_peaks.bed'),loadBed('s96rep2-high_peaks.bed'),wiggleTable,4,6,'Comparison of raw read scores for S96 replicates','S96rep1','S96rep2',c("Overlap","Rep1 unique","Rep2 unique"),brewer.pal(3,"Set1"))
+makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/s96rep2-high_peaks.bed'),wiggleTable,4,6,'Comparison of raw read scores for S96 replicates','S96rep1','S96rep2',c("Overlap","Rep1 unique","Rep2 unique"),brewer.pal(3,"Set1"))
 mycor=cor(wiggleTable[,4],wiggleTable[,6])
 text(50,220,substitute(paste(rho,"=",mycor),list(mycor=mycor)))
 
 
-makeComparisonPlot(loadBed('s96rep1-high_peaks.bed'),loadBed('hs959rep1-new_peaks.bed'),wiggleTable,4,8,'Comparison of raw read scores for S96 vs HS959','S96', 'HS959', c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Dark2"))
+makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/hs959rep1-new_peaks.bed'),wiggleTable,4,8,'Comparison of raw read scores for S96 vs HS959','S96', 'HS959', c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Dark2"))
+
+makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/hs959rep1-new_peaks.bed'),backSubTable,4,8,'Comparison of raw read scores for S96 vs HS959','S96', 'HS959', c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Spectral"))
+
+
 mycor=cor(wiggleTable[,4],wiggleTable[,8])
 text(40,250,substitute(paste(rho,"=",mycor),list(mycor=mycor)))
 mypal<-brewer.pal(3,"Accent")
@@ -218,8 +222,30 @@ makeComparisonPlot(loadBed('GSE19635_s96a_peaks.txt',header=TRUE),loadBed('GSE19
 
 
 M=log2(wiggleTable[,c(4,6)]/wiggleTable[,c(8,10)])
+M=log2(wiggleTable[,c(4,6,8,10)])
 fit<-lmFit(M)
 fit<-eBayes(fit)
+
+###############################################
+set.seed(2004); invisible(runif(100))
+M <- matrix(rnorm(100*6,sd=0.3),100,6)
+M[1,] <- M[1,] + 1
+fit <- lmFit(M)
+
+#  Ordinary t-statistic
+par(mfrow=c(1,2))
+ordinary.t <- fit$coef /fit$sigma
+qqt(ordinary.t,df=fit$df.residual,main="Ordinary t")
+abline(0,1)
+
+#  Moderated t-statistic
+eb <- eBayes(fit)
+qqt(eb$t,df=eb$df.prior+eb$df.residual,main="Moderated t")
+abline(0,1)
+#  Points off the line may be differentially expressed
+par(mfrow=c(1,1))
+#####################################################
+#########################
 
 x<-topTable(fit,number=50000)
 volcanoplot(fit,coef=1)

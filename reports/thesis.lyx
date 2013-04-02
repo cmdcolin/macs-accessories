@@ -27,7 +27,7 @@ knitr
 \output_sync 0
 \bibtex_command default
 \index_command default
-\float_placement h
+\float_placement H
 \paperfontsize default
 \spacing other 1.5
 \use_hyperref false
@@ -144,6 +144,68 @@ LatexCommand tableofcontents
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<setuprscripts, include=FALSE,cache=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+library(RColorBrewer)
+\end_layout
+
+\begin_layout Plain Layout
+
+library(ProjectTemplate)
+\end_layout
+
+\begin_layout Plain Layout
+
+load.project()
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+ source('src/bedfile.R')
+\end_layout
+
+\begin_layout Plain Layout
+
+ source('src/spring13/analyzezscore-joinmod.R')
+\end_layout
+
+\begin_layout Plain Layout
+
+ source('src/spring13/makecomparisonplot.R')
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+debug=FALSE
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Introduction
 \end_layout
@@ -222,9 +284,9 @@ key "collas_chromatin_2009"
 \end_inset
 
 .
- The scope of these studies has become increasingly larger in order to uncover
- the gene regulatory systems and provide a whole-genome view of the transcriptio
-n factor activity.
+ The scope of these studies has become larger in general to provide a whole-geno
+me view of the transcription factor activity and to uncover the properties
+ of gene regulatory systems including dynamics and evolutionary relationships.
 \end_layout
 
 \begin_layout Standard
@@ -237,7 +299,6 @@ status open
 \begin_inset Graphics
 	filename Chromatin_immunoprecipitation_sequencing.svg.png
 	scale 40
-	rotateAngle 90
 
 \end_inset
 
@@ -248,8 +309,9 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-The main experimental workflow behind chip-seq showing the enrichment of
- the target protein for the DNA library (Wikipedia:ChIP-seq)
+The main experimental protocol for ChIP-seq experiments showing the sequencing
+ and mapping to genome of the ChIP DNA sequencing library.
+ (Wikipedia:ChIP-seq)
 \end_layout
 
 \end_inset
@@ -263,20 +325,7 @@ The main experimental workflow behind chip-seq showing the enrichment of
 \end_layout
 
 \begin_layout Standard
-The basic idea behind chromatin immunoprecipitation is to link the proteins
- to the DNA using a fixative and to use a specific antibody to target the
- protein of interest.
- Then, the DNA-protein complex is extracted from the mixture and the proteins
- are unlinked from the DNA fragments.
- The result is a DNA library of fragments that can be sequenced using a
- high-throughput sequencer, which is how ChIP-seq proceeds.
- Using high throughput sequencing, the ends of DNA fragments are sequenced
- producing short reads that are typically 20-25 base pairs (bp).
- These reads are aligned to a reference genome using alignment algorithms.
- Figure 1 shows a conceptual overview of these processes.
- In our analysis we looked ChIP-seq reads that had already been aligned
- by a ELAND alignment algorithm which allows at most 2 mismatches in the
- alignment to the yeast reference genome.
+The basic idea behind 
 \end_layout
 
 \begin_layout Standard
@@ -453,90 +502,217 @@ Approach
 \end_layout
 
 \begin_layout Standard
-We looked at a study comparing different strains of yeast for a binding
- factor associated with mating under alpha--factor stimulation using Ste12.
+We looked at 8 ChIP-seq experiments from a set of experiments comparing
+ different strains of yeast for a transcription factor Ste12.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+after "Zheng et al."
+key "zheng_genetic_2010"
+
+\end_inset
+
+ Showed that the binding sites from each parent strain had differed by using
+ peak calling and finding over-lapping target genes (gene-centric approach).
+ 
 \end_layout
 
 \begin_layout Standard
-of the reads and then find enhanced coverage by 
+They also look for a genetic basis for the variations by genotyping the
+ indvidual strains and searching for binding motifs.
+ This revealed cis-factors that were associated with the binding site difference
+s, such as SNP that affected the binding motifs.
+ Additionally, they found trans-factors that were associated with the binding
+ site variations by mapping variable binding traits, and using QTL mapping.
+ The patterns caused by trans-factor binding site variations were also shown
+ using clustering algorithms.
+ While they showed extensive variations in the overlaps of the binding sites
+ our approach is to find large significant differences.
+ 
+\end_layout
+
+\begin_layout Subsection
+Analyzing the parent strains
 \end_layout
 
 \begin_layout Standard
-We looked at yeast ChIP-seq experiments and found significant differential
- peaks using statistical tests.
- We used our algorithm to adjust for the differences that were identified
- on the basis of peak callers by for similar binding sites.
+We used the peaks that they calculated using MACS and reproduced their results
+ using annotating the nearest gene for each of the peaks called using MACS.
+ We used the sacCer3 genome annotations and found similar results.
+ This showed a large degree of overlap.
 \end_layout
 
 \begin_layout Standard
-We looked at the DNA barcoding allows for multiple different experiments
- to be sequenced at the same time.
- Using this approach, transcriptin
+Of the 
 \end_layout
 
 \begin_layout Standard
-Chromatin immunoprecipitation works by fixing the DNA-protein complex and
- then extracting it from the cell lysate by using antibodies that target
- the protein of interest.
- The DNA-protein complex is unlinked and then the result is a sequencing
- library for DNA that are highly enriched for DNA binding sites.
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="4">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Total Unique
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Unique S96
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Unique HS959
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Zheng et al.
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1112
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+880
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+874
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+sacCer3 peak annotations
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1179 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+885 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+884
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-\begin_inset ERT
+\begin_inset Float figure
+wide false
+sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset Graphics
+	filename C:/Documents and Settings/Colin Diesh/Desktop/venn_result706.png
 
-<<setuprscripts, include=FALSE,cache=FALSE>>=
-\end_layout
+\end_inset
 
-\begin_layout Plain Layout
 
-library(RColorBrewer)
-\end_layout
+\begin_inset Graphics
+	filename C:/Documents and Settings/Colin Diesh/Desktop/fig1.PNG
+	scale 50
 
-\begin_layout Plain Layout
+\end_inset
 
-library(ProjectTemplate)
-\end_layout
-
-\begin_layout Plain Layout
-
-load.project()
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
 \begin_layout Plain Layout
-
- source('src/bedfile.R')
-\end_layout
+\begin_inset Caption
 
 \begin_layout Plain Layout
-
- source('src/spring13/analyzezscore-joinmod.R')
+(Left) Results from peak annotation with saCcer3 (duplicate gene annotations
+ removed) (Right) Original results from Zheng et al.
+ 
 \end_layout
 
-\begin_layout Plain Layout
+\end_inset
 
- source('src/spring13/makecomparisonplot.R')
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
 \begin_layout Plain Layout
 
-debug=FALSE
-\end_layout
-
-\begin_layout Plain Layout
-
-@
 \end_layout
 
 \end_inset
@@ -545,7 +721,135 @@ debug=FALSE
 \end_layout
 
 \begin_layout Standard
-Preview
+However, if we wanted to see where the most significant differences were,
+ we cannot see from this data itself.
+ 
+\end_layout
+
+\begin_layout Subsection
+Processing of data
+\end_layout
+
+\begin_layout Standard
+We used MACS to identify peaks in each dataset.
+ We also used a peak-centric approach and seperated the peak list into groups
+ of overlapping and non-overlapping peaks from each experiment.
+ Then we used the wiggle files outputted from MACS to bin the reads calculate
+ the reads overlapping each genome position for the peaks identified in
+ each dataset and plotted them against each-other.
+ We used a design pattern for data analysis from the plyr package in R that
+ uses a 
+\begin_inset Quotes eld
+\end_inset
+
+split-apply-combine
+\begin_inset Quotes erd
+\end_inset
+
+ approach 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "wickham_split-apply-combine_2011"
+
+\end_inset
+
+.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+Split-apply-combine
+\begin_inset Quotes erd
+\end_inset
+
+ is a useful design pattern for big data and it is similar to the 
+\begin_inset Quotes eld
+\end_inset
+
+map-reduce
+\begin_inset Quotes erd
+\end_inset
+
+ design pattern for parallel computing environments.
+ This is very useful for analyzing tables where an arbitrary number of experimen
+ts are combined into a data table.
+ While one data source might be able to be loaded into memory at once, many
+ experiments can be analyzed at once.
+ Then the read counts are split by chromosomes into different data frames
+ to apply functions to read counts and finally combine the results.
+ The data can be split into more frames by cutting the table across ranges
+ or other factors also, but for our application, it was easiest to split
+ across chromosomes and apply functions without worrying about matching
+ the chromosome features of the peaks different experiments.
+\end_layout
+
+\begin_layout Standard
+We mapped reads into bins for the whole-genome and looked for significant
+ differences between ChIP-seq experiments using statistical tests.
+ We used our algorithm to adjust for the differences that were identified
+ on the basis of peak callers by for similar binding sites.
+ This approach is significantly different from other approaches because
+ it assumes that the distribution of the reads can be shown to be diffential
+ via hypothesis testing.
+ Other algorithms only find overlapping peaks and find differential peaks
+ according to p-values.
+ Additionally, we make strong assumptions about the data by using the binned
+ reads, and performing the statistics on these bins assumes that they are
+ independant.
+ This is not a entirely valid because the aligned reads can overlap bins.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename C:/Documents and Settings/Colin Diesh/Desktop/t3.PNG
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Split-apply combine approach for our data analysis for processing each chromosom
+es individually
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Comparison of replicate experiments
+\end_layout
+
+\begin_layout Standard
+We compared biological replicates ChIP-seq experiments and found that most
+ of the differences (unique peaks) are near y=x showing that results are
+ not significantly different from each other (Figure 1).
+ Even though the differences are close to y=x, these unique peaks are not
+ identified in both strains by the peak caller.
+ Therefore we might be interested in evaluating the significance of these
+ unique peaks rather than calling them different based on the peak findings.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -560,7 +864,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<show-off,out.width='.45
+<<show-off,fig.width=5.5,fig.height=5.5,out.width='.45
 \backslash
 
 \backslash
@@ -597,7 +901,11 @@ igh_peaks.bed'),wiggleTable,4,6,'Comparison of raw read scores for S96 replicate
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Comparison of replicate experiments
+Comparison of S96 replicates shows high correlation (>0.9) and peaks that
+ are non-overlapping are clustered about y=x showing that they are not very
+ different.
+ The log2 plot does not show large differences either.
+ 
 \end_layout
 
 \end_inset
@@ -608,17 +916,30 @@ Comparison of replicate experiments
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+Comparison of different strains
 \end_layout
 
 \begin_layout Standard
-Preview 2
+Next, we compared the two different strains of yeast, S96 and HS959, by
+ using the same procedure.
+ In this case, we found noticeable differences in the peaks that are called
+ unique.
+ Figure 2 shows clear differences between the peaks that are called unique
+ in each dataset.
+ Looking at the log-transform shows that most of these positions have large
+ fold-change differences that might be called significant.
+ We have not applied any techniques for evaluating the significance of these
+ results yet, so it is unknown whether these are meaningful.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset ERT
@@ -626,7 +947,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<show-off2,out.width='.45
+<<show-off2,fig.width=5.5,fig.height=5.5,out.width='.45
 \backslash
 
 \backslash
@@ -663,7 +984,299 @@ rk2"),logscale=TRUE)
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Comparison of two individual strains
+Comparison of the S96 and HS959 genomes.
+ (Left) The read scores shows that the unique peaks have significantly different
+ groupings between each strain (Right) Log-transform of read scores shows
+ large fold-change differences exist amongst the peaks called unique (lines
+ indicate fold-change=2)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Normalization
+\end_layout
+
+\begin_layout Standard
+The comparison of the read scores shows some clear differences across different
+ conditions (strains), but is some evidence of bias and noise in the data.
+ If the read depth is not equal for the experiments it results then we would
+ expect the slope to be linearly offset across the entire experiment.
+ Some early studies showed that there were peaks in the input control DNA
+ proximal to promoter regions which is a source of bias.
+ Others have shown mappability and GC content as a model of bias is important
+ for comparing ChIP to input 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "liang_detecting_2011"
+
+\end_inset
+
+.
+ These results shows evidence for a possible non-linear interaction of read-dept
+h and transcription factor binding site coverage.
+ We explored several options for normalizing the data including background
+ subtraction, scaling, NormDiff 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "zheng_genetic_2010"
+
+\end_inset
+
+, MANorm and DIME for linear and non-linear correction.
+\end_layout
+
+\begin_layout Standard
+Random 
+\begin_inset Quotes eld
+\end_inset
+
+noise
+\begin_inset Quotes erd
+\end_inset
+
+ and bias can exist in high throughput experiments so a good model of ChIP-seq
+ data will be able to account for these features.
+ The background 'noise' from ChIP-seq can be the result from non-regulatory
+ interactions with the DNA, and a common approach is to subtract this background.
+ MACS uses the rate of the background interactions from input control as
+ a bar.
+ To subtract the noise the median of the background data can be subtracted
+ away.
+ This constant subtraction accounts for noise but not necessarily bias.
+ Also, it changes the original scale and returns values that are less than
+ zero.
+ One method for dealing with this is to simply assign zero to all less than
+ zero values.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<backsub,out.width='.45
+\backslash
+
+\backslash
+linewidth',echo=FALSE,cache=TRUE,dev='png',fig.show='hold'>>= 
+\end_layout
+
+\begin_layout Plain Layout
+
+makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/s96rep2-h
+igh_peaks.bed'),backSubTable,4,6,'Background subtracted read scores for S96
+ replicates','S96rep1','S96rep2',c("Overlap","Rep1 unique","Rep2 unique"),brewer.
+pal(3,"Set1"))
+\end_layout
+
+\begin_layout Plain Layout
+
+makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/hs959rep1
+-new_peaks.bed'),backSubTable,4,8,'Background subtracted for S96 vs HS959','S96',
+ 'HS959', c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Dark2"))
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Using background subtraction to reduce noise
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Zheng et al.
+ extensively used the NormDiff for finding quantitative measurements of
+ the differences between experiments.
+ They relied on the NormDiff score for finding 
+\begin_inset Quotes eld
+\end_inset
+
+variable binding regions
+\begin_inset Quotes erd
+\end_inset
+
+ across ChIP-seq experiments in order to perform QTL mapping of the variable
+ traits and associate the difference with the genetic marker maps.
+ Additionally, the score was used for calculating variable clusters to find
+ significant differences associated with the marker maps.
+ These genome-wide associations rely on the ability of the NormDiff score
+ for assessing the variability in the binding data.
+ We implemented NormDiff scores according to the described algorithm using
+ R and found that NormDiff was a better model for replicate experiments
+ compared to background subtraction without normalization and background
+ subtraction with global variance stabalization.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename C:/Documents and Settings/Colin Diesh/Desktop/My Dropbox/Figures (2)/media/image9.png
+	scale 25
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename C:/Documents and Settings/Colin Diesh/Desktop/My Dropbox/Figures (2)/media/image10.png
+	scale 25
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename C:/Documents and Settings/Colin Diesh/Desktop/My Dropbox/Figures (2)/media/image11.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+MA-style plots showing line of best fit for S96 replicates.
+ Top row: (a) Using ChIP-seq minus input control with background scaling
+ (b) NormDiff with global variance parameter.
+ Bottom row: (c) NormDiff with local variance parameter
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The result that NormDiff has good normalizing properties over other background
+ subtraction is a good result.
+ NormDiff effectively models the foreground and background as Poisson where
+ the input is the sum of two functions.
+ Compare to other normalizations would be useful.
+\end_layout
+
+\begin_layout Standard
+Variable binding traits were calculated from the highest quantile regions
+ of variable positions across all NormDiff experiments.
+ This value is easily calculated from data in wiggleTable format.
+ Nearby (<20bp) variable positions are merged together and the sum of all
+ NormDiff scores are used as a summary for the variable binding regions.
+ 
+\end_layout
+
+\begin_layout Section
+Testing for differential binding sites
+\end_layout
+
+\begin_layout Standard
+We did not test the robustness of clustering results because we did not
+ incorporate genetic marker maps into our analysis.
+ To compare the significance of the differences between experiments, we
+ first looked at the distribution of the log-ratios of the read scores.
+ The distribution of log-ratios across microarrays is often assumed to be
+ normally distributed (even if it isn't) 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "wit_statistics_2004"
+
+\end_inset
+
+.
+ However, we do see that there are significant departures from an expected
+ normal quantiles at higher values (see Figure 8).
+ The t-test is designed with normally distributed data, but even though
+ our distribution is not perfectly Gaussian wanted to see if the normal
+ assumption would be able to aid detection of differentially bound sites.
+ We used limma to construct a design matrix that corresponds to a two-sample
+ t-test using two available replicates for each parent strain (under alpha
+ factor treatment).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename C:/Documents and Settings/Colin Diesh/Desktop/My Dropbox/Figures (2)/media3/image7.png
+	scale 25
+
+\end_inset
+
+S
+\begin_inset Graphics
+	filename C:/Documents and Settings/Colin Diesh/Desktop/My Dropbox/Figures (2)/media3/image8.png
+	scale 25
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+(left) The distribution of the log-ratios of read-scores between two parent
+ strains (right) The t-test p-values is fairly uniform after empirical Bayes
+ smoothing using limma
 \end_layout
 
 \end_inset

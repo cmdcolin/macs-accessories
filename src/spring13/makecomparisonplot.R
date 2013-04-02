@@ -57,13 +57,13 @@ makeComparisonPlotHelp<-function(bedOverlap,bedUnique1,bedUnique2,table,c1,c2,ti
   title(titlex)
   if(logscale==TRUE&&MA==FALSE){
     
-    lines(1:9,(-1:7),lwd=3,col=fillx[3])
-    lines(-1:7,(1:9),lwd=3,col=fillx[3])
+    lines(seq(sqrt(2),9+sqrt(2),length=9)),lwd=3,col=fillx[3])
+    lines(seq(-sqrt(2),9-sqrt(2),length(9)),lwd=3,col=fillx[3])
   }
   else if(logscale==TRUE&&MA==TRUE) {
     
-    lines(0:9,rep(2,10),lwd=2,col=fillx[3])
-    lines(0:9,rep(-2,10),lwd=2,col=fillx[3])
+    lines(0:9,rep(1,10),lwd=2,col=fillx[3])
+    lines(0:9,rep(-1,10),lwd=2,col=fillx[3])
   }
 }
 
