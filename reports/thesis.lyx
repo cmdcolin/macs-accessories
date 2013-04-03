@@ -325,10 +325,6 @@ The main experimental protocol for ChIP-seq experiments showing the sequencing
 \end_layout
 
 \begin_layout Standard
-The basic idea behind 
-\end_layout
-
-\begin_layout Standard
 Chromatin immunoprecipitation combined with high throughput sequencing (ChIP-seq
 ) is produces millions of short sequencing reads from DNA fragments that
  are associated with a particular DNA-protein interaction.
@@ -543,23 +539,24 @@ We used the peaks that they calculated using MACS and reproduced their results
 \end_layout
 
 \begin_layout Standard
-Of the 
-\end_layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset Tabular
-<lyxtabular version="3" rows="3" columns="4">
+<lyxtabular version="3" rows="4" columns="3">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
 <row>
 <cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+Genome  
 \end_layout
 
 \end_inset
@@ -568,25 +565,16 @@ Of the
 \begin_inset Text
 
 \begin_layout Plain Layout
-Total Unique
+Annotated peak target genes (sacCer 3)
 \end_layout
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-Unique S96
-\end_layout
 
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-Unique HS959
 \end_layout
 
 \end_inset
@@ -597,7 +585,7 @@ Unique HS959
 \begin_inset Text
 
 \begin_layout Plain Layout
-Zheng et al.
+S96
 \end_layout
 
 \end_inset
@@ -606,7 +594,27 @@ Zheng et al.
 \begin_inset Text
 
 \begin_layout Plain Layout
-1112
+292
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Overlap
 \end_layout
 
 \end_inset
@@ -615,16 +623,16 @@ Zheng et al.
 \begin_inset Text
 
 \begin_layout Plain Layout
-880
+843/820 non-redundant
 \end_layout
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-874
+
 \end_layout
 
 \end_inset
@@ -635,7 +643,7 @@ Zheng et al.
 \begin_inset Text
 
 \begin_layout Plain Layout
-sacCer3 peak annotations
+HS959
 \end_layout
 
 \end_inset
@@ -644,25 +652,16 @@ sacCer3 peak annotations
 \begin_inset Text
 
 \begin_layout Plain Layout
-1179 
+336
 \end_layout
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-885 
-\end_layout
 
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-884
 \end_layout
 
 \end_inset
@@ -673,24 +672,9 @@ sacCer3 peak annotations
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename C:/Documents and Settings/Colin Diesh/Desktop/venn_result706.png
-
-\end_inset
-
-
 \begin_inset Graphics
 	filename C:/Documents and Settings/Colin Diesh/Desktop/fig1.PNG
-	scale 50
+	scale 35
 
 \end_inset
 
@@ -720,12 +704,6 @@ status open
 
 \end_layout
 
-\begin_layout Standard
-However, if we wanted to see where the most significant differences were,
- we cannot see from this data itself.
- 
-\end_layout
-
 \begin_layout Subsection
 Processing of data
 \end_layout
@@ -734,11 +712,35 @@ Processing of data
 We used MACS to identify peaks in each dataset.
  We also used a peak-centric approach and seperated the peak list into groups
  of overlapping and non-overlapping peaks from each experiment.
- Then we used the wiggle files outputted from MACS to bin the reads calculate
- the reads overlapping each genome position for the peaks identified in
- each dataset and plotted them against each-other.
- We used a design pattern for data analysis from the plyr package in R that
- uses a 
+ The output from MACS in wiggle file format is used as the number of reads
+ in non-overlapping bins p.
+ The binned reads were combined all experiments into a single data table
+ using a familiar databases algorithm called an 
+\begin_inset Quotes eld
+\end_inset
+
+inner-join
+\begin_inset Quotes erd
+\end_inset
+
+ to match all read positions across all experiments.
+ We also explored using an outer-join to include data for genome positions
+ where zero reads aligned, however, this instead of filling zero for these
+ positions we called these values missing.
+ Then, the read values for these regions were imputed across nearby positions.
+ This approach creates problems and creates striping of the data (Figure
+ 6).
+ 
+\end_layout
+
+\begin_layout Standard
+The resulting table of reads is large containing at 4-byte numeric over
+ the whole genome divided into bins for each experiment.
+ We used approximatelly 118mb for this table for the yeast ChIP-seq experiments
+ we ysed (genome size 1.2*10^7bp, bin size n=10bp).
+ Clearly, the dataset could become unmanageable for limited-memory environments
+ if a larger genome was being processed or if a larger cohort was studied.
+ We used a design pattern for data analysis called 
 \begin_inset Quotes eld
 \end_inset
 
@@ -746,7 +748,7 @@ split-apply-combine
 \begin_inset Quotes erd
 \end_inset
 
- approach 
+ to break up the data for processing 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "wickham_split-apply-combine_2011"
@@ -762,7 +764,7 @@ Split-apply-combine
 \begin_inset Quotes erd
 \end_inset
 
- is a useful design pattern for big data and it is similar to the 
+ is similar to the 
 \begin_inset Quotes eld
 \end_inset
 
@@ -770,13 +772,11 @@ map-reduce
 \begin_inset Quotes erd
 \end_inset
 
- design pattern for parallel computing environments.
- This is very useful for analyzing tables where an arbitrary number of experimen
-ts are combined into a data table.
- While one data source might be able to be loaded into memory at once, many
- experiments can be analyzed at once.
- Then the read counts are split by chromosomes into different data frames
- to apply functions to read counts and finally combine the results.
+ design pattern for parallel computing environments that can subdivide tasks
+ amoungst workers, and it is also useful where the data can be split logically
+ across a factor.
+ In our case the read counts are split by chromosomes into different data
+ frames to apply processing to read counts.
  The data can be split into more frames by cutting the table across ranges
  or other factors also, but for our application, it was easiest to split
  across chromosomes and apply functions without worrying about matching
@@ -1153,15 +1153,15 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename C:/Documents and Settings/Colin Diesh/Desktop/My Dropbox/Figures (2)/media/image9.png
-	scale 25
+	filename C:/Documents and Settings/Colin Diesh/Desktop/Rplot126.png
+	scale 40
 
 \end_inset
 
 
 \begin_inset Graphics
-	filename C:/Documents and Settings/Colin Diesh/Desktop/My Dropbox/Figures (2)/media/image10.png
-	scale 25
+	filename C:/Documents and Settings/Colin Diesh/Desktop/tumblr_inline_mj3mgt02661qz4rgp.png
+	scale 40
 
 \end_inset
 
@@ -1170,8 +1170,8 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename C:/Documents and Settings/Colin Diesh/Desktop/My Dropbox/Figures (2)/media/image11.png
-	scale 40
+	filename C:/Documents and Settings/Colin Diesh/Desktop/tumblr_inline_mj3mgfuNoy1qz4rgp.png
+	scale 60
 
 \end_inset
 
@@ -1182,10 +1182,11 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-MA-style plots showing line of best fit for S96 replicates.
- Top row: (a) Using ChIP-seq minus input control with background scaling
+MA-style plots (no log transformation) showing line of best fit for S96
+ replicates.
+ Left-to-right (a) Using ChIP-seq minus input control with background scaling
  (b) NormDiff with global variance parameter.
- Bottom row: (c) NormDiff with local variance parameter
+ (c) NormDiff with local variance estimation parameter (shown larger)
 \end_layout
 
 \end_inset
@@ -1242,9 +1243,35 @@ key "wit_statistics_2004"
  The t-test is designed with normally distributed data, but even though
  our distribution is not perfectly Gaussian wanted to see if the normal
  assumption would be able to aid detection of differentially bound sites.
- We used limma to construct a design matrix that corresponds to a two-sample
- t-test using two available replicates for each parent strain (under alpha
- factor treatment).
+ Our original goal was to assess significance of differential binding sites
+ according to Welch t-tests.
+ However we found that the t-test struggles when there is very small variance
+ such as those amoungst the background values.
+ Therefore, we used a so-called 
+\begin_inset Quotes eld
+\end_inset
+
+moderated t-test
+\begin_inset Quotes erd
+\end_inset
+
+ using the limma package 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "smyth_linear_2004"
+
+\end_inset
+
+ to compare the replicates from S96 vs HS959 (under alpha factor treatment).This
+ moderated t-test, also referred to as the empirical Bayes t-test, was necesary
+ for correcting small variance in the background region across byby adding
+ a factor 
+\begin_inset Formula $s_{0}$
+\end_inset
+
+ to the variance pool that represents a common standard deviation for all
+ windows.
+ The effective 
 \end_layout
 
 \begin_layout Standard
@@ -1284,6 +1311,66 @@ S
 
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Using this method, we were able to identify significant differential binding
+ sites from the binned read scores.
+ By merging nearby windows that pass the adjusted p-values we get a picture
+ of true differential binding sites.
+ This analysis is not based on any previous assumptions about the distribution
+ of peaks, however the cutoff of what p-values are significant is heuristic.
+ We don't do any multiple-corrections and simply look at the top 5000 p-values
+ and merge nearby sites.
+ After merging nearby windows less than 20bp apart from each other we obtain
+ 1100 unique significant differential sites.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename C:/Documents and Settings/Colin Diesh/Desktop/My Dropbox/Figures (2)/Rplot112.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename C:/Documents and Settings/Colin Diesh/Desktop/My Dropbox/Figures (2)/Rplot123.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+(left) The differential sites that are selected from the t-test approach
+ are highly different from the conserved values.
+ (right) Overlap of read counts from S96 and HS959 shows overlapping peaks,
+ however the strength of the peaks is clearly different (P=0.0002, log fold-chang
+e=5.41)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Plain Layout
 
 \end_layout
@@ -1293,13 +1380,33 @@ S
 
 \end_layout
 
+\begin_layout Standard
+While the normal assumption produces analogies to microarray data that is
+ useful, the actual distributions for sequencing data should be taken into
+ consideration: the sequencing data is based on counts and it is discrete.
+ In our previous work we did something that was similar by modelling peaks
+ in terms of a normal distribution.
+ We used the distribution of NormDiff scores across all genome positions
+ and identified significant deviations from these values as peaks.
+ Under the null hypothesis, the scaled background signal with no foreground
+ signal corresponds to a normal distribution.
+ If If there is a MACS algorithm and it is successful and modelling across
+ 
+\end_layout
+
 \begin_layout Section
 Conclusion
 \end_layout
 
 \begin_layout Standard
 We were able to find significant differences according to a t-test method
- that is commonly used for microarray experiments in ChIP-seq data
+ that is commonly used for microarray experiments in ChIP-seq data.
+ Our statistics might be underpowered because we do not have a good model
+ fit but it's possible that better improvements would find a better solution.
+ We considered other software including edgeR, a negative binomial test
+ that is a successor or limma for HTS data and DIME, a mixture model for
+ differential expression for ChIP-seq specifically.
+ 
 \end_layout
 
 \begin_layout Standard

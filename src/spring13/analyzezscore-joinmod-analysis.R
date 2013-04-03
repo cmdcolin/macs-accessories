@@ -247,8 +247,8 @@ par(mfrow=c(1,1))
 #####################################################
 #########################
 
-x<-topTable(fit,number=50000)
-volcanoplot(fit,coef=1)
+x<-topTable(fit,number=5000)
+volcanoplot(eb,coef=1)
 points(x$logFC,x$B,col="#FF000077",pch=16,cex=0.35)
 title('Log difference vs Log odds S96vsHS959')
 
@@ -258,6 +258,26 @@ x2<-wiggleTable[x$ID,]
 write.table(cbind(wiggleTable[x$ID,1],wiggleTable[x$ID,2],wiggleTable[x$ID,2]+1),col.names=FALSE,row.names=FALSE,sep='\t')
 plot(wiggleTable[,c(4,8)],pch=16,cex=.25,col=rgb(1,0,0,0.5),xlab)
 points(x2[,c(4,8)],pch=16,cex=.25,col=rgb(0,0,0,0.5))
+
+
+
+
+
+
+
+
+
+
+
+
+
+y<-predFC(D2,prior.count.total=2*ncol(D2))
+heatmap.2(y,Rowv=NA,Colv=NA,trace="none")
+
+
+et <- exactTest(D2)
+topTags(et, n=20)
+
 
 
 makeComparisonPlotHelp2(wiggleTable[x$ID,],loadBed("s96vshs959overlap.bed")wiggleTable,4,8,'Differential peaks highlighted with t-test','S96', 'HS959', c("Overlap","Differential"),brewer.pal(3,"Dark2"),FALSE,FALSE)
