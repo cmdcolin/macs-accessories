@@ -919,212 +919,82 @@ Comparison of S96 replicates shows high correlation (>0.9) and peaks that
 \end_layout
 
 \begin_layout Subsection
-Comparison of different strains
-\end_layout
-
-\begin_layout Standard
-Next, we compared the two different strains of yeast, S96 and HS959, by
- using the same procedure.
- In this case, we found noticeable differences in the peaks that are called
- unique.
- Figure 2 shows clear differences between the peaks that are called unique
- in each dataset.
- Looking at the log-transform shows that most of these positions have large
- fold-change differences that might be called significant.
- We have not applied any techniques for evaluating the significance of these
- results yet, so it is unknown whether these are meaningful.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-<<show-off2,fig.width=5.5,fig.height=5.5,out.width='.45
-\backslash
-
-\backslash
-linewidth',echo=FALSE,cache=TRUE,dev='png',fig.show='hold'>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/hs959rep1
--new_peaks.bed'),wiggleTable,4,8,'Comparison of raw read scores for S96 vs
- HS959','S96', 'HS959', c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Da
-rk2"))
-\end_layout
-
-\begin_layout Plain Layout
-
-makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/hs959rep1
--new_peaks.bed'),wiggleTable,4,8,'Comparison of raw read scores for S96 vs
- HS959','S96', 'HS959', c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Da
-rk2"),logscale=TRUE)
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Comparison of the S96 and HS959 genomes.
- (Left) The read scores shows that the unique peaks have significantly different
- groupings between each strain (Right) Log-transform of read scores shows
- large fold-change differences exist amongst the peaks called unique (lines
- indicate fold-change=2)
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
 Normalization
 \end_layout
 
 \begin_layout Standard
-The comparison of the read scores shows some clear differences across different
- conditions (strains), but is some evidence of bias and noise in the data.
- If the read depth is not equal for the experiments it results then we would
- expect the slope to be linearly offset across the entire experiment.
- Some early studies showed that there were peaks in the input control DNA
- proximal to promoter regions which is a source of bias.
- Others have shown mappability and GC content as a model of bias is important
- for comparing ChIP to input 
+Noise and bias can exist in high throughput experiments so a good model
+ of ChIP-seq data will be able to account for these features.
+ The background 'noise' from ChIP-seq can be the result from non-regulatory
+ interactions with the DNA, but there are also more complex features that
+ might be considered.
+ Some studies have shown bias in the input control libraries for promoter
+ regions and transcription start site (TSS) 
 \begin_inset CommandInset citation
 LatexCommand cite
-key "liang_detecting_2011"
+key "nix_empirical_2008"
 
 \end_inset
 
 .
- These results shows evidence for a possible non-linear interaction of read-dept
-h and transcription factor binding site coverage.
- We explored several options for normalizing the data including background
- subtraction, scaling, NormDiff 
+ Another observation can be seen clearly from comparing different experiments
+ (see Figure 6) which shows a 
+\begin_inset Quotes eld
+\end_inset
+
+banana shape
+\begin_inset Quotes erd
+\end_inset
+
+ that suggests a non-linear relationship between the read depth and binding
+ site coverage across experiments.
+ These sources of bias have sometimes been treated by performing a background
+ subtraction of the control from the ChIP-seq data.
+ The background subtraction and normalization using a 
+\begin_inset Quotes eld
+\end_inset
+
+Normalized window score
+\begin_inset Quotes erd
+\end_inset
+
+ was shown to be helpful for controlling the false-positive rate for peak
+ finding experiments 
 \begin_inset CommandInset citation
 LatexCommand cite
+key "nix_empirical_2008"
+
+\end_inset
+
+.
+ Another similar algorithm for background subtraction and normalization
+ called NormDiff was developed by 
+\begin_inset CommandInset citation
+LatexCommand cite
+after "Zheng et al. "
 key "zheng_genetic_2010"
 
 \end_inset
 
-, MANorm and DIME for linear and non-linear correction.
-\end_layout
-
-\begin_layout Standard
-Random 
+ which includes a scaling factor to account for differences in the sequencing
+ depth and a 
 \begin_inset Quotes eld
 \end_inset
 
-noise
+dynamic
 \begin_inset Quotes erd
 \end_inset
 
- and bias can exist in high throughput experiments so a good model of ChIP-seq
- data will be able to account for these features.
- The background 'noise' from ChIP-seq can be the result from non-regulatory
- interactions with the DNA, and a common approach is to subtract this background.
- MACS uses the rate of the background interactions from input control as
- a bar.
- To subtract the noise the median of the background data can be subtracted
- away.
- This constant subtraction accounts for noise but not necessarily bias.
- Also, it changes the original scale and returns values that are less than
- zero.
- One method for dealing with this is to simply assign zero to all less than
- zero values.
+ parameter to estimate local regions of variation in the data .
+ We evaluated the different types of NormDiff type scores to compare.
  
 \end_layout
 
 \begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-<<backsub,out.width='.45
-\backslash
-
-\backslash
-linewidth',echo=FALSE,cache=TRUE,dev='png',fig.show='hold'>>= 
-\end_layout
-
-\begin_layout Plain Layout
-
-makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/s96rep2-h
-igh_peaks.bed'),backSubTable,4,6,'Background subtracted read scores for S96
- replicates','S96rep1','S96rep2',c("Overlap","Rep1 unique","Rep2 unique"),brewer.
-pal(3,"Set1"))
-\end_layout
-
-\begin_layout Plain Layout
-
-makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/hs959rep1
--new_peaks.bed'),backSubTable,4,8,'Background subtracted for S96 vs HS959','S96',
- 'HS959', c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Dark2"))
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Using background subtraction to reduce noise
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 Zheng et al.
- extensively used the NormDiff for finding quantitative measurements of
- the differences between experiments.
- They relied on the NormDiff score for finding 
+ extensively used the NormDiff score for comparing ChIP-seq experiments
+ quantitatively.
+ They identified 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1132,16 +1002,24 @@ variable binding regions
 \begin_inset Quotes erd
 \end_inset
 
- across ChIP-seq experiments in order to perform QTL mapping of the variable
- traits and associate the difference with the genetic marker maps.
- Additionally, the score was used for calculating variable clusters to find
- significant differences associated with the marker maps.
+ across ChIP-seq experiments and used NormDiff as a quantitative trait in
+ order to perform QTL mapping.
+ Additionally, the NormDiff score was used for variable clusters to find
+ significant patterns of long-range 
+\begin_inset Quotes eld
+\end_inset
+
+trans-factor
+\begin_inset Quotes erd
+\end_inset
+
+ associations in transcription factor activity.
  These genome-wide associations rely on the ability of the NormDiff score
- for assessing the variability in the binding data.
- We implemented NormDiff scores according to the described algorithm using
- R and found that NormDiff was a better model for replicate experiments
- compared to background subtraction without normalization and background
- subtraction with global variance stabalization.
+ for assessing the variability in the binding data, and we wanted to assess
+ the model fit of NormDiff for comparing experiments We implemented NormDiff
+ using R 2.13.2 and found that NormDiff was a superior model for removing
+ bias compared to background subtraction no normalization and background
+ subtraction without local variance estimators (w=all).
  
 \end_layout
 
@@ -1218,6 +1096,89 @@ Variable binding traits were calculated from the highest quantile regions
  Nearby (<20bp) variable positions are merged together and the sum of all
  NormDiff scores are used as a summary for the variable binding regions.
  
+\end_layout
+
+\begin_layout Subsection
+Comparison of different strains
+\end_layout
+
+\begin_layout Standard
+Next, we compared the two different strains of yeast, S96 and HS959, by
+ using the same procedure.
+ In this case, we found noticeable differences in the peaks that are called
+ unique.
+ Figure 2 shows clear differences between the peaks that are called unique
+ in each dataset.
+ Looking at the log-transform shows that most of these positions have large
+ fold-change differences that might be called significant.
+ We have not applied any techniques for evaluating the significance of these
+ results yet, so it is unknown whether these are meaningful.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<show-off2,fig.width=5.5,fig.height=5.5,out.width='.45
+\backslash
+
+\backslash
+linewidth',echo=FALSE,cache=TRUE,dev='png',fig.show='hold'>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/hs959rep1
+-new_peaks.bed'),wiggleTable,4,8,'Comparison of raw read scores for S96 vs
+ HS959','S96', 'HS959', c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Da
+rk2"))
+\end_layout
+
+\begin_layout Plain Layout
+
+makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/hs959rep1
+-new_peaks.bed'),wiggleTable,4,8,'Comparison of raw read scores for S96 vs
+ HS959','S96', 'HS959', c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Da
+rk2"),logscale=TRUE)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Comparison of the S96 and HS959 genomes.
+ (Left) The read scores shows that the unique peaks have significantly different
+ groupings between each strain (Right) Log-transform of read scores shows
+ large fold-change differences exist amongst the peaks called unique (lines
+ indicate fold-change=2)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
