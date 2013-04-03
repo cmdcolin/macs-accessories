@@ -91,8 +91,8 @@ Transcription factors play an important role in gene regulation by binding
  to difficulties.
  We created a software for comparing ChIP-seq experiments and finding significan
 t differential peaks using statistical testing.
- We used our algorithm to adjust for the differences that were identified
- on the basis of peak callers.
+ We used our algorithm show evidence for differential peaks that are called
+ by peak callers across experiments.
 \end_layout
 
 \begin_layout Standard
@@ -264,11 +264,19 @@ key "zheng_genetic_2010"
 \end_layout
 
 \begin_layout Standard
-(Note: more background is needed for the reader here 
+Unfortunately, the metrics for identifying transcription factor binding
+ sites, such as p-values and FDR, read depth, etc.
+ are not directly comparable across different experiments, which leads to
+ difficulties for comparing them.
+ We created software for comparing ChIP-seq experiments and finding significant
+ differential peaks using statistical testing.
+ We used our algorithm show evidence for differential peaks that are called
+ by peak callers across experiments.
 \end_layout
 
 \begin_layout Standard
-Discuss the results of these studies, and the methods that have been used)
+(Note: more background is needed for the reader here, including the goals
+ of our analysis!)
 \end_layout
 
 \begin_layout Subsection
@@ -399,7 +407,7 @@ Identifying differences in transcription factor occupancy
 \end_layout
 
 \begin_layout Standard
-(Note: this section is poorly written and needs more structure)
+(Note: this section needs more “structure” to get point across)
 \end_layout
 
 \begin_layout Standard
@@ -755,8 +763,8 @@ inner-join
 \begin_layout Standard
 The resulting table of reads is a large data matrix containing 4-byte numeric
  read counts for the whole genome divided into bins for each experiment.
- We used approximatelly 118mb for this table in memory for six yeast ChIP-seq
- experiments we ysed (genome size 1.2*10^7bp, bin size n=10bp).
+ We used approximately 118mb for this table in memory for six yeast ChIP-seq
+ experiments we used (genome size 1.2*10^7bp, bin size n=10bp).
  Clearly, these tables could become very large for limited-memory environments
  if a larger genome was being processed or if a larger cohort was studied.
  We used a design pattern for data analysis called 
@@ -1048,7 +1056,7 @@ banana shape
 \end_inset
 
  that suggests a non-linear relationship between the read depth and binding
- site coverage across experiments (see Figure 6) .
+ site coverage across experiments (Figure 4) .
  These sources of bias have sometimes been treated by performing a background
  subtraction of the control from the ChIP-seq data.
  The background subtraction and normalization using a 
@@ -1166,11 +1174,7 @@ status open
 \begin_layout Plain Layout
 MA-style plots (no log-transformation) showing line of best fit for different
  normalization techniques using background subtraction.
- NormDiff with local variance estimation provides the best fit slope
-\begin_inset Formula $b=0.02\pm0.005$
-\end_inset
-
-.
+ NormDiff with local variance estimation provides the best fit slope.
  Left-to-right (a) Using background subtraction with scaling for read depth
  (b) NormDiff with variance parameter estimated from all points (c) NormDiff
  with local variance estimation parameter.
@@ -1194,11 +1198,13 @@ MA-style plots (no log-transformation) showing line of best fit for different
 Testing for differential binding sites
 \end_layout
 
+\begin_layout Subsection
+Statistical characterization
+\end_layout
+
 \begin_layout Standard
-We did not test the robustness of clustering results because we did not
- incorporate genetic marker maps into our analysis.
- To compare the significance of the differences between experiments, we
- first looked at the distribution of the log-ratios of the read scores.
+To compare binding sites between experiments, we looked at the distribution
+ of the log-ratios of the read scores.
  The distribution of log-ratios across microarrays is often assumed to be
  normally distributed (even if it isn't) 
 \begin_inset CommandInset citation
@@ -1308,16 +1314,21 @@ ts after p-values calculates from the empirical Bayes smoothing (moderated
 
 \end_layout
 
+\begin_layout Subsection
+Identifying differential peaks
+\end_layout
+
 \begin_layout Standard
-Using this method, we were able to identify significant differential read
- counts from the binned read scores.
- By merging nearby windows we get a picture of true differential binding
+After performing statistical tests, we were able to identify significant
+ differential peaks by merging merging nearby differential read count bins.
+ Our assessment of differential peaks is not based on any previous assumptions
+ about the distribution of peaks from other peak finders such as MACS.
+ The assessment of differential peaks from our analysis is heuristic and
+ could be based off of the cutoff of what p-values are significant and what
+ fold-change differences.
+ We use the top 5000 p-values and after merging nearby windows less than
+ 20bp apart from each other we obtain 1168 unique significant differential
  sites.
- This analysis is not based on any previous assumptions about the distribution
- of peaks, however the cutoff of what p-values are significant is heuristic.
- We don't do any multiple-corrections and used the top 5000 p-values.
- Then, after merging nearby windows less than 20bp apart from each other
- we obtain 1168 unique significant differential sites.
 \end_layout
 
 \begin_layout Standard
@@ -1399,6 +1410,10 @@ turned on its side
  comparing across experiments.
 \end_layout
 
+\begin_layout Section
+Future work and considerations
+\end_layout
+
 \begin_layout Subsection
 Considerations for final draft of thesis
 \end_layout
@@ -1442,8 +1457,8 @@ Doing explicit comparison of the 1168 differential sites that we identified
 \end_layout
 
 \begin_layout Itemize
-Also compare with DIME, edgeR or MACS overlapping/non-overlapping peaks,
- or MACS differential peaks identification using sample swap
+Also our results with other software DIME, edgeR or MACS (this is currently
+ NOT done!)
 \end_layout
 
 \end_deeper
