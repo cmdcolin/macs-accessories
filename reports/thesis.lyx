@@ -73,10 +73,6 @@ Comparison of transcription factor finding sites from related genomes using
  ChIP-seq
 \end_layout
 
-\begin_layout Author
-Colin Diesh
-\end_layout
-
 \begin_layout Abstract
 Transcription factors play an important role in gene regulation by binding
  and interacting with DNA.
@@ -704,7 +700,7 @@ HS959
 
 
 \begin_inset Graphics
-	filename C:/Documents and Settings/Colin Diesh/Desktop/fig1.PNG
+	filename figure/fig1.PNG
 	scale 35
 
 \end_inset
@@ -821,7 +817,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename C:/Documents and Settings/Colin Diesh/Desktop/t3.PNG
+	filename figure/t3.PNG
 	scale 50
 
 \end_inset
@@ -887,7 +883,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<show-off,fig.width=5.5,fig.height=5.5,out.width='.45
+<<show-off,fig.width=5,fig.height=5,out.width='.45
 \backslash
 
 \backslash
@@ -974,7 +970,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<show-off2,fig.width=5.5,fig.height=5.5,out.width='.45
+<<show-off2,fig.width=5,fig.height=5,out.width='.45
 \backslash
 
 \backslash
@@ -1143,14 +1139,14 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename C:/Documents and Settings/Colin Diesh/Desktop/Rplot126.png
+	filename figure/Rplot126.png
 	scale 40
 
 \end_inset
 
 
 \begin_inset Graphics
-	filename C:/Documents and Settings/Colin Diesh/Desktop/tumblr_inline_mj3mgt02661qz4rgp.png
+	filename figure/tumblr_inline_mj3mgt02661qz4rgp.png
 	scale 40
 
 \end_inset
@@ -1160,7 +1156,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename C:/Documents and Settings/Colin Diesh/Desktop/tumblr_inline_mj3mgfuNoy1qz4rgp.png
+	filename figure/tumblr_inline_mj3mgfuNoy1qz4rgp.png
 	scale 60
 
 \end_inset
@@ -1257,21 +1253,14 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename C:/Documents and Settings/Colin Diesh/Desktop/My Dropbox/Figures (2)/media3/image7.png
+	filename figure/image7.png
 	scale 40
 
 \end_inset
 
 
 \begin_inset Graphics
-	filename C:/Documents and Settings/Colin Diesh/Desktop/My Dropbox/Figures (2)/Rplot127.png
-	scale 40
-
-\end_inset
-
-
-\begin_inset Graphics
-	filename C:/Documents and Settings/Colin Diesh/Desktop/My Dropbox/Figures (2)/media3/image8.png
+	filename figure/Rplot127.png
 	scale 40
 
 \end_inset
@@ -1281,7 +1270,14 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename C:/Documents and Settings/Colin Diesh/Desktop/My Dropbox/Figures (2)/Rplot128.png
+	filename figure/image8.png
+	scale 36
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figure/Rplot128.png
 	scale 40
 
 \end_inset
@@ -1339,17 +1335,14 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename C:/Documents and Settings/Colin Diesh/Desktop/My Dropbox/Figures (2)/Rplot112.png
-	scale 40
+	filename figure/Rplot112.png
+	scale 36
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Plain Layout
 \begin_inset Graphics
-	filename C:/Documents and Settings/Colin Diesh/Desktop/My Dropbox/Figures (2)/Rplot123.png
+	filename figure/Rplot123.png
 	scale 40
 
 \end_inset

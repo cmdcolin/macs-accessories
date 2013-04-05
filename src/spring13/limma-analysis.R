@@ -167,5 +167,15 @@ makeComparisonPlotHelp2(x,loadBed("s96vshs959overlap.bed"),wiggleTable,4,8,'Diff
 
 
 
+wiggleTableNorm<-normalizeBetweenArrays(as.matrix(wiggleTable[,3:6]),method="scale")
+
+
+wiggleTableNorm<-cbind(wiggleTable[,c(1,2)],wiggleTableNorm)
+
+wigglePeaksNorm<-getPeakScores(loadBed('data/s96overlap-high-peaks.bed'),wiggleTableNorm)
+doheatmap(wigglePeaksNorm[,c(-1,-2)],Colv=TRUE,Rowv=TRUE)
+
+
+
 #write out positions?!
 write.table(cbind(wiggleTable[x$ID,1],wiggleTable[x$ID,2],wiggleTable[x$ID,2]+1),col.names=FALSE,row.names=FALSE,sep='\t')
