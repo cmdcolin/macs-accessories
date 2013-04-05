@@ -48,7 +48,7 @@ joinWiggleFiles<-function(chrnames,macswig) {
 
 
 
-doheatmap<-function(table,granularity=1,Rowv=NA,Colv=NA) {
+doheatmap<-function(table,granularity=1,Rowv=NA,Colv=NA,scale="none",dist=cor) {
   
   if(granularity!=1) {
     sret<-apply(table[,1:ncol(table)],2,function(x,g){
@@ -59,7 +59,7 @@ doheatmap<-function(table,granularity=1,Rowv=NA,Colv=NA) {
     sret<-table
   }
   
-  heatmap.2(as.matrix(sret),col=redgreen(75), scale="none",key=TRUE, 
+  heatmap.2(as.matrix(sret),col=redgreen(75), scale=scale,key=TRUE,
             density.info='none',trace='none',Rowv=Rowv,Colv=Colv)
 }
 
