@@ -878,38 +878,16 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-\begin_inset ERT
-status open
+\begin_inset Graphics
+	filename figure/show-off1.png
+	scale 50
 
-\begin_layout Plain Layout
+\end_inset
 
-<<show-off,fig.width=5,fig.height=5,out.width='.45
-\backslash
 
-\backslash
-linewidth',echo=FALSE,cache=TRUE,dev='png',fig.show='hold'>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/s96rep2-h
-igh_peaks.bed'),wiggleTable,4,6,'Comparison of raw read scores for S96 replicates
-','S96rep1','S96rep2',c("Overlap","Rep1 unique","Rep2 unique"),brewer.pal(3,"Set1
-"))
-\end_layout
-
-\begin_layout Plain Layout
-
-makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/s96rep2-h
-igh_peaks.bed'),wiggleTable,4,6,'Comparison of raw read scores for S96 replicates
- (log2)','S96rep1','S96rep2',c("Overlap","Rep1 unique","Rep2 unique"),brewer.pal(
-3,"Set1"),logscale=TRUE)
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
+\begin_inset Graphics
+	filename figure/show-off2.png
+	scale 50
 
 \end_inset
 
@@ -965,38 +943,16 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-\begin_inset ERT
-status open
+\begin_inset Graphics
+	filename figure/show-off21.png
+	scale 50
 
-\begin_layout Plain Layout
+\end_inset
 
-<<show-off2,fig.width=5,fig.height=5,out.width='.45
-\backslash
 
-\backslash
-linewidth',echo=FALSE,cache=TRUE,dev='png',fig.show='hold'>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/hs959rep1
--new_peaks.bed'),wiggleTable,4,8,'Comparison of raw read scores for S96 vs
- HS959','S96', 'HS959', c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Da
-rk2"))
-\end_layout
-
-\begin_layout Plain Layout
-
-makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/hs959rep1
--new_peaks.bed'),wiggleTable,4,8,'Comparison of raw read scores for S96 vs
- HS959','S96', 'HS959', c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Da
-rk2"),logscale=TRUE)
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
+\begin_inset Graphics
+	filename figure/show-off22.png
+	scale 50
 
 \end_inset
 

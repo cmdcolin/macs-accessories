@@ -99,3 +99,18 @@ makeComparisonPlotHelp2<-function(uniqueTab,overlapTab,table,c1,c2,titlex,xlab,y
   title(titlex)
 }
 
+
+# 
+# 
+# <<show-off,fig.width=5,fig.height=5,out.width='.45\\linewidth',echo=FALSE,cache=TRUE,dev='png',fig.show='hold'>>=
+#   makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/s96rep2-high_peaks.bed'),wiggleTable,4,6,'Comparison of raw read scores for S96 replicates','S96rep1','S96rep2',c("Overlap","Rep1 unique","Rep2 unique"),brewer.pal(3,"Set1"))
+# makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/s96rep2-high_peaks.bed'),wiggleTable,4,6,'Comparison of raw read scores for S96 replicates (log2)','S96rep1','S96rep2',c("Overlap","Rep1 unique","Rep2 unique"),brewer.pal(3,"Set1"),logscale=TRUE)
+# @
+
+
+
+# 
+# <<show-off2,fig.width=5,fig.height=5,out.width='.45\\linewidth',echo=FALSE,cache=TRUE,dev='png',fig.show='hold'>>=
+#   makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/hs959rep1-new_peaks.bed'),wiggleTable,4,8,'Comparison of raw read scores for S96 vs HS959','S96', 'HS959', c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Dark2"))
+# makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/hs959rep1-new_peaks.bed'),wiggleTable,4,8,'Comparison of raw read scores for S96 vs HS959','S96', 'HS959', c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Dark2"),logscale=TRUE)
+# @
