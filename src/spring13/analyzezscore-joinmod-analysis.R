@@ -120,3 +120,12 @@ makeComparisonPlotHelp(loadBed('s96overlap-high-peaks.bed'),loadBed('S96rep1-Dif
 
 makeComparisonPlotHelp(loadBed('s96vshs959overlap.bed'),loadBed('S96vsHS959-Diff_peaks.bed'),loadBed('HS959vsS96-Diff_peaks.bed'),wiggleTable,4,8,'Comparison of S96 vs HS959','S96rep1','HS959rep1',c("Overlap","S96rep1","HS959rep1"),brewer.pal(3,"Spectral"))
 #plot(retbin,main="Hexagonal binning")
+
+
+chip<-read.BED('data/ELAND-BED/SEG1ChIP_repc.bed')
+input<-read.BED('data/ELAND-BED/SEG1input.bed')
+ret<-bin.data(chip,input,1000)
+ret$input[ret$input>1000]<-1000
+ret$chip[ret$chip>8000]<-8000
+hexbin1<-hexbin(ret$input,ret$chip,xbins=250)
+plot(hexbin1,colramp=rainbow)

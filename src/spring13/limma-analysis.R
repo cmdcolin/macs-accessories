@@ -93,13 +93,15 @@ hist(pvals)
 makeComparisonPlot(loadBed('GSE19635_s96a_peaks.txt',header=TRUE),loadBed('GSE19635_HS_peaks.txt',header=TRUE),wiggleTable,4,8,'Comparison of raw read scores for S96 vs HS959','S96', 'HS959', c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Dark2"),FALSE,TRUE)
 
 
-
-
-M=log2(wiggleTable[,c(4,6)]/wiggleTable[,c(8,10)])
-M=log2(wiggleTable[,c(4,6,8,10)])
+out<-normalizeBetweenArrays(as.matrix(wiggleTable[,c(4,6,8,10,12,14,16,18)]),method="scale")
+noNormWigTab<-wiggleTable
+wiggleTable<-out
+rm(out)
+M=log2(wiggleTable[,c('V4','V6')]/wiggleTable[,c('V8','V10')])
+#M=log2(wiggleTable[,c(4,6,8,10)])
 fit<-lmFit(M)
 fit<-eBayes(fit)
-
+plot(fit$genes,fit$stddev.unscaled)
 ###############################################
 set.seed(2004); invisible(runif(100))
 M <- matrix(rnorm(100*6,sd=0.3),100,6)
@@ -108,14 +110,14 @@ fit <- lmFit(M)
 
 #  Ordinary t-statistic
 par(mfrow=c(1,2))
-ordinary.t <- fit$coef /fit$sigma
+ordinary.t <- fit$coef / fit$stdev.unscaled / fit$sigma
 qqt(ordinary.t,df=fit$df.residual,main="Ordinary t")
 abline(0,1)
 
 #  Moderated t-statistic
 eb <- eBayes(fit)
 qqt(eb$t,df=eb$df.prior+eb$df.residual,main="Moderated t")
-abline(0,1)
+abline(0,1,col=2)
 #  Points off the line may be differentially expressed
 par(mfrow=c(1,1))
 #####################################################
@@ -124,7 +126,7 @@ par(mfrow=c(1,1))
 x<-topTable(fit,number=5000)
 volcanoplot(eb,coef=1)
 points(x$logFC,x$B,col="#FF000077",pch=16,cex=0.35)
-title('Fold change vs Log odds (Moderated t-test)')
+title('Log Fold change vs Log odds (S96 vs HS959)')
 title('Log difference vs Log odds S96vsHS959')
 
 
@@ -142,9 +144,18 @@ points(x2[,c(4,8)],pch=16,cex=.25,col=rgb(0,0,0,0.5))
 
 
 
+out<-normalizeBetweenArrays(as.matrix(wiggleTable[,c(4,6,8,10,12,14,16,18)]),method="scale")
 
 
+# K-Means Clustering with 5 clusters
+fit <- kmeans(mydata, 5)
 
+# Cluster Plot against 1st 2 principal components
+
+# vary parameters for most readable graph
+library(cluster)
+clusplot(mydata, fit$cluster, color=TRUE, shade=TRUE,
+         labels=2, lines=0)
 
 y<-predFC(D2,prior.count.total=2*ncol(D2))
 heatmap.2(y,Rowv=NA,Colv=NA,trace="none")
@@ -179,3 +190,26 @@ doheatmap(wigglePeaksNorm[,c(-1,-2)],Colv=TRUE,Rowv=TRUE)
 
 #write out positions?!
 write.table(cbind(wiggleTable[x$ID,1],wiggleTable[x$ID,2],wiggleTable[x$ID,2]+1),col.names=FALSE,row.names=FALSE,sep='\t')
+
+
+
+
+
+
+
+t1<-wiggleTable[,4]
+t2<-wiggleTable[,6]
+plot(t1,t2)
+myma<-list(M=t1-t2,A=((t1+t2))/2)
+plotMA(myma)
+
+lib.sizes=c(2218566,1292603,1106212,1300837)
+voom1<-voom(wiggleTable[,c(4,6,8,10)],lib.size=lib.sizes)
+exp<-voom1[['E']]
+t1<-exp[,1]
+t2<-exp[,2]
+MyMAList<-list(M=treat-control,A=(treat+control)/2)
+plotMA(MyMAList)
+
+
+

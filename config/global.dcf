@@ -2,7 +2,7 @@ data_loading: off
 cache_loading: on
 munging: off
 logging: off
-load_libraries: off
-libraries: reshape, plyr, ggplot2, stringr, lubridate, R.utils, gplots, RColorBrewer
+load_libraries: on
+libraries: plyr, stringr, R.utils, gplots, RColorBrewer,limma
 as_factors: on
 data_tables: off
