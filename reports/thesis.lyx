@@ -205,16 +205,57 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-The study of our genes has uncovered a complex world of DNA binding proteins
- that interact to control and regulate gene expression.
- From DNA sequencing technology the genes that code for the proteins were
- found, but the rest of the genome remained largely a mystery.
- The regulatory functions are now being understood by profiling these DNA-protei
-n interactions such as transcription factors and histone modifications that
- make gene transcription possible.
- New high throughput sequencing technology, or next-generation sequencing,
- has been applied to for these expanded the scope of gene regulatory study
- by providing a whole-genome view of gene regulation.
+The study of our genes has uncovered complex interactions of proteins that
+ bind to the DNA in order to and regulate important patterns of gene expression.
+ One type of protein that is important for gene regulation are transcription
+ factors.
+ Transcription factors are generally 
+\begin_inset Quotes eld
+\end_inset
+
+sequence specific
+\begin_inset Quotes erd
+\end_inset
+
+, which means that they tend to bind to a specific DNA sequence called a
+ sequence “motif”.
+ Their binding sites can affect nearby genes.
+ Identifying transcription factor binding sites is important for understanding
+ gene regulation, and recently, differences in genome regulation have been
+ investigated by finding differences in transcription factor binding sites
+ across different conditions or related species.
+\end_layout
+
+\begin_layout Standard
+One method that is used to experimentally profile DNA protein interactions
+ is called chromatin immunoprecipitation.
+ Chromatin immunoprecipitation (ChIP) uses a special antibody to target
+ a protein and extract the bound DNA-protein complexes from a cell lysate.
+ Afterwards, the proteins are unlinked from the DNA resulting in a DNA library
+ that is enriched for the protein binding sites.
+ Chromatin immunoprecipitation combined with high throughput sequencing
+ (ChIP-seq) can be used to DNA sequencing technology which results in millions
+ of short DNA reads (20-25bp) that correspond to the specific protein-DNA
+ interaction that we are intersted in.
+ ChIP-seq can be used to analyze the whole-genome transcription factor binding
+ profile, but the methods for analysis have been limited by certain problems.
+\end_layout
+
+\begin_layout Standard
+Identifying transcription factor binding sites from the high throughput
+ sequencing data essentially uses what is commonly known as 
+\begin_inset Quotes eld
+\end_inset
+
+peak finding
+\begin_inset Quotes erd
+\end_inset
+
+.
+ The transcription factor binding sites appear as peaks in the data, or
+ more specifically, there is a significantly overrepresented coverage of
+ a certain sequence.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -273,6 +314,23 @@ Unfortunately, the metrics for identifying transcription factor binding
 \begin_layout Standard
 (Note: more background is needed for the reader here, including the goals
  of our analysis!)
+\end_layout
+
+\begin_layout Standard
+One method for comparing the transcription factor binding sites across related
+ species involves comparing sequence motifs throughout the promoter regions
+ of orthologous genes to find conserved regulatory functions.
+ By looking at related genes from patterns of gene expression data, the
+ different types of regulatory DNA sequences can be deciphered are conserved
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "gasch_conservation_2004"
+
+\end_inset
+
+.
+ 
 \end_layout
 
 \begin_layout Subsection

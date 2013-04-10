@@ -101,7 +101,6 @@ M=log2(wiggleTable[,c('V4','V6')]/wiggleTable[,c('V8','V10')])
 #M=log2(wiggleTable[,c(4,6,8,10)])
 fit<-lmFit(M)
 fit<-eBayes(fit)
-plot(fit$genes,fit$stddev.unscaled)
 ###############################################
 set.seed(2004); invisible(runif(100))
 M <- matrix(rnorm(100*6,sd=0.3),100,6)
