@@ -47,8 +47,7 @@ makeComparisonPlotHelp<-function(bedOverlap,bedUnique1,bedUnique2,table,c1,c2,ti
     p3[,2]<-m
   }
   
-  
-  plot(p1,pch=19,cex=cex,col="#aaaaaa22",xlab=xlab,ylab=ylab,cex)
+  plot(p1,pch=19,cex=cex,col="#aaaaaa22",xlab=xlab,ylab=ylab)
   #,log=if(log)"xy"else""
   points(p1,pch=19,cex=cex,col=paste0(fillx[1],"77"))
   points(p3,pch=19,cex=cex,col=paste0(fillx[3],"77"))
