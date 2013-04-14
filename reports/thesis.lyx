@@ -205,14 +205,20 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-The study of eukaryotic genomes has revealed a variety of proteins which
- bind to the DNA to control and regulate gene expression.
- Transcription factors are a type of DNA-binding protein that are important
- for regulating gene expression.
+The study of eukaryotic cells has revealed a complex world of proteins which
+ bind to the DNA to regulate gene expression.
+ Transcription factors are a type of these DNA-binding protein that are
+ important for the regulatory system and there is evidence that they play
+ an important role in controlling patterns gene expression.
  Most transcription factors tend to bind to a specific DNA sequences, and
- finding these transcription factor binding sites has been important for
- understanding gene regulation.
- The regulatory functions of DNA-binding proteins have been understood in
+ finding these binding sites has been important for understanding gene regulatio
+n.
+ However, studies have shown that these binding sites can vary significantly
+ between different species which 
+\end_layout
+
+\begin_layout Standard
+The regulatory functions of DNA-binding proteins have been understood in
  different ways, but an important methodology to experimentally profile
  DNA protein interactions is chromatin immunoprecipitation (
 \begin_inset CommandInset ref
@@ -222,192 +228,42 @@ reference "fig:The-ChIP-seq-workflow"
 \end_inset
 
 ).
- Chromatin immunoprecipitation uses specific antibodies to “grab” a particular
- protein and the DNA it is attached to, and by using high throughput sequencing
- methods, these short DNA fragments can be sequenced.
- Chromatin immunoprecipitation combined with high-throughput sequencing
- (ChIP-seq) provides a whole-genome view of the DNA-protein binding sites.
- New computational tasks have become important for analyzing ChIP-seq in
- order to identify these binding sites, and to compare the binding sites
- across different experiments.
+ Chromatin immunoprecipitation uses specific antibodies to isolate a particular
+ protein and the DNA it is attached to.
+ Chromatin immunoprecipitation combined with high throughput sequencing
+ is called ChIP-seq, and it results in many short DNA sequence reads from
+ the DNA fragments produced in chromatin immoprecipitation.
+ ChIP-seq provides a whole-genome view of the DNA-protein binding sites.
+ 
 \end_layout
 
 \begin_layout Standard
-Using ChIP-seq data, transcription factor binding sites can be identified
- as 
-\begin_inset Quotes eld
+New computational techniques have become important to address problems of
+ statistical significance and reproducability of high-throughput data 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "li_measuring_2011,storey_statistical_2003"
+
 \end_inset
 
-peaks
-\begin_inset Quotes erd
-\end_inset
-
- in the number of reads that cover a particular genome position.
- There have been many improvements to these 
-\begin_inset Quotes eld
-\end_inset
-
-peak finding
-\begin_inset Quotes erd
-\end_inset
-
- algorithms, but most of these algorithms have been developed to find transcript
-ion factor binding sites from individual experiments 
+.
+ In the area of ChIP-seq in particular there have been many improved algorithms
+ for finding transcription factor binding sites, but most of these algorithms
+ have been developed to find transcription factor binding sites from individual
+ experiments 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "wilbanks_evaluation_2010"
 
 \end_inset
 
-.
- One approach for comparing the binding sites from different experiments
- is to analyze experiments individually and then comparing the overlap of
- the nearest gene for each the binding sites (
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:Illustration-of-gene-centric"
-
-\end_inset
-
-).
- Another method is to compare the overlap of the binding site positions
- in each experiment by using syntenic or aligned genome coordinates.
- 
+.However, it is not clear how the metrics, such as p-values, that characterize
+ the binding sites from peak finders can be compared across different experiment
+s.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename figure/SUPPLEMENTAL FIGURES AND TABLES p3.bmp
-	scale 35
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename figure/SUPPLEMENTAL FIGURES AND TABLES p2.bmp
-	scale 35
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-
-\series bold
-Illustration of gene-centric and peak-centric methods for comparing binding
- sites in mouse and human.
-
-\series default
- (a) Identifying nearest target genes for each binding site shows co-regulated
- or overlapping target genes (b) Comparing the binding sites using a DNA
- sequence alignment shows distinct outcomes that are related to the sequence
- alignemented (Figures excerpted from 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "odom_tissue-specific_2007"
-
-\end_inset
-
-) 
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:Illustration-of-gene-centric"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Comparing the binding sites from different experiments is problematic because
- the metrics for identifying transcription factor binding sites, such as
- the p-values, or FDR, or total read depth, are not directly comparable
- across different experiments.
-\begin_inset CommandInset citation
-LatexCommand cite
-key "zheng_genetic_2010"
-
-\end_inset
-
- used a unique approach for comparing ChIP-seq experiments from different
- yeast strains using a normalization called NormDiff.
- NormDiff uses background subtraction and normalization and the significant
- differences across experiments are identified as variable binding regions,
- which are defined as regions where the variance of NormDiff scores is across
- all experiments is high.
- The variable binding regions are used to characterize the binding differences
- in the yeast ChIP-seq, and over 80% of the variable binding regions overlap
- significant binding sites identified using peak calling with MACS.
- 
-\end_layout
-
-\begin_layout Standard
-While these approaches were useful, we wanted to do a more direct comparison
- of ChIP-seq experiments evaluate significant differential binding sites.
- We used a scanning window to count reads that fall within a scanning window
- for small non-overlapping bins over the whole-genome.
- Then we used a moderated t-test 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "smyth_linear_2004"
-
-\end_inset
-
- to model the differential peaks, which includes a empirical Bayesian method
- to model the variance of the read counts across all experiments.
-\end_layout
-
-\begin_layout Subsection
-Chromatin immunoprecipitation and ChIP-seq
-\end_layout
-
-\begin_layout Standard
-One method to experimentally determine DNA-protein interactions is chromatin
- immunoprecipitation (ChIP) which uses a special antibody to target a protein
- of interest and then the DNA-protein complexes that are binded together
- are extracted from a cell lysate.
- Afterwards, the proteins are unlinked from the DNA resulting in a DNA library
- that is enriched for the DNA-binding sites.
- Transcription factors have been extensively studied using chromatin immunopreci
-pitation (ChIP) which effectively creates a DNA library that is enriched
- for a particular DNA-binding protein of interest.
- Classic techniques for chromatin immunoprecipitation have used PCR based
- techniques, but new high-throughput sequencing combined has used with chromatin
- immunoprecipitation (ChIP-seq) to provide a whole-genome quantitative view
- transcription factor binding sites.
- Many different variations on the ChIP protocols and on the DNA sequence
- analysis have been developed 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "collas_chromatin_2009"
-
-\end_inset
-
-.
- 
+One approach
 \end_layout
 
 \begin_layout Standard
@@ -420,6 +276,13 @@ status open
 \begin_inset Graphics
 	filename figure/Chromatin_immunoprecipitation_sequencing.svg.png
 	scale 30
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:The-differential-peaks"
 
 \end_inset
 
@@ -471,6 +334,170 @@ name "fig:The-ChIP-seq-workflow"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+One approach for comparing ChIP-seq experiments includes using a normalization
+ factor to account for differences in read depth and other factors that
+ vary across experiments.
+ Different types of normalization have been developed for ChIP-seq that
+ includes many factors including scaling for read depth 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "zhang_model-based_2008,zheng_genetic_2010"
+
+\end_inset
+
+, estimating the background noise to improve scaling factors 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "diaz_normalization_2012,liang_normalization_2012"
+
+\end_inset
+
+, linear models 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "shao_manorm:_2012"
+
+\end_inset
+
+, and by estimating local variance of read counts to reduce bias 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "zheng_genetic_2010,zhang_model-based_2008,kuan_statistical_2011"
+
+\end_inset
+
+.
+ These normalization methods have shown to be important for normalizing
+ experiments so that ChIP-seq and input control experiments can be compared,
+ and also so that different ChIP-seq experiments can be compared.
+\end_layout
+
+\begin_layout Standard
+The methods that are used for finding conserved and differential binding
+ sites has also been important for comparing ChIP-seq experiments.
+ There are different methods that have been proposed for performing comparisons,
+ including a Bayesian Poisson to evaluate conserved binding sites across
+ experiments 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "shao_manorm:_2012"
+
+\end_inset
+
+, a negative binomial model for estimating differential binding 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "robinson_edger:_2010,ji_integrated_2008,kuan_statistical_2011,liang_detecting_2011"
+
+\end_inset
+
+, a mixture-model for evaluating differential binding sites 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "taslim_comparative_2009"
+
+\end_inset
+
+, and by using one experiment as a control to find differential binding
+ sites against another experiment 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "zhang_model-based_2008"
+
+\end_inset
+
+.
+ These approaches satisfy have taken taken many unique approaches for comparing
+ data.
+\end_layout
+
+\begin_layout Standard
+In order to compare ChIP-seq data we adopted a statistical hypothesis testing
+ approach that uses a normal approximation of the differences between data
+ to perform two-sample t-tests.
+ This allows us to perform direct comparisons of ChIP-seq experiments and
+ incorporate replicates in to the analysis.
+ We use a scanning window to count reads that fall within small non-overlapping
+ bins over the whole-genome.
+ Then we use a moderated t-test 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "smyth_linear_2004"
+
+\end_inset
+
+ to model the differential peaks, which includes a empirical Bayesian method
+ to model the variance of the read counts across all experiments.
+\end_layout
+
+\begin_layout Subsubsection
+Sub
+\end_layout
+
+\begin_layout Standard
+One approach for comparing the binding sites from different experiments
+ is to analyze experiments individually and then comparing the overlap of
+ the nearest gene for each the binding sites (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Illustration-of-gene-centric"
+
+\end_inset
+
+).
+ Another method is to compare the overlap of the binding site positions
+ in each experiment by using syntenic or aligned genome coordinates.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+sub2
+\end_layout
+
+\begin_layout Standard
+Another consideration for comparing experiments is the appropriate use of
+ controls and replicates and statistical testing.
+ Some different methodologies that have been used NormDiff uses background
+ subtraction and normalization and the significant differences across experiment
+s are identified as variable binding regions, which are defined as regions
+ where the variance of NormDiff scores is across all experiments is high.
+ The variable binding regions are used to characterize the binding differences
+ in the yeast ChIP-seq, and over 80% of the variable binding regions overlap
+ significant binding sites identified using peak calling with MACS.
+ 
+\end_layout
+
+\begin_layout Subsection
+Chromatin immunoprecipitation and ChIP-seq
+\end_layout
+
+\begin_layout Standard
+One method to experimentally determine DNA-protein interactions is chromatin
+ immunoprecipitation (ChIP) which uses a special antibody to target a protein
+ of interest and then the DNA-protein complexes that are binded together
+ are extracted from a cell lysate.
+ Afterwards, the proteins are unlinked from the DNA resulting in a DNA library
+ that is enriched for the DNA-binding sites.
+ Transcription factors have been extensively studied using chromatin immunopreci
+pitation (ChIP) which effectively creates a DNA library that is enriched
+ for a particular DNA-binding protein of interest.
+ Classic techniques for chromatin immunoprecipitation have used PCR based
+ techniques, but new high-throughput sequencing combined has used with chromatin
+ immunoprecipitation (ChIP-seq) to provide a whole-genome quantitative view
+ transcription factor binding sites.
+ Many different variations on the ChIP protocols and on the DNA sequence
+ analysis have been developed 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "collas_chromatin_2009"
+
+\end_inset
+
+.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -579,6 +606,72 @@ key "odom_tissue-specific_2007"
  and the target gene is not necessarily inferred, which has advantages for
  comparing the sequence similarity.
  Nevertheless, both approaches have advantages.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figure/SUPPLEMENTAL FIGURES AND TABLES p3.bmp
+	scale 35
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figure/SUPPLEMENTAL FIGURES AND TABLES p2.bmp
+	scale 35
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\series bold
+Illustration of gene-centric and peak-centric methods for comparing binding
+ sites in mouse and human.
+
+\series default
+ (a) Identifying nearest target genes for each binding site shows co-regulated
+ or overlapping target genes (b) Comparing the binding sites using a DNA
+ sequence alignment shows distinct outcomes that are related to the sequence
+ alignemented (
+\begin_inset CommandInset citation
+LatexCommand cite
+key "odom_tissue-specific_2007"
+
+\end_inset
+
+) 
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Illustration-of-gene-centric"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
