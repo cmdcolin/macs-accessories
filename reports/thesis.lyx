@@ -69,7 +69,7 @@ knitr
 \begin_body
 
 \begin_layout Title
-Comparison of transcription factor finding sites using ChIP-seq experiments
+Comparison of transcription factor binding sites using ChIP-seq experiments
 \end_layout
 
 \begin_layout Abstract
@@ -207,21 +207,20 @@ Introduction
 \begin_layout Standard
 The study of eukaryotic cells has revealed a complex world of proteins which
  bind to the DNA to regulate gene expression.
- Transcription factors are a type of these DNA-binding protein that are
- important for the regulatory system.
- There is evidence that they play an important role in controlling patterns
- gene expression.
- Most transcription factors tend to bind to a specific DNA sequences, and
- finding these binding sites has been important for understanding gene regulatio
-n.
+ Transcription factors are a type of DNA-binding protein that are important
+ for the regulatory system.
+ There is evidence that they play an important role in controlling gene
+ expression.
+ Most transcription factors tend to bind to specific DNA sequences, and
+ finding these binding sites is important for understanding gene regulation.
  However, studies have shown that these binding sites can vary significantly
- between different species which means that being able to find these differences
- is important.
+ between different species, which means that finding differences is an important
+ aspect of understanding transcription factor binding behavior as a whole.
 \end_layout
 
 \begin_layout Standard
-An important methodology to experimentally profile DNA protein interactions
- is called chromatin immunoprecipitation.
+A key methodology to experimentally profile DNA protein interactions is
+ called chromatin immunoprecipitation.
  Essentially, chromatin immunoprecipitation uses specific antibodies to
  isolate a particular protein and the DNA it is attached to.
  Chromatin immunoprecipitation combined with high throughput sequencing
@@ -233,12 +232,12 @@ An important methodology to experimentally profile DNA protein interactions
 \end_layout
 
 \begin_layout Standard
-New computational techniques have become important to address problems of
- of analyzing high-throughput data.
+New computational techniques have been developed to address problems of
+ analyzing high-throughput data.
  In the area of ChIP-seq in particular there have been many improved algorithms
  for finding transcription factor binding sites, but most of these algorithms
  have been developed to find transcription factor binding sites from individual
- experiments 
+ experiments, and are not to compare experiments 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "wilbanks_evaluation_2010"
@@ -246,16 +245,17 @@ key "wilbanks_evaluation_2010"
 \end_inset
 
 .
- While it is important for identifying features from individual experiments,
- it is not clear how the metrics, such as p-values, that characterize the
- binding sites from peak finders can be compared across different experiments.
+ While it is important to be able to identify features from individual high-thro
+ughput experiments, it has not been clear how the metrics that characterize
+ the binding sites from peak finders can be compared across different experiment
+s.
 \end_layout
 
 \begin_layout Standard
 In order to compare different normalization in order to account for different
  variables in the experiments.
  Different types of normalizations have been developed to account for different
- factors in ChIP-seq which includes scaling for read depth 
+ factors in ChIP-seq including scaling for read depth 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "zhang_model-based_2008,zheng_genetic_2010"
@@ -269,7 +269,7 @@ key "diaz_normalization_2012,liang_normalization_2012"
 
 \end_inset
 
-, linear model to scale read depth 
+, linear modeling to scale read depth 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "shao_manorm:_2012"
@@ -284,15 +284,17 @@ key "zheng_genetic_2010,zhang_model-based_2008,kuan_statistical_2011"
 \end_inset
 
 .
- These normalization methods have shown to be important to compare different
- ChIP-seq experiments and also for the appropriate use of control data.
+ These normalization methods have shown to be important to compare the results
+ from different ChIP-seq experiments and also to appropriately use control
+ data.
 \end_layout
 
 \begin_layout Standard
-In order to compare different experiments, normalization is used to standardize
- some of the variables.
- Different types of normalizations have been developed which account for
- different factors which includes scaling for read depth 
+The normalization is used to standardize some of the variables to make compariso
+ns of ChIP-seq easier, another consideration for comparing experiments is
+ the appropriate use of statistical testing.
+ Different types of statistical models for comparing experiments which includes
+ a Bayesian Poisson model to find conserved binding sites 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "shao_manorm:_2012"
@@ -303,7 +305,7 @@ key "shao_manorm:_2012"
  
 \begin_inset CommandInset citation
 LatexCommand cite
-key "robinson_edger:_2010,ji_integrated_2008,kuan_statistical_2011,liang_detecting_2011"
+key "robinson_edger:_2010,ji_integrated_2008,kuan_statistical_2011"
 
 \end_inset
 
@@ -331,13 +333,14 @@ key "zhang_model-based_2008"
 \end_inset
 
 .
- These approaches have different unique approaches that satisfy different
- special concerns for comparing data, but we were motivated to perform a
- simple statistical hypothesis testing approach to compare experiments.
+ Each of these methods have unique approaches that address different concerns
+ for comparing results fromdifferent experiments, but we were motivated
+ to perform a simple statistical hypothesis testing approach to compare
+ experiments.
 \end_layout
 
 \begin_layout Standard
-We adopted a statistical framework that uses 
+We adopted a statistical framework that uses a 
 \begin_inset Quotes eld
 \end_inset
 
@@ -366,10 +369,10 @@ Chromatin immunoprecipitation, ChIP-chip, and ChIP-seq
 \end_layout
 
 \begin_layout Standard
-One method to experimentally find the binding sites of DNA-binding proteins
- is to use chromatin immunoprecipitation (ChIP).
+Chromatin immunoprecipitation (ChIP) is a commonly used method to find the
+ binding sites of DNA-binding proteins.
  ChIP uses a special antibody to target a protein of interest, and then
- the protein and the DNA that it is bound to is precipitated from the mixture.
+ the protein and the DNA to which it is bound is precipitated from the mixture.
  Then the proteins are unlinked from the DNA resulting in a DNA library
  that is enriched for the binding sites of that particular protein.
  Many different variations on the ChIP protocols have been developed 
@@ -388,7 +391,8 @@ reference "fig:The-ChIP-seq-workflow"
 
 .
  Classical methods for analyzing chromatin immunoprecipitation have used
- PCR based techniques, but 
+ PCR (polymerase chain reaction) and electrophoresis gel based techniques,
+ but 
 \begin_inset Quotes eld
 \end_inset
 
@@ -396,18 +400,25 @@ high-throughput
 \begin_inset Quotes erd
 \end_inset
 
- techniques that can analyze each of the fragments of DNA simultaeneously
- have been developed which provides a whole-genome view of DNA-protein interacti
-ons.
+ techniques that can analyze many different fragments of DNA simultaneously
+ have been developed which provide a large scale or whole-genome view of
+ DNA-protein interactions 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "collas_chromatin_2009"
+
+\end_inset
+
+.
  
 \end_layout
 
 \begin_layout Standard
-DNA microarrays are one type of high-throughput technique that has been
+Use of DNA microarrays offers a high-throughput technique that has been
  used to analyze the DNA fragments from a ChIP experiment (ChIP-chip).
- In the ChIP-chip microarray application, microarrays are printed with oligonucl
-eotides from upstream regions of the target genes in order to detect the
- transcription factors that are the most likely regulators 
+ In the ChIP-chip application, microarrays are printed with oligonucleotides
+ from upstream regions of the target genes in order to detect the transcription
+ factors that are the most likely regulators 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "odom_tissue-specific_2007"
@@ -422,9 +433,9 @@ key "odom_tissue-specific_2007"
 
 \begin_layout Standard
 Another method called high-throughput sequencing, or next-generation sequencing,
- has been combined with chromatin immunoprecipitation which is called ChIP-seq.
+ has been combined with chromatin immunoprecipitation is called ChIP-seq.
  High-throughput sequencing creates millions of short DNA reads (20-25bp)
- which are produced from sequencing the 3' end of the the DNA fragments.
+ which are produced from sequencing the 3' end of the DNA fragments.
  A general overview of the ChIP-seq workflow is shown in 
 \begin_inset CommandInset ref
 LatexCommand formatted
@@ -439,18 +450,21 @@ reference "fig:The-ChIP-seq-workflow"
 \begin_layout Standard
 One problem for ChIP-seq data analysis is to estimate the original fragment
  size because, conceivably, the transcription factor can bind to any location
- on the DNA fragment so just using the short reads to find the transcription
- factor binding sites might misrepresent the true location of the binding
- sites.
- The size of the original DNA fragments can be estimated using the distance
- between the paired-end reads on the sense and anti-sense strands (see 
+ on the DNA fragment.
+ Using only the short reads to find the transcription factor binding sites
+ might misrepresent the true location of the binding sites, so the estimated
+ size fragment size is used for downstream analysis.
+ To estimate the original DNA fragments, a naive peak finder is used to
+ find peaks from sense and anti-sense reads, and half the distance between
+ the paired-end reads is estimated as the fragment size (see 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "fig:The-ChIP-seq-workflow"
 
 \end_inset
 
-) and this strategy is implemented by some algorithms including 
+).
+ This strategy is implemented by some algorithms including 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "zhang_model-based_2008"
@@ -492,8 +506,8 @@ status open
 The ChIP-seq workflow from experimental protocol to finding peaks 
 \series default
 (Left) The outline of the chromatin immunoprecipitation protocol including
- with high-throughput sequencing of the DNA fragments and alignment of the
- short reads to the genome from Wikipedia:ChIP-seq (CC-BY-3.0).
+ high-throughput sequencing of the DNA fragments and alignment of the short
+ reads to the genome from Wikipedia:ChIP-seq (CC-BY-3.0).
  (Right) Fragment size estimation using the bi-modal distribution of paired-end
  reads is used to improve peak finding 
 \begin_inset CommandInset citation
@@ -529,8 +543,8 @@ Finding transcription factor binding sites
 
 \begin_layout Standard
 To find transcription factor binding sites, peak finding algorithms are
- commonly used to locate significantly number of reads covering a DNA sequence
- is significantly enriched.
+ commonly used to locate where read counts exceed a certain threshold across
+ a DNA sequence that is significantly enriched.
  We looked at a popular and open-source software package for peak finding
  called MACS (Model-based analysis of ChIP-seq) 
 \begin_inset CommandInset citation
@@ -543,7 +557,7 @@ key "zhang_model-based_2008"
  A brief overview of the peak finding methodology that MACS uses is as follows:
  MACS uses a Poisson variable to model the distribution of reads that are
  mapped to the genome.
- The Poisson distribution models the expected number of in the scanning
+ The Poisson distribution models the expected number of reads in the scanning
  window given the total number of reads and the whole genome size.
  Then peaks are identified as the likelihood of receiving a large number
  of reads in our scan window compared with the background.
@@ -702,15 +716,16 @@ name "fig:Illustration-of-gene-centric"
 \end_layout
 
 \begin_layout Subsection
-Identifying differential binding sites
+Existing algorithms for finding differential binding sites
 \end_layout
 
 \begin_layout Standard
 There have been a variety of methods for finding differential binding sites
  from ChIP-seq data.
- For example, in the gene-centric or peak-centric approach, then the differentia
-l binding sites are represented by non-overlapping binding sites or non-overlapp
-ing target gene sets after these features are identified in each individual
+ However, a main course of action for assessing differences has For example,
+ in the gene-centric or peak-centric approach, then the differential binding
+ sites are represented by non-overlapping binding sites or non-overlapping
+ target gene sets after these features are identified in each individual
  experiment.
  However, this approach does not give provide a sense of differential quantifica
 tion.
@@ -812,12 +827,13 @@ Approach
 \end_layout
 
 \begin_layout Subsection
-Intro to dataset
+Description of Data
 \end_layout
 
 \begin_layout Standard
-We looked at the set of experiments comparing different strains of yeast
- for a transcription factor Ste12 from 
+We looked at ChIP-seq experiments for two different strains of yeast for
+ a transcription factor Ste12 accessed from the Gene Expression Omnibus
+ and analyzed by 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "zheng_genetic_2010"
@@ -825,15 +841,23 @@ key "zheng_genetic_2010"
 \end_inset
 
 .
+ The ChIP-seq experiments were analyzed with and without a alpha-factor
+ that is used for chemical signaling and yeast mating.
+ The two different yeast strains of yeast were called S96, which is isogenic
+ to the S288c strain of 
+\begin_inset Quotes eld
+\end_inset
+
+baker's yeast
+\begin_inset Quotes erd
+\end_inset
+
+, and HS959, a yeast strain called YJM789.
  The variation of the transcription factor binding across the yeast individuals
- was analyzed to find a genetic basis for the variations.
- Their work revealed cis-factors that were associated with the binding site
- differences, such as SNP that affected the binding motifs.
- Additionally, they found trans-factors that were associated with the binding
- site variations by mapping variable binding traits, and using QTL mapping.
+ was analyzed.
  The patterns caused by trans-factor binding site variations were also shown
  using clustering algorithms.
- While they showed extensive variations in the overlaps of the binding sites
+ While they showed extensive variations in the overlaps of the binding sites,
  our approach is to find large significant differences.
  
 \end_layout
@@ -843,9 +867,9 @@ Analyzing the parent strains
 \end_layout
 
 \begin_layout Standard
-We used the peaks that are identified calculated using MACS and reproduced
- their results using annotating the nearest gene for each of the peaks called
- using MACS.
+We used the peaks that were found from Zheng et al and reproduced their
+ target gene analysis by using annotating the nearest gene for each of the
+ peaks called using MACS.
  We used the sacCer3 genome annotations to label the peaks with the nearest
  gene and found similar results to the original work by Zheng et al.
  We found that our results are consistent with the number peaks that are
@@ -1049,8 +1073,15 @@ Processing of data
 \end_layout
 
 \begin_layout Standard
-We used MACS to identify peaks in each dataset to compare how read counts
- from the overlapping peaks compare with the non-overlapping peaks.
+We used MACS 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "zhang_model-based_2008"
+
+\end_inset
+
+ to identify peaks in each dataset to compare how read counts from the overlappi
+ng peaks compare with the non-overlapping peaks.
  We also used as the number of reads that fall into small non-overlapping
  bins of length n=10bp.
  We merged the read counts from the bins across all experiments into a single
@@ -1127,20 +1158,40 @@ Comparison of replicate experiments
 \end_layout
 
 \begin_layout Standard
-For each sample, 2-3 biological replicates were analyzed using ChIP-seq.
+Goal:
+\end_layout
+
+\begin_layout Standard
+For each sample, at least two biological replicates experiments were performed
+ using ChIP-seq.
  We analyzed the biological replicates to see if any significant differences
  were found across species.
- We compared ChIP reads from the matching bins in two S96 replicates and
- compared the read scores for overlapping peaks and non-overlapping peaks.
- We also noted that the reads vary linearly across the whole range of data.
- Also note that bins with zero reads are excluded so this does not bias
- the linear model.
- The non-overlapping peaks show smaller binned read scores compared to the
- overlapping peaks, but more notably, there does not appear to be large
- differences between the read scores from the non-overlapping peaks between
- the experiments (
+ 
+\end_layout
+
+\begin_layout Standard
+Methods:
+\end_layout
+
+\begin_layout Standard
+We used ChIP-seq read counts from bins with matching genome positions in
+ two S96 replicates and compared the reads that overlap each genome position
+ in overlapping peaks and non-overlapping peaks.
+ Also note that bins with zero reads are excluded.
+\end_layout
+
+\begin_layout Standard
+Results:
+\end_layout
+
+\begin_layout Standard
+We found that the reads vary linearly and show a high correlation between
+ replicates (rho >0.9) The non-overlapping peaks show smaller binned read
+ scores compared to the overlapping peaks, but more notably, there does
+ not appear to be large differences between the read scores from the non-overlap
+ping peaks between the experiments (
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:Comparison-of-S96"
 
 \end_inset
@@ -1149,11 +1200,13 @@ reference "fig:Comparison-of-S96"
 \end_layout
 
 \begin_layout Standard
-Even though there are non-overlapping peaks that are shown are close to
- equal, these replicate specific peaks are not identified in both experiments
- by the peak caller.
- Therefore we might be interested in evaluating the significance of these
- unique peaks rather than calling them different based on the peak findings.
+Interpretation
+\end_layout
+
+\begin_layout Standard
+The large number of non-overlapping peaks seem to have similar read counts
+ based on our figure, so instead of using the results from a peak finder,
+ we want to evaluate the significance of the differences between the experiments.
  
 \end_layout
 
@@ -1220,11 +1273,33 @@ Comparison of different strains
 \end_layout
 
 \begin_layout Standard
-Our main interest is for comparing across genomes.
- In this case, we found noticeable differences in read scores for the overlappin
-g peaks versus non-overlapping peaks.
- This shows that there are significant differences, but how can we assess
- them?
+Goal:
+\end_layout
+
+\begin_layout Standard
+We wanted to compare the different strains of yeast to find significant
+ binding site differences using a statistical comparison of the ChIP-seq
+ data.
+ While the replicate experiments are genetic copies of each other, finding
+ differences in the binding sites from each strain might show some functional
+ or regulatory change in their genomes.
+\end_layout
+
+\begin_layout Standard
+Methods:
+\end_layout
+
+\begin_layout Standard
+Similar to our analysis of the replicates, we used the read counts from
+ one replicate from each strain to compare how the reads counts from overlapping
+ and non-overlapping peaks compare.
+ Also note that the ChIP-seq data from both strains is aligned to the same
+ reference genome, so we use the same genome coordinates when comparing
+ the experiments.
+\end_layout
+
+\begin_layout Standard
+Results:
 \end_layout
 
 \begin_layout Standard
@@ -1238,14 +1313,20 @@ reference "fig:Comparison-of-S96-HS959"
 
 ).
  Looking at the log-transform shows large fold-change differences too.
- This gives evidence for non-overlapping peaks to be called differential
- binding sites in some respect but this does not have any method of evaluating
- the significance of these results yet.
- In order to evaluate the significance of the results, we can use some methods
- that are available for simple analysis.
- This include using MACS to find differential binding sites by using one
- experiment as a control to find differential binding sites against another
- experiment.
+ 
+\end_layout
+
+\begin_layout Standard
+Interpretation:
+\end_layout
+
+\begin_layout Standard
+Our plot shows evidence for differential binding sites from the non-overlapping
+ peaks.
+ However, the significance of the differential peaks depends on a more direct
+ comparison of the datasets than just analyzing the overlapping and non-overlapp
+ing features.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -1283,9 +1364,9 @@ Comparison of the S96 and HS959 genomes showing the distribution of read
 .
  (Left) The read scores of non-overlapping peaks have significantly differential
  read-counts (Right) Log2-transform of read scores shows large fold-change
- differences exist amongst the peaks called unique (lines indicate fold-change>4
-).
- 
+ differences exist amongst the non-overlapping peaks (lines indicate fold-change
+>4).
+ Note: fix legends 
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:Comparison-of-S96-HS959"
@@ -1306,17 +1387,28 @@ name "fig:Comparison-of-S96-HS959"
 \end_layout
 
 \begin_layout Subsection
-Normalization
+Normalization using NormDiff
+\end_layout
+
+\begin_layout Standard
+Goal: 
 \end_layout
 
 \begin_layout Standard
 Noise and bias can exist in high throughput experiments so a good model
  of ChIP-seq data will be able to account for these features.
- The background 'noise' from ChIP-seq can be the result from non-regulatory
- interactions with the DNA, but there are also more complex features that
- might be considered.
- Some studies have shown bias exists in the input control libraries for
- promoter regions and transcription start site (TSS) 
+ The background ’noise’ from ChIP-seq can be the result from non-regulatory
+ interactions with the DNA and the enrichment of the ChIP protocol 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "collas_chromatin_2009"
+
+\end_inset
+
+.
+ Other factors can be problematic too, and some studies have shown bias
+ exists exists for promoter regions and transcription start site (TSS) due
+ accessability of open chromatin 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "nix_empirical_2008"
@@ -1324,7 +1416,8 @@ key "nix_empirical_2008"
 \end_inset
 
 .
- Another observation from comparing different experiments shows a 
+ Another factor can be observed from comparing ChIP-seq experiments is a
+ 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1332,100 +1425,112 @@ banana shape
 \begin_inset Quotes erd
 \end_inset
 
- that suggests a non-linear relationship between the read depth and binding
- site coverage across experiments (
+ (see 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "fig:Comparison-of-S96-HS959"
 
 \end_inset
 
-) .
- These sources of bias have sometimes been treated by performing a background
- subtraction of the control from the ChIP-seq data.
- The background subtraction and normalization using a 
-\begin_inset Quotes eld
-\end_inset
-
-Normalized window score
-\begin_inset Quotes erd
-\end_inset
-
- was shown to be helpful for controlling the false-positive rate for peak
- finding experiments 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "nix_empirical_2008"
-
-\end_inset
-
-.
- Another similar algorithm for background subtraction and normalization
- called NormDiff was developed by 
+) that suggests a non-linear relationship between the read depth and binding
+ site coverage across experiments.
+ Different methods for normalization have been proposed, but we choose to
+ analyze the NormDiff is an algorithm developed by 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "zheng_genetic_2010"
 
 \end_inset
 
- which includes a scaling factor to account for differences in the sequencing
- depth and a 
-\begin_inset Quotes eld
+ which normalizes ChIP-seq data in order to improve the ability to compare
+ experiments.
+ We want to assess NormDiff for comparing ChIP-seq experiments by looking
+ at how it performs for comapring between replicates.
+\end_layout
+
+\begin_layout Standard
+Methods:
+\end_layout
+
+\begin_layout Standard
+We used the specifications of the NormDiff algorithm from 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "zheng_genetic_2010"
+
 \end_inset
 
-dynamic
-\begin_inset Quotes erd
+ using the R programming language 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "team_r:_2013"
+
 \end_inset
 
- parameter to estimate local regions of variation in the data .
- We evaluated the different types of NormDiff type scores to compare.
+.
+ NormDiff calculates the number of ChIP-seq and input control reads that
+ overlap each genome position.
+ Then it estimates a scaling factor to account for differences in sequencing
+ depth between the ChIP-seq and control libraries.
+ Then it subtracts the control data from the ChIP-seq data (a background
+ subtraction).
+ In order to normalize the data it calculates a “dynamic” estimation of
+ the variance from local regions surrounding each genome position.
  
 \end_layout
 
 \begin_layout Standard
-Zheng et al.
- extensively used the NormDiff score for comparing ChIP-seq experiments
- quantitatively.
- They identified 
-\begin_inset Quotes eld
-\end_inset
+We assessed the fit of NormDiff to compare replicate ChIP-seq experiments
+ from the S96 strain of yeast.
+ The library size of replicate 1 is nearly two times the size of the library
+ size of replicate 2 (2218566 reads from S96 replicate 1, 1292603 reads
+ from S96 replicate 2, and 1335253 from S96 input control).
+ Additionally, we looked at how NormDiff compares to other types of normalizatio
+n such as background subtraction without normalization and a modified NormDiff
+ with only global variance estimation.
+\end_layout
 
-variable binding regions
-\begin_inset Quotes erd
-\end_inset
+\begin_layout Standard
+Result:
+\end_layout
 
- across ChIP-seq experiments and used NormDiff as a quantitative trait in
- order to perform QTL mapping.
- They used clustering of NormDiff scores to find patterns of binding activity
- that correlates multiple genome positions in a long-range fashion, which
- are identified as trans-factors that influence the activity of the transcriptio
-n factor we are profiling.
- These genome-wide associations rely on the ability of the NormDiff score
- for reliably estimating the binding signals from the data and it should
- also have a good normalization in order to compare across experiments.
- We assessed the fit of NormDiff for comparing experiments by implemented
- the algorithm according to Zheng et al.
- specifications.
- We also compared NormDiff to other types of normalization such as background
- subtraction without normalization and a modified NormDiff with only global
- variance estimation.
- The result that NormDiff with local variance estimation has good normalizing
- properties that provides the least biased normalization (
+\begin_layout Standard
+The result of these comparisons is that NormDiff with local variance estimation
+ has better normalizing properties than the global variance estimation,
+ or a comparison of reads without normalization, and it results in a less
+ biased normalization that the other methods (
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "fig:MA-style-plots"
 
 \end_inset
 
-), but this is possibly at the cost of increased noise due to the Bias-Variance
- trade-off 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "wit_statistics_2004"
+).
+\end_layout
 
-\end_inset
+\begin_layout Standard
+Interpretation:
+\end_layout
 
-.
+\begin_layout Standard
+The NormDiff algorithm has a good ability normalize the “binding signal”
+ in a signal-to-noise problem from ChIP-seq data.
+ The NormDiff score is used to find variable binding regions in the set
+ of all the ChIP-seq experiments by taking the highest variance of the NormDiff
+ scores across the experiments.
+ 
+\end_layout
+
+\begin_layout Standard
+Caveat: 
+\end_layout
+
+\begin_layout Standard
+One problem with background subtraction is that it can introduce increased
+ noise due to the Bias-Variance trade-off.
+ The high-throughput analysis of quantitative traits should accurately measure
+ the variance however it's possible that the background subtraction techniques
+ introduce too much noise.
 \end_layout
 
 \begin_layout Standard
@@ -1499,81 +1604,95 @@ Testing for differential binding sites
 \end_layout
 
 \begin_layout Subsection
-Statistical characterization
+Statistical characterization of the Welch t-test
 \end_layout
 
 \begin_layout Standard
-To compare binding sites between experiments,we looked at the distribution
- of the log-ratios of the read scores.
- The distribution of log-ratios across microarrays is often assumed to be
- normally distributed (even if it isn't) 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "wit_statistics_2004"
-
-\end_inset
-
-.
- However, we do see that there are significant departures from an expected
- normal quantiles at higher values (
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "fig:statistical-properties"
-
-\end_inset
-
-).
- The t-test is designed with normally distributed data, but even though
- our distribution is not perfectly Gaussian wanted to see if the normal
- assumption would be able to aid detection of differentially bound sites.
- 
+Goal: 
 \end_layout
 
 \begin_layout Standard
-For comparing experiments, the interest is more focused in comparing differences
- in the reads across experiments, rather than comparing against the background.
- This turns the distribution “on its side”, which implies that we are interested
- in how the read counts change for a specific genome position across different
- experiments.
- We employ a moderated t-test that uses a linear model to estimate the variance
- of the read-counts across all the experiments, and apply empirical Bayes
- smoothing of the variance scores to solve this problem.
- Other frameworks that have been applied to sequencing data include edgeR
- which has similar design principles as limma but it which uses a discrete
- negative binomial distribution that can accomodate the different variances
- from comparing across experiments.
- 
+In order to find differential binding sites from ChIP-seq data, we wanted
+ to find where the difference between the read counts was statistically
+ significant.
+ We wanted to apply a two-sample t-test to find the differences between
+ experiments, however we found problems from the basic methods of the t-test
+ and we sought to characterize these drawbacks.
 \end_layout
 
 \begin_layout Standard
-Our original goal was to assess significance of differential binding sites
- according to Welch t-tests.
- However we found that the t-test struggles when there is very small variance
- such as those amoungst the background values.
- Therefore, we used a so-called 
-\begin_inset Quotes eld
-\end_inset
+Methods:
+\end_layout
 
-moderated t-test
-\begin_inset Quotes erd
-\end_inset
+\begin_layout Standard
+One of the most basic statistical comparisons of two groups is called a
+ Welch t-test, which has the form
+\end_layout
 
- using the limma package 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "smyth_linear_2004"
+\begin_layout Standard
+\begin_inset Formula 
+\[
+t=\frac{\bar{X_{1}}-\bar{X_{2}}}{\sqrt{\frac{s_{1}^{2}}{N_{1}}+\frac{s_{2}^{2}}{N_{2}}}}
+\]
 
 \end_inset
 
- to compare the replicates from S96 vs HS959 (under alpha factor treatment).This
- moderated t-test, also referred to as the empirical Bayes t-test, was necesary
- for correcting small variance in the background region across by adding
- a factor 
-\begin_inset Formula $s_{0}$
+
+\end_layout
+
+\begin_layout Standard
+where-
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\bar{X_{i}}$
 \end_inset
 
- to the variance pool that represents a common standard deviation for all
- windows.
+ is the sample mean
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $s_{i}$
+\end_inset
+
+ is the within group sample variance
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $N_{i}$
+\end_inset
+
+ is the sample size
+\end_layout
+
+\begin_layout Standard
+Two main features of this distribution that should be noted.
+ The first is that the difference between the groups is estimated using
+ the mean difference of the samples.
+ In our data application, this corresponds to the log ratio of the read
+ counts.
+ The second feature is that the variance from each group is estimated independan
+tly, the variance is not pooled.
+ We looked at the distribution of the log-ratios from each group over the
+ whole genome and found that they follow tend to follow a normal distribution
+ .
+ Note that this is a heuristic view of the data because we are not interested
+ in the distribution of all the log-ratios for the whole genome but rather
+ that the distribution of the read counts at each genome position is normally
+ distributed across samples.
+\end_layout
+
+\begin_layout Standard
+Results:
+\end_layout
+
+\begin_layout Standard
+We found that this t-test is not well suited for our data for several reasons.
+ The first problem is that we have a small number of samples in general,
+ which is equal to the number of ChIP-seq experiments.
+ The second problem is that the variance of the read counts is small for
+ most of the genome because there is very little transcription factor binding
+ activity.
 \end_layout
 
 \begin_layout Standard
@@ -1590,9 +1709,158 @@ status open
 \end_inset
 
 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\series bold
+The distribution of the log ratios of read counts over the whole genome
+ is approximately normal
+\series default
+.
+ The quantiles of the log-ratios of binned read counts of S96/HS959 (black)
+ versus the expected quantiles of the Normal distribution (red).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Interpretation/Conclusion: 
+\end_layout
+
+\begin_layout Standard
+We did not perform Welch’s t-test because it is simply too problematic.
+ There are problems with divide by zero errors in the case of small variance,
+ and also there are problems with the statistical power of using only a
+ limited number of samples.
+ Even though our data appears.
+\end_layout
+
+\begin_layout Subsection
+Statistical characterization of the moderated t-test
+\end_layout
+
+\begin_layout Standard
+Goal: 
+\end_layout
+
+\begin_layout Standard
+While the classical t-test methods were insufficient to solve our problems
+ for comparing ChIP-seq data, we noted that some algorithms that are used
+ for comparing differential gene expression microarrays had created different
+ kids of t-tests that address the shortcomings of the classical t-test for
+ high-throughput data 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "ji_tilemap:_2005,smyth_linear_2004"
+
+\end_inset
+
+.
+ We sought to apply a 
+\begin_inset Quotes eld
+\end_inset
+
+moderated t-test
+\begin_inset Quotes erd
+\end_inset
+
+ from the limma package 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "smyth_linear_2004"
+
+\end_inset
+
+ to improve the estimation of the variance across genome positions and for
+ finding differential binding sites from ChIP-seq data.
+ The “moderated t-test” is a method that is part of the limma package for
+ analyzing differential expression from gene expression microarrays .
+\end_layout
+
+\begin_layout Standard
+Methods:
+\end_layout
+
+\begin_layout Standard
+Limma uses a linear model to analyze the variance of the read scores across
+ each experiment.
+ Then it finds differential bindings sites using a moderated t-test which
+ is also referred to as a t-test with empirical Bayes smoothing.
+ 
+\end_layout
+
+\begin_layout Standard
+We used the log ratios of each replicate, meaning that we used log of the
+ read scores of S96rep1/HS959rep1 and S96rep2/HS959rep2, in order to build
+ the linear model.
+ Then we found the most significant differential genome positions from the
+ model using the moderated t-test.
+\end_layout
+
+\begin_layout Standard
+Results:
+\end_layout
+
+\begin_layout Standard
+The moderated t-distribution has a good model fit (Figure 7a), especially
+ compared to a Welch t-distribution (not shown) which has divide-by-zero
+ errors that make it impossible to assess the model fit.
+ We looked at a histogram of the p-values reported as significant and found
+ that there were thousands of positions that were called statistically significa
+nt at p<0.05 (Figure 7b), suggesting that an assessment of a false discovery
+ rate might be necessary.
+ We looked at a comparison of the statistical significance (represented
+ as Bayesian log odds ratios) vs the size of the differences (represented
+ as log-fold change differences) as a “volcano plot” (Figure 7c) which shows
+ that most of the highest fold change differences have the highest significance
+ also.
+ 
+\end_layout
+
+\begin_layout Standard
+Interpretation: 
+\end_layout
+
+\begin_layout Standard
+The moderated t-test helps to correct small variance in the background region
+ by adding a factor 
+\begin_inset Formula $s_{0}$
+\end_inset
+
+ to the variance pool that represents a common standard deviation for all
+ windows.
+ It also addresses the issue of small sample size by using distribution
+ of the variance across the entire genome to get a better estimate of the
+ variance of a particular genome position that is compared with the t-test.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename figure/Rplot127.png
-	scale 40
+	scale 30
 
 \end_inset
 
@@ -1602,7 +1870,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename figure/image8.png
-	scale 36
+	scale 40
 
 \end_inset
 
@@ -1622,17 +1890,14 @@ status open
 \begin_layout Plain Layout
 
 \series bold
-Statistical distributions of the log-ratios of ChIP-seq, moderated t-tests,
- and the selection of highly differential binding sites.
- 
+Statistical distributions of moderated t-tests, and the selection of the
+ most highly significant differential binding sites.
+
 \series default
-Top-row (left) The normal distribution fit of the log-ratios between two
- strains versus the Normal distribution shows a good fit for many values
- (right) The t-distribution model fit for log-ratios identified across experimen
-ts after p-values calculates from the empirical Bayes smoothing (moderated
- t-test) using limma.
- Bottom row (left) Unadjusted p-values calculated from t-tests (right) P-values
- represented as log-odds in a volcano plot.
+ Top-row (left) The distribution of log-ratios matches the quantile distribution
+s of the expected t-distribution (right) Unadjusted p-values calculated
+ from t-tests shows many significant binding positions (p<0.05).
+ Bottom row (left) P-values represented as log-odds in a volcano plot.
  The larger fold-changes show greater log-odds and the highest log-odds
  are selected for differential analysis.
  
@@ -1660,16 +1925,60 @@ Identifying differential peaks
 \end_layout
 
 \begin_layout Standard
-After performing statistical tests, we were able to identify significant
- differential peaks by merging nearby differential read count bins.
- Our assessment of differential peaks is not based on any previous assumptions
+Goal:
+\end_layout
+
+\begin_layout Standard
+After performing statistical tests, we wanted to inspect the results of
+ our hypothesis testing to identify significant differential binding sites.
+\end_layout
+
+\begin_layout Standard
+Methods: 
+\end_layout
+
+\begin_layout Standard
+We selected the top 5000 p-values for the most significant different read
+ count bins that are reported by limma.
+ To characterize a differential peak, we merged nearby bins among the selection
+ that are less than 20bp apart from each other.
+ 
+\end_layout
+
+\begin_layout Standard
+Results: 
+\end_layout
+
+\begin_layout Standard
+We highlighted the selected positions in the strain vs strain comparison
+ plot to show that the they have significantly differential read counts
+ (Figure 8a).
+ After merging the nearby bins from our selection, we obtained 1168 unique
+ differential peaks.
+ Then we inspected the signal tracks of the differential peaks by plotting
+ the number of reads that overlap each genome position (Figure 8b).
+ 
+\end_layout
+
+\begin_layout Standard
+Interpretation: 
+\end_layout
+
+\begin_layout Standard
+Our assessment of differential peaks is not based on any previous assumptions
  about the distribution of peaks from other peak finders such as MACS.
- The assessment of differential peaks from our analysis is heuristic and
- could be based off of the cutoff of what p-values are significant and what
- fold-change differences.
- We use the top 5000 p-values that are reported by limma, and after merging
- nearby windows less than 20bp apart from each other, we obtain 1168 unique
- significant differential sites.
+ 
+\end_layout
+
+\begin_layout Standard
+Caveat: 
+\end_layout
+
+\begin_layout Standard
+The selection of differential peaks from our analysis is heuristic since
+ we only use a arbitrarily large number of p-values that are reported by
+ limma.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -1826,6 +2135,129 @@ Our software framework is able to efficiently represent whole-genome high
  Additional work to understand the regulatory functions of the genome is
  ongoing, including new types of epigenetic profiles using ChIP-seq, and
  differential peaks identification will be essential for comparing experiments.
+\end_layout
+
+\begin_layout Section
+Supplementary Material
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+# calculate NormDiff score as (A-B/c) / 
+\backslash
+hat{
+\backslash
+sigma}}
+\end_layout
+
+\begin_layout Plain Layout
+
+getNormDiff<-function(treat,control) {
+\end_layout
+
+\begin_layout Plain Layout
+
+    #default params
+\end_layout
+
+\begin_layout Plain Layout
+
+    treatSmooth<-slideMean(treat,windowsize=100,slide=1)
+\end_layout
+
+\begin_layout Plain Layout
+
+    controlSmooth<-slideMean(control,windowsize=100,slide=1)
+\end_layout
+
+\begin_layout Plain Layout
+
+    scalingFactor=median(control/treat)
+\end_layout
+
+\begin_layout Plain Layout
+
+    globalVariance=sqrt(mean(treat)+mean(control)/scalingFactor^2)
+\end_layout
+
+\begin_layout Plain Layout
+
+    varlist<-sqrt(treatSmooth+controlSmooth/scalingFactor^2)
+\end_layout
+
+\begin_layout Plain Layout
+
+    #normdiff local
+\end_layout
+
+\begin_layout Plain Layout
+
+    normVar<-sapply(varlist,function(x){
+\end_layout
+
+\begin_layout Plain Layout
+
+        max(x,globalVariance)
+\end_layout
+
+\begin_layout Plain Layout
+
+    })
+\end_layout
+
+\begin_layout Plain Layout
+
+    (treat-control/scalingFactor)/normVar
+\end_layout
+
+\begin_layout Plain Layout
+
+} 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+NormDiff algorithm implemented in R.
+ Uses a sliding window to estimate the local variance.
+\begin_inset CommandInset label
+LatexCommand label
+name "alg:NormDiff-algorithm-implemented"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
