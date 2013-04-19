@@ -1,13 +1,18 @@
-ntops=as.numeric(rownames(tops))
-ntopsTab<-wiggleTable[ntops,c(1,2,2)]
+ntops=as.numeric(rownames(x))
+ntopsTab<-data.frame(wiggleTable[ntops,c(1,2,2)],order(x$adj.P.Val),order(x$adj.P.Val))
 ntopsTab2<-ntopsTab[order(ntopsTab$chr,ntopsTab$pos),]
 ntopsTab2[,3]<-ntopsTab2[,3]+20
 write.table(ntopsTab2,col.names=FALSE,row.names=FALSE,quote=FALSE,sep='\t',file='ntopsTab2.txt')
+ntops<-x
+ret<-read.table('ntopsTab2.bed')
+ret<-ret[order(ret[,4]),]
 
 
-ret<-read.table('ntopsTab-merge.txt')
-b=ntops[1]-50
-e=ntops[1]+50
+
+
+
+b=ntops[3]-50
+e=ntops[3]+50
 chr=wiggleTable[b,1]
 pal=sample(brewer.pal(20,'Dark2'),4)
 plot(wiggleTable[b:e,2],wiggleTable[b:e,8],type='l',col=pal[1],lwd=2,ylab='Read score',xlab=paste(chr,"Position"))
@@ -33,3 +38,64 @@ ylist<-(r1-r2)
 lm1<-lm(ylist~xlist)
 lines(xlist,lm1$fitted)
 title('S96 Background subtraction (no normalization)')
+
+
+
+
+wiggleDimeSelection<-wiggleTable[(1:length(dime1$inudge$class))*10,]
+out<-wiggleDimeSelection[order(dime1$inudge$fdr),]
+
+
+ret<-out
+
+b=ret[2,2]-60
+e=ret[2,2]+60
+chr=ret[2,1]
+region=wiggleTable[wiggleTable[,1]==chr & wiggleTable[,2]>b & wiggleTable[,2]<e,]
+pal=(brewer.pal(4,'BrBG'))
+plot(region[,2],region[,8],type='l',col=pal[1],lwd=2,ylab='Read score',xlab=paste(chr,"Position"),ylim=c(0,60))
+lines(region[,2], region[,10],col=pal[2],lwd=2)
+lines(region[,2],region[,4],col=pal[3],lwd=2)
+lines(region[,2],region[,6],col=pal[4],lwd=2)
+legend('topright',legend=c('HS959rep1','HS959rep2','S96rep1','S96rep2'),fill=pal)
+title('Differential peak identified by DIME')
+
+
+x1<-read.table('../Data/ELAND/S96hs959diff_peaks.bed')
+x2<-read.table('../Data/ELAND/Hs959s96diff_peaks.bed')
+x1[,1]<-sapply(x1[,1],function(x)strsplit(as.character(x),'.fsa')[[1]])
+x2[,1]<-sapply(x2[,1],function(x)strsplit(as.character(x),'.fsa')[[1]])
+
+
+a1<-1
+#ret<-(x1[rev(order(x1[,1])),])
+#ret<-x1
+b=ret[a1,2]-500
+
+e=ret[a1,3]+100
+chr=ret[a1,1]
+#b= 43091  
+#e=44002
+#chr="chr01"
+region=wiggleTable[wiggleTable[,1]==chr & wiggleTable[,2]>b & wiggleTable[,2]<e,]
+pal=(brewer.pal(4,'RdGy'))
+plot(region[,2],region[,8],type='l',col=pal[1],lwd=2,ylab='Read score',xlab=paste(chr,"Position"))
+lines(region[,2], region[,10],col=pal[2],lwd=2)
+lines(region[,2],region[,4],col=pal[3],lwd=2)
+lines(region[,2],region[,6],col=pal[4],lwd=2)
+legend('topright',legend=c('HS959rep1','HS959rep2','S96rep1','S96rep2'),fill=pal)
+title('Significant differential peak S96 vs HS959')
+text(b+170,120,paste0("-log10(pvalue)=",ret[a1,5]))
+
+
+
+region=voom1$E[wiggleTable[,1]==chr & wiggleTable[,2]>b & wiggleTable[,2]<e,]
+region2=wiggleTable[wiggleTable[,1]==chr & wiggleTable[,2]>b & wiggleTable[,2]<e,]
+pal=(brewer.pal(4,'RdGy'))
+plot(region2[,2],region[,3],type='l',col=pal[1],lwd=2,ylab='Read score',xlab=paste(chr,"Position"),ylim=c(0,7))
+lines(region2[,2], region[,4],col=pal[2],lwd=2)
+lines(region2[,2],region[,1],col=pal[3],lwd=2)
+lines(region2[,2],region[,2],col=pal[4],lwd=2)
+legend('topright',legend=c('HS959rep1','HS959rep2','S96rep1','S96rep2'),fill=pal)
+title('Significant differential peak S96 vs HS959')
+text(b+170,120,paste0("-log10(pvalue)=",ret[a1,5]))
