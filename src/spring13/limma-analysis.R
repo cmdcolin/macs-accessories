@@ -98,6 +98,10 @@ noNormWigTab<-wiggleTable
 wiggleTable<-out
 rm(out)
 M=log2(wiggleTable[,c('V4','V6')]/wiggleTable[,c('V8','V10')])
+
+
+voom1<-voom(wiggleTable[,c(4,6,8,10)],lib.size=c(2218566,1292603,1106212,1300837),normalize.method='scale')
+M=log2(voom1$E[,c('V2','V4')]/voom1$E[,c('V6','V8')])
 #M=log2(wiggleTable[,c(4,6,8,10)])
 fit<-lmFit(M)
 fit<-eBayes(fit)
@@ -122,8 +126,8 @@ par(mfrow=c(1,1))
 #####################################################
 #########################
 
-x<-topTable(fit,number=5000)
-volcanoplot(eb,coef=1)
+x<-topTable(eb,number=5000)
+volcanoplot(eb,coef=0.5)
 points(x$logFC,x$B,col="#FF000077",pch=16,cex=0.35)
 title('Log Fold change vs Log odds (S96 vs HS959)')
 title('Log difference vs Log odds S96vsHS959')
