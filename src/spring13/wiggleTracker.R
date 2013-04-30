@@ -5,16 +5,13 @@ ntopsTab2[,3]<-ntopsTab2[,3]+20
 write.table(ntopsTab2,col.names=FALSE,row.names=FALSE,quote=FALSE,sep='\t',file='ntopsTab2.txt')
 ntops<-x
 ret<-read.table('ntopsTab2.bed')
-ret<-ret[order(ret[,4]),]
+ret<-ret[(order(ret[,4])),]
+ntops<-ret
 
 
 
 
 
-b=ntops[3]-50
-e=ntops[3]+50
-chr=wiggleTable[b,1]
-pal=sample(brewer.pal(20,'Dark2'),4)
 plot(wiggleTable[b:e,2],wiggleTable[b:e,8],type='l',col=pal[1],lwd=2,ylab='Read score',xlab=paste(chr,"Position"))
 lines(wiggleTable[b:e,2], wiggleTable[b:e,10],col=pal[2],lwd=2)
 lines(wiggleTable[b:e,2],wiggleTable[b:e,4],col=pal[3],lwd=2)
@@ -77,7 +74,23 @@ chr=ret[a1,1]
 #b= 43091  
 #e=44002
 #chr="chr01"
+b=ntops[3,2]-100
+e=ntops[3,3]+100
+chr=ntops[2,1]
+chr="chr15"
+b=566000
+e=568000
+
+
+myret<-wiggleTable[((1:length(dime1$inudge$fdr))*100)[dime1$inudge$fdr<0.00001],]
+b=myret[1,2]-1000
+e=myret[1,2]+1000
+chr=myret[1,1]
+pal=sample(brewer.pal(8,'Dark2'),4)
+
+
 region=wiggleTable[wiggleTable[,1]==chr & wiggleTable[,2]>b & wiggleTable[,2]<e,]
+#region=wiggleTableScale[566000:568000,]
 pal=(brewer.pal(4,'RdGy'))
 plot(region[,2],region[,8],type='l',col=pal[1],lwd=2,ylab='Read score',xlab=paste(chr,"Position"))
 lines(region[,2], region[,10],col=pal[2],lwd=2)
