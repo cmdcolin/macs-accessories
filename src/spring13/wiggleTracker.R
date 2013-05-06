@@ -10,7 +10,26 @@ ntops<-ret
 
 
 
+diff<-wiggleTableScale[x$ID[1],]
+b=diff$pos-500
+e=diff$pos+60
+chr=as.character(diff$chr)
 
+difftable<-difftable[rev(order(difftable$V4)),]
+b=difftable[2,2]-300
+e=difftable[2,3]+800
+chr=as.character(difftable[2,1])
+region=ret[ret2[,1]==chr & ret2[,2]>b & ret2[,2]<e,]
+region2=ret2[ret2[,1]==chr & ret2[,2]>b & ret2[,2]<e,]
+pal=(brewer.pal(6,'BrBG'))
+plot(region2[,2],region[,6],type='l',col=pal[1],lwd=2,ylab='Read score',xlab=paste(chr,"Position"),ylim=c(0,250))
+lines(region2[,2], region[,5],col=pal[2],lwd=2)
+lines(region2[,2],region[,4],col=pal[3],lwd=2)
+lines(region2[,2],region[,3],col=pal[4],lwd=2)
+lines(region2[,2],region[,2],col=pal[5],lwd=2)
+lines(region2[,2],region[,1],col=pal[6],lwd=2)
+legend('topright',legend=c('HS959rep1','HS959rep2','S96rep1','S96rep2'),fill=pal)
+title('Differential peak of S96 vs HS959')
 
 plot(wiggleTable[b:e,2],wiggleTable[b:e,8],type='l',col=pal[1],lwd=2,ylab='Read score',xlab=paste(chr,"Position"))
 lines(wiggleTable[b:e,2], wiggleTable[b:e,10],col=pal[2],lwd=2)

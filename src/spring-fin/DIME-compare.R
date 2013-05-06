@@ -19,6 +19,10 @@ system.time(my.obj<-inudge.fit(ret,max.iter=10))
 my.classify<-inudge.classify(ret,my.obj)
 pal<-brewer.pal(4,"RdYlGn")
 
+cache(my.classify)
+cache(my.obj)
+cache(dime1)
+
 cex=0.6
 png(filename="plot1.png",width=640,height=480)
 plot(slideMean(wiggleTable[,4],10,10),slideMean(wiggleTable[,8],10,10),pch=19,cex=cex,col=pal[1],xlab="S96",ylab="HS959")

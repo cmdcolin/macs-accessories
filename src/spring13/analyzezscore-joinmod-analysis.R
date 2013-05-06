@@ -73,14 +73,15 @@ backSubTable<-with(wiggleTable, cbind(pos,chr,backSubTable))
 
 #Comparison plots
 source('src/spring13/makecomparisonplot.R')
-makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/s96rep2-high_peaks.bed'),wiggleTable,4,6,'Comparison of raw read scores for S96 replicates','S96rep1','S96rep2',c("Overlap","Rep1 unique","Rep2 unique"),brewer.pal(3,"Set1"))
+makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/s96rep2-high_peaks.bed'),wiggleTableScale,3,4,'Comparison of read counts for S96 replicates','S96rep1','S96rep2',c("Overlap","Rep1 unique","Rep2 unique"),brewer.pal(3,"Set1"))
+makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/s96rep2-high_peaks.bed'),wiggleTableScale,3,4,'Comparison of  read counts for S96 replicates','S96rep1','S96rep2',c("Overlap","Rep1 unique","Rep2 unique"),brewer.pal(4,"Set1"),logscale=TRUE)
 mycor=cor(wiggleTable[,4],wiggleTable[,6])
 text(50,220,substitute(paste(rho,"=",mycor),list(mycor=mycor)))
 
+makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/hs959rep1-new_peaks.bed'),wiggleTableScale,3,6,'Comparison of read counts for S96 vs HS959','S96rep1', 'HS959rep1', c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Dark2"))
+makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/hs959rep1-new_peaks.bed'),wiggleTableScale,3,6,'Comparison of read counts for S96 vs HS959','S96rep1', 'HS959rep1', c("Overlap","S96 unique","HS959 unique"),brewer.pal(4,"Dark2"),logscale=TRUE)
 
-makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/hs959rep1-new_peaks.bed'),wiggleTable,4,8,'Comparison of raw read scores for S96 vs HS959','S96', 'HS959', c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Dark2"))
 
-makeComparisonPlot(loadBed('data/s96rep1-high_peaks.bed'),loadBed('data/hs959rep1-new_peaks.bed'),backSubTable,4,8,'Comparison of raw read scores for S96 vs HS959','S96', 'HS959', c("Overlap","S96 unique","HS959 unique"),brewer.pal(3,"Spectral"))
 
 
 mycor=cor(wiggleTable[,4],wiggleTable[,8])

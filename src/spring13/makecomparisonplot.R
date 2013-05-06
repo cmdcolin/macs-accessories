@@ -10,7 +10,7 @@ makeComparisonPlot<-function(bed1,bed2,table,c1,c2,titlex,xlab,ylab,legendx,fill
 }
 
 
-makeComparisonPlotHelp<-function(bedOverlap,bedUnique1,bedUnique2,table,c1,c2,titlex,xlab,ylab,legendx,fillx,logscale=FALSE,MA=FALSE,cex=0.6){
+makeComparisonPlotHelp<-function(bedOverlap,bedUnique1,bedUnique2,table,c1,c2,titlex,xlab,ylab,legendx,fillx,logscale=FALSE,MA=FALSE,cex=0.7){
   
   
   wtoverlap<-getPeakScores(bedOverlap,table)
@@ -55,9 +55,8 @@ makeComparisonPlotHelp<-function(bedOverlap,bedUnique1,bedUnique2,table,c1,c2,ti
   legend("bottomright",fill=fillx,legend=legendx)
   title(titlex)
   if(logscale==TRUE&&MA==FALSE){
-    
-    lines(seq(sqrt(2),9+sqrt(2),length=9),lwd=3,col=fillx[3])
-    lines(seq(-sqrt(2),9-sqrt(2),length=9),lwd=3,col=fillx[3])
+    abline(2,1,lwd=3,col=fillx[4])
+    abline(-2,1,lwd=3,col=fillx[4])
   }
   else if(logscale==TRUE&&MA==TRUE) {
     

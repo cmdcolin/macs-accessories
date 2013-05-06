@@ -43,10 +43,6 @@ names(ret2chrmod)<-c('chr','start','end','V4','score')
 gimmePeakScore<-merge(gimme,ret1chrmod,by.x="PeakID..cmd.S96vsHS959.Diff_peaks.bed.sacCer3.",by.y="V4")
 gimmePeakScore2<-merge(gimme2,ret2chrmod,by.x="PeakID..cmd.data.HS959vsS96.Diff_peaks.bed.sacCer3.",by.y="V4")
 
-##SCALING
-wiggleTableScale<-normalizeBetweenArrays(as.matrix(wiggleTable[,c(3,4,5,6,7,8,9,10,11,12,13,14)]),method="scale")
-wiggleTableScale<-normalizeBetweenArrays(as.matrix(wiggleTable[,c(4,6,8,10,12,14)]),method="scale")
-wiggleTableScale<-cbind(wiggleTable[,c(1,2)],wiggleTableScale)
 
 genepeakscore<-getPeakScores(gimmePeakScore,wiggleTableScale,do.rbind=FALSE)
 

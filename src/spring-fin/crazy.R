@@ -63,3 +63,44 @@ nsites<-lapply(list.files(pattern=".crazy"),function(filename)  {
 
 points(pvals,nsites)
 title('Significance of ')
+
+
+
+
+
+
+pvals<-lapply(list.files(pattern=".out"),function(filename)  {
+  ret<-read.table(filename)
+  #print(filename)
+  print(min(as.numeric(ret[,4])))
+  min(as.numeric(ret[,4]))
+})
+
+nsites<-lapply(list.files(pattern=".out"),function(filename)  {
+  ret<-read.table(filename)
+  nrow(ret)
+})
+
+
+nsites2<-lapply(list.files(pattern="tab$"),function(filename)  {
+  ret<-read.table(filename)
+  nrow(ret)
+})
+
+
+mergetab<-read.table('myoutputs.txt')
+myx<-seq(100,90+10*nrow(mergetab),by=10)
+plot(myx,mergetab[,1])
+plot(exp(-unlist(pvals[1:147])),mergetab[1:147,1],xlab="P-value threshold", ylab="Number of peaks")
+title('Number of differential peaks identified using p-value threshold')
+
+
+
+par(mar=c(5,4,4,5)+.1)
+plot(exp(-unlist(pvals)),nsites,xlab='p-value cutoff',ylab='Number of peaks merged')
+par(new=TRUE)
+plot(exp(-unlist(pvals)),nsites2,col="blue",xaxt="n",yaxt="n",xlab="",ylab="")
+axis(4)
+mtext("Number of sites inputted",side=4,line=3)
+title('Differential peaks identified using p-value threshold')
+legend('bottomright',col=c('black','blue'),pch=1,legend=c('Merged peaks','Differential inputs'))

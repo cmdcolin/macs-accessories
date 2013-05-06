@@ -100,9 +100,6 @@ getNormDiff<-function(treat,control) {
   (treat-control/scalingFactor)/normVar
 }
 
-
-
-
 getPeakScores<-function(bed,scores,do.rbind=TRUE) {
   chrsplit<-split(scores,factor(scores$chr))
   chrselect<-""

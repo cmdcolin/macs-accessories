@@ -102,7 +102,12 @@ M=log2(wiggleTable[,c('V4','V6')]/wiggleTable[,c('V8','V10')])
 
 voom1<-voom(wiggleTable[,c(4,6,8,10)],lib.size=c(2218566,1292603,1106212,1300837),normalize.method='scale')
 M=log2(voom1$E[,c('V2','V4')]/voom1$E[,c('V6','V8')])
-#M=log2(wiggleTable[,c(4,6,8,10)])
+
+
+design=matrix(c(1,1,0,0,0,0,1,1),nrow=4,ncol=2)
+M=log2(wiggleTableScale[,c(4,6,8,10)])
+
+M=log2(wiggleTableScale[,c('V2','V4','V6')]/wiggleTableScale[,c('V8','V10','V12')])
 fit<-lmFit(M)
 fit<-eBayes(fit)
 ###############################################
@@ -126,20 +131,27 @@ par(mfrow=c(1,1))
 #####################################################
 #########################
 
-x<-topTable(eb,number=5000)
-volcanoplot(eb,coef=0.5)
-points(x$logFC,x$B,col="#FF000077",pch=16,cex=0.35)
-title('Log Fold change vs Log odds (S96 vs HS959)')
+
+x<-topTable(eb,number=2000)
+volcanoplot(eb)
+points(x$logFC,x$B,col=2,pch=16,cex=0.35)
+title('Selection of Differential Binding Sites')
 title('Log difference vs Log odds S96vsHS959')
+for(i in seq(100,5000,by=10)){
+  x<-topTable(eb,number=i)
+  
+  
+  
+  mytab<-cbind(as.character(wiggleTable[x$ID,1]),wiggleTable[x$ID,2],wiggleTable[x$ID,2]+1,x$ID,-log10(x$P.Value))
+  mytab<-mytab[order(as.numeric(mytab[,2])),]
+  mytab<-mytab[order(mytab[,1]),]
+  write.table(mytab,col.names=FALSE,row.names=FALSE,sep='\t',quote=FALSE,file=paste0('mergefiles/newreplicatediff-',i,'.txt'))
+}
 
-
-
-x2<-wiggleTable[x$ID,]
-write.table(cbind(wiggleTable[x$ID,1],wiggleTable[x$ID,2],wiggleTable[x$ID,2]+1),col.names=FALSE,row.names=FALSE,sep='\t')
 plot(wiggleTable[,c(4,8)],pch=16,cex=.25,col=rgb(1,0,0,0.5),xlab)
 points(x2[,c(4,8)],pch=16,cex=.25,col=rgb(0,0,0,0.5))
 
-
+newreplicatediff<-read.table('newreplicatediff.txt')
 
 
 
@@ -215,4 +227,51 @@ MyMAList<-list(M=treat-control,A=(treat+control)/2)
 plotMA(MyMAList)
 
 
+venn.plot <- draw.triple.venn(873,1110,1237,764,969,741,713, c("S96rep1", "S96rep2", "S96rep3"),sep.dist=0.1, rotation.degree = 30,fill = c("red", "green","blue"),alpha = c(0.5, 0.5,0.5), cex = 2,cat.fontface = 2, fontfamily =3);
 
+venn.plot <- draw.triple.venn(936,1157,1320,809,1014,790,745, c("S96rep1", "S96rep2", "S96rep3"),sep.dist=0.1, rotation.degree = 30,fill = c("red", "green","blue"),alpha = c(0.5, 0.5,0.5), cex = 2,cat.fontface = 2, fontfamily =3);
+
+venn.plot <- draw.triple.venn(880,926,1175,756,807,774,709, c("HS959rep1", "HS959rep2", "HS959rep3"),sep.dist=0.1, rotation.degree = 30,fill = c("orange", "purple","brown"),alpha = c(0.5, 0.5,0.5), cex = 2,cat.fontface = 2, fontfamily =3);
+
+
+
+
+
+
+venn.plot <- draw.triple.venn(873,1110,1237,0,0,0,0, c("First", "Second", "Third"),sep.dist=0.1, rotation.degree = 30,fill = c("red", "green","blue"),
+                              alpha = c(0.5, 0.5,0.5), cex = 2,
+                              cat.fontface = 4, fontfamily =3);
+
+
+
+ret<-venn.diagram(list("S96"=s96annotate$Nearest.PromoterID,"HS959"=hs959annotate$Nearest.PromoterID),fill = c("red", "green"),alpha = c(0.5, 0.5), cex = 1.5,cat.fontface = 2, fontfamily =4,filename=NULL,main="Comparison of S96 vs HS959 Target Genes",main.fontface=2,main.fontfamily=2,main.cex=1);
+
+grid.draw(ret)
+
+
+
+
+# A more complicated diagram
+venn.plot <- draw.triple.venn(
+  area1 = 65,
+  area2 = 75,
+  area3 = 85,
+  n12 = 35,
+  n23 = 15,
+  n13 = 25,
+  n123 = 5,
+  category = c("First", "Second", "Third"),
+  fill = c("blue", "red", "green"),
+  lty = "blank",
+  cex = 2,
+  cat.cex = 2,
+  cat.col = c("blue", "red", "green")
+);
+grid.draw(venn.plot);
+grid.newpage();
+# Demonstrating an Euler diagram
+venn.plot <- draw.triple.venn(20, 40, 60, 0, 0, 0, 0, c("First", "Second", "Third"), sep.dist = 0.1, rotation.degree = 30);
+# Writing to file
+tiff(filename = "Triple_Venn_diagram.tiff", compression = "lzw");
+grid.draw(venn.plot);
+dev.off();
