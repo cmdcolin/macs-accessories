@@ -37,7 +37,7 @@ knitr
 \use_esint 1
 \use_mhchem 1
 \use_mathdots 1
-\cite_engine basic
+\cite_engine natbib_authoryear
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
@@ -215,7 +215,7 @@ The study of eukaryotic genomes has revealed a complex world of proteins
 ding gene regulation, however, studies have shown that these binding sites
  can vary significantly 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "zheng_genetic_2010,odom_tissue-specific_2007"
 
 \end_inset
@@ -250,7 +250,7 @@ New computational techniques have been developed to address problems of
  are only used to analyze individual experiments, and are not used to compare
  experiments 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "wilbanks_evaluation_2010"
 
 \end_inset
@@ -270,7 +270,7 @@ In order to compare different ChIP-seq experiments, normalization can be
  in ChIP-seq, and one common method for normalizing high-throughput sequencing
  data is scaling for read depth 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "zhang_model-based_2008,zheng_genetic_2010"
 
 \end_inset
@@ -279,14 +279,14 @@ key "zhang_model-based_2008,zheng_genetic_2010"
  Other methods for normalizing have been developed to estimate the background
  noise to improve scaling factors 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "diaz_normalization_2012,liang_normalization_2012"
 
 \end_inset
 
 , to use a linear model to scale read depth 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "shao_manorm:_2012"
 
 \end_inset
@@ -294,7 +294,7 @@ key "shao_manorm:_2012"
 , and to estimate changes in the variance of the data across the genome
  to reduce bias 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "zheng_genetic_2010,zhang_model-based_2008,kuan_statistical_2011"
 
 \end_inset
@@ -312,7 +312,7 @@ Another consideration for comparing experiments is the appropriate use of
  A variety of statistical models have been developed for finding binding
  sites from individual experiments (see 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citealp
 key "wilbanks_evaluation_2010"
 
 \end_inset
@@ -322,7 +322,7 @@ key "wilbanks_evaluation_2010"
  The methods that have been used for comparing ChIP-seq experiments includes
  a Bayesian Poisson model to find conserved binding sites 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "shao_manorm:_2012"
 
 \end_inset
@@ -330,14 +330,14 @@ key "shao_manorm:_2012"
 , negative binomial models that can model variance across experiments better
  
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "robinson_edger:_2010,ji_integrated_2008,kuan_statistical_2011"
 
 \end_inset
 
 , estimating mixture-model for evaluating differential binding sites 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "taslim_comparative_2009"
 
 \end_inset
@@ -345,14 +345,14 @@ key "taslim_comparative_2009"
 , using the variance of the read scores across experiments to find variable
  binding regions 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "zheng_genetic_2010"
 
 \end_inset
 
 , and by directly comparing experiments using a dynamic Poisson 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "zhang_model-based_2008"
 
 \end_inset
@@ -368,7 +368,7 @@ We adopted a statistical framework that uses a “moderated t-test”, which
  was developed for comparing gene expression data for microarrays, to compare
  ChIP-seq data 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "smyth_linear_2004"
 
 \end_inset
@@ -397,7 +397,7 @@ Chromatin immunoprecipitation (ChIP) is experimental methodology that can
  that is enriched for the binding sites of that particular protein.
  Many different variations of the ChIP protocol have been developed
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "collas_chromatin_2009"
 
 \end_inset
@@ -424,7 +424,7 @@ y.
  when used with ChIP, can provide a large scale or whole-genome view of
  DNA-protein interactions 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "collas_chromatin_2009"
 
 \end_inset
@@ -442,13 +442,12 @@ DNA microarrays are one type of high-throughput technology which can analyze
  of the target genes in order to detect the transcription factors that are
  the most likely regulators 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "odom_tissue-specific_2007"
 
 \end_inset
 
 .
- ].
  Using so-called tiled arrays or high-density microarrays increases the
  resolution that binding sites can be detected.
  
@@ -497,7 +496,7 @@ reference "fig:The-ChIP-seq-workflow"
  Scaling by read depth is a strategy is implemented by many algorithms including
  MACS and NormDiff 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "zhang_model-based_2008,zheng_genetic_2010"
 
 \end_inset
@@ -542,7 +541,7 @@ The ChIP-seq workflow: from experimental protocol to finding binding sites
  (Right) Fragment size estimation using the bi-modal distribution of paired-end
  reads can be used to improve peak finding 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "park_chip-seq:_2009"
 
 \end_inset
@@ -583,7 +582,7 @@ To find transcription factor binding sites, peak finding algorithms are
  called MACS (Model-based analysis of ChIP-seq) to see how potential binding
  sites are identified from ChIP-seq data 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "zhang_model-based_2008"
 
 \end_inset
@@ -604,7 +603,7 @@ The first step is to build a peak model to estimate the original size of
  to estimate the distance between the bimodal distribution of sense and
  anti-sense reads (
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:The-ChIP-seq-workflow"
 
 \end_inset
@@ -619,7 +618,7 @@ After building a peak model, then MACS uses a “dynamic” Poisson rate paramet
  The local regions can help reduce the bias that has been observed in the
  promoter regions and due to mappability and other sources of bias 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "kuan_statistical_2011,nix_empirical_2008"
 
 \end_inset
@@ -684,7 +683,7 @@ The Poisson distribution for different parameters of Lambda.
  The probability of observing a large number of reads for a given lambda
  is used to find peaks in the ChIP-seq data using programs like MACS 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "zhang_model-based_2008"
 
 \end_inset
@@ -711,10 +710,9 @@ Identifying peaks is important for finding binding sites, but it can be
  difficult to compare these results between experiments.
  For instance, the number of reads in a peak region can depend on non-biological
  variables such as the ChIP-seq enrichment and the library size.
- The false discovery rate (FDR) is another metric that represents confidence
- in the peaks, but it implicitly ranks the peaks by p-value so it is not
- , and it can be used to measure the confidence compared with the background,
- but so making these comparisons is non-parametric.
+ The false discovery rate (FDR) and p-value also represent confidence in
+ the peaks, but this is explicitely related to the confidence compared with
+ the background, wich makes comparisons of data difficult.
  Therefore, peak-finding alone offers an incomplete picture when comparing
  binding sites from different ChIP-seq experiments.
  Performing a more direct comparison of the ChIP-seq data by including normaliza
@@ -776,7 +774,7 @@ One problem with the approach MACS uses is that it does not necessarily
 Replicates have been shown to be important in measuring differential gene
  expression using microarrays 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "wit_statistics_2004"
 
 \end_inset
@@ -784,12 +782,26 @@ key "wit_statistics_2004"
 , and we considered methods that use similar techniques that would help
  us find compare ChIP-seq data to find differential binding sites.
  The statistical problem that arises from doing statistical comparisons
- from high-throughput data is the “small n, large p” problem.
- The “small n, large p” problem exists because typically there are few samples
- (n) for high throughput data, but a lot of hypothesis tests (p) about which
- sites are significantly different 
+ from high-throughput data is the “small
+\begin_inset Formula $n$
+\end_inset
+
+, large 
+\begin_inset Formula $p$
+\end_inset
+
+” problem.
+ This problem exists because typically there are few samples (
+\begin_inset Formula $n$
+\end_inset
+
+) for high throughput data, but a lot of hypothesis tests (
+\begin_inset Formula $p$
+\end_inset
+
+) about which sites are significantly different 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "wit_statistics_2004"
 
 \end_inset
@@ -815,7 +827,7 @@ pping binding sites appear from the peaks that are called in each experiment.
 \end_layout
 
 \begin_layout Subsection
-Description of Data
+Description of dataset
 \end_layout
 
 \begin_layout Standard
@@ -824,7 +836,7 @@ We looked at ChIP-seq experiments for two different strains of yeast for
  and analyze data from Zheng et al.
  
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citeyearpar
 key "zheng_genetic_2010"
 
 \end_inset
@@ -852,22 +864,23 @@ Goal:
 \end_layout
 
 \begin_layout Standard
-In the original analysis of these genomes, “extensive Ste12 binding variation
- among individuals” 
+In the original analysis of these genomes, they observed “extensive Ste12
+ binding variation among individuals” 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "zheng_genetic_2010"
 
 \end_inset
 
 .
- This refers to not only differences between the two parent strains, but
- also variations within the cross-strains between them.
- To show a big picture view of the differences between the parent strains,
- the binding sites are annotated using the nearest target genes and then
- compared by looking at the overlap of the gene sets.
- We wanted to reproduce this results in order to see if the binding site
- variations match our analysis.
+ This variation refers to not only differences between the two parent strains,
+ but also variations in the cross-strains from the parent strains.
+ But, to just show the differences between the parent strains, Zheng et
+ al.
+ obtained the target genes for the binding sites that are found using MACS
+ by annotating the peaks with the nearest gene ID.
+ We wanted to reproduce these results in order to see if the binding site
+ differences between the parent strains match our analysis.
 \end_layout
 
 \begin_layout Standard
@@ -900,7 +913,7 @@ We analyzed the set of replicates from each genome to see if we could get
  As it turns out many of the peaks identified from MACS are not the same
  between replicates (
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:Overlap-of-peaks"
 
 \end_inset
@@ -938,11 +951,10 @@ status open
 
 \begin_layout Plain Layout
 Overlap of peaks from S96 and HS959 replicate experiments.
- (Top) The number of reproducible peaks in all the gene sets is less than
- the total number that are identified from the total set used in Zheng et
- al.
- (Bottom) The overlap of the gene sets produced from annotating only the
- intersection of all three replicates from each experiment.
+ (Top) The number of overlapping peaks in all the gene sets is less than
+ the total number that are identified in the gene set the Zheng et al.
+ used (Bottom) The overlap of the gene sets produced from annotating only
+ the intersection of all three replicates from each experiment.
  
 \begin_inset CommandInset label
 LatexCommand label
@@ -1523,24 +1535,24 @@ Our method of equalizing the distributions based on median read depth might
  by the total library size, however, it is less aggressive than a full quantile
  normalization.
  Additionally, more sophisticated normalizations have been developed that
- can estimate the background (
+ can estimate the background 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "diaz_normalization_2012,liang_normalization_2012"
 
 \end_inset
 
-).
+.
  However, scaling by median read depth is not too uncommon, and in fact,
  it is also used by Zheng et al.
- for comparing ChIP-seq and control data 
+ 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citeyearpar
 key "zheng_genetic_2010"
 
 \end_inset
 
-.
+ for comparing ChIP-seq and control data.
  
 \end_layout
 
@@ -1832,8 +1844,7 @@ Methods:
 \end_layout
 
 \begin_layout Standard
-We implemented the NormDiff algorithm using specifications from Zheng et
- al
+We implemented the NormDiff algorithm using specifications from 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "zheng_genetic_2010"
@@ -1933,7 +1944,7 @@ The algorithm for estimating the variance is as follows
 \begin_layout Standard
 Refer to code listing 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "alg:NormDiff-algorithm-implemented"
 
 \end_inset
@@ -1982,7 +1993,7 @@ The NormDiff algorithm has a good ability normalize the “binding signal”
  The library size of replicate 1 is nearly twice the size of the library
  size of replicate 2 which is important for comparing experiments (see 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "tab:Listing-of-ChIP-seq"
 
 \end_inset
@@ -1994,6 +2005,8 @@ reference "tab:Listing-of-ChIP-seq"
 \end_layout
 
 \begin_layout Standard
+
+\series bold
 Caveat: 
 \end_layout
 
@@ -2103,7 +2116,7 @@ Methods:
 One method for the statistical comparisons of two groups is Student’s t-test
  
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "wit_statistics_2004"
 
 \end_inset
@@ -2173,7 +2186,7 @@ We looked at the distribution of the log-ratios from each group over the
  whole genome and found that they follow tend to follow a normal distribution
  (
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:The-distribution-of"
 
 \end_inset
@@ -2297,7 +2310,7 @@ While the classical t-test methods were insufficient for comparing ChIP-seq
  gene expression microarrays have used different types of t-tests that address
  the shortcomings of the classical t-test for high-throughput data
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "ji_tilemap:_2005,smyth_linear_2004"
 
 \end_inset
@@ -2305,7 +2318,7 @@ key "ji_tilemap:_2005,smyth_linear_2004"
 .
  We sought to apply methods from the limma package 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "smyth_linear_2004"
 
 \end_inset
@@ -2389,7 +2402,7 @@ The moderated t-test is then calculated by using the mean standard deviation
  except that the standard errors have been moderated across genes, i.e., shrunk
  towards a common value, using a simple Bayesian model.” 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "smyth_linear_2004"
 
 \end_inset
@@ -2525,7 +2538,7 @@ We selected an arbitrary number of significantly differential read count
  finding binding sites by including moving average and hidden markov models
  
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "ji_tilemap:_2005"
 
 \end_inset
@@ -2543,7 +2556,7 @@ Results:
 We highlighted the selected positions in the strain vs strain comparison
  plot to show that they have significantly differential read counts (
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:The-differential-peaks"
 
 \end_inset
@@ -2554,7 +2567,7 @@ reference "fig:The-differential-peaks"
  Then we inspected the signal tracks of the differential peaks by plotting
  the number of reads that overlap each genome position (
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:The-differential-peaks"
 
 \end_inset
@@ -2573,7 +2586,7 @@ We identified significant differential peaks by selecting the most significant
  read counts according to the log-odds ratios given by the empirical Bayes
  functions of limma from the moderated t-test (
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:Selecting-differential-read"
 
 \end_inset
@@ -2582,7 +2595,7 @@ reference "fig:Selecting-differential-read"
  Many of the differential binding sites are merged with nearby neighbors
  to produce differential peaks (
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:Selecting-differential-read"
 
 \end_inset
@@ -2793,7 +2806,7 @@ We were able to identify some differential sites, however there were some
  that was identified with high confidence by DIME was not validated by the
  replicate experiment 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:Differential-binding-sites"
 
 \end_inset
@@ -2938,14 +2951,14 @@ High-throughput sequencing data is based on read counts and these are typically
  ChIP-seq programs have used a variety of statistical models that use discrete
  distributions such as Poisson
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "zhang_model-based_2008,shao_manorm:_2012"
 
 \end_inset
 
  and negative binomial 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "robinson_edger:_2010,ji_integrated_2008,kuan_statistical_2011"
 
 \end_inset
@@ -2954,7 +2967,7 @@ key "robinson_edger:_2010,ji_integrated_2008,kuan_statistical_2011"
  In our model we other models, we compared other types of models of ChIP-seq
  data including DIME and limma 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "taslim_comparative_2009,smyth_linear_2004"
 
 \end_inset
@@ -2970,20 +2983,22 @@ key "taslim_comparative_2009,smyth_linear_2004"
 Normalization has been important considerations for modeling the data, and
  both DIME and limma have taken some pains to model the mean and the variance
  using some custom techniques.
- Taslim et al applied a two-step LOESS normalization to smooth the mean
- and the variance separately for comparing ChIP-seq data 
+ Taslim et al.
+ 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citeyearpar
 key "taslim_comparative_2009"
 
 \end_inset
 
-.
- Limma has used a strategy for modeling a mean-variance relationship using
- a LOESS curve to give weights for the linear modeling.
- We did not employ these methods in favor of more simple normalization by
- scaling median read depth, but there is evidence that these are important
- for comparing across experiments.
+ applied a two-step LOESS normalization to smooth the mean and the variance
+ separately for comparing ChIP-seq data.
+ Limma also has a method called voom: mean-variance modelling at the observation
+al level, that is uses a LOESS curve to give weights for estimating log-ratio
+ fold changes from limma's linear models.
+ We did not employ these methods or normalization in favor of more simple
+ normalization, scaling median read depth, but there is evidence that these
+ are important for comparing across experiments.
 \end_layout
 
 \begin_layout Subsection
@@ -2996,14 +3011,7 @@ Future work and considerations
 
 \begin_layout Standard
 Comparisons of ChIP-seq would be improved by better characterizing the variance
- of the binding sites across experiments 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "zheng_genetic_2010"
-
-\end_inset
-
-.
+ of the binding sites across experiments.
  In our approach, we assume a normal distribution in order to apply a t-test,
  and while we showed a good fit, other distributions that represent the
  underlying discrete data can be used.
@@ -3015,7 +3023,7 @@ key "zheng_genetic_2010"
  overdispersion of the variance across experiments, and call for the use
  of a alternative statistical models 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "robinson_edger:_2010,ji_integrated_2008,kuan_statistical_2011"
 
 \end_inset
@@ -3028,9 +3036,10 @@ Properly normalizing and characterizing the binding signals from the noisy
  background would also improve the comparison of ChIP-seq data data and
  help understand the genetic causes of variations in transcription factor
  binding.
- Zheng et al 
+ Zheng et al.
+ 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citeyearpar
 key "zheng_genetic_2010"
 
 \end_inset
@@ -3064,7 +3073,7 @@ We did a comparison of the differential binding with differential gene expressio
 n by obtaining the gene expression data for S96 and HS959 using the GEOQuery
  and GEO2R interface 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "barrett_ncbi_2012"
 
 \end_inset
@@ -3076,7 +3085,7 @@ key "barrett_ncbi_2012"
  This conclusion is clear after also showing the comparison of the binding
  with a random gene 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:gene-expression"
 
 \end_inset
@@ -3086,7 +3095,7 @@ reference "fig:gene-expression"
  that the Ste12 binding sites are highly correlated with gene expression
  in general 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:gene-expression"
 
 \end_inset
@@ -3324,7 +3333,7 @@ name "alg:NormDiff-algorithm-implemented"
 \begin_layout Standard
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
-bibfiles "Zotero"
+bibfiles "Zotero-out"
 options "plain"
 
 \end_inset

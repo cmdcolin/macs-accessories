@@ -40,16 +40,13 @@ wiggleTable<-joinWiggleFiles(chrnames, macswiggle)
 wiggleTable<-plainNames(wiggleTable)
 cache('wiggleTable')
 wiggleTable<-wiggleTable[,c(1,2,4,6,8,10,12,14)]
-ret<-as.matrix(wiggleTable[,c(3,4,6,7)])
+ret<-as.matrix(wiggleTable[,c(3,4,5,6,7,8)])
 ret2<-wiggleTable[,c(1,2)]
-wiggleTableScale<-normalizeMedianValues(ret)
-ret<-cbind(ret2,ret)
+ret<-normalizeMedianValues(ret)
+wiggleTableScale<-cbind(ret2,ret)
+rm(ret)
+rm(ret2)
 
-
-cmed<-normalizeCustom(ret)
-for(i in 1:length(cmed)) {
-  ret[,i]=ret[,i]/cmed
-}
 # 
 # normDiffList<-lapply(1:nsamples,function(i) { 
 #   pos=i*2
