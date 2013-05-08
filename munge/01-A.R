@@ -46,6 +46,7 @@ ret<-normalizeMedianValues(ret)
 wiggleTableScale<-cbind(ret2,ret)
 rm(ret)
 rm(ret2)
+cache('wiggleTableScale')
 
 # 
 # normDiffList<-lapply(1:nsamples,function(i) { 

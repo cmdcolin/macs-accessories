@@ -37,7 +37,7 @@ knitr
 \use_esint 1
 \use_mhchem 1
 \use_mathdots 1
-\cite_engine natbib_authoryear
+\cite_engine basic
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
@@ -424,7 +424,7 @@ y.
  when used with ChIP, can provide a large scale or whole-genome view of
  DNA-protein interactions 
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand cite
 key "collas_chromatin_2009"
 
 \end_inset
@@ -442,7 +442,7 @@ DNA microarrays are one type of high-throughput technology which can analyze
  of the target genes in order to detect the transcription factors that are
  the most likely regulators 
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand cite
 key "odom_tissue-specific_2007"
 
 \end_inset
@@ -477,31 +477,17 @@ reference "fig:The-ChIP-seq-workflow"
 \end_layout
 
 \begin_layout Standard
-One problem for ChIP-seq data analysis is to estimate the original fragment
- size because, conceivably, the transcription factor can bind to any location
- on the DNA fragment.
- Using only the short reads to find the transcription factor binding sites
- might misrepresent the true location of the binding sites, so the estimated
- size fragment size is used for downstream analysis.
- To estimate the size of the original DNA fragments, a naive peak finder
- is used to find peaks from sense and anti-sense reads, and half the distance
- between the paired-end reads is estimated as the fragment size (see 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "fig:The-ChIP-seq-workflow"
-
+There are many problems for analyzing this data and for finding transcription
+ factor binding sites.
+ The main idea is that many of the short read sequences repetitively cover
+ a particular region of the DNA forming peaks where there are binding sites.
+ These peak finding algorithms are common for detecting transcription factor
+ binding sites from ChIP-seq data and we discuss them in the next section.
+ 
+\begin_inset Newline newline
 \end_inset
 
-).
- Scaling by read depth is a strategy is implemented by many algorithms including
- MACS and NormDiff 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "zhang_model-based_2008,zheng_genetic_2010"
 
-\end_inset
-
-.
 \end_layout
 
 \begin_layout Standard
@@ -541,7 +527,7 @@ The ChIP-seq workflow: from experimental protocol to finding binding sites
  (Right) Fragment size estimation using the bi-modal distribution of paired-end
  reads can be used to improve peak finding 
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand cite
 key "park_chip-seq:_2009"
 
 \end_inset
@@ -582,7 +568,7 @@ To find transcription factor binding sites, peak finding algorithms are
  called MACS (Model-based analysis of ChIP-seq) to see how potential binding
  sites are identified from ChIP-seq data 
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand cite
 key "zhang_model-based_2008"
 
 \end_inset
@@ -618,7 +604,7 @@ After building a peak model, then MACS uses a “dynamic” Poisson rate paramet
  The local regions can help reduce the bias that has been observed in the
  promoter regions and due to mappability and other sources of bias 
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand cite
 key "kuan_statistical_2011,nix_empirical_2008"
 
 \end_inset
@@ -657,6 +643,10 @@ Identifying features from different ChIP-seq experiments is important, but
 n and statistical comparisons can give a better assessment of differential
  binding sites.
  
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -679,7 +669,11 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
+
+\series bold
 The Poisson distribution for different parameters of Lambda.
+
+\series default
  The probability of observing a large number of reads for a given lambda
  is used to find peaks in the ChIP-seq data using programs like MACS 
 \begin_inset CommandInset citation
@@ -774,7 +768,7 @@ One problem with the approach MACS uses is that it does not necessarily
 Replicates have been shown to be important in measuring differential gene
  expression using microarrays 
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand cite
 key "wit_statistics_2004"
 
 \end_inset
@@ -801,7 +795,7 @@ key "wit_statistics_2004"
 
 ) about which sites are significantly different 
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand cite
 key "wit_statistics_2004"
 
 \end_inset
@@ -867,7 +861,7 @@ Goal:
 In the original analysis of these genomes, they observed “extensive Ste12
  binding variation among individuals” 
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand cite
 key "zheng_genetic_2010"
 
 \end_inset
@@ -921,6 +915,10 @@ reference "fig:Overlap-of-peaks"
 ).
  Using the peak calling parameters and by looking at overlapping peaks,
  we get the following set of peaks from all S96 and HS959 replicates.
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -947,10 +945,24 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
+\begin_inset Graphics
+	filename figure/image7_2.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
 \begin_inset Caption
 
 \begin_layout Plain Layout
+
+\series bold
 Overlap of peaks from S96 and HS959 replicate experiments.
+
+\series default
  (Top) The number of overlapping peaks in all the gene sets is less than
  the total number that are identified in the gene set the Zheng et al.
  used (Bottom) The overlap of the gene sets produced from annotating only
@@ -1131,7 +1143,7 @@ HS959
 Comparison of our annotation of the target genes compared with original
  published results 
 \series default
-(Left) Results from peak annotation of the peaks published by Zheng et al
+(Left) Results from peak annotation using peaks published by Zheng et al
  with saCcer3 annotation (duplicate gene annotations removed) (Right) Original
  results from
 \series bold
@@ -1144,7 +1156,7 @@ key "zheng_genetic_2010"
 
 \end_inset
 
-.
+ of gene set overlap with additional GO annotation.
  
 \begin_inset CommandInset label
 LatexCommand label
@@ -1211,7 +1223,7 @@ Result:
 
 \begin_layout Standard
 The result of joining the experiments together is a large data table with
- columns that correspond to the chromosome, bin position, and read counts
+ columns that correspond to the chromosome, genome position, and read counts
  for each experiment.
  We used approximately 118mb for this table in memory for the yeast ChIP-seq
  experiments, only including the parent strain replicates (genome size 1.2*10^7bp
@@ -1477,8 +1489,12 @@ HS959input
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Listing of ChIP-seq data files and the total number of sequenced reads created
- for each experiment 
+
+\series bold
+Listing of for ChIP-seq and control data for the total number of sequenced
+ reads created for each experiment
+\series default
+ 
 \begin_inset CommandInset label
 LatexCommand label
 name "tab:Listing-of-ChIP-seq"
@@ -1490,10 +1506,6 @@ name "tab:Listing-of-ChIP-seq"
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
@@ -1537,7 +1549,7 @@ Our method of equalizing the distributions based on median read depth might
  Additionally, more sophisticated normalizations have been developed that
  can estimate the background 
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand cite
 key "diaz_normalization_2012,liang_normalization_2012"
 
 \end_inset
@@ -1547,7 +1559,7 @@ key "diaz_normalization_2012,liang_normalization_2012"
  it is also used by Zheng et al.
  
 \begin_inset CommandInset citation
-LatexCommand citeyearpar
+LatexCommand cite
 key "zheng_genetic_2010"
 
 \end_inset
@@ -1620,6 +1632,10 @@ The large number of non-overlapping peaks seem to have similar read counts
  based on our figure, suggesting that simply using the non-overlapping peaks
  to represent differences might be misrepresenting the data.
  
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1990,8 +2006,8 @@ Interpretation:
 \begin_layout Standard
 The NormDiff algorithm has a good ability normalize the “binding signal”
  which removes bias caused by differences in read depth and other variables.
- The library size of replicate 1 is nearly twice the size of the library
- size of replicate 2 which is important for comparing experiments (see 
+ One example of differences between replicates is the library size of replicate
+ 1 is nearly twice the size of the library size of replicate 2 (see 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "tab:Listing-of-ChIP-seq"
@@ -1999,9 +2015,10 @@ reference "tab:Listing-of-ChIP-seq"
 \end_inset
 
 ).
- The reason why the normalization is important is because the NormDiff score
- is used as quantitative trait in QTL analysis and it is used to find variable
- binding regions in the set of all the ChIP-seq experiments.
+ NormDiff does not perform any between-experiment normalizations, but by
+ estimating the binding signal by performing a background subtraction it
+ tries to make the ChIP-seq experiments comparable.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -2058,10 +2075,14 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
+
+\series bold
 The sum vs the difference of S96 replicates read counts using different
- normalization techniques and including the line of best fit (a) Using backgroun
-d subtraction with scaling for read depth (b) NormDiff with variance parameter
- estimated from all points (c) NormDiff with local variance estimation parameter.
+ normalization techniques and including the line of best fit
+\series default
+ (a) Using background subtraction with scaling for read depth (b) NormDiff
+ with variance parameter estimated from all points (c) NormDiff with local
+ variance estimation parameter.
  
 \begin_inset CommandInset label
 LatexCommand label
@@ -2162,10 +2183,14 @@ where-
 \end_inset
 
  is the sample size
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Two main features of this equation should be noted.
+Two main features of Student's t-test should be noted for our application.
  The first is that the difference between the groups is estimated using
  the mean difference of the samples.
  In our application, the differences correspond to the log ratio of the
@@ -2377,6 +2402,10 @@ is the set of inputted log ratios
 \end_inset
 
  is the set of log-ratios to estimate from the linear model
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2604,6 +2633,10 @@ reference "fig:Selecting-differential-read"
  The growth of the differential peak curve outpaces the number of differential
  bins that are added at each p-value threshold indicating that many of the
  many of the same differential peaks are being merged together.
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2812,6 +2845,10 @@ reference "fig:Differential-binding-sites"
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2906,16 +2943,6 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset Graphics
-	filename figure/Rplot155.png
-	scale 40
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
 \begin_inset Caption
 
 \begin_layout Plain Layout
@@ -3001,10 +3028,6 @@ al level, that is uses a LOESS curve to give weights for estimating log-ratio
  are important for comparing across experiments.
 \end_layout
 
-\begin_layout Subsection
-Comparison with other programs
-\end_layout
-
 \begin_layout Section
 Future work and considerations
 \end_layout
@@ -3023,7 +3046,7 @@ Comparisons of ChIP-seq would be improved by better characterizing the variance
  overdispersion of the variance across experiments, and call for the use
  of a alternative statistical models 
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand cite
 key "robinson_edger:_2010,ji_integrated_2008,kuan_statistical_2011"
 
 \end_inset
@@ -3073,7 +3096,7 @@ We did a comparison of the differential binding with differential gene expressio
 n by obtaining the gene expression data for S96 and HS959 using the GEOQuery
  and GEO2R interface 
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand cite
 key "barrett_ncbi_2012"
 
 \end_inset
@@ -3102,6 +3125,10 @@ reference "fig:gene-expression"
 
 .
  
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -3217,11 +3244,7 @@ status open
 
 \begin_layout Plain Layout
 
-# calculate NormDiff score as (A-B/c) / 
-\backslash
-hat{
-\backslash
-sigma}}
+# calculate NormDiff score
 \end_layout
 
 \begin_layout Plain Layout
@@ -3333,7 +3356,7 @@ name "alg:NormDiff-algorithm-implemented"
 \begin_layout Standard
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
-bibfiles "Zotero-out"
+bibfiles "Zotero"
 options "plain"
 
 \end_inset
