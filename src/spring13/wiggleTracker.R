@@ -38,6 +38,7 @@ lines(wiggleTable[b:e,2],wiggleTable[b:e,6],col=pal[4],lwd=2)
 legend('topright',legend=c('HS959rep2','HS959rep1','S96rep1','S96rep2'),fill=pal)
 
 
+
 pal=sample(brewer.pal(20,'Dark2'),4)
 plot(normDiffTable[b:e,1],normDiffTable[b:e,8],type='l',col=pal[1],lwd=2,ylab='Read score',xlab=paste(chr,"Position"))
 lines(normDiffTable[b:e,1], normDiffTable[b:e,10],col=pal[2],lwd=2)
@@ -67,14 +68,35 @@ ret<-out
 b=ret[2,2]-60
 e=ret[2,2]+60
 chr=ret[2,1]
-region=wiggleTable[wiggleTable[,1]==chr & wiggleTable[,2]>b & wiggleTable[,2]<e,]
+
+diff<-wiggleTableScale[x$ID[12],]
+myret<-read.table('newreplicatediff-0490.tab.out')
+myret<-myret[rev(order(myret$V4)),]
+
+pos<-12
+b=myret[pos,2]-2000
+e=myret[pos,3]+3000
+chr=as.character(myret[pos,1])
+myret[pos,]
+region=wiggleTableScale[wiggleTableScale[,1]==chr & wiggleTableScale[,2]>b & wiggleTableScale[,2]<e,]
 pal=(brewer.pal(4,'BrBG'))
-plot(region[,2],region[,8],type='l',col=pal[1],lwd=2,ylab='Read score',xlab=paste(chr,"Position"),ylim=c(0,60))
-lines(region[,2], region[,10],col=pal[2],lwd=2)
-lines(region[,2],region[,4],col=pal[3],lwd=2)
-lines(region[,2],region[,6],col=pal[4],lwd=2)
-legend('topright',legend=c('HS959rep1','HS959rep2','S96rep1','S96rep2'),fill=pal)
-title('Differential peak identified by DIME')
+plot(region[,2],region[,3],type='l',col=pal[1],lwd=2,ylab='Read score',xlab=paste(chr,"Position"),ylim=c(0,300))
+lines(region[,2], region[,4],col=pal[2],lwd=2)
+lines(region[,2],region[,6],col=pal[3],lwd=2)
+lines(region[,2],region[,7],col=pal[4],lwd=2)
+legend('topright',legend=c('S96rep1','S96rep2','HS959rep1','HS959rep2'),fill=pal)
+title('Broad differential region S96 vs HS959 (limma)')
+
+
+
+
+#####REVIEW LIMMA Statistics
+selection=wiggleTable[x$ID,]
+#example region
+x[(selection[,1]=='chr15')&(selection[,2]>17400)&(selection[,2]<18000)==TRUE,]
+
+
+
 
 
 x1<-read.table('../Data/ELAND/S96hs959diff_peaks.bed')
@@ -107,7 +129,6 @@ e=myret[1,2]+1000
 chr=myret[1,1]
 pal=sample(brewer.pal(8,'Dark2'),4)
 
-
 region=wiggleTable[wiggleTable[,1]==chr & wiggleTable[,2]>b & wiggleTable[,2]<e,]
 #region=wiggleTableScale[566000:568000,]
 pal=(brewer.pal(4,'RdGy'))
@@ -130,4 +151,43 @@ lines(region2[,2],region[,1],col=pal[3],lwd=2)
 lines(region2[,2],region[,2],col=pal[4],lwd=2)
 legend('topright',legend=c('HS959rep1','HS959rep2','S96rep1','S96rep2'),fill=pal)
 title('Significant differential peak S96 vs HS959')
+text(b+170,120,paste0("-log10(pvalue)=",ret[a1,5]))
+
+
+
+
+
+b=sortdime[8,2]-2000
+e=sortdime[8,3]+500
+chr=as.character(sortdime[8,1])
+region=wiggleTableScale[wiggleTableScale[,1]==chr & wiggleTableScale[,2]>b & wiggleTableScale[,2]<e,]
+
+pal=(brewer.pal(4,'PiYG'))
+plot(region[,2],region[,3],type='l',col=pal[1],lwd=2,ylab='Read score',xlab=paste(chr,"Position"),ylim=c(0,180))
+lines(region[,2], region[,4],col=pal[2],lwd=2)
+lines(region[,2],region[,6],col=pal[3],lwd=2)
+lines(region[,2],region[,7],col=pal[4],lwd=2)
+legend('topright',legend=c('S96rep1','S96rep2','HS959rep1','HS959rep2'),fill=pal)
+title('Significant differential peak S96 vs HS959 (DIME)')
+text(b+170,120,paste0("-log10(pvalue)=",ret[a1,5]))
+
+
+
+
+
+mytable<-read.table('newreplicatediff-0260.tab.out')
+sortdime<-mytable[rev(order(mytable$V4)),]
+b=sortdime[3,2]-1000
+e=sortdime[3,3]+500
+chr=as.character(sortdime[3,1])
+region=wiggleTableScale[wiggleTableScale[,1]==chr & wiggleTableScale[,2]>b & wiggleTableScale[,2]<e,]
+
+pal=(brewer.pal(4,'RdYlBu'))
+plot(region[,2],region[,3],type='l',col=pal[1],lwd=2,ylab='Read score',xlab=paste(chr,"Position"),ylim=c(0,250))
+lines(region[,2], region[,4],col=pal[2],lwd=2)
+lines(region[,2],region[,6],col=pal[3],lwd=2)
+lines(region[,2],region[,7],col=pal[4],lwd=2)
+#lines(region[,2],region[,8],col=pal[4],lwd=2)
+legend('topright',legend=c('S96rep1','S96rep2','HS959rep1','HS959rep2'),fill=pal)
+title('Significant differential peak S96 vs HS959 (limma)')
 text(b+170,120,paste0("-log10(pvalue)=",ret[a1,5]))

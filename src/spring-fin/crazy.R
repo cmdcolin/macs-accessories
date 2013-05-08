@@ -49,19 +49,19 @@ title('Number of differential peaks identified using p-value threshold')
 
 
 
-pvals<-lapply(list.files(pattern=".rando"),function(filename)  {
+pvals2<-lapply(list.files(pattern=".rando"),function(filename)  {
   ret<-read.table(filename)
   #print(filename)
   print(max(as.numeric(ret[,4])))
   max(as.numeric(ret[,4]))
 })
 
-nsites<-lapply(list.files(pattern=".rando"),function(filename)  {
+nsites1<-lapply(list.files(pattern=".rando"),function(filename)  {
   ret<-read.table(filename)
   nrow(ret)
 })
 
-nsites2<-lapply(list.files(pattern="tab$"),function(filename)  {
+nsites22<-lapply(list.files(pattern="tab$"),function(filename)  {
   ret<-read.table(filename)
   print(nrow(ret))
   nrow(ret)
@@ -112,13 +112,50 @@ title('Differential peaks identified using p-value threshold (iNUDGE)')
 legend('bottomright',col=c('black','blue'),pch=1,legend=c('Merged peaks','Differential inputs'))
 
 
-plot(exp(-unlist(pvals)),unlist(nsites2)/unlist(nsites),ylab="Merged peaks/Inputted sites",xlab="p-value")
-title('Ratio of Merged peaks/Inputted sites for each p-value threshold')
+plot(exp(-unlist(pvals)),unlist(nsites)/unlist(nsites2),ylab="Merged peaks/Inputt read count bins",xlab="p-value",ylim=c(0.1,0.3))
+title('Ratio of merged peaks/sites inputted')
 
 
 
+)points(pvals2[pvals2<0.1],(unlist(nsites1)/unlist(nsites22))[pvals2<0.1],col=3,)
+title('Ratio of merged peaks/input read count bins for each p-value')
+legend('topright',col=c(2,3),pch=1,legend=c('DIME merge ratio','limma merge ratio'))
+
+
+plot(wiggleTableScale[,3],wiggleTableScale[,7],xlab="S96rep1",ylab="HS959rep1",col=pal[1],pch=16,cex=0.9)
+points(wiggleTableScale[my.classify$class==1,3],wiggleTableScale[my.classify$class==1,7],col=pal2[1],pch=16,cex=0.9)
 
 axis(4)
 mtext("Number of sites inputted",side=4,line=3)
 title('Differential peaks identified using p-value threshold (iNUDGE)')
 legend('bottomright',col=c('black','blue'),pch=1,legend=c('Merged peaks','Differential inputs'))
+
+
+
+plot(exp(-unlist(pvals)),nsites2,col=4,xlim=c(0,0.05),ylim=c(0,5000),xlab='p-value',ylab='Number of sites')
+points(exp(-unlist(pvals)),nsites,col=3)
+points(pvals2[pvals2<0.1],nsites1[pvals2<0.1],col=2)
+points(pvals2[pvals2<0.1],nsites22[pvals2<0.1],col=1)
+legend('bottomright',col=1:4,pch=1,legend=c('DIME (input)','DIME (merged)','limma (input)','limma (merged)'))
+title('Comparison of merged peaks vs input read count bins')
+
+
+
+plot(pvals[pvals<0.2],nsites[pvals<0.2],xlab='p-value cutoff',ylab='Number of peaks merged')
+
+
+
+
+r=seq(3,4,by=0.01)
+
+xn<-function(x,r) r*x*(1-x)
+sapply(seq(0,1,by=0.01),
+       function(x) {
+         ret<-x
+         for(i in 1:1000) {
+           ret<-xn(ret,r)
+         }
+         ret
+       })
+plot(r,)
+x_n+1=r*x_n*(1-x_n)

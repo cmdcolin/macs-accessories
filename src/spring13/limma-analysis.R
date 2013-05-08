@@ -132,10 +132,10 @@ par(mfrow=c(1,1))
 #########################
 
 
-x<-topTable(eb,number=2000)
-volcanoplot(eb)
+x<-topTable(fit,number=1000)
+volcanoplot(fit)
 points(x$logFC,x$B,col=2,pch=16,cex=0.35)
-title('Selection of Differential Binding Sites')
+title('Selection of differential binding sites (limma)')
 title('Log difference vs Log odds S96vsHS959')
 for(i in seq(100,5000,by=10)){
   x<-topTable(eb,number=i)
@@ -192,6 +192,18 @@ x<-wiggleTable[ret$best$class==1,]
 makeComparisonPlotHelp2(x,loadBed("s96vshs959overlap.bed"),wiggleTable,4,8,'Differential positions highlighted with DIME classifier','S96', 'HS959', c("Overlap","Differential","Background"),c(brewer.pal(7,"Spectral")[1:2],"#77777777"),FALSE,FALSE)
 
 
+pal2<-brewer.pal(4,'RdYlGn')
+plot(wiggleTableScale[,3],wiggleTableScale[,7],xlab="S96rep1",ylab="HS959rep1",col=pal2[1],cex=0.8,pch=16)
+points(wiggleTableScale[my.classify$class==1,3],wiggleTableScale[my.classify$class==1,7],col=pal2[3],cex=0.8,pch=16)
+title('Differential binding sites S96 vs HS959 (iNUDGE)')
+legend('bottomright',fill=c(pal2[1],pal2[3]),legend=c('Conserved','Differential'))
+
+
+plot(wiggleTableScale[,3],wiggleTableScale[,7],xlab="S96rep1",ylab="HS959rep1",col=pal2[4],cex=0.8,pch=16)
+points(wiggleTableScale[x$ID,3],wiggleTableScale[x$ID,7],col='darkorange',cex=0.8,pch=16)
+title('Differential binding sites S96 vs HS959 (limma)')
+legend('bottomright',fill=c(pal2[4],'darkorange'),legend=c('Conserved','Differential'))
+     
 
 wiggleTableNorm<-normalizeBetweenArrays(as.matrix(wiggleTable[,3:6]),method="scale")
 
@@ -235,6 +247,51 @@ venn.plot <- draw.triple.venn(880,926,1175,756,807,774,709, c("HS959rep1", "HS95
 
 
 
+venn.plot <- draw.pairwise.venn(74+94,158,67+57, category=c("MACS Differential Peaks", "limma differential peaks"), fill = c("red", "green"),alpha = c(0.5, 0.5), cex = 2,cat.fontface = "plain", fontfamily =4,ext.dist=-5,  cat.pos = c(100, 100));
+
+
+venn.plot <- draw.pairwise.venn(74+94,158,67+57, category=c("MACS Differential Peaks", "limma differential peaks"),
+  fill = c("blue", "red"),
+  lty = "blank",
+  cex = 2,
+  cat.cex = 2,
+  cat.pos = c(285, 105),
+  cat.dist = 0.09,
+  cat.just = list(c(-1, -1), c(1, 1))
+);
+
+venn.plot <- draw.pairwise.venn(74+94,158,67+57,
+  fill = c("blue", "red"),
+  lty = "blank",
+  cex = 2,
+  cat.cex = 2,
+  cat.pos = c(285, 105),
+  cat.dist = 0.09,
+  cat.just = list(c(1, -1), c(1, 1)),
+  ext.pos = 30,
+  ext.dist = -0.05,
+  ext.length = 0.85,
+  ext.line.lwd = 2,
+  ext.line.lty = "dashed"
+);
+
+grid.text("MACS Differential peaks",0.2,0.8)
+venn.plot <- draw.pairwise.venn(
+  74+94,158,67+57,
+  fill = c("blue", "red"),cex=1.5,
+  scaled=T,euler.d=T
+);
+grid.text("MACS differential peaks",0.25,0.95,gp=gpar(fontsize=18))
+grid.text("limma differential peaks",0.75,0.95,gp=gpar(fontsize=18))
+
+
+draw.triple.venn(74,94,158,0,57,67,0,fill = brewer.pal(3,"Dark2"),cex=1.5,
+                scaled=T,euler.d=T)
+
+
+grid.text("MACS S96 differential peaks",0.21,0.8,gp=gpar(fontsize=18))
+grid.text("limma differential peaks",0.5,0.25,gp=gpar(fontsize=18))
+grid.text("MACS HS959 differential peaks",0.75,0.8,gp=gpar(fontsize=18))
 
 
 
