@@ -38,6 +38,9 @@ if(full_cache) {
 # Join wiggle files with matching positions into a table
 wiggleTable<-joinWiggleFiles(chrnames, macswiggle)
 wiggleTable<-plainNames(wiggleTable)
+wiggleTableControl<-wiggleTable
+cache('wiggleTableControl')
+rm(wiggleTableControl)
 wiggleTable<-wiggleTable[,c(1,2,4,6,8,10,12,14)]
 cache('wiggleTable')
 ret<-as.matrix(wiggleTable[,c(3,4,5,6,7,8)])
@@ -47,6 +50,7 @@ wiggleTableScale<-cbind(ret2,ret)
 rm(ret)
 rm(ret2)
 cache('wiggleTableScale')
+load('cache/wiggleTableControl.RData')
 
 # 
 # normDiffList<-lapply(1:nsamples,function(i) { 

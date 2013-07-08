@@ -6,7 +6,7 @@ job         :
 framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
 highlighter : highlight.js  # {highlight.js, prettify, highlight}
 hitheme     : tomorrow      # 
-widgets     : []            # {mathjax, quiz, bootstrap}
+widgets     : [mathjax]            # {mathjax, quiz, bootstrap}
 mode        : selfcontained # {standalone, draft}
 ---
 
@@ -40,27 +40,36 @@ mode        : selfcontained # {standalone, draft}
 ![chipseq-overview](assets/img/image1.png)
 Huber et al, 2006
 
---- 
-
-
+---
 ## Background
 
 # What does ChIP-seq look like?
 
 - It's noisey!
-- The distribution of the ChIP-seq reads is noisy and depends on the protocol and sequencing depth
+- Contains peaks that represent binding sites
+- Noise depends on the sequencing depth, relative enrichment
 
 ```{r echo=FALSE,message=FALSE,fig.width=12,fig.height=5,warning=FALSE,results='hide'}
 require(ProjectTemplate)
 od<-setwd('..')
 load.project()
 
-plot(macswiggle[[1]]$control$chr01$V1,macswiggle[[1]]$control$chr01$V2,'l',col=1,xlab="Chr01 position",ylab="Number of ChIP-seq tags overlapping position",ylim=c(0,80))
-lines(macswiggle[[1]]$treat$chr01$V1,macswiggle[[1]]$treat$chr01$V2,col="#AA2222AA")
-title('Distribution of ChIP-seq and control reads (Chr01)')
+#op<-par(mfrow=c(2,1))
+plot(macswiggle[[1]]$control$chr01$V1,macswiggle[[1]]$control$chr01$V2,type='l',col=1,xlab="Chr01 position",ylab="Number of ChIP-seq tags",ylim=c(0,80))
+lines(macswiggle[[1]]$treat$chr01$V1,macswiggle[[1]]$treat$chr01$V2,col="#AA2222EE")
+#lines(macswiggle[[2]]$control$chr01$V1,macswiggle[[2]]$control$chr01$V2,'l',col=1,xlab="Chr01 position",ylab="Number of ChIP-seq tags",ylim=c(0,80))
+lines(macswiggle[[4]]$treat$chr01$V1,macswiggle[[4]]$treat$chr01$V2,col="#2222AA99")
+legend('topright',legend=c('S96','HS959'),fill=c('#AA2222','#2222AA'))
+title('Distribution of ChIP-seq and control reads (S96 vs HS959)')
+
+
+
 setwd(od)
+#par(op)
 ```
 --- 
+
+
 
 ## Background
 
@@ -90,6 +99,7 @@ Wilbanks et al, 2010
 - Important to compare datasets from experiments
 - Find effects of binding sites regulation on gene expression
 
+    
 ![regulatory-network](assets/img/image4.gif)
 From http://genome.tbdb.org/annotation/genome/tbdb/RegulatoryNetwork.html
 
@@ -99,7 +109,7 @@ From http://genome.tbdb.org/annotation/genome/tbdb/RegulatoryNetwork.html
 # Comparing ChIP-seq data
 
 
-- Binding sites can move, disappear, and change
+- Binding sites can change between experiments, between species, etc
 - Comparing related genomes can provide some insight
 
 ![odom-compare](assets/img/image8.png) 
@@ -108,5 +118,195 @@ From http://genome.tbdb.org/annotation/genome/tbdb/RegulatoryNetwork.html
 Odom, Dowell et al. 2007
 
 ---
+
+
+## Goals
+
+- Using replicates
+  - High throughput experiments generate lots of data, but replication is needed
+  - Many protocols pool replicate experiments together, problems?
+- Directly compare data from experiments
+  - Can compare overlap of peaks, but this is indirect
+
+---
+## Scaling values
+
+We observe a different read depths in our experiments
+
+```{r echo=FALSE}
+require(RColorBrewer)
+
+palette(brewer.pal(6,"RdBu"))
+fl<-c(1,1,1,6,6,6)
+boxplot(wiggleTable[,c(-1,-2)], boxwex=0.5, notch=T, main="Before scaling for read depth", outline=FALSE, las=1,col=fl)
+```
+
+---
+## Scaling values
+
+Then we perform scaling to match the median value across all experiments
+- scales up or down according to the average median read depth
+
+```{r echo=FALSE}
+boxplot(wiggleTableScale[,c(-1,-2)], boxwex=0.5, notch=T, main="After scaling for read depth", outline=FALSE, las=1,col=fl,ylim=c(0,60))
+palette("default") 
+```
+---
+
+## Problem- How to compare different experiments?
+
+- MACS (Model based analysis of ChIP-seq)
+  - Peak finder that compares ChIP-seq to control and uses a Poisson distribution
+  - Can compare different conditions by using one as a "false control"
+  - $\lambda=$ expected number of tags in scanning window
+  
+![poisson-distribution](assets/img/image5.png)
+
+---
+
+## Problem- How to compare different experiments?
+
+- MACS
+- DIME (Differential identification using mixture ensemble)
+  - Directly compare two experiments as log ratios between 
+  - Use mixture model to find differential 'component' of distribution
+
+```{r echo=FALSE,fig.width=13,fig.height=4}
+require(RColorBrewer)
+
+ret=brewer.pal(6,"RdBu")
+sel=wiggleTableScale[wiggleTableScale[1,]=="chr01",]
+op<-par(mfrow=c(1,2))
+plot(sel[,2],sel[,3],type='l',col=paste0(ret[1],"EE"),xlab="Chr01 position",ylab="ChIP-seq tags",ylim=c(0,500))
+lines(sel[,2],sel[,6],col=paste0(ret[6],"99"))
+title('S96 vs HS959 tags distribution')
+plot(sel[,2],log(sel[,3]/sel[,6]),xlab="Chr01 position",ylab="Log ratio",col=ret[2],type='l')
+title('Log ratio S96/HS959 tags distribution')
+par(op)
+```
+Different views
+
+---
+## Problem- How to compare different experiments?
+
+- MACS
+- DIME 
+- NormDiff
+  - Analyze many experiments at once
+  - Find variable binding sites
+  
+  
+```{r echo=FALSE}
+require(xtable)
+names(wiggleTableScale)<-c('Chr','Pos','S96','S96','S96','HS959','HS959','HS959')
+head(wiggleTableScale)
+```
+
+Table of read scores from multiple ChIP-seq experiments
+
+---
+
+## Problem- How to compare different experiments?
+
+- MACS
+- DIME
+- NormDiff
+- Our method
+  - Use t-tests to find differential binding sites in ChIP-seq data
+
+
+---
+
+## Pros and Cons
+
+- Benefits of approach
+  - Includes replicates
+  - Evaluates significance and size of differences
+
+- Cons
+  - There is a large "Background" distribution in chip-seq that is troublesome for t-tests
+
+![t-test](assests/img/image21.png)
+
+Standard t-test
+
+---
+
+## Solution to t-test
+
+- Use a "moderated t-test" to account for background distribution
+- Adds a small amount of bias estimated from the mean standard deviation across entire dataset
+
+
+---
+
+## Assumption of normality
+
+- Tested the distributions using QQ-plots
+
+![qqplot1](assets/img/testing/image15.png)
+
+
+---
+
+
+## Assumption of normality
+
+- Tested the distributions using QQ-plots
+
+![qqplot2](assets/img/testing/image16.png)
+
+
+---
+
+
+## Performing the t-test
+
+- Estimate the log ratios from the replicate data along with significance using t-tests
+
+![volcano](assets/img/testing/image20.png)
+
+
+
+---
+
+## Comparing our results to other approaches
+
+- We obtain many differential genome positions which we merge together
+- MACS automatically performs merging of the scanning windows into peaks
+- We perform merging for our approach from sites that are close (<20bp away)
+- Look at the rate of the merging vs the p-value thresholds
+
+![bedtools1](assets/img/testing/image28.png)
+
+---
+
+
+## Comparing our results to other approaches
+
+- We obtain many differential genome positions which we merge together
+- MACS automatically performs merging of the scanning windows into peaks
+- We perform merging for our approach from sites that are close (<20bp away)
+- Look at the rate of the merging vs the p-value thresholds
+
+![bedtools1](assets/img/testing/image29.png)
+
+
+---
+
+
+## Compare results with gene expression data
+
+- We can combine ChIP-seq with gene expression data to find the influence of binding sites
+
+![gene-expression](assets/img/testing/image42.png)
+
+
+--- 
+
+## Conclusion
+
+- Thank you for listening!
+- Questions?
 
 
