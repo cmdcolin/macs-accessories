@@ -1,9 +1,10 @@
 
 # Convert two digit numbers to roman numerals
-convertFileSacCer3<-function(filename) {
+convertFileSacCer3<-function(filename,backup=TRUE) {
   
   filetext<-readLines(filename)
-  writeLines(filetext,sprintf("%s.bak",filename))
+  if(backup)
+    writeLines(filetext,sprintf("%s.bak",filename))
   filetext <- paste(filetext,collapse="\n")
   
   for(i in 1:16) {
@@ -23,7 +24,8 @@ convertFileSacCer3<-function(filename) {
 convertFileSacCer3_mod<-function(filename) {
   
   filetext<-readLines(filename)
-  writeLines(filetext,sprintf("%s.bak",filename))
+  if(backup)
+    writeLines(filetext,sprintf("%s.bak",filename))
   filetext <- paste(filetext,collapse="\n")
   
   # Reverse order so that chr11-chr16 gets converted before chr1

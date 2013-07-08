@@ -1,3 +1,51 @@
+# Main analysis file new work march-april
+# Colin 
+
+
+### Get wig scores for treat only
+getjoinscores<-function(chrnames,t1,t2,currpos) {
+  
+  ret<-lapply(chrnames, function(chr) {
+    if(debug)
+      printf("processing %s\tat V%d\n", chr,currpos);
+    str<-paste0("V",currpos)
+    colnames(t2[[chr]])[2]<-str
+    ret<-join(t1[[chr]], t2[[chr]],by="V1")
+    ret[complete.cases(ret),]
+  })
+  names(ret)<-chrnames
+  #print(str(ret))
+  # from R inferno, Burns (2011)
+  #do.call('rbind', ret) 
+  ret
+}
+
+
+
+flatten<-function(chrnames,ret) {
+  RTE<-lapply(chrnames, function(chr) {
+    if(debug)
+      printf("processing %s\n", chr);
+    data.frame(chr=chr,ret[[chr]])
+  })
+  
+  do.call('rbind', RTE) 
+}
+
+joinWiggleFiles<-function(chrnames,macswig) {
+  ret<-getjoinscores(chrnames,macswig[[1]]$control,macswig[[1]]$treat,3)
+  currpos<-4
+  for(i in 2:length(macswiggle)) {
+    ret<-getjoinscores(chrnames,ret,macswig[[i]]$control,currpos)
+    ret<-getjoinscores(chrnames,ret,macswig[[i]]$treat,currpos+1)
+    currpos<-currpos+2
+  }
+  flatten(chrnames,ret)
+}
+
+
+
+
 
 
 doheatmap<-function(table,granularity=1,Rowv=NA,Colv=NA,scale="none",dist=cor) {
@@ -93,3 +141,5 @@ resize.win <- function(Width=6, Height=6)
   dev.off(); # dev.new(width=6, height=6)
   windows(record=TRUE, width=Width, height=Height)
 }
+
+

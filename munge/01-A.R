@@ -1,10 +1,10 @@
 # Example preprocessing script.
 debug=TRUE
-full_cache=FALSE
+full_cache=TRUE
 source('src/wiggle.R')
 source('src/bedfile.R')
 source('src/lsos.R')
-source('src/spring13/analyzezscore-joinmod.R')
+source('src/joinmod.R')
 
 
 

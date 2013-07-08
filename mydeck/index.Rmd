@@ -1,0 +1,93 @@
+---
+title       : Comparison and analysis of ChIP-seq experiments
+subtitle    : 
+author      : Colin Diesh
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+---
+
+## Outline
+# Overview of the presentation
+
+- Background
+  - What is ChIP-seq?
+  - Overview of problem
+- Comparing ChIP-seq data
+  - Review of existing methods
+  - My Approach
+    - Finding differential binding sites
+- Results
+  - Evaluate method
+  - Compare with other methods
+- Conclusion
+
+
+--- 
+
+## Background
+
+# What is ChIP-seq?
+
+
+- ChIP-seq = High-throughput sequencing + chromatin immunoprecipitation
+- Produces millions of short DNA reads that are enriched for DNA-protein interactions
+
+
+![chipseqoverview](assets/img/image1.png)
+Huber et al, 2006
+
+--- 
+
+## Background
+
+# What does ChIP-seq look like?
+
+- Distribution of paired-end reads from ChIP-seq data to estimate fragment size
+
+![chipseqfragments](assets/img/image2.png)
+Wilbanks et al, 2010
+
+---
+
+## Background
+
+# What does ChIP-seq look like?
+
+**Noisey!**
+
+- The distribution of the ChIP-seq reads is noisy and depends on the protocol and sequencing depth
+
+```{r echo=FALSE,message=FALSE,fig.width=12,fig.height=5,warning=FALSE,results='hide'}
+require(ProjectTemplate)
+od<-setwd('..')
+load.project()
+
+plot(macswiggle[[1]]$control$chr01$V1,macswiggle[[1]]$control$chr01$V2,'l',col=1,xlab="Chr01 position",ylab="Number of ChIP-seq tags overlapping position",ylim=c(0,80))
+lines(macswiggle[[1]]$treat$chr01$V1,macswiggle[[1]]$treat$chr01$V2,col="#AA2222AA")
+title('Distribution of ChIP-seq and control reads (Chr01)')
+setwd(od)
+```
+--- 
+
+## Overview 
+# ChIP-seq applications
+
+- ChIP-seq itself is an "application" of next-gen sequencing
+-- Investigate transcription factor binding sites
+-- histone modifications
+-- regulatory motifs
+- Important to compare data to find important differences
+- Combine with gene expression data to find gene regulatory networks
+
+![regulatorynetwork](assets/img/image4.gif)
+From http://genome.tbdb.org/annotation/genome/tbdb/RegulatoryNetwork.html
+
+---
+
+
+
+
