@@ -38,8 +38,8 @@ if(full_cache) {
 # Join wiggle files with matching positions into a table
 wiggleTable<-joinWiggleFiles(chrnames, macswiggle)
 wiggleTable<-plainNames(wiggleTable)
-cache('wiggleTable')
 wiggleTable<-wiggleTable[,c(1,2,4,6,8,10,12,14)]
+cache('wiggleTable')
 ret<-as.matrix(wiggleTable[,c(3,4,5,6,7,8)])
 ret2<-wiggleTable[,c(1,2)]
 ret<-normalizeMedianValues(ret)

@@ -37,28 +37,17 @@ mode        : selfcontained # {standalone, draft}
 - Produces millions of short DNA reads that are enriched for DNA-protein interactions
 
 
-![chipseqoverview](assets/img/image1.png)
+![chipseq-overview](assets/img/image1.png)
 Huber et al, 2006
 
 --- 
 
-## Background
-
-# What does ChIP-seq look like?
-
-- Distribution of paired-end reads from ChIP-seq data to estimate fragment size
-
-![chipseqfragments](assets/img/image2.png)
-Wilbanks et al, 2010
-
----
 
 ## Background
 
 # What does ChIP-seq look like?
 
-**Noisey!**
-
+- It's noisey!
 - The distribution of the ChIP-seq reads is noisy and depends on the protocol and sequencing depth
 
 ```{r echo=FALSE,message=FALSE,fig.width=12,fig.height=5,warning=FALSE,results='hide'}
@@ -73,21 +62,51 @@ setwd(od)
 ```
 --- 
 
-## Overview 
-# ChIP-seq applications
+## Background
 
-- ChIP-seq itself is an "application" of next-gen sequencing
--- Investigate transcription factor binding sites
--- histone modifications
--- regulatory motifs
-- Important to compare data to find important differences
-- Combine with gene expression data to find gene regulatory networks
+# Analyzing the data--finding peaks in the data
 
-![regulatorynetwork](assets/img/image4.gif)
-From http://genome.tbdb.org/annotation/genome/tbdb/RegulatoryNetwork.html
+- Use knowledge about data to build peak model
+- Peak model uses distribution of paired-end reads to estimate the size of the DNA fragments
+  - Sequencer reads are ~20-50bp
+  - Fragment size is between ~100-300bp
+
+
+![chipseq-fragments](assets/img/image2.png)
+
+Wilbanks et al, 2010
+
 
 ---
 
 
+## Overview 
+# ChIP-seq applications
+
+- ChIP-seq can be used to learn about
+  - transcription factor binding sites
+  - histone modifications
+  - regulatory motifs
+- Important to compare datasets from experiments
+- Find effects of binding sites regulation on gene expression
+
+![regulatory-network](assets/img/image4.gif)
+From http://genome.tbdb.org/annotation/genome/tbdb/RegulatoryNetwork.html
+
+---
+
+## Overview
+# Comparing ChIP-seq data
+
+
+- Binding sites can move, disappear, and change
+- Comparing related genomes can provide some insight
+
+![odom-compare](assets/img/image8.png) 
+
+
+Odom, Dowell et al. 2007
+
+---
 
 

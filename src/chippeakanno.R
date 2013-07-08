@@ -2,7 +2,7 @@
 # library(VennDiagram)
 library(limma)
 library(edgeR)
-
+load('wiggleTable.RData')
 # bed1=read.table('SEG1rep1u_peaks.bed')
 # bed2=read.table('SEG1rep2u_peaks.bed')
 # bed3=read.table('SEG1rep3u_peaks.bed')
@@ -16,13 +16,12 @@ library(edgeR)
 
 
 
-group <- factor(c(1,1,1,2,2,2))
-y=DGEList(wiggleTable[,c(-1,-2)],group,lib.size=c(2218566,1292603,2334845,1106212,1300837,2538686))
+y=DGEList(wiggleTable[,c(-1,-2)],group=c(1,1,1,2,2,2),lib.size=c(2218566,1292603,2334845,1106212,1300837,2538686))
 y <- calcNormFactors(y)
 y <- estimateCommonDisp(y)
 y <- estimateTagwiseDisp(y)
 et <- exactTest(y)
-topTags(et)
+save(et,file="et.RData")
 
 
 
