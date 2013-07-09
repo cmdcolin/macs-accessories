@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Comparison and analysis of ChIP-seq experiments</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Comparison and analysis of ChIP-seq experiments">
+  <meta name="author" content="Colin Diesh">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+    <link rel="stylesheet" href = "assets/css/default.css">
+<link rel="stylesheet" href = "assets/css/ribbons.css">
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+    <!-- END LOGO SLIDE -->
+    
+
+    <!-- TITLE SLIDE -->
+    <!-- Should I move this to a Local Layout File? -->
+    <slide class="title-slide segue nobackground">
+      <hgroup class="auto-fadein">
+        <h1>Comparison and analysis of ChIP-seq experiments</h1>
+        <h2></h2>
+        <p>Colin Diesh<br/></p>
+      </hgroup>
+          </slide>
+
+    <!-- SLIDES -->
+      <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Outline</h2>
+  </hgroup>
+  <article>
+    <h1>Overview of the presentation</h1>
+
+<ul>
+<li>Background
+
+<ul>
+<li>What is ChIP-seq?</li>
+<li>Overview of problem</li>
+</ul></li>
+<li>Comparing ChIP-seq data
+
+<ul>
+<li>Review of existing methods</li>
+<li>My Approach</li>
+<li>Finding differential binding sites</li>
+</ul></li>
+<li>Results
+
+<ul>
+<li>Evaluate method</li>
+<li>Compare with other methods</li>
+</ul></li>
+<li>Conclusion</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>Background</h2>
+  </hgroup>
+  <article>
+    <h1>What is ChIP-seq?</h1>
+
+<ul>
+<li>ChIP-seq = High-throughput sequencing + chromatin immunoprecipitation</li>
+<li>Produces millions of short DNA reads that are enriched for DNA-protein interactions</li>
+</ul>
+
+<p><img src="assets/img/image1.png" alt="chipseq-overview">
+Huber et al, 2006</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Background</h2>
+  </hgroup>
+  <article>
+    <h1>What does ChIP-seq look like?</h1>
+
+<ul>
+<li>It&#39;s noisey!</li>
+<li>Contains peaks that represent binding sites</li>
+<li>Noise depends on the sequencing depth, relative enrichment</li>
+</ul>
+
+<p><img src="figure/unnamed-chunk-1.png" alt="plot of chunk unnamed-chunk-1"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Background</h2>
+  </hgroup>
+  <article>
+    <h1>Analyzing the data--finding peaks in the data</h1>
+
+<ul>
+<li>Use knowledge about data to build peak model</li>
+<li>Peak model uses distribution of paired-end reads to estimate the size of the DNA fragments
+
+<ul>
+<li>Sequencer reads are ~20-50bp</li>
+<li>Fragment size is between ~100-300bp</li>
+</ul></li>
+</ul>
+
+<p><img src="assets/img/image2.png" alt="chipseq-fragments"></p>
+
+<p>Wilbanks et al, 2010</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-5" style="background:;">
+  <hgroup>
+    <h2>Overview</h2>
+  </hgroup>
+  <article>
+    <h1>ChIP-seq applications</h1>
+
+<ul>
+<li>ChIP-seq can be used to learn about
+
+<ul>
+<li>transcription factor binding sites</li>
+<li>histone modifications</li>
+<li>regulatory motifs</li>
+</ul></li>
+<li>Important to compare datasets from experiments</li>
+<li>Find effects of binding sites regulation on gene expression</li>
+</ul>
+
+<p><img src="assets/img/image4.gif" alt="regulatory-network">
+From <a href="http://genome.tbdb.org/annotation/genome/tbdb/RegulatoryNetwork.html">http://genome.tbdb.org/annotation/genome/tbdb/RegulatoryNetwork.html</a></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-6" style="background:;">
+  <hgroup>
+    <h2>Overview</h2>
+  </hgroup>
+  <article>
+    <h1>Comparing ChIP-seq data</h1>
+
+<ul>
+<li>Binding sites can change between experiments, between species, etc</li>
+<li>Comparing related genomes can provide some insight</li>
+</ul>
+
+<p><img src="assets/img/image8.png" alt="odom-compare"> </p>
+
+<p>Odom, Dowell et al. 2007</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-7" style="background:;">
+  <hgroup>
+    <h2>Goals</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>Using replicates
+
+<ul>
+<li>High throughput experiments generate lots of data, but replication is needed</li>
+<li>Many protocols pool replicate experiments together, problems?</li>
+</ul></li>
+<li>Directly compare data from experiments
+
+<ul>
+<li>Can compare overlap of peaks, but this is indirect</li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-8" style="background:;">
+  <hgroup>
+    <h2>Scaling values</h2>
+  </hgroup>
+  <article>
+    <p>We observe a different read depths in our experiments</p>
+
+<p><img src="figure/unnamed-chunk-2.png" alt="plot of chunk unnamed-chunk-2"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-9" style="background:;">
+  <hgroup>
+    <h2>Scaling values</h2>
+  </hgroup>
+  <article>
+    <p>Then we perform scaling to match the median value across all experiments</p>
+
+<ul>
+<li>scales up or down according to the average median read depth</li>
+</ul>
+
+<p><img src="figure/unnamed-chunk-3.png" alt="plot of chunk unnamed-chunk-3"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-10" style="background:;">
+  <hgroup>
+    <h2>Problem- How to compare different experiments?</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>MACS (Model based analysis of ChIP-seq)
+
+<ul>
+<li>Peak finder that compares ChIP-seq to control and uses a Poisson distribution</li>
+<li>Can compare different conditions by using one as a &quot;false control&quot;</li>
+<li>\(\lambda=\) expected number of tags in scanning window</li>
+</ul></li>
+</ul>
+
+<p><img src="assets/img/image5.png" alt="poisson-distribution"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-11" style="background:;">
+  <hgroup>
+    <h2>Problem- How to compare different experiments?</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>MACS</li>
+<li>DIME (Differential identification using mixture ensemble)
+
+<ul>
+<li>Directly compare two experiments as log ratios between </li>
+<li>Use mixture model to find differential &#39;component&#39; of distribution</li>
+</ul></li>
+</ul>
+
+<p><img src="figure/unnamed-chunk-4.png" alt="plot of chunk unnamed-chunk-4"> </p>
+
+<p>Different views</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-12" style="background:;">
+  <hgroup>
+    <h2>Problem- How to compare different experiments?</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>MACS</li>
+<li>DIME </li>
+<li>NormDiff
+
+<ul>
+<li>Analyze many experiments at once</li>
+<li>Find variable binding sites</li>
+</ul></li>
+</ul>
+
+<pre><code>##     Chr Pos   S96   S96   S96 HS959  HS959 HS959
+## 1 chr01  51 11.37 30.31 22.53 25.76 110.63 77.57
+## 2 chr01  61 11.37 27.28 22.53 25.76 110.63 80.13
+## 3 chr01 121 11.37 24.25 21.94 20.46  56.07 73.31
+## 4 chr01 131 10.23 24.25 21.94 18.19  54.56 72.46
+## 5 chr01 141 10.23 22.73 20.16 18.94  50.01 65.64
+## 6 chr01 151 10.23 18.19 21.94 18.94  46.98 61.38
+</code></pre>
+
+<p>Table of read scores from multiple ChIP-seq experiments</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-13" style="background:;">
+  <hgroup>
+    <h2>Problem- How to compare different experiments?</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>MACS</li>
+<li>DIME</li>
+<li>NormDiff</li>
+<li>Our method
+
+<ul>
+<li>Use t-tests to find differential binding sites in ChIP-seq data</li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-14" style="background:;">
+  <hgroup>
+    <h2>Pros and Cons</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li><p>Benefits of approach</p>
+
+<ul>
+<li>Includes replicates</li>
+<li>Evaluates significance and size of differences</li>
+</ul></li>
+<li><p>Cons</p>
+
+<ul>
+<li>There is a large &quot;Background&quot; distribution in chip-seq that is troublesome for t-tests</li>
+</ul></li>
+</ul>
+
+<p><img src="assests/img/image21.png" alt="t-test"></p>
+
+<p>Standard t-test</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-15" style="background:;">
+  <hgroup>
+    <h2>Solution to t-test</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>Use a &quot;moderated t-test&quot; to account for background distribution</li>
+<li>Adds a small amount of bias estimated from the mean standard deviation across entire dataset</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-16" style="background:;">
+  <hgroup>
+    <h2>Assumption of normality</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>Tested the distributions using QQ-plots</li>
+</ul>
+
+<p><img src="assets/img/testing/image15.png" alt="qqplot1"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-17" style="background:;">
+  <hgroup>
+    <h2>Assumption of normality</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>Tested the distributions using QQ-plots</li>
+</ul>
+
+<p><img src="assets/img/testing/image16.png" alt="qqplot2"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-18" style="background:;">
+  <hgroup>
+    <h2>Performing the t-test</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>Estimate the log ratios from the replicate data along with significance using t-tests</li>
+</ul>
+
+<p><img src="assets/img/testing/image20.png" alt="volcano"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-19" style="background:;">
+  <hgroup>
+    <h2>Comparing our results to other approaches</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>We obtain many differential genome positions which we merge together</li>
+<li>MACS automatically performs merging of the scanning windows into peaks</li>
+<li>We perform merging for our approach from sites that are close (&lt;20bp away)</li>
+<li>Look at the rate of the merging vs the p-value thresholds</li>
+</ul>
+
+<p><img src="assets/img/testing/image28.png" alt="bedtools1"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-20" style="background:;">
+  <hgroup>
+    <h2>Comparing our results to other approaches</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>We obtain many differential genome positions which we merge together</li>
+<li>MACS automatically performs merging of the scanning windows into peaks</li>
+<li>We perform merging for our approach from sites that are close (&lt;20bp away)</li>
+<li>Look at the rate of the merging vs the p-value thresholds</li>
+</ul>
+
+<p><img src="assets/img/testing/image29.png" alt="bedtools1"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-21" style="background:;">
+  <hgroup>
+    <h2>Compare results with gene expression data</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>We can combine ChIP-seq with gene expression data to find the influence of binding sites</li>
+</ul>
+
+<p><img src="assets/img/testing/image42.png" alt="gene-expression"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-22" style="background:;">
+  <hgroup>
+    <h2>Conclusion</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>Thank you for listening!</li>
+<li>Questions?</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+
+  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+<!-- Grab CDN jQuery, fall back to local if offline -->
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+<script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery-1.7.min.js"><\/script>')</script>
+<!-- Load Javascripts for Widgets -->
+<!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script> -->
+<script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- LOAD HIGHLIGHTER JS FILES -->
+<script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<!-- DONE LOADING HIGHLIGHTER JS FILES -->
+</html>
