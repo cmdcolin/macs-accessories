@@ -112,23 +112,7 @@ Odom, Dowell et al. 2007
 - Directly compare data from experiments
   - Can compare overlap of peaks, but this is indirect
 
----
-## Scaling values
-
-We observe a different read depths in our experiments
-
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2.png) 
-
-
----
-## Scaling values
-
-Then we perform scaling to match the median value across all experiments
-- scales up or down according to the average median read depth
-
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3.png) 
-
----
+--- 
 
 ## Problem- How to compare different experiments?
 
@@ -148,7 +132,7 @@ Then we perform scaling to match the median value across all experiments
   - Directly compare two experiments as log ratios between 
   - Use mixture model to find differential 'component' of distribution
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4.png) 
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2.png) 
 
 Different views
 
@@ -191,18 +175,45 @@ Table of read scores from multiple ChIP-seq experiments
 
 ## Pros and Cons
 
-- Benefits of approach
+- Benefits of t-test approach
   - Includes replicates
   - Evaluates significance and size of differences
 
-- Cons
+- Problems
+  - Requires normalization of values
   - There is a large "Background" distribution in chip-seq that is troublesome for t-tests
 
 ![t-test](assests/img/image21.png)
 
-Standard t-test
+Equation for Standard t-test with "pooled variance"
 
 ---
+
+---
+## Solution to normalization--Scaling values
+
+We observe a different read depths in our experiments, so without any scaling they appear to have different distributions
+
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4.png) 
+
+
+---
+## Solution to normalization--Scaling values
+
+We perform scaling to match the median across all experiments
+
+
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5.png) 
+
+- Benefit
+  - less aggressive than quantile normalization
+- Consideration
+  - other algorithms for normalizing based on background distribution are being developed, for example, NCIS
+
+
+```
+---
+
 
 ## Solution to t-test
 
@@ -215,6 +226,7 @@ Standard t-test
 ## Assumption of normality
 
 - Tested the distributions using QQ-plots
+- Log ratio of S96 vs HS959 replicates vs Standard normal
 
 ![qqplot1](assets/img/testing/image15.png)
 
@@ -225,16 +237,17 @@ Standard t-test
 ## Assumption of normality
 
 - Tested the distributions using QQ-plots
-
+- Log ratio of two S96 replicates vs Standard normal
 ![qqplot2](assets/img/testing/image16.png)
-
 
 ---
 
 
 ## Performing the t-test
 
-- Estimate the log ratios from the replicate data along with significance using t-tests
+- The moderated t-test estimates based on log-ratios according to a linear model
+  - $E[y_g]=X\alpha_g$
+- Then the 
 
 ![volcano](assets/img/testing/image20.png)
 
@@ -244,8 +257,6 @@ Standard t-test
 
 ## Comparing our results to other approaches
 
-- We obtain many differential genome positions which we merge together
-- MACS automatically performs merging of the scanning windows into peaks
 - We perform merging for our approach from sites that are close (<20bp away)
 - Look at the rate of the merging vs the p-value thresholds
 
@@ -256,13 +267,22 @@ Standard t-test
 
 ## Comparing our results to other approaches
 
-- We obtain many differential genome positions which we merge together
-- MACS automatically performs merging of the scanning windows into peaks
 - We perform merging for our approach from sites that are close (<20bp away)
 - Look at the rate of the merging vs the p-value thresholds
 
-![bedtools1](assets/img/testing/image29.png)
+![bedtools2](assets/img/testing/image29.png)
 
+
+---
+
+
+## Results from merging
+
+- Outperforms merging compared with results from DIME
+- Has results comparable to MACS which has its own merging algorithm
+
+
+![limma-macs](assets/img/testing/image39.png)
 
 ---
 
@@ -270,8 +290,28 @@ Standard t-test
 ## Compare results with gene expression data
 
 - We can combine ChIP-seq with gene expression data to find the influence of binding sites
+- Shows the binding sites influence nearby genes
 
 ![gene-expression](assets/img/testing/image42.png)
+
+- Light color indicates correlation with random gene
+- Dark color indicates correlation with nearest gene to binding site
+
+--- 
+
+## Future Goals
+
+- Evaluate different merging algorithms
+  - TileMap type analysis from CisGenome (Ji et al, 2008) 
+  - Use moving average merging
+- Do a closer look at NormDiff
+- Consider modelling background distribution differently
+  - omitting background distributions (Dudoit et al, 2002)
+  - modelling local variations like MACS (Zhang et al. 2008)
+- Look at other types of Normalizations
+  - voom from Smyth et al, used in limma
+  - different types of LOESS, used in DIME
+  - NCIS scaling methods, modifications to MACS
 
 
 --- 
