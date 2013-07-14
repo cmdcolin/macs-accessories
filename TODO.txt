@@ -1,0 +1,109 @@
+
+
+TODO
+
+-Analyze replicates in SOFTWARE
+-Analyze linkage maps
+-Include zscores in wiggleclass member variables
+
+Binding site specific conservation model
+Compare sequences to empirical chip-seq data comparisons
+Use scaffolding from yeast
+
+
+
+ 
+ Notes
+Poisson - number of reads centered at a tag?
+Read eland data manually instead of wiggle file?
+Use MACS R script output?
+ 
+ 
+ Normalize between experiments
+ Random sampling needed for random testing
+ Will add confirmation to results!!!!!?>????
+ 
+ Compare results to differential binding.
+Differential binding vs variable binding region
+
+
+ 
+Create tdd framework?
+Post-poster TODO list
+ Analyze linkage
+ Compare linkage map to linkage analysis
+ Use of genetic markers (what is a single marker regression?)
+ Statistical significance of linkage map (population variances)
+
+
+
+
+
+
+
+TODO
+Investigate Transgressive inheritance score (Zheng et al. 2010)
+- stddev of normdiff scores of segregants divided by the difference of scores in parental strains
+$var(Z)/(Z_p1-Z_p2)$
+
+IMPLEMENT VARIABLE REGIONS
+IMPLEMENT CONSE
+
+
+
+High level
+
+
+- Evaluate MAnorm on dataset
+- Evaluate more "normalization and bias" models on dataset
+- MAnorm says that 'sampling background' is arbitrary, as s/n ratios may differ. This is an important point
+- What about the "significance of ChIP-seq data similarity". Statistics involved
+Get todo.txt.net
+- Since these are poisson how is normalization applied (fractional =??)
+
+=====================
+Done list
+
+
+
+✓ Figure out QQ plot
+✓ do peak finding using Z score?
+
+ Poster todo
+✓ plot P(x<=X) normdiff scores for syntenic
+✓ -log10(pvalue)
+✗ cutoff pvalue at same value as MACS?
+
+
+
+
+
+
+
+
+# Can't upload anything to RESEARCH COMPUTING?? (2gb limit)
+# Evaluate MANORM pairwise on replicates  (new paper?)
+# Concatenate replicate data into one file (done)
+# Compare results (galaxy)
+# Fix many roman numeral sequences (fixed)
+# Figure out correct regex
+TODO
+Galaxy workflow
+Fix normdiff (including window sizes)
+Generate new plots
+Fix S4????
+
+
+
+
+
+10/28
+todo
+- get max avg normdiff score WORKING
+- get mod diff score WORKING
+- output max avg normdiff score for peaks into FILE
+- quick & dirty is to output syntenic regions of a given peak list
+10/29
+- validate low levels of expression in replicates??
+chrXV 274,000 XV 275,500
+

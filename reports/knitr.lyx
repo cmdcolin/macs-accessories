@@ -1,0 +1,430 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\begin_modules
+knitr
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman palatino
+\font_sans helvet
+\font_typewriter courier
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.54cm
+\topmargin 2.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<set-options, echo=FALSE, cache=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+debug=FALSE
+\end_layout
+
+\begin_layout Plain Layout
+
+source('readplot.R')
+\end_layout
+
+\begin_layout Plain Layout
+
+source('knitr.R')
+\end_layout
+
+\begin_layout Plain Layout
+
+setwd('macs1.4.1')
+\end_layout
+
+\begin_layout Plain Layout
+
+e1=loadMacsEnv('S96','HS959')
+\end_layout
+
+\begin_layout Plain Layout
+
+setwd('../macs1.4.2')
+\end_layout
+
+\begin_layout Plain Layout
+
+e2=loadMacsEnv('S96','HS959')
+\end_layout
+
+\begin_layout Plain Layout
+
+setwd('../macs-bad-run')
+\end_layout
+
+\begin_layout Plain Layout
+
+e3=loadMacsEnv('S96','HS959')
+\end_layout
+
+\begin_layout Plain Layout
+
+setwd('..')
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here we observe some differences between version MACS 1.4.1 and MACS 1.4.2.
+ Major differences between these versions are 
+\end_layout
+
+\begin_layout Standard
+1) stricter removal of duplicate tags 
+\end_layout
+
+\begin_layout Standard
+2) automatically using the peak shifting model ('--off-auto default:false')
+ 
+\end_layout
+
+\begin_layout Standard
+3) scaling factor goes from large to small rather than small to large dataset.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<Q1, echo=FALSE, cache=TRUE,out.width='.49
+\backslash
+
+\backslash
+linewidth'>>= 
+\end_layout
+
+\begin_layout Plain Layout
+
+attach(e1)
+\end_layout
+
+\begin_layout Plain Layout
+
+plotTotalReads('Total S96 peak reads vs HS959 synteny MACS 1.4.1 bw=25',wig1,wig2,
+'pink','green') 
+\end_layout
+
+\begin_layout Plain Layout
+
+detach(e1)
+\end_layout
+
+\begin_layout Plain Layout
+
+attach(e2)
+\end_layout
+
+\begin_layout Plain Layout
+
+plotTotalReads('Total S96 peak reads vs HS959 synteny MACS 1.4.2 bw=25',wig1,wig2,
+'lightblue','green')
+\end_layout
+
+\begin_layout Plain Layout
+
+detach(e2)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+The last plot here shows that using incorrect scan window size gives incorrect
+ results that highly overestimate the total number of peak reads for a number
+ of reasons, for ex.
+ having a larger peak window size
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<Q2,cache=TRUE,echo=FALSE,out.width='.49
+\backslash
+
+\backslash
+linewidth'>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+attach(e3)
+\end_layout
+
+\begin_layout Plain Layout
+
+plotTotalReads('Total S96 peak reads vs HS959 synteny MACS 1.4.1 bw=100 [Incorrect
+]',wig1,wig2,'peru','green')
+\end_layout
+
+\begin_layout Plain Layout
+
+detach(e3)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Sorting out optimal MACS parameters is clearly important for a dataset.
+ Our software package can visually assist users by generating visual reports
+ for ChIP-seq data comparisons.
+ 
+\end_layout
+
+\begin_layout Standard
+We also use other comparisons for different ChIP-seq metrics, including
+\end_layout
+
+\begin_layout Standard
+- Mean peak reads
+\end_layout
+
+\begin_layout Standard
+- Total peak reads
+\end_layout
+
+\begin_layout Standard
+- Normalized difference scores
+\end_layout
+
+\begin_layout Standard
+- Sliding window representations
+\end_layout
+
+\begin_layout Standard
+Here we use a sliding window to find the maximum average peak reads to represent
+ the distribution of means
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<Q3, cache=TRUE, echo=FALSE,out.width='.49
+\backslash
+
+\backslash
+linewidth'>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+attach(e2)
+\end_layout
+
+\begin_layout Plain Layout
+
+plotMaxAvgReads('Max Average reads S96 peaks  w=100', wig1,wig2,'purple','green'
+) 
+\end_layout
+
+\begin_layout Plain Layout
+
+plotMaxAvgReads('Max Average reads HS959 peaks  w=100', wig2,wig1,'yellow','gree
+n') 
+\end_layout
+
+\begin_layout Plain Layout
+
+detach(e2)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Future work:
+\end_layout
+
+\begin_layout Standard
+We want to do statistical hypothesis testing on ChIP-seq datasets to test
+ against normality.
+ If we use a normalized difference score defined by Zheng et al.
+ then we have 
+\begin_inset Formula $A,B,c,\, and\,\hat{\sigma}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Z=\frac{A-B/c}{\hat{\sigma}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We can test the score using the mean values of A in the peak regions to
+ see if it significantly strays from the standard normal contradicts the
+ null hypothesis 
+\begin_inset Formula $H_{0}\sim Normal(0,1)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This specifically would be a test like
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Z=\frac{\bar{A}-\bar{B}/c}{\hat{\sigma}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Source code for plots is available 
+\begin_inset CommandInset href
+LatexCommand href
+target "https://github.com/tonto/macs-accessories/"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Document generated using knitr
+\begin_inset CommandInset href
+LatexCommand href
+target " http://yihui.name/knitr/"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

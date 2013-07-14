@@ -1,0 +1,56 @@
+Data analysis with ShortRead
+========================================================
+
+I have wanted to do more exploratory data analysis on my datasets after taking the Coursera class, Data Analysis. I used a short guide I/0 and Quality Assessment using ShortRead by martin Morgan. I have already aligned reads so I can't do much quality analysis but I thought the data was interesting. I also needed to generally try to start using R also!
+
+```{r setup}
+opts_knit$set(upload.fun = imgur_upload, base.url=NULL)
+opts_chunk$set(fig.width=5, fig.height=5,cache=TRUE)
+```
+
+Here is the setup for reading ELAND result files
+```{r intro, cache=TRUE, results='hide'}
+library(EMBL2011)
+library(Biostrings)
+library(R.utils)
+library(xtable)
+library(ShortRead)
+rd<-readAligned('HS959ChIP_rep1u_eland_result.txt',type="SolexaResult")
+```
+
+We can calculate a table according to which strand reads are aligned to
+```{r ws}
+whichStrand <- strand(rd)
+table(whichStrand)
+```
+
+Additionally, a table which gives us the nucleotide frequency
+```{r}
+sr <- sread(rd)
+af<-alphabetFrequency(sr,baseOnly=TRUE,collapse=TRUE)
+barchart(af)
+```
+
+The dinucleotide frequency can also show some interesting information. The prevalence of certain terms shows the primers being overrepresented here in the AA column
+```{r din}
+cs<-colSums(dinucleotideFrequency(sread(rd)))
+barchart(cs)
+```
+
+The GC content calculated as
+```{r gc}
+(af['G']+af['C'])/(af['A']+af['G']+af['C']+af['T'])
+```
+
+Observing the position of nucleotides in each read can be informative too. We don't have the read quality but these would show the read quality at each position which could be correlated with the nucleotide read cycles
+```{r cycle}
+abc <- alphabetByCycle(sread(rd))
+abc <- abc[rowSums(abc) != 0, ]
+df <- as.data.frame(t(abc[1:4, ]))
+xyplot(A + C + G + T ~ 1:nrow(df), df, type = "l",
+       auto.key = list(x = 0.75, y = 0.95, points = FALSE,lines = TRUE), 
+       xlab = "Cycle", ylab = "Count")
+```
+
+Also, I didn't write any of the code here. Refer to http://www.bioconductor.org/help/course-materials/2009/SeattleJan09/ShortRead/IOQA.pdf
+More to come in future analyses
