@@ -9,14 +9,6 @@ hexbin1<-hexbin(ret$input,ret$chip,xbins=250)
 plot(hexbin1,colramp=rainbow)
 
 
-s96rep1<-read.BED('s96rep1.bed')
-s96rep2<-read.BED('s96rep2.bed')
-s96rep3<-read.BED('s96rep3.bed')
-s96input<-read.BED('s96input.bed')
-hs959rep1<-read.BED('hs959rep1.bed')
-hs959rep2<-read.BED('hs959rep2.bed')
-hs959rep3<-read.BED('hs959rep3.bed')
-hs959input<-read.BED('hs959input.bed')
 s96rep1.bin<-bin.data(s96rep1,s96input,1000,zero.filter=F)$chip
 s96rep2.bin<-bin.data(s96rep2,s96input,1000,zero.filter=F)$chip
 s96rep3.bin<-bin.data(s96rep3,s96input,1000,zero.filter=F)$chip
