@@ -12,27 +12,35 @@ chip.match<-bedfiles[!switchcases]
 chip.match
 
 
-#get matches of chip with input files
-matches<-lapply(input.match[,2],function(input.sample) {
-  match.samples(chip.match,input.sample)
-})
-names(matches)<-input.match[,2]
 
-match.samples(chip.match,input.match[1,2])
+#use which to find indexof chips that match inputs
 match.samples<-function(chip.samples,input.sample) {
   which(!is.na(str_match(chip.samples,input.sample)))
 }
 
+#get matches of chip with input files
+matches<-lapply(input.match[,2],function(input.sample) {
+  match.samples(chip.match,input.sample)
+})
+
+chip.input.matches<-data.frame(a=numeric(0),b=numeric(0))
+for(i in 1:length(matches)) {
+  for(j in 1:length(matches[[i]])) {
+    chip.input.matches<-rbind(chip.input.matches,c(i,matches[[i]][j]))
+  }
+}
 
 
 
 ####### load chip files and calculate a top variance without normdiff
 
-bedfiles.reads<-lapply(bedfiles,function(filename) {
-  read.BED(filename)
-})
 
-chip.list<-lapply(bedfiles.reads,function(elt) bin.chip(elt,1000,zero.filter=F)$chip)
+chip.list<-apply(chip.input.matches,1,function(matchrow) {
+  cat(paste(input.match[matchrow[1],1]," ",chip.match[matchrow[2]],"\n"))
+  input.bed<-read.BED(input.match[matchrow[1],1])
+  chip.bed<-read.BED(chip.match[matchrow[2]])
+  bin.data(chip.bed,input.bed,1000,zero.filter=F)$chip
+})
 
 #convert to frame
 minlen<-min(sapply(chip.list,length))
@@ -47,5 +55,13 @@ chip.merge.table<-read.table("normdiff-merge.txt",sep="\t")
 nrow(chip.merge.table)
 nrow(chip.table)
 
+####GET NORMDIFF
+normdiff.list<-apply(chip.input.matches,1,function(matchrow) {
+  cat(paste(input.match[matchrow[1],1]," ",chip.match[matchrow[2]],"\n"))
+  input.bed<-read.BED(input.match[matchrow[1],1])
+  chip.bed<-read.BED(chip.match[matchrow[2]])
+  nt<-bin.data(chip.bed,input.bed,1000,zero.filter=F)
+  getNormDiff(nt$chip,nt$input)
+})
 
 
