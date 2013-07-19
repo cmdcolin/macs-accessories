@@ -5,8 +5,7 @@ getNormDiff<-function(treat,control) {
   treatSmooth<-slideMean(treat) #default params
   controlSmooth<-slideMean(control)
   
-  
-  scalingFactor=median(control/treat)
+  scalingFactor=median(control/treat,na.rm=TRUE)
   globalVariance=sqrt(mean(treat)+mean(control)/scalingFactor^2)
   varlist<-sqrt(treatSmooth+controlSmooth/scalingFactor^2)
   

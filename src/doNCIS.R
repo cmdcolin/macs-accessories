@@ -4,9 +4,11 @@ system("for f in *eland_result.txt; do elandresult2bed $f $f.bed; done")
 
 #look for bed files
 bedfiles<-list.files(pattern="*.bed")
-input.match<-str_match(bedfiles,"(.*)inputu_eland_result.txt.bed")
-switchcases<-complete.cases(input.match)
-input.match<-input.match[switchcases,]
+grepinputs<-str_match(bedfiles,"(.*)inputu_eland_result.txt.bed")
+switchcases<-complete.cases(grepinputs)
+grepinputs<-grepinputs[switchcases,]
+input.match<-grepinputs[,1]
+chip.prefixes<-grepinputs[,2]
 input.match
 chip.match<-bedfiles[!switchcases]
 chip.match
@@ -19,7 +21,7 @@ match.samples<-function(chip.samples,input.sample) {
 }
 
 #get matches of chip with input files
-matches<-lapply(input.match[,2],function(input.sample) {
+matches<-lapply(chip.prefixes,function(input.sample) {
   match.samples(chip.match,input.sample)
 })
 
@@ -36,11 +38,24 @@ for(i in 1:length(matches)) {
 
 
 chip.list<-apply(chip.input.matches,1,function(matchrow) {
-  cat(paste(input.match[matchrow[1],1]," ",chip.match[matchrow[2]],"\n"))
-  input.bed<-read.BED(input.match[matchrow[1],1])
+  cat(paste(input.match[matchrow[1]]," ",chip.match[matchrow[2]],"\n"))
+  input.bed<-read.BED(input.match[matchrow[1]])
   chip.bed<-read.BED(chip.match[matchrow[2]])
   bin.data(chip.bed,input.bed,1000,zero.filter=F)$chip
 })
+
+
+####GET NORMDIFF
+normdiff.list<-apply(chip.input.matches,1,function(matchrow) {
+  cat(paste(input.match[matchrow[1]]," ",chip.match[matchrow[2]],"\n"))
+  input.bed<-read.BED(input.match[matchrow[1]])
+  chip.bed<-read.BED(chip.match[matchrow[2]])
+  nt<-bin.data(chip.bed,input.bed,1000,zero.filter=F)
+  getNormDiff(nt$chip,nt$input)
+})
+
+
+
 
 #convert to frame
 minlen<-min(sapply(chip.list,length))
@@ -54,14 +69,4 @@ system("bedtools merge -d 20 -i normdiff-table.txt > normdiff-merge.txt")
 chip.merge.table<-read.table("normdiff-merge.txt",sep="\t")
 nrow(chip.merge.table)
 nrow(chip.table)
-
-####GET NORMDIFF
-normdiff.list<-apply(chip.input.matches,1,function(matchrow) {
-  cat(paste(input.match[matchrow[1],1]," ",chip.match[matchrow[2]],"\n"))
-  input.bed<-read.BED(input.match[matchrow[1],1])
-  chip.bed<-read.BED(chip.match[matchrow[2]])
-  nt<-bin.data(chip.bed,input.bed,1000,zero.filter=F)
-  getNormDiff(nt$chip,nt$input)
-})
-
 
