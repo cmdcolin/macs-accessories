@@ -1,6 +1,6 @@
-
-#convert all eland_result to bed 
-system("for f in *eland_result.txt; do elandresult2bed $f $f.bed; done")
+bin.size<-100
+-#convert all eland_result to bed 
+#system("for f in *eland_result.txt; do elandresult2bed $f $f.bed; done")
 
 #look for bed files
 bedfiles<-list.files(path='data',pattern="*.bed")
@@ -38,57 +38,100 @@ chip.input.matches
 
 
 ####### load chip files and calculate a top variance without normdiff
-owd<-setwd('data')
-chip.list<-apply(chip.input.matches,1,function(matchrow) {
-  cat(paste(input.match[matchrow[1]]," ",chip.match[matchrow[2]],"\n"))
-  input.bed<-read.BED(input.match[matchrow[1]])
-  chip.bed<-read.BED(chip.match[matchrow[2]])
-  bin.data(chip.bed,input.bed,1000,zero.filter=F)$chip
-})
-setwd(owd)
+# owd<-setwd('data')
+# chip.list<-apply(chip.input.matches,1,function(matchrow) {
+#   cat(paste(input.match[matchrow[1]]," ",chip.match[matchrow[2]],"\n"))
+#   input.bed<-read.BED(input.match[matchrow[1]])
+#   chip.bed<-read.BED(chip.match[matchrow[2]])
+#   bin.data(chip.bed,input.bed,1000,zero.filter=F)$chip
+# })
+# setwd(owd)
 
 
 ####GET NORMDIFF
 owd<-setwd('data')
-normdiff.list<-apply(chip.input.matches,1,function(matchrow) {
+
+#load bed files
+bedfiles<-apply(chip.input.matches,1,function(matchrow) {
   cat(paste(input.match[matchrow[1]]," ",chip.match[matchrow[2]],"\n"))
   input.bed<-read.BED(input.match[matchrow[1]])
   chip.bed<-read.BED(chip.match[matchrow[2]])
-  nt<-bin.data(chip.bed,input.bed,1000,zero.filter=F,chr.vec=c('chr01.fsa'))
-  getNormDiff(nt$chip,nt$input)
+  list(chip.bed,input.bed)
 })
+
+#create binned data by chromosome
+chippies<-lapply(bedfiles,function(row) {
+  nt<-bin.data(row[[1]],row[[2]],bin.size,zero.filter=F,by.chr=TRUE)
+})
+
+
+#calculate normdiff
+normdiff.list<-lapply(chippies,function(nt){
+  chrnames<-names(nt$chip)#assume that noth input,chip have same names
+  ret<-lapply(chrnames,function(chr) {
+    getNormDiff(nt$chip[[chr]],nt$input[[chr]])
+  })
+  names(ret)<-names(nt$chip)
+  ret
+})
+#use filenames
+#names(normdiff.list)<-chip.match[chip.input.matches[,2]]
+#use prefixes
+names(normdiff.list)<-chip.prefixes[chip.input.matches[,1]]
 setwd(owd)
 
 ####
 
 
 #convert to frame
-
-standardize.length<-function(nlist) {
-  minlen<-min(sapply(nlist,length))
-  lencols<-lapply(nlist,function(x)x[1:minlen])
-  chip.frame<-do.call(cbind,lencols)
+standardize.length<-function(nlist,chrnames) {
+  print(names(nlist))
+  ret<-lapply(chrnames,function(chrname) {
+    
+    min.length<-min(sapply(nlist,function(chipseqbins) {
+      length(chipseqbins[[chrname]])
+    }))
+    columns<-lapply(nlist,function(chrdata) {
+      chrdata[[chrname]][1:min.length]
+    })
+    
+    data.frame(chr=chrname,
+               start=seq(0,length.out=min.length,by=bin.size),
+               end=seq(bin.size,length.out=min.length,by=bin.size),
+               do.call(cbind,columns))
+  })
+  
+  do.call(rbind,ret)
 }
 
-if(!is.matrix(normdiff.list)) {
-  temp<-standardize.length(normdiff.list)
-  len<-nrow(temp)
-  normdiff.frame<-data.frame(start=seq(0,length.out=len,by=1000),end=seq(1000,length.out=len,by=1000),temp)
-}else {
-  temp<-normdiff.list
-  len<-nrow(temp)
-  normdiff.frame<-data.frame(start=seq(0,length.out=len,by=1000),end=seq(1000,length.out=len,by=1000),temp)
-}
-
+temp<-standardize.length(normdiff.list,names(normdiff.list[[1]]))
+normdiff.frame<-temp
 
 #get variance
-normdiff.var<-apply(normdiff.frame,1,var)
+normdiff.var<-apply(normdiff.frame[,c(-1,-2,-3)],1,var)
 threshold<-quantile(normdiff.var,0.975)
 normdiff.select<-normdiff.frame[normdiff.var>threshold,]
 
-options(scipen=999)
+#output as bed file
+options(scipen=999) #remove scientific notation
 write.table(normdiff.select,file="normdiff-table.txt",sep='\t',quote=F,row.names=F,col.names=F)
 options(scipen=0)
+
+
+
+heatmap(as.matrix(normdiff.select[,c(-1,-2,-3)]),Rowv=NA)
+boxplot(as.matrix(normdiff.select[,c(-1,-2,-3)]),boxwex=0.6, notch=T, outline=FALSE,las=2)
+chr01sel<-normdiff.frame[normdiff.frame[,1]=="chr01.fsa",4]
+hist(chr01sel)
+
+
+
+read.depth.table<-read.table('readdepth.txt')
+ret<-str_match(read.depth.table[,4],"(.*)input")
+cbind(chip.prefixes[chip.input.matches[,1]],read.depth.table[!complete.cases(ret),1][1:17])
+cbind(chip.match[chip.input.matches[,2]],read.depth.table[!complete.cases(ret),1][1:17])
+
+     
 system("bedtools merge -d 20 -i normdiff-table.txt > normdiff-merge.txt")
 chip.merge.table<-read.table("normdiff-merge.txt",sep="\t")
 nrow(chip.merge.table)
