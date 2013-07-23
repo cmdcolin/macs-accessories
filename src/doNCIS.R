@@ -1,5 +1,7 @@
-bin.size<-100
--#convert all eland_result to bed 
+bin.size<-20
+
+#for f in normdiff*; do bedtools merge -d 200 -i $f -scores sum > $window.size<-1000
+#convert all eland_result to bed 
 #system("for f in *eland_result.txt; do elandresult2bed $f $f.bed; done")
 
 #look for bed files
@@ -49,20 +51,21 @@ chip.input.matches
 
 
 ####GET NORMDIFF
-owd<-setwd('data')
 
 #load bed files
+owd<-setwd('data')
 bedfiles<-apply(chip.input.matches,1,function(matchrow) {
   cat(paste(input.match[matchrow[1]]," ",chip.match[matchrow[2]],"\n"))
   input.bed<-read.BED(input.match[matchrow[1]])
   chip.bed<-read.BED(chip.match[matchrow[2]])
   list(chip.bed,input.bed)
 })
-
+cache('bedfiles')
 #create binned data by chromosome
 chippies<-lapply(bedfiles,function(row) {
   nt<-bin.data(row[[1]],row[[2]],bin.size,zero.filter=F,by.chr=TRUE)
 })
+cache('chippies')
 
 
 #calculate normdiff
@@ -74,11 +77,11 @@ normdiff.list<-lapply(chippies,function(nt){
   names(ret)<-names(nt$chip)
   ret
 })
+names(normdiff.list)<-chip.prefixes[chip.input.matches[,1]]
+setwd(owd)
 #use filenames
 #names(normdiff.list)<-chip.match[chip.input.matches[,2]]
 #use prefixes
-names(normdiff.list)<-chip.prefixes[chip.input.matches[,1]]
-setwd(owd)
 
 ####
 
@@ -104,27 +107,51 @@ standardize.length<-function(nlist,chrnames) {
   do.call(rbind,ret)
 }
 
-temp<-standardize.length(normdiff.list,names(normdiff.list[[1]]))
-normdiff.frame<-temp
+normdiff.frame<-standardize.length(normdiff.list,names(normdiff.list[[1]]))
+print(nrow(normdiff.frame))
+
+
+
 
 #get variance
-normdiff.var<-apply(normdiff.frame[,c(-1,-2,-3)],1,var)
+
+normdiff.var<-apply(as.matrix(normdiff.frame[,c(-1,-2,-3)]),1,var)
+#normdiff.var=numeric(nrow(normdiff.frame))
+#for(i in 1:nrow(normdiff.frame)){normdiff.var[i]=var(as.numeric(normdiff.frame[i,c(-1,-2,-3)]))}
+
+#threshold variances
 threshold<-quantile(normdiff.var,0.975)
 normdiff.select<-normdiff.frame[normdiff.var>threshold,]
+print(nrow(normdiff.select))
+
+
 
 #output as bed file
 options(scipen=999) #remove scientific notation
-write.table(normdiff.select,file="normdiff-table.txt",sep='\t',quote=F,row.names=F,col.names=F)
+
+
+for(i in 4:ncol(normdiff.select)) {
+  filename<-sprintf("normdiff-table%02d.txt",i)
+  cat(paste("writing",filename,"\n"))
+  write.table(normdiff.select[,c(1,2,3,i,i)],file=filename,sep='\t',quote=F,row.names=F,col.names=F)
+}
 options(scipen=0)
 
+#merge files:
+#for f in normdiff*.txt; do bedtools merge -d 200 -i $f -scores sum > $f.merge; done
+#
+
+bedfiles<-list.files(pattern="*.merge")
+normdiff.merge<-read.table(bedfiles[1])
+for(i in 2:length(bedfiles)) {
+  normdiff.merge<-cbind(normdiff.merge,read.table(bedfiles[i])[,4])
+}
+names(normdiff.merge)<-c('chr','start','end',chip.prefixes[chip.input.matches[,1]])
 
 
-heatmap(as.matrix(normdiff.select[,c(-1,-2,-3)]),Rowv=NA)
-boxplot(as.matrix(normdiff.select[,c(-1,-2,-3)]),boxwex=0.6, notch=T, outline=FALSE,las=2)
-chr01sel<-normdiff.frame[normdiff.frame[,1]=="chr01.fsa",4]
-hist(chr01sel)
-
-
+#merge
+heatmap.2(as.matrix(normdiff.merge[,c(-1,-2,-3)]),Rowv=NA,trace="none",scale="none")
+boxplot(as.matrix(normdiff.merge[,c(-1,-2,-3)]),boxwex=0.6, notch=T, outline=FALSE,las=2)
 
 read.depth.table<-read.table('readdepth.txt')
 ret<-str_match(read.depth.table[,4],"(.*)input")

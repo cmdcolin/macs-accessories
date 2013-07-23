@@ -1,19 +1,24 @@
 
 
-getNormDiff<-function(treat,control) {
+getNormDiff<-function(treat,control,slideWindow=1,slideWindow2=10) {
   
-  treatSmooth<-slideMean(treat) #default params
-  controlSmooth<-slideMean(control)
+  treatSmooth<-slideMean(treat,slideWindow) #default params
+  controlSmooth<-slideMean(control,slideWindow)
+  treatSmooth2<-slideMean(treat,slideWindow2) #default params
+  controlSmooth2<-slideMean(control,slideWindow2)
+  
+  
   
   scalingFactor=median(control/treat,na.rm=TRUE)
   globalVariance=sqrt(mean(treat)+mean(control)/scalingFactor^2)
   varlist<-sqrt(treatSmooth+controlSmooth/scalingFactor^2)
+  varlist2<-sqrt(treatSmooth2+controlSmooth2/scalingFactor^2)
   
   
   #normdiff local
-  normVar<-sapply(varlist,function(x){
-    max(x,globalVariance)
-  })
+  normVar<-unlist(apply(cbind(varlist,varlist2),1,function(x){
+    max(x[1],x[2],globalVariance)
+  }))
   
   (treat-control/scalingFactor)/normVar
 }
